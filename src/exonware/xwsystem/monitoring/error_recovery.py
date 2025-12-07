@@ -10,7 +10,7 @@ import functools
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Optional, Type, Union
 
 from .defs import CircuitState
 
@@ -39,7 +39,7 @@ class ErrorContext:
     timestamp: float
     retry_count: int = 0
     circuit_state: str = "unknown"
-    additional_info: Dict[str, Any] = field(default_factory=dict)
+    additional_info: dict[str, Any] = field(default_factory=dict)
 
 
 class CircuitBreaker:
@@ -164,10 +164,10 @@ class ErrorRecoveryManager:
 
     def __init__(self) -> None:
         """Initialize error recovery manager."""
-        self.circuit_breakers: Dict[str, CircuitBreaker] = {}
-        self.error_contexts: List[ErrorContext] = []
-        self.retry_configs: Dict[str, Dict[str, Any]] = {}
-        self.degradation_strategies: Dict[str, Callable] = {}
+        self.circuit_breakers: dict[str, CircuitBreaker] = {}
+        self.error_contexts: list[ErrorContext] = []
+        self.retry_configs: dict[str, dict[str, Any]] = {}
+        self.degradation_strategies: dict[str, Callable] = {}
 
         # Thread safety
         self._lock = threading.RLock()
@@ -191,7 +191,7 @@ class ErrorRecoveryManager:
         # Validation errors
         self.degradation_strategies["validation"] = self._handle_validation_error
 
-    def _handle_memory_error(self, error: Exception, context: Dict[str, Any]) -> Any:
+    def _handle_memory_error(self, error: Exception, context: dict[str, Any]) -> Any:
         """Handle memory-related errors."""
         logger.warning("🧠 Memory error detected, attempting cleanup")
 
@@ -207,7 +207,7 @@ class ErrorRecoveryManager:
         logger.info(f"🧹 Memory cleanup completed: {collected} objects collected")
         return None
 
-    def _handle_timeout_error(self, error: Exception, context: Dict[str, Any]) -> Any:
+    def _handle_timeout_error(self, error: Exception, context: dict[str, Any]) -> Any:
         """Handle timeout errors."""
         logger.warning("⏰ Timeout error detected, using cached result if available")
 
@@ -218,7 +218,7 @@ class ErrorRecoveryManager:
         return None
 
     def _handle_connection_error(
-        self, error: Exception, context: Dict[str, Any]
+        self, error: Exception, context: dict[str, Any]
     ) -> Any:
         """Handle connection errors."""
         logger.warning("🔌 Connection error detected, using fallback")
@@ -230,7 +230,7 @@ class ErrorRecoveryManager:
         return None
 
     def _handle_validation_error(
-        self, error: Exception, context: Dict[str, Any]
+        self, error: Exception, context: dict[str, Any]
     ) -> Any:
         """Handle validation errors."""
         logger.warning("✅ Validation error detected, using default values")
@@ -392,7 +392,7 @@ class ErrorRecoveryManager:
                 raise fallback_error
 
     def handle_error(
-        self, error: Exception, operation_name: str, context: Dict[str, Any] = None
+        self, error: Exception, operation_name: str, context: dict[str, Any] = None
     ) -> Any:
         """
         Handle error using appropriate recovery strategy.
@@ -442,7 +442,7 @@ class ErrorRecoveryManager:
             return "unknown"
 
     def _record_error_context(
-        self, error: Exception, operation_name: str, context: Dict[str, Any]
+        self, error: Exception, operation_name: str, context: dict[str, Any]
     ) -> None:
         """Record error context for analysis."""
         error_context = ErrorContext(
@@ -460,12 +460,12 @@ class ErrorRecoveryManager:
             if len(self.error_contexts) > 100:
                 self.error_contexts = self.error_contexts[-100:]
 
-    def get_error_contexts(self) -> List[ErrorContext]:
+    def get_error_contexts(self) -> list[ErrorContext]:
         """Get all recorded error contexts."""
         with self._lock:
             return self.error_contexts.copy()
 
-    def get_circuit_breaker_states(self) -> Dict[str, str]:
+    def get_circuit_breaker_states(self) -> dict[str, str]:
         """Get states of all circuit breakers."""
         with self._lock:
             return {
@@ -602,7 +602,7 @@ def graceful_degradation(
     return decorator
 
 
-def handle_error(operation_name: str, context: Dict[str, Any] = None):
+def handle_error(operation_name: str, context: dict[str, Any] = None):
     """
     Decorator for error handling with recovery strategies.
 

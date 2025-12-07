@@ -3,20 +3,20 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Pattern-specific error classes for XSystem design patterns.
 """
 
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Optional, Type
 
 
 class PatternError(Exception):
     """Base exception for all pattern-related errors."""
     
     def __init__(self, message: str, pattern_type: Optional[str] = None, 
-                 context: Optional[Dict[str, Any]] = None, original_error: Optional[Exception] = None):
+                 context: Optional[dict[str, Any]] = None, original_error: Optional[Exception] = None):
         super().__init__(message)
         self.pattern_type = pattern_type
         self.context = context or {}
@@ -45,7 +45,7 @@ class HandlerError(PatternError):
 class HandlerNotFoundError(HandlerError):
     """Error when a requested handler is not found."""
     
-    def __init__(self, handler_type: str, available_handlers: Optional[List[str]] = None, **kwargs):
+    def __init__(self, handler_type: str, available_handlers: Optional[list[str]] = None, **kwargs):
         message = f"Handler of type '{handler_type}' not found"
         if available_handlers:
             message += f". Available handlers: {', '.join(available_handlers)}"
@@ -184,7 +184,7 @@ class StrategyError(PatternError):
 class StrategyNotFoundError(StrategyError):
     """Error when a requested strategy is not found."""
     
-    def __init__(self, strategy_name: str, available_strategies: Optional[List[str]] = None, **kwargs):
+    def __init__(self, strategy_name: str, available_strategies: Optional[list[str]] = None, **kwargs):
         message = f"Strategy '{strategy_name}' not found"
         if available_strategies:
             message += f". Available strategies: {', '.join(available_strategies)}"
@@ -271,7 +271,7 @@ class StateTransitionError(StateError):
 class StateNotFoundError(StateError):
     """Error when a requested state is not found."""
     
-    def __init__(self, state_name: str, available_states: Optional[List[str]] = None, **kwargs):
+    def __init__(self, state_name: str, available_states: Optional[list[str]] = None, **kwargs):
         message = f"State '{state_name}' not found"
         if available_states:
             message += f". Available states: {', '.join(available_states)}"
@@ -299,7 +299,7 @@ class BuildError(BuilderError):
 class BuildValidationError(BuilderError):
     """Error when build validation fails."""
     
-    def __init__(self, message: str, builder_type: str, validation_errors: Optional[List[str]] = None, **kwargs):
+    def __init__(self, message: str, builder_type: str, validation_errors: Optional[list[str]] = None, **kwargs):
         super().__init__(message, builder_type=builder_type, **kwargs)
         self.validation_errors = validation_errors or []
 

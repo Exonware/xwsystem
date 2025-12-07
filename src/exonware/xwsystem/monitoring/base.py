@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Monitoring module base classes - abstract classes for monitoring functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Callable, TYPE_CHECKING
+from typing import Any, Optional, Union, Callable, TYPE_CHECKING
 from .defs import MetricType, AlertLevel, HealthStatus, SpanKind
 
 if TYPE_CHECKING:
@@ -28,9 +28,9 @@ class APerformanceMonitorBase(ABC):
             monitor_name: Name of the performance monitor
         """
         self.monitor_name = monitor_name
-        self._metrics: Dict[str, Any] = {}
-        self._thresholds: Dict[str, float] = {}
-        self._alerts: List[Dict[str, Any]] = []
+        self._metrics: dict[str, Any] = {}
+        self._thresholds: dict[str, float] = {}
+        self._alerts: list[dict[str, Any]] = []
     
     @abstractmethod
     def start_monitoring(self) -> None:
@@ -58,7 +58,7 @@ class APerformanceMonitorBase(ABC):
         pass
     
     @abstractmethod
-    def get_all_metrics(self) -> Dict[str, float]:
+    def get_all_metrics(self) -> dict[str, float]:
         """Get all metrics."""
         pass
     
@@ -68,12 +68,12 @@ class APerformanceMonitorBase(ABC):
         pass
     
     @abstractmethod
-    def check_thresholds(self) -> List[Dict[str, Any]]:
+    def check_thresholds(self) -> list[dict[str, Any]]:
         """Check if any metrics exceed thresholds."""
         pass
     
     @abstractmethod
-    def get_performance_summary(self) -> Dict[str, Any]:
+    def get_performance_summary(self) -> dict[str, Any]:
         """Get performance summary."""
         pass
 
@@ -83,7 +83,7 @@ class AMemoryMonitorBase(ABC):
     
     def __init__(self):
         """Initialize memory monitor."""
-        self._memory_snapshots: List[Dict[str, Any]] = []
+        self._memory_snapshots: list[dict[str, Any]] = []
         self._leak_detection_enabled = False
     
     @abstractmethod
@@ -97,22 +97,22 @@ class AMemoryMonitorBase(ABC):
         pass
     
     @abstractmethod
-    def take_snapshot(self) -> Dict[str, Any]:
+    def take_snapshot(self) -> dict[str, Any]:
         """Take memory snapshot."""
         pass
     
     @abstractmethod
-    def get_memory_usage(self) -> Dict[str, float]:
+    def get_memory_usage(self) -> dict[str, float]:
         """Get current memory usage."""
         pass
     
     @abstractmethod
-    def detect_memory_leaks(self) -> List[Dict[str, Any]]:
+    def detect_memory_leaks(self) -> list[dict[str, Any]]:
         """Detect potential memory leaks."""
         pass
     
     @abstractmethod
-    def get_memory_stats(self) -> Dict[str, Any]:
+    def get_memory_stats(self) -> dict[str, Any]:
         """Get memory statistics."""
         pass
     
@@ -122,7 +122,7 @@ class AMemoryMonitorBase(ABC):
         pass
     
     @abstractmethod
-    def get_garbage_collection_stats(self) -> Dict[str, Any]:
+    def get_garbage_collection_stats(self) -> dict[str, Any]:
         """Get garbage collection statistics."""
         pass
     
@@ -143,10 +143,10 @@ class AMetricsBase(ABC):
             metrics_name: Name of the metrics collector
         """
         self.metrics_name = metrics_name
-        self._counters: Dict[str, int] = {}
-        self._gauges: Dict[str, float] = {}
-        self._histograms: Dict[str, List[float]] = {}
-        self._timers: Dict[str, List[float]] = {}
+        self._counters: dict[str, int] = {}
+        self._gauges: dict[str, float] = {}
+        self._histograms: dict[str, list[float]] = {}
+        self._timers: dict[str, list[float]] = {}
     
     @abstractmethod
     def increment_counter(self, name: str, value: int = 1) -> None:
@@ -179,17 +179,17 @@ class AMetricsBase(ABC):
         pass
     
     @abstractmethod
-    def get_histogram_stats(self, name: str) -> Dict[str, float]:
+    def get_histogram_stats(self, name: str) -> dict[str, float]:
         """Get histogram statistics."""
         pass
     
     @abstractmethod
-    def get_timer_stats(self, name: str) -> Dict[str, float]:
+    def get_timer_stats(self, name: str) -> dict[str, float]:
         """Get timer statistics."""
         pass
     
     @abstractmethod
-    def export_metrics(self) -> Dict[str, Any]:
+    def export_metrics(self) -> dict[str, Any]:
         """Export all metrics."""
         pass
     
@@ -204,8 +204,8 @@ class AErrorRecoveryBase(ABC):
     
     def __init__(self):
         """Initialize error recovery."""
-        self._recovery_strategies: Dict[str, Callable] = {}
-        self._circuit_breakers: Dict[str, Dict[str, Any]] = {}
+        self._recovery_strategies: dict[str, Callable] = {}
+        self._circuit_breakers: dict[str, dict[str, Any]] = {}
     
     @abstractmethod
     def register_recovery_strategy(self, error_type: str, strategy: Callable) -> None:
@@ -213,7 +213,7 @@ class AErrorRecoveryBase(ABC):
         pass
     
     @abstractmethod
-    def handle_error(self, error: Exception, context: Dict[str, Any]) -> bool:
+    def handle_error(self, error: Exception, context: dict[str, Any]) -> bool:
         """Handle error with recovery strategy."""
         pass
     
@@ -239,7 +239,7 @@ class AErrorRecoveryBase(ABC):
         pass
     
     @abstractmethod
-    def get_circuit_state(self, name: str) -> Dict[str, Any]:
+    def get_circuit_state(self, name: str) -> dict[str, Any]:
         """Get circuit breaker state."""
         pass
 
@@ -250,7 +250,7 @@ class ASystemMonitorBase(ABC):
     def __init__(self):
         """Initialize system monitor."""
         self._monitoring_enabled = False
-        self._system_metrics: Dict[str, Any] = {}
+        self._system_metrics: dict[str, Any] = {}
     
     @abstractmethod
     def start_system_monitoring(self) -> None:
@@ -268,17 +268,17 @@ class ASystemMonitorBase(ABC):
         pass
     
     @abstractmethod
-    def get_memory_usage(self) -> Dict[str, float]:
+    def get_memory_usage(self) -> dict[str, float]:
         """Get memory usage statistics."""
         pass
     
     @abstractmethod
-    def get_disk_usage(self) -> Dict[str, float]:
+    def get_disk_usage(self) -> dict[str, float]:
         """Get disk usage statistics."""
         pass
     
     @abstractmethod
-    def get_network_usage(self) -> Dict[str, float]:
+    def get_network_usage(self) -> dict[str, float]:
         """Get network usage statistics."""
         pass
     
@@ -303,7 +303,7 @@ class ASystemMonitorBase(ABC):
         pass
     
     @abstractmethod
-    def get_system_info(self) -> Dict[str, Any]:
+    def get_system_info(self) -> dict[str, Any]:
         """Get comprehensive system information."""
         pass
 
@@ -322,7 +322,7 @@ class ATracingProvider(ABC):
         name: str, 
         kind: 'SpanKind' = None,
         parent: Optional['SpanContext'] = None,
-        attributes: Optional[Dict[str, Any]] = None
+        attributes: Optional[dict[str, Any]] = None
     ) -> 'SpanContext':
         """Start a new span."""
         pass
@@ -338,6 +338,6 @@ class ATracingProvider(ABC):
         pass
     
     @abstractmethod
-    def add_span_event(self, span: 'SpanContext', name: str, attributes: Optional[Dict[str, Any]] = None) -> None:
+    def add_span_event(self, span: 'SpanContext', name: str, attributes: Optional[dict[str, Any]] = None) -> None:
         """Add event to span."""
         pass

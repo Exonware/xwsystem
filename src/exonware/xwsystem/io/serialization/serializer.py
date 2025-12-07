@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 XWSerializer - Unified intelligent serializer with I/O integration and auto-serialization.
@@ -11,7 +11,7 @@ XWSerializer - Unified intelligent serializer with I/O integration and auto-seri
 import os
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, List, Callable, Type
+from typing import Any, Optional, Union, Callable, Type
 
 from .base import ASerialization
 from .contracts import ISerialization
@@ -497,11 +497,11 @@ class XWSerializer(ASerialization):
     # FILE MANAGER INTEGRATION
     # ============================================================================
     
-    def process_file(self, file_path: Union[str, Path], operation: str = 'info') -> Dict[str, Any]:
+    def process_file(self, file_path: Union[str, Path], operation: str = 'info') -> dict[str, Any]:
         """Process file using file manager."""
         return self._file_manager.process_file(file_path, operation)
     
-    def get_file_info(self, file_path: Union[str, Path]) -> Dict[str, Any]:
+    def get_file_info(self, file_path: Union[str, Path]) -> dict[str, Any]:
         """Get comprehensive file information."""
         return self._file_manager.get_file_info(file_path)
     
@@ -734,7 +734,7 @@ class XWSerializer(ASerialization):
     def merge(
         self, 
         file_path: Union[str, Path], 
-        updates: Dict[str, Any], 
+        updates: dict[str, Any], 
         **options
     ) -> None:
         """
@@ -780,8 +780,8 @@ class XWSerializer(ASerialization):
     # BATCH OPERATIONS
     # ============================================================================
     
-    def batch_save(self, data_dict: Dict[Union[str, Path], Any], 
-                   format_hint: Optional[str] = None) -> Dict[str, bool]:
+    def batch_save(self, data_dict: dict[Union[str, Path], Any], 
+                   format_hint: Optional[str] = None) -> dict[str, bool]:
         """Save multiple files in batch."""
         results = {}
         
@@ -796,8 +796,8 @@ class XWSerializer(ASerialization):
         
         return results
     
-    def batch_load(self, file_paths: List[Union[str, Path]], 
-                   format_hint: Optional[str] = None) -> Dict[str, Any]:
+    def batch_load(self, file_paths: list[Union[str, Path]], 
+                   format_hint: Optional[str] = None) -> dict[str, Any]:
         """Load multiple files in batch."""
         results = {}
         
@@ -816,7 +816,7 @@ class XWSerializer(ASerialization):
     # UTILITY METHODS
     # ============================================================================
     
-    def get_serializer_info(self) -> Dict[str, Any]:
+    def get_serializer_info(self) -> dict[str, Any]:
         """Get comprehensive serializer information."""
         return {
             'auto_serialize': self.auto_serialize,
@@ -907,7 +907,7 @@ class XWSerializer(ASerialization):
         specialized = self._ensure_specialized(data=data)
         return specialized.validate_data(data)
     
-    def get_schema_info(self) -> Dict[str, Any]:
+    def get_schema_info(self) -> dict[str, Any]:
         """Get schema info."""
         if self._specialized_serializer is None:
             return {

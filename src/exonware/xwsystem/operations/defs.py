@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 27, 2025
 
 Operations definitions and data structures.
@@ -13,7 +13,7 @@ Operations definitions and data structures.
 
 from enum import Enum
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 
 class MergeStrategy(Enum):
@@ -45,9 +45,9 @@ class PatchOperation(Enum):
 @dataclass
 class DiffResult:
     """Result of a diff operation."""
-    operations: List[Dict[str, Any]]
+    operations: list[dict[str, Any]]
     mode: DiffMode
-    paths_changed: List[str]
+    paths_changed: list[str]
     total_changes: int
 
 
@@ -56,7 +56,7 @@ class PatchResult:
     """Result of a patch operation."""
     success: bool
     operations_applied: int
-    errors: List[str]
+    errors: list[str]
     result: Any
 
 

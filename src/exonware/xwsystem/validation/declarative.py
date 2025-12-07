@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Pydantic-style declarative validation with type hints and automatic coercion.
@@ -12,7 +12,7 @@ import inspect
 import json
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type, Union, get_type_hints, get_origin, get_args
+from typing import Any, Optional, Type, Union, get_type_hints, get_origin, get_args
 from datetime import datetime, date
 from pathlib import Path
 
@@ -65,7 +65,7 @@ class Field:
     min_length: Optional[int] = None
     max_length: Optional[int] = None
     pattern: Optional[str] = None
-    enum: Optional[List[Any]] = None
+    enum: Optional[list[Any]] = None
     
     # String validation
     strip_whitespace: bool = True
@@ -77,7 +77,7 @@ class Field:
     allow_inf_nan: bool = True
     
     # Metadata
-    examples: Optional[List[Any]] = None
+    examples: Optional[list[Any]] = None
     deprecated: bool = False
     
     def __post_init__(self):
@@ -146,7 +146,7 @@ class XModel(metaclass=ModelMeta):
         """Initialize model with data validation and coercion."""
         self.__dict__.update(self._validate_and_coerce(data))
     
-    def _validate_and_coerce(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_and_coerce(self, data: dict[str, Any]) -> dict[str, Any]:
         """Validate and coerce input data."""
         validated = {}
         errors = ValidationError("Validation failed")
@@ -442,7 +442,7 @@ class XModel(metaclass=ModelMeta):
             raise ValidationError(f"Value must be one of: {field_config.enum}")
     
     @classmethod
-    def model_validate(cls, data: Dict[str, Any]) -> 'XModel':
+    def model_validate(cls, data: dict[str, Any]) -> 'XModel':
         """Create and validate model from dictionary data."""
         return cls(**data)
     
@@ -455,7 +455,7 @@ class XModel(metaclass=ModelMeta):
     def model_dump(self, 
                    include: Optional[set] = None, 
                    exclude: Optional[set] = None,
-                   by_alias: bool = False) -> Dict[str, Any]:
+                   by_alias: bool = False) -> dict[str, Any]:
         """Export model to dictionary."""
         data = {}
         fields = getattr(self.__class__, '__fields__', {})
@@ -491,7 +491,7 @@ class XModel(metaclass=ModelMeta):
         return json.dumps(data, default=str)
     
     @classmethod
-    def model_json_schema(cls) -> Dict[str, Any]:
+    def model_json_schema(cls) -> dict[str, Any]:
         """Generate JSON Schema for the model."""
         schema = {
             "type": "object",
@@ -528,7 +528,7 @@ class XModel(metaclass=ModelMeta):
         return schema
     
     @classmethod
-    def _type_to_json_schema(cls, field_type: Type, field_config: Field) -> Dict[str, Any]:
+    def _type_to_json_schema(cls, field_type: Type, field_config: Field) -> dict[str, Any]:
         """Convert Python type to JSON Schema property."""
         # Handle Optional types
         if cls._is_optional(field_type):

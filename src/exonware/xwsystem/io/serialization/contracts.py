@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 2, 2025
 
 Serialization contracts - ISerialization interface extending ICodec.
@@ -14,7 +14,9 @@ Following I→A→XW pattern:
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Union, Optional, BinaryIO, TextIO, AsyncIterator, Iterator, List, Dict
+from typing import Any, Union, Optional, BinaryIO, TextIO, AsyncIterator, Iterator
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
 
 from ..codec.contracts import ICodec, ICodecMetadata
@@ -22,7 +24,7 @@ from ..contracts import EncodeOptions, DecodeOptions
 from ..defs import CodecCapability
 
 
-class ISerialization(ICodec[Any, Union[bytes, str]], ABC):
+class ISerialization(ICodec[Any, Union[bytes, str]]):
     """
     Serialization interface extending ICodec.
     
@@ -414,7 +416,7 @@ class ISerialization(ICodec[Any, Union[bytes, str]], ABC):
     def merge(
         self, 
         file_path: Union[str, Path], 
-        updates: Dict[str, Any], 
+        updates: dict[str, Any], 
         **options
     ) -> None:
         """

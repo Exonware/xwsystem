@@ -10,7 +10,7 @@ import time
 from collections import defaultdict, deque
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 from ..config.logging_setup import get_logger
 
@@ -55,7 +55,7 @@ class OperationMetrics:
         """Get error rate as percentage."""
         return (self.error_count / max(1, self.total_calls)) * 100
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "total_calls": self.total_calls,
@@ -75,9 +75,9 @@ class GenericMetrics:
     def __init__(self, component_name: str = "generic"):
         self.component_name = component_name
         self._logger = get_logger(f"{component_name}.metrics")
-        self._operations: Dict[str, OperationMetrics] = defaultdict(OperationMetrics)
-        self._counters: Dict[str, int] = defaultdict(int)
-        self._gauges: Dict[str, float] = {}
+        self._operations: dict[str, OperationMetrics] = defaultdict(OperationMetrics)
+        self._counters: dict[str, int] = defaultdict(int)
+        self._gauges: dict[str, float] = {}
         self._start_time = time.time()
         self._lock = threading.RLock()
 
@@ -179,14 +179,14 @@ class GenericMetrics:
         """Get uptime in seconds."""
         return time.time() - self._start_time
 
-    def get_operation_stats(self, operation_name: str) -> Dict[str, Any]:
+    def get_operation_stats(self, operation_name: str) -> dict[str, Any]:
         """Get statistics for a specific operation."""
         with self._lock:
             if operation_name in self._operations:
                 return self._operations[operation_name].to_dict()
             return {}
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get comprehensive metrics summary."""
         with self._lock:
             operations_summary = {}
@@ -289,7 +289,7 @@ class GenericMetrics:
 
 
 # Global metrics registry
-_metrics_registry: Dict[str, GenericMetrics] = {}
+_metrics_registry: dict[str, GenericMetrics] = {}
 _registry_lock = threading.Lock()
 
 

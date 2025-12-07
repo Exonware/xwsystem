@@ -1,3 +1,4 @@
+#exonware/xwsystem/threading/safe_factory.py
 """
 Thread-safe factory pattern for handler registration and management.
 """
@@ -5,14 +6,14 @@ Thread-safe factory pattern for handler registration and management.
 import logging
 import threading
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, Generic, List, Optional, Type, TypeVar
+from typing import Any, Callable, Optional, Type
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar("T")
 
-
-class ThreadSafeFactory(Generic[T]):
+class ThreadSafeFactory[T]:
     """
     Generic thread-safe factory for handler registration and retrieval.
 
@@ -21,14 +22,14 @@ class ThreadSafeFactory(Generic[T]):
     """
 
     def __init__(self) -> None:
-        self._handlers: Dict[str, Type[T]] = {}
-        self._extensions: Dict[str, str] = {}
+        self._handlers: dict[str, Type[T]] = {}
+        self._extensions: dict[str, str] = {}
         self._lock = threading.RLock()  # Reentrant lock for thread safety
         self._methods_generated = False
         self._methods_lock = threading.Lock()
 
     def register(
-        self, name: str, handler_class: Type[T], extensions: Optional[List[str]] = None
+        self, name: str, handler_class: Type[T], extensions: Optional[list[str]] = None
     ) -> None:
         """
         Register a handler with optional file extensions.
@@ -42,7 +43,7 @@ class ThreadSafeFactory(Generic[T]):
             name_lower = name.lower()
             self._handlers[name_lower] = handler_class
 
-            processed_exts: List[str] = []
+            processed_exts: list[str] = []
             if extensions:
                 processed_exts = [ext.lower().lstrip(".") for ext in extensions]
             elif name_lower not in processed_exts:
@@ -102,7 +103,7 @@ class ThreadSafeFactory(Generic[T]):
         with self._lock:
             return self._extensions.get(extension.lower().lstrip("."))
 
-    def get_available_formats(self) -> List[str]:
+    def get_available_formats(self) -> list[str]:
         """
         Get list of all registered format names.
 

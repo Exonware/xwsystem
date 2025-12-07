@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 File-based data source implementation.
@@ -17,7 +17,7 @@ Priority 5 (Extensibility): Foundation for other data sources (HTTP, S3, etc.)
 """
 
 from pathlib import Path
-from typing import Union, Optional, Dict, Any
+from typing import Union, Optional, Any
 
 from ..contracts import IDataSource
 
@@ -164,7 +164,7 @@ class FileDataSource(IDataSource[Union[bytes, str]]):
         except Exception as e:
             raise IOError(f"Failed to delete {self._path}: {e}")
     
-    def metadata(self) -> Dict[str, Any]:
+    def metadata(self) -> dict[str, Any]:
         """
         Get file metadata.
         

@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Validation protocol interfaces for XWSystem.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Callable, Tuple, Protocol
+from typing import Any, Optional, Union, Iterator, Callable, Protocol
 from typing_extensions import runtime_checkable
 
 # Import enums from types module
@@ -53,7 +53,7 @@ class IValidatable(ABC):
         pass
     
     @abstractmethod
-    def get_errors(self) -> List[str]:
+    def get_errors(self) -> list[str]:
         """
         Get validation errors.
         
@@ -126,7 +126,7 @@ class IValidationManager(ABC):
         pass
     
     @abstractmethod
-    def validate_object(self, obj: Any, validators: List[str]) -> Tuple[bool, List[str]]:
+    def validate_object(self, obj: Any, validators: list[str]) -> tuple[bool, list[str]]:
         """
         Validate object with specified validators.
         
@@ -140,7 +140,7 @@ class IValidationManager(ABC):
         pass
     
     @abstractmethod
-    def get_validators(self) -> List[str]:
+    def get_validators(self) -> list[str]:
         """
         Get list of available validators.
         
@@ -162,7 +162,7 @@ class ISchemaValidator(ABC):
     """
     
     @abstractmethod
-    def validate_schema(self, data: Any, schema: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    def validate_schema(self, data: Any, schema: dict[str, Any]) -> tuple[bool, list[str]]:
         """
         Validate data against schema.
         
@@ -176,7 +176,7 @@ class ISchemaValidator(ABC):
         pass
     
     @abstractmethod
-    def create_schema(self, data: Any) -> Dict[str, Any]:
+    def create_schema(self, data: Any) -> dict[str, Any]:
         """
         Create schema from data.
         
@@ -244,6 +244,6 @@ class Validatable(Protocol):
         """Validate data against rules."""
         ...
     
-    def get_errors(self) -> List[Dict[str, Any]]:
+    def get_errors(self) -> list[dict[str, Any]]:
         """Get validation errors."""
         ...

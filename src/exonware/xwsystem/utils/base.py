@@ -3,21 +3,21 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Utils module base classes - abstract classes for utility functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Callable, TypeVar, Generic
+from typing import Any, Optional, Union, Callable
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
 from .contracts import LazyLoadMode, PathType, UtilityType, ResourceType
 
-T = TypeVar('T')
 
-
-class ALazyLoaderBase(ABC, Generic[T]):
+class ALazyLoaderBase[T](ABC):
     """Abstract base class for lazy loading operations."""
     
     def __init__(self, load_mode: LazyLoadMode = LazyLoadMode.ON_DEMAND):
@@ -89,8 +89,8 @@ class APathUtilsBase(ABC):
     
     def __init__(self):
         """Initialize path utils."""
-        self._path_cache: Dict[str, Path] = {}
-        self._normalized_paths: Dict[str, str] = {}
+        self._path_cache: dict[str, Path] = {}
+        self._normalized_paths: dict[str, str] = {}
     
     @abstractmethod
     def normalize_path(self, path: Union[str, Path]) -> Path:
@@ -188,13 +188,13 @@ class AUtilityRegistryBase(ABC):
     
     def __init__(self):
         """Initialize utility registry."""
-        self._utilities: Dict[str, Any] = {}
-        self._utility_types: Dict[str, UtilityType] = {}
-        self._utility_metadata: Dict[str, Dict[str, Any]] = {}
+        self._utilities: dict[str, Any] = {}
+        self._utility_types: dict[str, UtilityType] = {}
+        self._utility_metadata: dict[str, dict[str, Any]] = {}
     
     @abstractmethod
     def register_utility(self, name: str, utility: Any, utility_type: UtilityType, 
-                        metadata: Optional[Dict[str, Any]] = None) -> None:
+                        metadata: Optional[dict[str, Any]] = None) -> None:
         """Register utility."""
         pass
     
@@ -209,7 +209,7 @@ class AUtilityRegistryBase(ABC):
         pass
     
     @abstractmethod
-    def list_utilities(self, utility_type: Optional[UtilityType] = None) -> List[str]:
+    def list_utilities(self, utility_type: Optional[UtilityType] = None) -> list[str]:
         """List utilities."""
         pass
     
@@ -224,12 +224,12 @@ class AUtilityRegistryBase(ABC):
         pass
     
     @abstractmethod
-    def get_utility_metadata(self, name: str) -> Optional[Dict[str, Any]]:
+    def get_utility_metadata(self, name: str) -> Optional[dict[str, Any]]:
         """Get utility metadata."""
         pass
     
     @abstractmethod
-    def update_utility_metadata(self, name: str, metadata: Dict[str, Any]) -> None:
+    def update_utility_metadata(self, name: str, metadata: dict[str, Any]) -> None:
         """Update utility metadata."""
         pass
     
@@ -244,12 +244,12 @@ class AUtilityRegistryBase(ABC):
         pass
     
     @abstractmethod
-    def export_utilities(self) -> Dict[str, Any]:
+    def export_utilities(self) -> dict[str, Any]:
         """Export utilities registry."""
         pass
     
     @abstractmethod
-    def import_utilities(self, utilities_data: Dict[str, Any]) -> None:
+    def import_utilities(self, utilities_data: dict[str, Any]) -> None:
         """Import utilities registry."""
         pass
 
@@ -259,12 +259,12 @@ class AConfigManagerBase(ABC):
     
     def __init__(self):
         """Initialize config manager."""
-        self._configs: Dict[str, Dict[str, Any]] = {}
-        self._config_schemas: Dict[str, Dict[str, Any]] = {}
-        self._config_validators: Dict[str, Callable] = {}
+        self._configs: dict[str, dict[str, Any]] = {}
+        self._config_schemas: dict[str, dict[str, Any]] = {}
+        self._config_validators: dict[str, Callable] = {}
     
     @abstractmethod
-    def load_config(self, config_name: str, config_data: Dict[str, Any]) -> None:
+    def load_config(self, config_name: str, config_data: dict[str, Any]) -> None:
         """Load configuration."""
         pass
     
@@ -274,7 +274,7 @@ class AConfigManagerBase(ABC):
         pass
     
     @abstractmethod
-    def get_config(self, config_name: str) -> Optional[Dict[str, Any]]:
+    def get_config(self, config_name: str) -> Optional[dict[str, Any]]:
         """Get configuration."""
         pass
     
@@ -299,7 +299,7 @@ class AConfigManagerBase(ABC):
         pass
     
     @abstractmethod
-    def list_configs(self) -> List[str]:
+    def list_configs(self) -> list[str]:
         """List all configurations."""
         pass
     
@@ -309,12 +309,12 @@ class AConfigManagerBase(ABC):
         pass
     
     @abstractmethod
-    def set_config_schema(self, config_name: str, schema: Dict[str, Any]) -> None:
+    def set_config_schema(self, config_name: str, schema: dict[str, Any]) -> None:
         """Set configuration schema."""
         pass
     
     @abstractmethod
-    def get_config_schema(self, config_name: str) -> Optional[Dict[str, Any]]:
+    def get_config_schema(self, config_name: str) -> Optional[dict[str, Any]]:
         """Get configuration schema."""
         pass
     
@@ -334,10 +334,10 @@ class AResourceManagerBase(ABC):
     
     def __init__(self):
         """Initialize resource manager."""
-        self._resources: Dict[str, Any] = {}
-        self._resource_types: Dict[str, ResourceType] = {}
-        self._resource_locks: Dict[str, bool] = {}
-        self._resource_usage: Dict[str, Dict[str, Any]] = {}
+        self._resources: dict[str, Any] = {}
+        self._resource_types: dict[str, ResourceType] = {}
+        self._resource_locks: dict[str, bool] = {}
+        self._resource_usage: dict[str, dict[str, Any]] = {}
     
     @abstractmethod
     def acquire_resource(self, resource_id: str, resource_type: ResourceType, 
@@ -361,7 +361,7 @@ class AResourceManagerBase(ABC):
         pass
     
     @abstractmethod
-    def list_resources(self, resource_type: Optional[ResourceType] = None) -> List[str]:
+    def list_resources(self, resource_type: Optional[ResourceType] = None) -> list[str]:
         """List resources."""
         pass
     
@@ -386,7 +386,7 @@ class AResourceManagerBase(ABC):
         pass
     
     @abstractmethod
-    def get_resource_usage(self, resource_id: str) -> Optional[Dict[str, Any]]:
+    def get_resource_usage(self, resource_id: str) -> Optional[dict[str, Any]]:
         """Get resource usage statistics."""
         pass
     
@@ -401,7 +401,7 @@ class AResourceManagerBase(ABC):
         pass
     
     @abstractmethod
-    def get_resource_stats(self) -> Dict[str, Any]:
+    def get_resource_stats(self) -> dict[str, Any]:
         """Get resource statistics."""
         pass
 
@@ -411,7 +411,7 @@ class BaseUtils:
     
     def __init__(self):
         """Initialize base utils."""
-        self._utilities: Dict[str, Any] = {}
+        self._utilities: dict[str, Any] = {}
         self._initialized = False
     
     def initialize(self) -> None:
@@ -434,7 +434,7 @@ class BaseUtils:
         """Check if utility exists."""
         return name in self._utilities
     
-    def list_utilities(self) -> List[str]:
+    def list_utilities(self) -> list[str]:
         """List all utilities."""
         return list(self._utilities.keys())
     

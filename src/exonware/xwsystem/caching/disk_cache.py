@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 26, 2025
 
 Disk cache implementation with pickle-based persistence.
@@ -15,7 +15,7 @@ import hashlib
 import threading
 import time
 from pathlib import Path
-from typing import Any, Optional, Dict, Set
+from typing import Any, Optional
 from .contracts import ICache
 from .errors import CacheError
 from ..config.logging_setup import get_logger
@@ -72,7 +72,7 @@ class DiskCache(ICache):
         
         # Metadata file for tracking cache entries
         self.metadata_file = self.cache_dir / "metadata.pkl"
-        self._metadata: Dict[str, Dict[str, Any]] = {}
+        self._metadata: dict[str, dict[str, Any]] = {}
         self._load_metadata()
         
         # Statistics
@@ -308,7 +308,7 @@ class DiskCache(ICache):
         with self._lock:
             return len(self._metadata)
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         with self._lock:
             total_requests = self._stats['hits'] + self._stats['misses']

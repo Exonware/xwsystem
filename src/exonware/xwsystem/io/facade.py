@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 XWIO - Main facade for all I/O operations (MANDATORY facade pattern).
@@ -15,7 +15,7 @@ import shutil
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union, BinaryIO, TextIO
+from typing import Any, Optional, Union, BinaryIO, TextIO
 
 from .base import AUnifiedIO
 from .contracts import FileMode, FileType, PathType, OperationResult, LockType, IUnifiedIO
@@ -873,7 +873,7 @@ class XWIO(AUnifiedIO):
     # UTILITY METHODS
     # ============================================================================
     
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """Get comprehensive I/O information."""
         return {
             'file_path': str(self.file_path) if self.file_path else None,

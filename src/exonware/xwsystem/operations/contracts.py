@@ -8,7 +8,7 @@ Operations Contracts
 Protocol definitions for data operations.
 """
 
-from typing import Any, Dict, List, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 from .defs import MergeStrategy, DiffMode
 
 
@@ -44,7 +44,7 @@ class IDiff(Protocol):
         old: Any,
         new: Any,
         mode: DiffMode = DiffMode.STANDARD
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Generate diff between two data structures."""
         ...
 
@@ -56,7 +56,7 @@ class IPatch(Protocol):
     def patch(
         self,
         data: Any,
-        operations: List[Dict[str, Any]]
+        operations: list[dict[str, Any]]
     ) -> Any:
         """Apply patch operations to data."""
         ...

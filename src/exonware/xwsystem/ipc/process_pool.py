@@ -17,7 +17,7 @@ import logging
 import multiprocessing as mp
 import time
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -79,8 +79,8 @@ class ProcessPool:
         )
         
         # Task tracking
-        self._active_tasks: Dict[str, concurrent.futures.Future] = {}
-        self._completed_tasks: List[TaskResult] = []
+        self._active_tasks: dict[str, concurrent.futures.Future] = {}
+        self._completed_tasks: list[TaskResult] = []
         self._task_counter = 0
         
         # Statistics
@@ -202,7 +202,7 @@ class ProcessPool:
         
         return None
     
-    def wait_for_all(self, timeout: Optional[float] = None) -> List[TaskResult]:
+    def wait_for_all(self, timeout: Optional[float] = None) -> list[TaskResult]:
         """
         Wait for all active tasks to complete.
         
@@ -247,7 +247,7 @@ class ProcessPool:
         
         return cancelled
     
-    def get_active_tasks(self) -> List[str]:
+    def get_active_tasks(self) -> list[str]:
         """Get list of active task IDs."""
         return list(self._active_tasks.keys())
     
@@ -321,7 +321,7 @@ class AsyncProcessPool:
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         
         # Task tracking
-        self._active_tasks: Dict[str, asyncio.Task] = {}
+        self._active_tasks: dict[str, asyncio.Task] = {}
         self._task_counter = 0
     
     def _ensure_executor(self):
@@ -397,7 +397,7 @@ class AsyncProcessPool:
         else:
             return await task
     
-    async def wait_for_all(self, timeout: Optional[float] = None) -> List[Any]:
+    async def wait_for_all(self, timeout: Optional[float] = None) -> list[Any]:
         """
         Wait for all active tasks to complete.
         
@@ -454,7 +454,7 @@ class AsyncProcessPool:
         
         return cancelled
     
-    def get_active_tasks(self) -> List[str]:
+    def get_active_tasks(self) -> list[str]:
         """Get list of active task IDs."""
         return list(self._active_tasks.keys())
     

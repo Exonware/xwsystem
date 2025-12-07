@@ -16,7 +16,7 @@ import time
 import signal
 import subprocess
 import multiprocessing as mp
-from typing import Dict, List, Optional, Callable, Any, Union
+from typing import Optional, Callable, Any, Union
 from dataclasses import dataclass
 from threading import Lock, Event
 import logging
@@ -29,7 +29,7 @@ class ProcessInfo:
     """Information about a managed process."""
     pid: int
     name: str
-    command: List[str]
+    command: list[str]
     started_at: float
     status: str  # 'running', 'stopped', 'failed', 'terminated'
     exit_code: Optional[int] = None
@@ -60,8 +60,8 @@ class ProcessManager:
         """
         self.max_processes = max_processes or mp.cpu_count() * 2
         self.monitor_interval = monitor_interval
-        self.processes: Dict[str, subprocess.Popen] = {}
-        self.process_info: Dict[str, ProcessInfo] = {}
+        self.processes: dict[str, subprocess.Popen] = {}
+        self.process_info: dict[str, ProcessInfo] = {}
         self._lock = Lock()
         self._shutdown_event = Event()
         self._monitor_thread = None
@@ -74,9 +74,9 @@ class ProcessManager:
     
     def start_process(self, 
                      name: str, 
-                     command: Union[str, List[str]], 
+                     command: Union[str, list[str]], 
                      cwd: Optional[str] = None,
-                     env: Optional[Dict[str, str]] = None,
+                     env: Optional[dict[str, str]] = None,
                      shell: bool = False) -> bool:
         """
         Start a new managed process.
@@ -227,7 +227,7 @@ class ProcessManager:
         with self._lock:
             return self.process_info.get(name)
     
-    def list_processes(self) -> List[ProcessInfo]:
+    def list_processes(self) -> list[ProcessInfo]:
         """List all managed processes."""
         with self._lock:
             return list(self.process_info.values())

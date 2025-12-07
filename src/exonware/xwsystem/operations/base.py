@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 26, 2025
 
 Base classes and contracts for operations.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from .defs import MergeStrategy, DiffMode, PatchOperation, DiffResult, PatchResult
 
 
@@ -68,7 +68,7 @@ class IPatchOperation(IOperation):
     """Interface for patch operations."""
     
     @abstractmethod
-    def apply_patch(self, data: Any, operations: List[Dict[str, Any]]) -> PatchResult:
+    def apply_patch(self, data: Any, operations: list[dict[str, Any]]) -> PatchResult:
         """Apply patch operations to data."""
         pass
 

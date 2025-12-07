@@ -4,14 +4,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Event system for caching module.
 Extensibility Priority #5 - Event-driven architecture for custom behaviors.
 """
 
-from typing import Callable, Dict, List, Any, Optional
+from typing import Callable, Any, Optional
 from enum import Enum
 from ..config.logging_setup import get_logger
 
@@ -49,10 +49,10 @@ class CacheEventEmitter:
     
     def __init__(self):
         """Initialize event emitter."""
-        self._hooks: Dict[CacheEvent, List[Callable]] = {
+        self._hooks: dict[CacheEvent, list[Callable]] = {
             event: [] for event in CacheEvent
         }
-        self._event_stats: Dict[CacheEvent, int] = {
+        self._event_stats: dict[CacheEvent, int] = {
             event: 0 for event in CacheEvent
         }
     
@@ -124,7 +124,7 @@ class CacheEventEmitter:
                 logger.error(f"Event callback failed for {event.value}: {e}")
                 self._emit(CacheEvent.ERROR, error=e, event=event, **kwargs)
     
-    def get_event_stats(self) -> Dict[str, int]:
+    def get_event_stats(self) -> dict[str, int]:
         """
         Get event emission statistics.
         
@@ -149,7 +149,7 @@ class EventLogger:
             log_level: Logging level for events
         """
         self.log_level = log_level
-        self.events_log: List[Dict[str, Any]] = []
+        self.events_log: list[dict[str, Any]] = []
     
     def __call__(self, event: CacheEvent, **kwargs):
         """Log event."""
@@ -180,7 +180,7 @@ class EventLogger:
         elif event == CacheEvent.ERROR:
             logger.error(f"[EVENT] Cache ERROR: {kwargs.get('error', 'Unknown')}")
     
-    def get_events(self, event_type: Optional[CacheEvent] = None) -> List[Dict]:
+    def get_events(self, event_type: Optional[CacheEvent] = None) -> list[dict[str, Any]]:
         """Get logged events, optionally filtered by type."""
         if event_type:
             return [e for e in self.events_log if e['event'] == event_type.value]

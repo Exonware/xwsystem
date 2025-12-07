@@ -8,7 +8,7 @@
 
 ---
 
-## ?? AI-Friendly Document
+## 📋 AI-Friendly Document
 
 **This document is designed for both human developers and AI assistants.**  
 Provides guidelines for gathering, documenting, and managing project requirements in eXonware projects.
@@ -24,7 +24,7 @@ Provides guidelines for gathering, documenting, and managing project requirement
 
 ---
 
-## ?? Requirements Gathering Process
+## 📝 Requirements Gathering Process
 
 **Note:** This guide assumes ideas have been captured and evaluated using [GUIDE_IDEA.md](GUIDE_IDEA.md). Approved ideas from [REF_IDEA.md](../REF_IDEA.md) become requirements here.
 
@@ -173,7 +173,7 @@ What happens next
 
 ---
 
-## ?? Best Practices
+## ✨ Best Practices
 
 ### Requirements Quality
 

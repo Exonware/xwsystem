@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Abstract base classes for XSystem patterns.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import Any
 
 from .contracts import IHandler, IPattern
 
@@ -83,7 +83,7 @@ class AHandler(IHandler[Any]):
         """
         return True
 
-    def get_supported_formats(self) -> List[str]:
+    def get_supported_formats(self) -> list[str]:
         """
         Get list of formats this handler supports.
 

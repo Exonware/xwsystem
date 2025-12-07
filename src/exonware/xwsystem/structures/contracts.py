@@ -2,14 +2,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Structures module contracts - interfaces and enums for data structure functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Callable
+from typing import Any, Optional, Union, Iterator, Callable
 
 # Import enums from types module
 from .defs import (
@@ -33,7 +33,7 @@ class ITreeNode(ABC):
     
     @property
     @abstractmethod
-    def children(self) -> List['ITreeNode']:
+    def children(self) -> list['ITreeNode']:
         """Node children."""
         pass
     
@@ -88,7 +88,7 @@ class ITreeWalker(ABC):
         pass
     
     @abstractmethod
-    def find_nodes(self, root: ITreeNode, predicate: Callable[[ITreeNode], bool]) -> List[ITreeNode]:
+    def find_nodes(self, root: ITreeNode, predicate: Callable[[ITreeNode], bool]) -> list[ITreeNode]:
         """Find nodes matching predicate."""
         pass
 
@@ -102,12 +102,12 @@ class ICircularDetector(ABC):
         pass
     
     @abstractmethod
-    def find_circular_paths(self, obj: Any) -> List[List[Any]]:
+    def find_circular_paths(self, obj: Any) -> list[list[Any]]:
         """Find all circular paths."""
         pass
     
     @abstractmethod
-    def get_circular_objects(self, obj: Any) -> List[Any]:
+    def get_circular_objects(self, obj: Any) -> list[Any]:
         """Get objects involved in circular references."""
         pass
     
@@ -134,7 +134,7 @@ class IGraphNode(ABC):
     
     @property
     @abstractmethod
-    def neighbors(self) -> List['IGraphNode']:
+    def neighbors(self) -> list['IGraphNode']:
         """Node neighbors."""
         pass
     
@@ -183,12 +183,12 @@ class IGraph(ABC):
         pass
     
     @abstractmethod
-    def get_all_nodes(self) -> List[IGraphNode]:
+    def get_all_nodes(self) -> list[IGraphNode]:
         """Get all nodes."""
         pass
     
     @abstractmethod
-    def get_all_edges(self) -> List[tuple]:
+    def get_all_edges(self) -> list[tuple]:
         """Get all edges."""
         pass
     

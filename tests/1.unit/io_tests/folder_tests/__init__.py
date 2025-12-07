@@ -1,2 +1,1 @@
-"""Unit tests for io.folder sub-package."""
-
+"""Unit tests for folder operations."""

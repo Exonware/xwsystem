@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Config module base classes - abstract classes for configuration functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from .contracts import ConfigType, LogLevel, PerformanceMode
 
 
@@ -25,11 +25,11 @@ class AConfigBase(ABC):
             config_type: Configuration type
         """
         self.config_type = config_type
-        self._config: Dict[str, Any] = {}
-        self._defaults: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
+        self._defaults: dict[str, Any] = {}
     
     @abstractmethod
-    def load(self, source: Union[str, Dict[str, Any]]) -> None:
+    def load(self, source: Union[str, dict[str, Any]]) -> None:
         """Load configuration from source."""
         pass
     
@@ -59,17 +59,17 @@ class AConfigBase(ABC):
         pass
     
     @abstractmethod
-    def keys(self) -> List[str]:
+    def keys(self) -> list[str]:
         """Get all configuration keys."""
         pass
     
     @abstractmethod
-    def values(self) -> List[Any]:
+    def values(self) -> list[Any]:
         """Get all configuration values."""
         pass
     
     @abstractmethod
-    def items(self) -> List[tuple[str, Any]]:
+    def items(self) -> list[tuple[str, Any]]:
         """Get all configuration items."""
         pass
     
@@ -129,7 +129,7 @@ class APerformanceConfigBase(ABC):
             mode: Performance mode
         """
         self.mode = mode
-        self._settings: Dict[str, Any] = {}
+        self._settings: dict[str, Any] = {}
     
     @abstractmethod
     def set_mode(self, mode: PerformanceMode) -> None:
@@ -152,7 +152,7 @@ class APerformanceConfigBase(ABC):
         pass
     
     @abstractmethod
-    def get_benchmark_config(self) -> Dict[str, Any]:
+    def get_benchmark_config(self) -> dict[str, Any]:
         """Get benchmark configuration."""
         pass
     
@@ -166,7 +166,7 @@ class AConfigValidatorBase(ABC):
     """Abstract base class for configuration validation."""
     
     @abstractmethod
-    def validate_config(self, config: Dict[str, Any]) -> bool:
+    def validate_config(self, config: dict[str, Any]) -> bool:
         """Validate configuration dictionary."""
         pass
     
@@ -176,7 +176,7 @@ class AConfigValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def get_validation_errors(self) -> List[str]:
+    def get_validation_errors(self) -> list[str]:
         """Get validation errors."""
         pass
     
@@ -215,7 +215,7 @@ class AConfigManagerBase(ABC):
         pass
     
     @abstractmethod
-    def list_configs(self) -> List[str]:
+    def list_configs(self) -> list[str]:
         """List all configuration names."""
         pass
     

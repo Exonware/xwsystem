@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Write-behind (lazy write) cache implementation.
@@ -12,7 +12,7 @@ Performance Priority #4 - Delayed persistence for better write performance.
 
 import threading
 import time
-from typing import Any, Callable, Dict, Optional, Set, Hashable
+from typing import Any, Callable, Optional, Hashable
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
 
@@ -77,7 +77,7 @@ class WriteBehindCache(LRUCache):
         self.flush_interval = flush_interval
         
         # Dirty entry tracking
-        self._dirty_keys: Set[Hashable] = set()
+        self._dirty_keys: set[Hashable] = set()
         self._flush_lock = threading.Lock()
         
         # Statistics
@@ -195,7 +195,7 @@ class WriteBehindCache(LRUCache):
         
         logger.debug("Background flusher stopped")
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics including write-behind metrics."""
         stats = super().get_stats()
         stats['dirty_entries'] = len(self._dirty_keys)

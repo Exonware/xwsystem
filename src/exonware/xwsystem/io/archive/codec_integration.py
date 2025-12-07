@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 Archive-Codec Integration - Register archivers with CodecRegistry.

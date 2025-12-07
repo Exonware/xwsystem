@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Advanced Authentication Providers for Enterprise Integration
@@ -20,16 +20,37 @@ import time
 import base64
 import hashlib
 import hmac
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from urllib.parse import urlencode, parse_qs
 from .base import AAuthProvider, ATokenInfo, AUserInfo
 from .errors import AuthenticationError, AuthorizationError, TokenExpiredError
 from .defs import OAuth2GrantType
 
-import jwt
-import requests
-
 from ..config.logging_setup import get_logger
+
+# Lazy imports to avoid import errors during test collection
+# These are only imported when actually needed
+def _get_jwt():
+    """Lazy import jwt module."""
+    try:
+        import jwt
+        return jwt
+    except ImportError:
+        raise ImportError(
+            "PyJWT is required for JWT authentication. "
+            "Install it with: pip install PyJWT"
+        )
+
+def _get_requests():
+    """Lazy import requests module."""
+    try:
+        import requests
+        return requests
+    except ImportError:
+        raise ImportError(
+            "requests is required for OAuth2 authentication. "
+            "Install it with: pip install requests"
+        )
 
 logger = get_logger("xwsystem.security.auth")
 
@@ -44,7 +65,7 @@ class OAuth2Provider(AAuthProvider):
         authorization_url: str,
         token_url: str,
         userinfo_url: Optional[str] = None,
-        scopes: Optional[List[str]] = None
+        scopes: Optional[list[str]] = None
     ):
         """
         Initialize OAuth2 provider.
@@ -80,7 +101,7 @@ class OAuth2Provider(AAuthProvider):
         
         return f"{self.authorization_url}?{urlencode(params)}"
     
-    async def authenticate(self, credentials: Dict[str, Any]) -> ATokenInfo:
+    async def authenticate(self, credentials: dict[str, Any]) -> ATokenInfo:
         """Authenticate using OAuth2 flow."""
         import asyncio
         
@@ -98,8 +119,9 @@ class OAuth2Provider(AAuthProvider):
         
         return await asyncio.to_thread(_authenticate)
     
-    def _authenticate_authorization_code(self, credentials: Dict[str, Any]) -> ATokenInfo:
+    def _authenticate_authorization_code(self, credentials: dict[str, Any]) -> ATokenInfo:
         """Authenticate using authorization code."""
+        requests = _get_requests()
         data = {
             'grant_type': OAuth2GrantType.AUTHORIZATION_CODE.value,
             'client_id': self.client_id,
@@ -124,6 +146,7 @@ class OAuth2Provider(AAuthProvider):
     
     def _authenticate_client_credentials(self) -> ATokenInfo:
         """Authenticate using client credentials."""
+        requests = _get_requests()
         data = {
             'grant_type': OAuth2GrantType.CLIENT_CREDENTIALS.value,
             'client_id': self.client_id,
@@ -144,8 +167,9 @@ class OAuth2Provider(AAuthProvider):
             scope=token_data.get('scope')
         )
     
-    def _authenticate_resource_owner(self, credentials: Dict[str, Any]) -> ATokenInfo:
+    def _authenticate_resource_owner(self, credentials: dict[str, Any]) -> ATokenInfo:
         """Authenticate using resource owner credentials."""
+        requests = _get_requests()
         data = {
             'grant_type': OAuth2GrantType.RESOURCE_OWNER.value,
             'client_id': self.client_id,
@@ -177,6 +201,7 @@ class OAuth2Provider(AAuthProvider):
         import asyncio
         
         def _validate():
+            requests = _get_requests()
             headers = {'Authorization': f'Bearer {token}'}
             response = requests.get(self.userinfo_url, headers=headers)
             
@@ -200,6 +225,7 @@ class OAuth2Provider(AAuthProvider):
         import asyncio
         
         def _refresh():
+            requests = _get_requests()
             data = {
                 'grant_type': OAuth2GrantType.REFRESH_TOKEN.value,
                 'client_id': self.client_id,
@@ -253,11 +279,12 @@ class JWTProvider(AAuthProvider):
         self.audience = audience
         self.expiration_time = expiration_time
     
-    async def authenticate(self, credentials: Dict[str, Any]) -> ATokenInfo:
+    async def authenticate(self, credentials: dict[str, Any]) -> ATokenInfo:
         """Create JWT token from user credentials."""
         import asyncio
         
         def _authenticate():
+            jwt = _get_jwt()
             # In a real implementation, you'd validate credentials against a database
             user_id = credentials.get('user_id')
             if not user_id:
@@ -291,6 +318,7 @@ class JWTProvider(AAuthProvider):
         import asyncio
         
         def _validate():
+            jwt = _get_jwt()
             try:
                 payload = jwt.decode(
                     token,
@@ -317,6 +345,7 @@ class JWTProvider(AAuthProvider):
     
     async def refresh_token(self, refresh_token: str) -> ATokenInfo:
         """Refresh JWT token (create new token from existing)."""
+        jwt = _get_jwt()
         try:
             # Validate existing token (ignore expiration for refresh)
             payload = jwt.decode(
@@ -341,8 +370,11 @@ class JWTProvider(AAuthProvider):
                 expires_in=self.expiration_time
             )
             
-        except jwt.InvalidTokenError as e:
-            raise AuthenticationError(f"Invalid refresh token: {e}")
+        except Exception as e:
+            jwt_module = _get_jwt()
+            if isinstance(e, jwt_module.InvalidTokenError):
+                raise AuthenticationError(f"Invalid refresh token: {e}")
+            raise
 
 
 class SAMLProvider(AAuthProvider):
@@ -368,7 +400,7 @@ class SAMLProvider(AAuthProvider):
         
         logger.warning("SAML provider is a simplified implementation. Use a full SAML library for production.")
     
-    async def authenticate(self, credentials: Dict[str, Any]) -> ATokenInfo:
+    async def authenticate(self, credentials: dict[str, Any]) -> ATokenInfo:
         """Authenticate using SAML (simplified)."""
         # This is a placeholder implementation
         # In practice, you'd use a library like python3-saml
@@ -424,7 +456,7 @@ class EnterpriseAuth:
         
         return self._providers[name]
     
-    async def authenticate(self, credentials: Dict[str, Any], provider: Optional[str] = None) -> ATokenInfo:
+    async def authenticate(self, credentials: dict[str, Any], provider: Optional[str] = None) -> ATokenInfo:
         """Authenticate using specified or active provider."""
         provider_instance = self.get_provider(provider)
         return await provider_instance.authenticate(credentials)
@@ -439,7 +471,7 @@ class EnterpriseAuth:
         provider_instance = self.get_provider(provider)
         return await provider_instance.refresh_token(refresh_token)
     
-    def list_providers(self) -> List[str]:
+    def list_providers(self) -> list[str]:
         """List available providers."""
         return list(self._providers.keys())
     

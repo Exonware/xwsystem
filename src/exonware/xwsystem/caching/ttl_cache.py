@@ -7,14 +7,14 @@ Production-grade TTL caching for XSystem.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generated: 2025-01-27
 """
 
 import asyncio
 import time
 import threading
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Optional, Union
 from dataclasses import dataclass
 import logging
 from .base import ACache
@@ -83,7 +83,7 @@ class TTLCache(ACache):
         self.name = name
         
         # Storage
-        self._cache: Dict[str, TTLEntry] = {}
+        self._cache: dict[str, TTLEntry] = {}
         self._access_order = []  # For LRU tracking
         
         # Thread safety
@@ -298,7 +298,22 @@ class TTLCache(ACache):
             
             return True
     
-    def get_stats(self) -> Dict[str, Any]:
+    def keys(self) -> list[str]:
+        """Get list of all cache keys."""
+        with self._lock:
+            return list(self._cache.keys())
+    
+    def values(self) -> list[Any]:
+        """Get list of all cache values."""
+        with self._lock:
+            return [entry.value for entry in self._cache.values() if not entry.is_expired()]
+    
+    def items(self) -> list[tuple[str, Any]]:
+        """Get list of all key-value pairs."""
+        with self._lock:
+            return [(key, entry.value) for key, entry in self._cache.items() if not entry.is_expired()]
+    
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         with self._lock:
             total_requests = self._stats['hits'] + self._stats['misses']
@@ -369,7 +384,7 @@ class AsyncTTLCache:
         self.name = name
         
         # Storage
-        self._cache: Dict[str, TTLEntry] = {}
+        self._cache: dict[str, TTLEntry] = {}
         self._access_order = []
         
         # Async synchronization
@@ -497,7 +512,7 @@ class AsyncTTLCache:
         async with self._lock:
             return len(self._cache)
     
-    async def get_stats(self) -> Dict[str, Any]:
+    async def get_stats(self) -> dict[str, Any]:
         """Get async cache statistics."""
         async with self._lock:
             total_requests = self._stats['hits'] + self._stats['misses']

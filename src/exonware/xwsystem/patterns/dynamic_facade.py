@@ -1,5 +1,5 @@
 import re
-from typing import Any, Callable, Dict, List, Type
+from typing import Any, Callable, Type
 
 
 class _FormatProxy:
@@ -64,7 +64,7 @@ class DynamicFacade:
     """
 
     def __init__(
-        self, handler_base_class: Type, handler_discovery_func: Callable[[], List[Type]]
+        self, handler_base_class: Type, handler_discovery_func: Callable[[], list[Type]]
     ):
         """
         Initializes the DynamicFacade.
@@ -78,8 +78,8 @@ class DynamicFacade:
         self._attach_proxies()
 
     def _discover_handlers(
-        self, discovery_func: Callable[[], List[Type]]
-    ) -> Dict[str, Type]:
+        self, discovery_func: Callable[[], list[Type]]
+    ) -> dict[str, Type]:
         """
         Discovers handler classes and maps them to format names.
         """
@@ -144,7 +144,7 @@ class DynamicFacade:
             "Subclasses of DynamicFacade must implement `_save_with_handler`."
         )
 
-    def available_formats(self) -> List[str]:
+    def available_formats(self) -> list[str]:
         """
         Returns a list of available format names.
         """

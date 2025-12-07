@@ -28,9 +28,9 @@ class TestUniversalCodecRegistryCore:
     
     def test_register_codec(self, fresh_registry):
         """Test codec registration."""
-        from exonware.xwsystem.io.serialization.formats.text.json import XWJsonSerializer
+        from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
         
-        fresh_registry.register(XWJsonSerializer)
+        fresh_registry.register(JsonSerializer)
         
         codec = fresh_registry.get_by_id('json')
         assert codec is not None
@@ -90,9 +90,9 @@ class TestUniversalCodecRegistryCore:
     
     def test_unregister_codec(self, fresh_registry):
         """Test codec unregistration."""
-        from exonware.xwsystem.io.serialization.formats.text.json import XWJsonSerializer
+        from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
         
-        fresh_registry.register(XWJsonSerializer)
+        fresh_registry.register(JsonSerializer)
         assert fresh_registry.get_by_id('json') is not None
         
         result = fresh_registry.unregister('json')
@@ -120,9 +120,9 @@ class TestUniversalCodecRegistryCore:
     
     def test_clear_registry(self, fresh_registry):
         """Test clearing all registrations."""
-        from exonware.xwsystem.io.serialization.formats.text.json import XWJsonSerializer
+        from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
         
-        fresh_registry.register(XWJsonSerializer)
+        fresh_registry.register(JsonSerializer)
         assert len(fresh_registry.list_codecs()) > 0
         
         fresh_registry.clear()
@@ -136,17 +136,17 @@ class TestMultiTypeSupport:
     
     def test_xml_has_multiple_types(self):
         """Test XML belongs to multiple types."""
-        from exonware.xwsystem.io.serialization.formats.text.xml import XWXmlSerializer
+        from exonware.xwsystem.io.serialization.formats.text.xml import XmlSerializer
         
-        codec = XWXmlSerializer()
+        codec = XmlSerializer()
         assert "serialization" in codec.codec_types
         assert "markup" in codec.codec_types
     
     def test_toml_has_multiple_types(self):
         """Test TOML belongs to multiple types."""
-        from exonware.xwsystem.io.serialization.formats.text.toml import XWTomlSerializer
+        from exonware.xwsystem.io.serialization.formats.text.toml import TomlSerializer
         
-        codec = XWTomlSerializer()
+        codec = TomlSerializer()
         assert "config" in codec.codec_types
         assert "serialization" in codec.codec_types
     
@@ -247,12 +247,12 @@ class TestPriorityResolution:
     
     def test_higher_priority_wins(self, fresh_registry):
         """Test that higher priority codec is returned."""
-        from exonware.xwsystem.io.serialization.formats.text.json import XWJsonSerializer
-        from exonware.xwsystem.io.serialization.formats.text.json5 import XWJson5Serializer
+        from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
+        from exonware.xwsystem.io.serialization.formats.text.json5 import Json5Serializer
         
         # Register both with different priorities
-        fresh_registry.register(XWJsonSerializer, priority=5)
-        fresh_registry.register(XWJson5Serializer, priority=10)
+        fresh_registry.register(JsonSerializer, priority=5)
+        fresh_registry.register(Json5Serializer, priority=10)
         
         # Higher priority should win
         codec = fresh_registry.get_by_extension('.json')

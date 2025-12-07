@@ -2,13 +2,13 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 04, 2025
 
 Universal Codec Registry - High-performance registry for all codec types.
 """
 
-from typing import Optional, Dict, Type, List, Union, Set, Any, Callable
+from typing import Optional, Type, Union, Any, Callable
 from pathlib import Path
 from threading import RLock
 from functools import lru_cache
@@ -28,9 +28,9 @@ class CompoundExtensionTrie:
     
     def __init__(self):
         """Initialize the trie."""
-        self.root: Dict[str, Any] = {}
+        self.root: dict[str, Any] = {}
     
-    def insert(self, extensions: List[str], codec_id: str, priority: int = 0) -> None:
+    def insert(self, extensions: list[str], codec_id: str, priority: int = 0) -> None:
         """
         Insert a compound extension path.
         
@@ -52,7 +52,7 @@ class CompoundExtensionTrie:
         # Sort by priority (highest first)
         node['_codecs'].sort(key=lambda x: x[1], reverse=True)
     
-    def search(self, extensions: List[str]) -> List[str]:
+    def search(self, extensions: list[str]) -> list[str]:
         """
         Search for matching codec IDs.
         
@@ -104,26 +104,26 @@ class UniversalCodecRegistry:
     def __init__(self):
         """Initialize the universal codec registry."""
         # Core mappings (codec_id is always lowercase)
-        self._by_id: Dict[str, Type[ICodec]] = {}
-        self._by_extension: Dict[str, List[tuple[str, int]]] = {}  # ext -> [(codec_id, priority)]
-        self._by_mime_type: Dict[str, List[tuple[str, int]]] = {}  # mime -> [(codec_id, priority)]
-        self._by_alias: Dict[str, str] = {}  # alias -> codec_id (1:1 mapping)
-        self._by_type: Dict[str, Set[str]] = {}  # codec_type -> set of codec_ids
+        self._by_id: dict[str, Type[ICodec]] = {}
+        self._by_extension: dict[str, list[tuple[str, int]]] = {}  # ext -> [(codec_id, priority)]
+        self._by_mime_type: dict[str, list[tuple[str, int]]] = {}  # mime -> [(codec_id, priority)]
+        self._by_alias: dict[str, str] = {}  # alias -> codec_id (1:1 mapping)
+        self._by_type: dict[str, set[str]] = {}  # codec_type -> set of codec_ids
         
         # Magic bytes support (for content detection)
-        self._magic_bytes: Dict[bytes, List[tuple[str, int]]] = {}  # magic -> [(codec_id, priority)]
+        self._magic_bytes: dict[bytes, list[tuple[str, int]]] = {}  # magic -> [(codec_id, priority)]
         
         # Compound extension support
         self._compound_trie = CompoundExtensionTrie()
         
         # Instance cache
-        self._instances: Dict[str, ICodec] = {}
+        self._instances: dict[str, ICodec] = {}
         
         # Metadata cache
-        self._metadata: Dict[str, Dict[str, Any]] = {}
+        self._metadata: dict[str, dict[str, Any]] = {}
         
         # Priority tracking (codec_id -> priority)
-        self._priorities: Dict[str, int] = {}
+        self._priorities: dict[str, int] = {}
         
         # Thread safety
         self._lock = RLock()
@@ -133,7 +133,7 @@ class UniversalCodecRegistry:
         codec_class: Type[ICodec],
         codec_instance: Optional[ICodec] = None,
         priority: int = 0,
-        magic_bytes: Optional[List[bytes]] = None
+        magic_bytes: Optional[list[bytes]] = None
     ) -> None:
         """
         Register a codec class or instance with optional priority and magic bytes.
@@ -510,7 +510,7 @@ class UniversalCodecRegistry:
     # MULTIPLE RESULT METHODS (All matches)
     # ========================================================================
     
-    def get_all_by_extension(self, ext: str) -> List[ICodec]:
+    def get_all_by_extension(self, ext: str) -> list[ICodec]:
         """
         Get all codecs matching an extension (sorted by priority).
         
@@ -528,7 +528,7 @@ class UniversalCodecRegistry:
             codec_list = self._by_extension.get(normalized_ext, [])
             return [self.get_by_id(codec_id) for codec_id, _ in codec_list if self.get_by_id(codec_id)]
     
-    def get_all_by_mime_type(self, mime: str) -> List[ICodec]:
+    def get_all_by_mime_type(self, mime: str) -> list[ICodec]:
         """
         Get all codecs matching a MIME type (sorted by priority).
         
@@ -542,7 +542,7 @@ class UniversalCodecRegistry:
             codec_list = self._by_mime_type.get(mime.lower(), [])
             return [self.get_by_id(codec_id) for codec_id, _ in codec_list if self.get_by_id(codec_id)]
     
-    def get_all_by_type(self, codec_type: str) -> List[ICodec]:
+    def get_all_by_type(self, codec_type: str) -> list[ICodec]:
         """
         Get all codecs of a specific type.
         
@@ -556,7 +556,7 @@ class UniversalCodecRegistry:
             codec_ids = self._by_type.get(codec_type.lower(), set())
             return [self.get_by_id(codec_id) for codec_id in codec_ids if self.get_by_id(codec_id)]
     
-    def filter_by_capability(self, cap: CodecCapability) -> List[ICodec]:
+    def filter_by_capability(self, cap: CodecCapability) -> list[ICodec]:
         """
         Get all codecs with a specific capability.
         
@@ -574,7 +574,7 @@ class UniversalCodecRegistry:
                     results.append(codec)
             return results
     
-    def detect_all(self, path: Union[str, Path], codec_type: Optional[str] = None) -> List[ICodec]:
+    def detect_all(self, path: Union[str, Path], codec_type: Optional[str] = None) -> list[ICodec]:
         """
         Detect all possible codecs for a file path.
         
@@ -624,7 +624,7 @@ class UniversalCodecRegistry:
     # METADATA & MANAGEMENT METHODS
     # ========================================================================
     
-    def get_metadata(self, codec_id: str) -> Optional[Dict[str, Any]]:
+    def get_metadata(self, codec_id: str) -> Optional[dict[str, Any]]:
         """
         Get full metadata for a codec.
         
@@ -637,7 +637,7 @@ class UniversalCodecRegistry:
         with self._lock:
             return self._metadata.get(codec_id.lower())
     
-    def list_types(self) -> List[str]:
+    def list_types(self) -> list[str]:
         """
         List all registered codec types.
         
@@ -647,7 +647,7 @@ class UniversalCodecRegistry:
         with self._lock:
             return list(self._by_type.keys())
     
-    def list_codecs(self, codec_type: Optional[str] = None) -> List[str]:
+    def list_codecs(self, codec_type: Optional[str] = None) -> list[str]:
         """
         List all codec IDs, optionally filtered by type.
         
@@ -663,17 +663,17 @@ class UniversalCodecRegistry:
             else:
                 return list(self._by_id.keys())
     
-    def list_extensions(self) -> List[str]:
+    def list_extensions(self) -> list[str]:
         """List all registered file extensions."""
         with self._lock:
             return list(self._by_extension.keys())
     
-    def list_mime_types(self) -> List[str]:
+    def list_mime_types(self) -> list[str]:
         """List all registered MIME types."""
         with self._lock:
             return list(self._by_mime_type.keys())
     
-    def list_aliases(self) -> List[str]:
+    def list_aliases(self) -> list[str]:
         """List all registered aliases."""
         with self._lock:
             return list(self._by_alias.keys())
@@ -702,7 +702,7 @@ class UniversalCodecRegistry:
     # BULK OPERATIONS
     # ========================================================================
     
-    def register_bulk(self, codec_classes: List[Type[ICodec]], priorities: Optional[List[int]] = None) -> int:
+    def register_bulk(self, codec_classes: list[Type[ICodec]], priorities: Optional[list[int]] = None) -> int:
         """
         Register multiple codecs efficiently.
         
@@ -730,7 +730,7 @@ class UniversalCodecRegistry:
     # STATISTICS & INTROSPECTION
     # ========================================================================
     
-    def get_statistics(self) -> Dict[str, int]:
+    def get_statistics(self) -> dict[str, int]:
         """
         Get registry statistics.
         

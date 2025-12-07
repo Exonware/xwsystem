@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Runtime module base classes - abstract classes for runtime functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Type, Callable
+from typing import Any, Optional, Union, Type, Callable
 from .contracts import RuntimeMode, PlatformType, PythonVersion, EnvironmentType
 
 
@@ -26,7 +26,7 @@ class ARuntimeBase(ABC):
         """
         self.mode = mode
         self._initialized = False
-        self._runtime_info: Dict[str, Any] = {}
+        self._runtime_info: dict[str, Any] = {}
     
     @abstractmethod
     def initialize(self) -> None:
@@ -44,27 +44,27 @@ class ARuntimeBase(ABC):
         pass
     
     @abstractmethod
-    def get_runtime_info(self) -> Dict[str, Any]:
+    def get_runtime_info(self) -> dict[str, Any]:
         """Get runtime information."""
         pass
     
-    def get_platform_info(self) -> Dict[str, Any]:
+    def get_platform_info(self) -> dict[str, Any]:
         """Get platform information."""
         return {}
     
-    def get_python_info(self) -> Dict[str, Any]:
+    def get_python_info(self) -> dict[str, Any]:
         """Get Python information."""
         return {}
     
-    def get_system_info(self) -> Dict[str, Any]:
+    def get_system_info(self) -> dict[str, Any]:
         """Get system information."""
         return {}
     
-    def get_memory_info(self) -> Dict[str, Any]:
+    def get_memory_info(self) -> dict[str, Any]:
         """Get memory information."""
         return {}
     
-    def get_cpu_info(self) -> Dict[str, Any]:
+    def get_cpu_info(self) -> dict[str, Any]:
         """Get CPU information."""
         return {}
 
@@ -74,7 +74,7 @@ class AEnvironmentBase(ABC):
     
     def __init__(self):
         """Initialize environment base."""
-        self._environment_vars: Dict[str, str] = {}
+        self._environment_vars: dict[str, str] = {}
         self._environment_type: EnvironmentType = EnvironmentType.UNKNOWN
     
     @abstractmethod
@@ -103,7 +103,7 @@ class AEnvironmentBase(ABC):
         pass
     
     @abstractmethod
-    def get_all_environment_variables(self) -> Dict[str, str]:
+    def get_all_environment_variables(self) -> dict[str, str]:
         """Get all environment variables."""
         pass
     
@@ -123,7 +123,7 @@ class AEnvironmentBase(ABC):
         pass
     
     @abstractmethod
-    def get_environment_config(self) -> Dict[str, Any]:
+    def get_environment_config(self) -> dict[str, Any]:
         """Get environment configuration."""
         pass
 
@@ -134,7 +134,7 @@ class APlatformBase(ABC):
     def __init__(self):
         """Initialize platform base."""
         self._platform_type: PlatformType = PlatformType.UNKNOWN
-        self._platform_info: Dict[str, Any] = {}
+        self._platform_info: dict[str, Any] = {}
     
     @abstractmethod
     def detect_platform(self) -> PlatformType:
@@ -182,7 +182,7 @@ class APlatformBase(ABC):
         pass
     
     @abstractmethod
-    def get_platform_specific_info(self) -> Dict[str, Any]:
+    def get_platform_specific_info(self) -> dict[str, Any]:
         """Get platform-specific information."""
         pass
 
@@ -193,7 +193,7 @@ class APythonBase(ABC):
     def __init__(self):
         """Initialize Python base."""
         self._python_version: PythonVersion = PythonVersion.UNKNOWN
-        self._python_info: Dict[str, Any] = {}
+        self._python_info: dict[str, Any] = {}
     
     @abstractmethod
     def get_python_version(self) -> PythonVersion:
@@ -216,7 +216,7 @@ class APythonBase(ABC):
         pass
     
     @abstractmethod
-    def get_python_paths(self) -> List[str]:
+    def get_python_paths(self) -> list[str]:
         """Get Python module search paths."""
         pass
     
@@ -236,12 +236,12 @@ class APythonBase(ABC):
         pass
     
     @abstractmethod
-    def get_installed_packages(self) -> List[str]:
+    def get_installed_packages(self) -> list[str]:
         """Get list of installed packages."""
         pass
     
     @abstractmethod
-    def get_package_info(self, package_name: str) -> Dict[str, Any]:
+    def get_package_info(self, package_name: str) -> dict[str, Any]:
         """Get package information."""
         pass
 
@@ -251,8 +251,8 @@ class AReflectionBase(ABC):
     
     def __init__(self):
         """Initialize reflection base."""
-        self._module_cache: Dict[str, Any] = {}
-        self._class_cache: Dict[str, Type] = {}
+        self._module_cache: dict[str, Any] = {}
+        self._class_cache: dict[str, Type] = {}
     
     @abstractmethod
     def get_class(self, class_name: str, module_name: Optional[str] = None) -> Optional[Type]:
@@ -285,17 +285,17 @@ class AReflectionBase(ABC):
         pass
     
     @abstractmethod
-    def get_methods(self, obj: Any) -> List[str]:
+    def get_methods(self, obj: Any) -> list[str]:
         """Get object methods."""
         pass
     
     @abstractmethod
-    def get_attributes(self, obj: Any) -> List[str]:
+    def get_attributes(self, obj: Any) -> list[str]:
         """Get object attributes."""
         pass
     
     @abstractmethod
-    def get_class_hierarchy(self, cls: Type) -> List[Type]:
+    def get_class_hierarchy(self, cls: Type) -> list[Type]:
         """Get class hierarchy."""
         pass
     
@@ -305,7 +305,7 @@ class AReflectionBase(ABC):
         pass
     
     @abstractmethod
-    def get_type_info(self, obj: Any) -> Dict[str, Any]:
+    def get_type_info(self, obj: Any) -> dict[str, Any]:
         """Get type information."""
         pass
 
@@ -315,8 +315,8 @@ class ARuntimeManagerBase(ABC):
     
     def __init__(self):
         """Initialize runtime manager."""
-        self._runtime_components: Dict[str, Any] = {}
-        self._component_states: Dict[str, bool] = {}
+        self._runtime_components: dict[str, Any] = {}
+        self._component_states: dict[str, bool] = {}
     
     @abstractmethod
     def register_component(self, name: str, component: Any) -> None:
@@ -334,7 +334,7 @@ class ARuntimeManagerBase(ABC):
         pass
     
     @abstractmethod
-    def list_components(self) -> List[str]:
+    def list_components(self) -> list[str]:
         """List all registered components."""
         pass
     
@@ -354,17 +354,17 @@ class ARuntimeManagerBase(ABC):
         pass
     
     @abstractmethod
-    def get_component_status(self) -> Dict[str, bool]:
+    def get_component_status(self) -> dict[str, bool]:
         """Get status of all components."""
         pass
     
     @abstractmethod
-    def initialize_all_components(self) -> Dict[str, bool]:
+    def initialize_all_components(self) -> dict[str, bool]:
         """Initialize all components."""
         pass
     
     @abstractmethod
-    def shutdown_all_components(self) -> Dict[str, bool]:
+    def shutdown_all_components(self) -> dict[str, bool]:
         """Shutdown all components."""
         pass
 
@@ -396,27 +396,27 @@ class BaseRuntime(ARuntimeBase):
         """Check if runtime is initialized."""
         return self._initialized
     
-    def get_runtime_info(self) -> Dict[str, Any]:
+    def get_runtime_info(self) -> dict[str, Any]:
         """Get runtime information."""
         return self._runtime_info.copy()
     
-    def get_platform_info(self) -> Dict[str, Any]:
+    def get_platform_info(self) -> dict[str, Any]:
         """Get platform information."""
         return {}
     
-    def get_python_info(self) -> Dict[str, Any]:
+    def get_python_info(self) -> dict[str, Any]:
         """Get Python information."""
         return {}
     
-    def get_system_info(self) -> Dict[str, Any]:
+    def get_system_info(self) -> dict[str, Any]:
         """Get system information."""
         return {}
     
-    def get_memory_info(self) -> Dict[str, Any]:
+    def get_memory_info(self) -> dict[str, Any]:
         """Get memory information."""
         return {}
     
-    def get_cpu_info(self) -> Dict[str, Any]:
+    def get_cpu_info(self) -> dict[str, Any]:
         """Get CPU information."""
         return {}
     
@@ -444,7 +444,7 @@ class BaseRuntime(ARuntimeBase):
         """Get component."""
         return self._components.get(name)
     
-    def list_components(self) -> List[str]:
+    def list_components(self) -> list[str]:
         """List all components."""
         return list(self._components.keys())
     
@@ -471,14 +471,14 @@ class BaseRuntime(ARuntimeBase):
             return component.is_initialized()
         return False
     
-    def get_component_status(self) -> Dict[str, bool]:
+    def get_component_status(self) -> dict[str, bool]:
         """Get status of all components."""
         return {name: self.is_component_initialized(name) for name in self._components.keys()}
     
-    def initialize_all_components(self) -> Dict[str, bool]:
+    def initialize_all_components(self) -> dict[str, bool]:
         """Initialize all components."""
         return {name: self.initialize_component(name) for name in self._components.keys()}
     
-    def shutdown_all_components(self) -> Dict[str, bool]:
+    def shutdown_all_components(self) -> dict[str, bool]:
         """Shutdown all components."""
         return {name: self.shutdown_component(name) for name in self._components.keys()}

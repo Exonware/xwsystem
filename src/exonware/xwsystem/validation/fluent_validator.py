@@ -3,13 +3,13 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 26, 2025
 
 Fluent validator with chainable API for data validation.
 """
 
-from typing import Any, Callable, Dict, List, Optional, Union, Type
+from typing import Any, Callable, Optional, Union, Type
 from .errors import ValidationError
 from ..config.logging_setup import get_logger
 
@@ -37,8 +37,8 @@ class FluentValidator:
             data: Data to validate (optional, can be set later)
         """
         self.data = data
-        self.errors: List[str] = []
-        self.rules: List[Dict[str, Any]] = []
+        self.errors: list[str] = []
+        self.rules: list[dict[str, Any]] = []
     
     def require(self, field_name: str, message: Optional[str] = None) -> 'FluentValidator':
         """
@@ -230,7 +230,7 @@ class FluentValidator:
             raise ValidationError(f"Validation failed: {'; '.join(self.errors)}")
         return self
     
-    def get_errors(self) -> List[str]:
+    def get_errors(self) -> list[str]:
         """Get list of validation errors."""
         return self.errors.copy()
     
@@ -248,7 +248,7 @@ class FluentValidator:
         self,
         field_name: str,
         field_data: Any,
-        rules: List[Callable[['FluentValidator'], 'FluentValidator']]
+        rules: list[Callable[['FluentValidator'], 'FluentValidator']]
     ) -> 'FluentValidator':
         """
         Validate a specific field with rules.
@@ -280,7 +280,7 @@ class FluentValidator:
     
     def validate_dict_fields(
         self,
-        field_rules: Dict[str, List[Callable[['FluentValidator'], 'FluentValidator']]]
+        field_rules: dict[str, list[Callable[['FluentValidator'], 'FluentValidator']]]
     ) -> 'FluentValidator':
         """
         Validate multiple fields in a dictionary.
@@ -316,7 +316,7 @@ def validate_data(data: Any) -> FluentValidator:
     return FluentValidator(data)
 
 
-def validate_dict(data: Dict[str, Any]) -> FluentValidator:
+def validate_dict(data: dict[str, Any]) -> FluentValidator:
     """
     Create a fluent validator for dictionary data.
     

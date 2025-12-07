@@ -3,20 +3,20 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Validation module base classes - abstract classes for validation functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Callable, Type, TypeVar
+from typing import Any, Optional, Union, Callable, Type
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from .contracts import ValidationType, ValidationLevel, ConstraintType, SchemaType
 
-T = TypeVar('T')
 
-
-class AValidatorBase(ABC, Generic[T]):
+class AValidatorBase[T](ABC):
     """Abstract base class for validation operations."""
     
     def __init__(self, validation_type: ValidationType = ValidationType.GENERIC):
@@ -27,8 +27,8 @@ class AValidatorBase(ABC, Generic[T]):
             validation_type: Type of validation
         """
         self.validation_type = validation_type
-        self._validation_rules: Dict[str, Callable] = {}
-        self._validation_errors: List[str] = []
+        self._validation_rules: dict[str, Callable] = {}
+        self._validation_errors: list[str] = []
         self._validation_level: ValidationLevel = ValidationLevel.BASIC
     
     @abstractmethod
@@ -47,7 +47,7 @@ class AValidatorBase(ABC, Generic[T]):
         pass
     
     @abstractmethod
-    def get_validation_errors(self) -> List[str]:
+    def get_validation_errors(self) -> list[str]:
         """Get validation errors."""
         pass
     
@@ -67,7 +67,7 @@ class AValidatorBase(ABC, Generic[T]):
         pass
     
     @abstractmethod
-    def get_validation_rules(self) -> List[str]:
+    def get_validation_rules(self) -> list[str]:
         """Get validation rules."""
         pass
     
@@ -82,9 +82,9 @@ class ADataValidatorBase(ABC):
     
     def __init__(self):
         """Initialize data validator."""
-        self._validators: Dict[Type, AValidatorBase] = {}
-        self._custom_validators: Dict[str, Callable] = {}
-        self._validation_cache: Dict[str, bool] = {}
+        self._validators: dict[Type, AValidatorBase] = {}
+        self._custom_validators: dict[str, Callable] = {}
+        self._validation_cache: dict[str, bool] = {}
     
     @abstractmethod
     def validate_data(self, data: Any, data_type: Optional[Type] = None) -> bool:
@@ -97,7 +97,7 @@ class ADataValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def validate_value(self, data: Any, constraints: Dict[str, Any]) -> bool:
+    def validate_value(self, data: Any, constraints: dict[str, Any]) -> bool:
         """Validate data value against constraints."""
         pass
     
@@ -108,7 +108,7 @@ class ADataValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def validate_length(self, data: Union[str, List, Dict], min_length: Optional[int] = None, 
+    def validate_length(self, data: Union[str, list, dict], min_length: Optional[int] = None, 
                        max_length: Optional[int] = None) -> bool:
         """Validate data length."""
         pass
@@ -119,7 +119,7 @@ class ADataValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def validate_enum(self, data: Any, enum_values: List[Any]) -> bool:
+    def validate_enum(self, data: Any, enum_values: list[Any]) -> bool:
         """Validate data against enum values."""
         pass
     
@@ -154,8 +154,8 @@ class ATypeSafetyBase(ABC):
     
     def __init__(self):
         """Initialize type safety."""
-        self._type_annotations: Dict[str, Type] = {}
-        self._type_checks: Dict[str, bool] = {}
+        self._type_annotations: dict[str, Type] = {}
+        self._type_checks: dict[str, bool] = {}
         self._strict_mode = False
     
     @abstractmethod
@@ -164,7 +164,7 @@ class ATypeSafetyBase(ABC):
         pass
     
     @abstractmethod
-    def check_types(self, data: Dict[str, Any], type_annotations: Dict[str, Type]) -> bool:
+    def check_types(self, data: dict[str, Any], type_annotations: dict[str, Type]) -> bool:
         """Check multiple data types."""
         pass
     
@@ -179,12 +179,12 @@ class ATypeSafetyBase(ABC):
         pass
     
     @abstractmethod
-    def get_type_info(self, data: Any) -> Dict[str, Any]:
+    def get_type_info(self, data: Any) -> dict[str, Any]:
         """Get type information."""
         pass
     
     @abstractmethod
-    def validate_type_annotations(self, annotations: Dict[str, Type]) -> bool:
+    def validate_type_annotations(self, annotations: dict[str, Type]) -> bool:
         """Validate type annotations."""
         pass
     
@@ -199,7 +199,7 @@ class ATypeSafetyBase(ABC):
         pass
     
     @abstractmethod
-    def get_type_errors(self) -> List[str]:
+    def get_type_errors(self) -> list[str]:
         """Get type errors."""
         pass
     
@@ -214,12 +214,12 @@ class ADeclarativeValidatorBase(ABC):
     
     def __init__(self):
         """Initialize declarative validator."""
-        self._schemas: Dict[str, Dict[str, Any]] = {}
-        self._schema_validators: Dict[str, Callable] = {}
-        self._validation_results: Dict[str, Dict[str, Any]] = {}
+        self._schemas: dict[str, dict[str, Any]] = {}
+        self._schema_validators: dict[str, Callable] = {}
+        self._validation_results: dict[str, dict[str, Any]] = {}
     
     @abstractmethod
-    def define_schema(self, schema_name: str, schema_definition: Dict[str, Any]) -> None:
+    def define_schema(self, schema_name: str, schema_definition: dict[str, Any]) -> None:
         """Define validation schema."""
         pass
     
@@ -229,12 +229,12 @@ class ADeclarativeValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def get_schema(self, schema_name: str) -> Optional[Dict[str, Any]]:
+    def get_schema(self, schema_name: str) -> Optional[dict[str, Any]]:
         """Get schema definition."""
         pass
     
     @abstractmethod
-    def list_schemas(self) -> List[str]:
+    def list_schemas(self) -> list[str]:
         """List all schemas."""
         pass
     
@@ -244,17 +244,17 @@ class ADeclarativeValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def validate_schema_definition(self, schema_definition: Dict[str, Any]) -> bool:
+    def validate_schema_definition(self, schema_definition: dict[str, Any]) -> bool:
         """Validate schema definition."""
         pass
     
     @abstractmethod
-    def get_validation_result(self, schema_name: str) -> Optional[Dict[str, Any]]:
+    def get_validation_result(self, schema_name: str) -> Optional[dict[str, Any]]:
         """Get validation result."""
         pass
     
     @abstractmethod
-    def get_validation_errors(self, schema_name: str) -> List[str]:
+    def get_validation_errors(self, schema_name: str) -> list[str]:
         """Get validation errors for schema."""
         pass
     
@@ -279,9 +279,9 @@ class AConstraintValidatorBase(ABC):
     
     def __init__(self):
         """Initialize constraint validator."""
-        self._constraints: Dict[str, Dict[str, Any]] = {}
-        self._constraint_validators: Dict[ConstraintType, Callable] = {}
-        self._constraint_results: Dict[str, bool] = {}
+        self._constraints: dict[str, dict[str, Any]] = {}
+        self._constraint_validators: dict[ConstraintType, Callable] = {}
+        self._constraint_results: dict[str, bool] = {}
     
     @abstractmethod
     def add_constraint(self, constraint_name: str, constraint_type: ConstraintType, 
@@ -300,17 +300,17 @@ class AConstraintValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def validate_all_constraints(self, data: Any) -> Dict[str, bool]:
+    def validate_all_constraints(self, data: Any) -> dict[str, bool]:
         """Validate data against all constraints."""
         pass
     
     @abstractmethod
-    def get_constraint(self, constraint_name: str) -> Optional[Dict[str, Any]]:
+    def get_constraint(self, constraint_name: str) -> Optional[dict[str, Any]]:
         """Get constraint definition."""
         pass
     
     @abstractmethod
-    def list_constraints(self) -> List[str]:
+    def list_constraints(self) -> list[str]:
         """List all constraints."""
         pass
     
@@ -330,16 +330,16 @@ class AConstraintValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def get_constraint_results(self) -> Dict[str, bool]:
+    def get_constraint_results(self) -> dict[str, bool]:
         """Get constraint validation results."""
         pass
     
     @abstractmethod
-    def get_failed_constraints(self) -> List[str]:
+    def get_failed_constraints(self) -> list[str]:
         """Get failed constraints."""
         pass
     
     @abstractmethod
-    def get_passed_constraints(self) -> List[str]:
+    def get_passed_constraints(self) -> list[str]:
         """Get passed constraints."""
         pass

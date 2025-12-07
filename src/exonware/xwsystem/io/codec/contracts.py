@@ -2,19 +2,16 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Codec module contracts - interfaces for codec operations.
 """
 
-from typing import Protocol, TypeVar, Optional, runtime_checkable
+from typing import Protocol, Optional, runtime_checkable
 from pathlib import Path
 
 from ..contracts import EncodeOptions, DecodeOptions, CodecCapability
-
-T = TypeVar('T')
-R = TypeVar('R')
 
 
 # ============================================================================
@@ -22,7 +19,7 @@ R = TypeVar('R')
 # ============================================================================
 
 @runtime_checkable
-class ICodec(Protocol[T, R]):
+class ICodec[T, R](Protocol):
     """
     Universal codec interface for bidirectional transformation.
     

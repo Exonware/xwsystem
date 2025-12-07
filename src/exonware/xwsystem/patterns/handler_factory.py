@@ -1,9 +1,12 @@
+#exonware/xwsystem/patterns/handler_factory.py
 """
 Generic handler factory pattern combining all xsystem utilities.
 """
 
 import logging
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar
+from typing import Any, Callable, Optional, Type
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 
 from .contracts import IHandler
 
@@ -17,10 +20,8 @@ from ..threading.safe_factory import MethodGenerator, ThreadSafeFactory
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar("T")
 
-
-class GenericHandlerFactory(ThreadSafeFactory[T]):
+class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     """
     Enhanced handler factory that combines all xsystem utilities.
 
@@ -73,7 +74,7 @@ class GenericHandlerFactory(ThreadSafeFactory[T]):
         self,
         name: str,
         handler_class: Type[T],
-        extensions: Optional[List[str]] = None,
+        extensions: Optional[list[str]] = None,
         validate_class: bool = True,
     ) -> None:
         """
@@ -271,7 +272,7 @@ class GenericHandlerFactory(ThreadSafeFactory[T]):
             method_doc_pattern=method_doc_pattern,
         )
 
-    def get_operation_stats(self) -> Dict[str, Any]:
+    def get_operation_stats(self) -> dict[str, Any]:
         """
         Get statistics about factory operations.
 
@@ -307,7 +308,7 @@ class GenericHandlerFactory(ThreadSafeFactory[T]):
             self.circular_detector.reset()
 
 
-class HandlerFactory(GenericHandlerFactory):
+class HandlerFactory[T](GenericHandlerFactory[T]):
     """Simplified handler factory for backward compatibility."""
     
     def __init__(self, base_path: Optional[str] = None):
@@ -319,7 +320,7 @@ class HandlerFactory(GenericHandlerFactory):
             max_circular_depth=50
         )
     
-    def create_handler(self, name: str, *args, **kwargs) -> Any:
+    def create_handler(self, name: str, *args, **kwargs) -> T:
         """Create a handler instance."""
         handler_class = self.get_handler(name)
         if handler_class is None:
@@ -327,7 +328,7 @@ class HandlerFactory(GenericHandlerFactory):
         
         return handler_class(*args, **kwargs)
     
-    def register_handler(self, name: str, handler_class: Type[T], extensions: Optional[List[str]] = None):
+    def register_handler(self, name: str, handler_class: Type[T], extensions: Optional[list[str]] = None):
         """Register a handler class."""
         self.register_safe(name, handler_class, extensions)
     
@@ -335,7 +336,7 @@ class HandlerFactory(GenericHandlerFactory):
         """Unregister a handler."""
         self.unregister(name)
     
-    def list_handlers(self) -> List[str]:
+    def list_handlers(self) -> list[str]:
         """List all registered handlers."""
         return self.get_available_formats()
     

@@ -191,7 +191,7 @@ config.apply()  # Propagates to caching, IO, runtime layers
 
 ---
 
-### HTTP Module (`xwsystem.http`)
+### HTTP Module (`xwsystem.http_client`)
 
 #### 🔍 [IDEA-012] HTTP Access Toolkit Placement
 
@@ -217,7 +217,7 @@ config.apply()  # Propagates to caching, IO, runtime layers
 - Coordinate with xwserver roadmap and update documentation once the move happens
 
 ```python
-from exonware.xwsystem.http.client import HttpClient
+from exonware.xwsystem.http_client.client import HttpClient
 
 client = HttpClient(base_url="https://api.example.com")
 response = client.get("/status")

@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Shared base classes (merged from the former core module).
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .contracts import CoreMode, CorePriority, CoreState
 
@@ -27,8 +27,8 @@ class ACoreBase(ABC):
         """
         self.mode = mode
         self.state = CoreState.INITIALIZING
-        self._dependencies: List[str] = []
-        self._resources: Dict[str, Any] = {}
+        self._dependencies: list[str] = []
+        self._resources: dict[str, Any] = {}
 
     @abstractmethod
     def initialize(self) -> None:
@@ -71,7 +71,7 @@ class ACoreBase(ABC):
         pass
 
     @abstractmethod
-    def get_dependencies(self) -> List[str]:
+    def get_dependencies(self) -> list[str]:
         """Get all dependencies."""
         pass
 
@@ -92,8 +92,8 @@ class AResourceManagerBase(ABC):
             max_resources: Maximum number of resources
         """
         self.max_resources = max_resources
-        self._resources: Dict[str, Any] = {}
-        self._resource_locks: Dict[str, bool] = {}
+        self._resources: dict[str, Any] = {}
+        self._resource_locks: dict[str, bool] = {}
 
     @abstractmethod
     def acquire_resource(
@@ -118,7 +118,7 @@ class AResourceManagerBase(ABC):
         pass
 
     @abstractmethod
-    def list_resources(self) -> List[str]:
+    def list_resources(self) -> list[str]:
         """List all resource IDs."""
         pass
 
@@ -133,11 +133,11 @@ class AConfigurationBase(ABC):
 
     def __init__(self):
         """Initialize configuration base."""
-        self._config: Dict[str, Any] = {}
-        self._defaults: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
+        self._defaults: dict[str, Any] = {}
 
     @abstractmethod
-    def load_config(self, config_data: Dict[str, Any]) -> None:
+    def load_config(self, config_data: dict[str, Any]) -> None:
         """Load configuration data."""
         pass
 
@@ -162,7 +162,7 @@ class AConfigurationBase(ABC):
         pass
 
     @abstractmethod
-    def export_config(self) -> Dict[str, Any]:
+    def export_config(self) -> dict[str, Any]:
         """Export configuration as dictionary."""
         pass
 
@@ -186,7 +186,7 @@ class AValidationBase(ABC):
         pass
 
     @abstractmethod
-    def get_validation_errors(self) -> List[str]:
+    def get_validation_errors(self) -> list[str]:
         """Get validation errors."""
         pass
 
@@ -298,7 +298,7 @@ class BaseCore(ACoreBase):
         if dependency in self._dependencies:
             self._dependencies.remove(dependency)
 
-    def get_dependencies(self) -> List[str]:
+    def get_dependencies(self) -> list[str]:
         """Get all dependencies."""
         return self._dependencies.copy()
 

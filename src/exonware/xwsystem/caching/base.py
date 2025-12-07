@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Caching module base classes - abstract classes for caching functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Tuple, Hashable
+from typing import Any, Optional, Union, Hashable
 from .defs import CachePolicy
 
 
@@ -27,9 +27,9 @@ class ACache(ABC):
         """
         self.capacity = capacity
         self.ttl = ttl
-        self._cache: Dict[str, Any] = {}
-        self._access_times: Dict[str, float] = {}
-        self._creation_times: Dict[str, float] = {}
+        self._cache: dict[str, Any] = {}
+        self._access_times: dict[str, float] = {}
+        self._creation_times: dict[str, float] = {}
     
     @abstractmethod
     def get(self, key: Any, default: Any = None) -> Optional[Any]:
@@ -90,7 +90,7 @@ class ACache(ABC):
         pass
     
     @abstractmethod
-    def keys(self) -> List[Hashable]:
+    def keys(self) -> list[Hashable]:
         """
         Get list of all cache keys.
         
@@ -100,7 +100,7 @@ class ACache(ABC):
         pass
     
     @abstractmethod
-    def values(self) -> List[Any]:
+    def values(self) -> list[Any]:
         """
         Get list of all cache values.
         
@@ -110,7 +110,7 @@ class ACache(ABC):
         pass
     
     @abstractmethod
-    def items(self) -> List[Tuple[Hashable, Any]]:
+    def items(self) -> list[tuple[Hashable, Any]]:
         """
         Get list of all key-value pairs.
         
@@ -120,7 +120,7 @@ class ACache(ABC):
         pass
     
     @abstractmethod
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get cache statistics.
         
@@ -151,7 +151,7 @@ class ACache(ABC):
         """
         return self.size()
     
-    def get_many(self, keys: List[Hashable]) -> Dict[Hashable, Any]:
+    def get_many(self, keys: list[Hashable]) -> dict[Hashable, Any]:
         """
         Get multiple values in a single operation.
         
@@ -171,7 +171,7 @@ class ACache(ABC):
                 results[key] = value
         return results
     
-    def put_many(self, items: Dict[Hashable, Any]) -> int:
+    def put_many(self, items: dict[Hashable, Any]) -> int:
         """
         Put multiple key-value pairs in a single operation.
         
@@ -194,7 +194,7 @@ class ACache(ABC):
                 pass
         return count
     
-    def delete_many(self, keys: List[Hashable]) -> int:
+    def delete_many(self, keys: list[Hashable]) -> int:
         """
         Delete multiple keys in a single operation.
         
@@ -233,7 +233,7 @@ class ACacheManager(ABC):
         pass
     
     @abstractmethod
-    def list_caches(self) -> List[str]:
+    def list_caches(self) -> list[str]:
         """List all cache names."""
         pass
     
@@ -247,7 +247,7 @@ class ADistributedCache(ABC):
     """Abstract base class for distributed cache implementations."""
     
     @abstractmethod
-    def connect(self, nodes: List[str]) -> None:
+    def connect(self, nodes: list[str]) -> None:
         """Connect to distributed cache nodes."""
         pass
     
@@ -262,7 +262,7 @@ class ADistributedCache(ABC):
         pass
     
     @abstractmethod
-    def get_node_info(self) -> Dict[str, Any]:
+    def get_node_info(self) -> dict[str, Any]:
         """Get distributed cache node information."""
         pass
     

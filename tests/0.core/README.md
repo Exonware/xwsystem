@@ -10,10 +10,13 @@ tests/core/
 ├── runner.py                   # Main core test runner
 ├── conftest.py                 # Pytest configuration
 ├── README.md                   # This documentation
-├── serialization/              # Serialization core tests
+├── io/                         # I/O core tests (includes serialization tests)
 │   ├── __init__.py
-│   ├── runner.py              # Serialization test runner
-│   ├── test_core_xwsystem_serialization.py  # XSystem serialization tests
+│   ├── runner.py              # I/O and serialization test runner
+│   ├── test_core_xwsystem_io.py             # XSystem I/O tests
+│   ├── test_core_xsystem_serialization.py   # XSystem serialization tests
+│   ├── test_core_serialization_fixed_features.py  # Serialization feature tests
+│   ├── test_yaml_import_behavior.py         # YAML import behavior tests
 │   └── data/                  # Test data directory
 ├── security/                   # Security core tests
 │   ├── __init__.py
@@ -24,11 +27,6 @@ tests/core/
 │   ├── __init__.py
 │   ├── runner.py              # HTTP test runner
 │   ├── test_core_xwsystem_http.py           # XSystem HTTP tests
-│   └── data/                  # Test data directory
-├── io/                         # I/O core tests
-│   ├── __init__.py
-│   ├── runner.py              # I/O test runner
-│   ├── test_core_xwsystem_io.py             # XSystem I/O tests
 │   └── data/                  # Test data directory
 ├── monitoring/                 # Monitoring core tests
 │   ├── __init__.py
@@ -49,6 +47,16 @@ tests/core/
     ├── __init__.py
     ├── runner.py              # Validation test runner
     ├── test_core_xwsystem_validation.py     # XSystem validation tests
+    └── data/                  # Test data directory
+├── operations/                # Operations core tests
+│   ├── __init__.py
+│   ├── runner.py              # Operations test runner
+│   ├── test_core_xsystem_operations.py     # XSystem operations tests
+│   └── data/                  # Test data directory
+└── shared/                    # Shared core tests
+    ├── __init__.py
+    ├── runner.py              # Shared test runner
+    ├── test_core_xsystem_shared.py          # XSystem shared tests
     └── data/                  # Test data directory
 ```
 
@@ -90,31 +98,39 @@ python core/runner.py
 
 ### Run Specific Core Test Categories
 ```bash
-python core/runner.py serialization    # Serialization tests only
 python core/runner.py security         # Security tests only
 python core/runner.py http             # HTTP tests only
-python core/runner.py io               # I/O tests only
+python core/runner.py io               # I/O and serialization tests
 python core/runner.py monitoring       # Monitoring tests only
 python core/runner.py threading        # Threading tests only
 python core/runner.py caching          # Caching tests only
 python core/runner.py validation       # Validation tests only
+python core/runner.py operations       # Operations tests only
+python core/runner.py shared           # Shared tests only
 ```
 
 ### Run Individual Test Modules
 ```bash
-python core/serialization/runner.py    # Serialization tests directly
+python core/io/runner.py               # I/O and serialization tests directly
 python core/security/runner.py         # Security tests directly
 # ... etc
 ```
 
 ## Test Categories
 
-### 1. Serialization Core Tests
+### 1. I/O Core Tests (includes Serialization)
+- **Atomic file writer** - Atomic file operations
+- **Safe file operations** - Safe read/write operations
+- **Async file operations** - Asynchronous file I/O
+- **File operation errors** - Error handling for file operations
+- **Path manager** - Path management and validation
+- **Concurrent file operations** - Thread-safe file operations
 - **JSON serialization** - Text and binary serialization with roundtrip testing
 - **YAML serialization** - Text serialization with roundtrip testing
 - **Pickle serialization** - Binary serialization with roundtrip testing
 - **Basic serialization** - Core serialization functionality
 - **Convenience functions** - Quick serialization utilities
+- **YAML import behavior** - YAML import and circular import testing
 
 ### 2. Security Core Tests
 - **Secure hashing** - SHA256, SHA512, Blake2b with consistency testing
@@ -131,14 +147,6 @@ python core/security/runner.py         # Security tests directly
 - **Async HTTP client** - Asynchronous HTTP operations
 - **Advanced HTTP client** - Advanced HTTP features
 - **Error handling** - HTTP error scenarios
-
-### 4. I/O Core Tests
-- **Atomic file writer** - Atomic file operations
-- **Safe file operations** - Safe read/write operations
-- **Async file operations** - Asynchronous file I/O
-- **File operation errors** - Error handling for file operations
-- **Path manager** - Path management and validation
-- **Concurrent file operations** - Thread-safe file operations
 
 ### 5. Monitoring Core Tests
 - **Performance monitor** - Performance monitoring and metrics
@@ -175,7 +183,20 @@ python core/security/runner.py         # Security tests directly
 - **Type safety** - Type safety validation
 - **Validation rules** - Custom validation rules
 
-### 9. Enterprise Features Core Tests
+### 9. Operations Core Tests
+- **Merge operations** - Deep merge, shallow merge, append merge
+- **Diff operations** - Structural diff, content diff, full diff
+- **Patch operations** - JSON Patch (RFC 6902) operations
+- **Roundtrip testing** - Merge/diff/patch cycles
+
+### 10. Shared Core Tests
+- **Base classes** - ACoreBase, AResourceManagerBase, AConfigurationBase
+- **Contracts** - ICloneable, IComparable, ICore interfaces
+- **Enums** - ValidationLevel, PerformanceLevel, CoreState
+- **Error classes** - CoreError and derived exceptions
+- **Integration** - Shared types used across modules
+
+### 11. Enterprise Features Core Tests
 - **Authentication** - OAuth2, JWT, SAML providers (security module)
 - **Distributed Tracing** - OpenTelemetry, Jaeger integration (monitoring module)
 - **Schema Registry** - Confluent, AWS Glue schema management (io/serialization module)
@@ -202,7 +223,9 @@ Each test category has its own `data/` directory for:
 - Monitoring core tests (6/6 tests passing)
 - Threading core tests (8/8 tests passing)
 - Caching core tests (6/6 tests passing)
-- I/O core tests (4/6 tests passing - 2 minor issues)
+- I/O core tests (comprehensive coverage with archive and serialization)
+- Operations core tests (merge, diff, patch operations)
+- Shared core tests (base classes, contracts, enums, errors)
 - Validation core tests (6/7 tests passing - 1 minor issue)
 - CLI core tests (9/9 tests passing)
 - Config core tests (9/9 tests passing)
@@ -218,7 +241,10 @@ Each test category has its own `data/` directory for:
 - Utils core tests (9/9 tests passing)
 
 ### 🎉 **100% Test Coverage Achieved**
-- **20/20 modules** have comprehensive test coverage
+- **17/17 modules** have comprehensive test coverage
+- **Operations module** - Core tests added
+- **Shared module** - Core and unit tests added
+- **IO module** - Comprehensive core and unit test coverage
 - **All tests passing** with proper error handling
 - **DEV_GUIDELINES.md compliance** verified
 - **Production-ready** test suite

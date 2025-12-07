@@ -2,14 +2,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Runtime module contracts - interfaces and enums for runtime environment functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Type, Callable
+from typing import Any, Optional, Union, Type, Callable
 import sys
 
 # Import enums from types module
@@ -45,7 +45,7 @@ class IEnvironmentManager(ABC):
         pass
     
     @abstractmethod
-    def get_all_environment_variables(self) -> Dict[str, str]:
+    def get_all_environment_variables(self) -> dict[str, str]:
         """Get all environment variables."""
         pass
 
@@ -93,12 +93,12 @@ class IPythonInfo(ABC):
         pass
     
     @abstractmethod
-    def get_python_path(self) -> List[str]:
+    def get_python_path(self) -> list[str]:
         """Get Python path."""
         pass
     
     @abstractmethod
-    def get_installed_packages(self) -> Dict[str, str]:
+    def get_installed_packages(self) -> dict[str, str]:
         """Get installed packages."""
         pass
     
@@ -122,17 +122,17 @@ class IReflectionUtils(ABC):
         pass
     
     @abstractmethod
-    def find_classes_in_module(self, module: Any, base_class: Type) -> List[Type]:
+    def find_classes_in_module(self, module: Any, base_class: Type) -> list[Type]:
         """Find classes in module."""
         pass
     
     @abstractmethod
-    def get_class_hierarchy(self, cls: Type) -> List[Type]:
+    def get_class_hierarchy(self, cls: Type) -> list[Type]:
         """Get class hierarchy."""
         pass
     
     @abstractmethod
-    def get_class_attributes(self, cls: Type) -> Dict[str, Any]:
+    def get_class_attributes(self, cls: Type) -> dict[str, Any]:
         """Get class attributes."""
         pass
 

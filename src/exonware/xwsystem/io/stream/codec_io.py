@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 Codec-integrated I/O - THE KILLER FEATURE!
@@ -19,15 +19,12 @@ Priority 5 (Extensibility): Works with ANY codec + ANY data source
 """
 
 from pathlib import Path
-from typing import Generic, TypeVar, Union, Optional, Iterator, Any
+from typing import Union, Optional, Iterator, Any
 
 from ..contracts import ICodecIO, IPagedCodecIO, IDataSource, IPagedDataSource
 
-T = TypeVar('T')  # Model type
-R = TypeVar('R')  # Representation type (bytes or str)
 
-
-class CodecIO(Generic[T, R], ICodecIO[T, R]):
+class CodecIO[T, R](ICodecIO[T, R]):
     """
     I/O operations with integrated codec - THE KILLER FEATURE!
     
@@ -260,7 +257,7 @@ class CodecIO(Generic[T, R], ICodecIO[T, R]):
         return CodecIO(codec, source)
 
 
-class PagedCodecIO(CodecIO[T, R], IPagedCodecIO[T, R]):
+class PagedCodecIO[T, R](CodecIO[T, R], IPagedCodecIO[T, R]):
     """
     CodecIO with paging support - for BIG data files!
     

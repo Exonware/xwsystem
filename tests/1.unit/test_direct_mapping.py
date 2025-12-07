@@ -9,13 +9,17 @@ from pathlib import Path
 # Add the src directory to the path
 sys.path.insert(0, str(Path(__file__).parent / 'src'))
 
+import pytest
+
+@pytest.mark.skip(reason="xwlazy has been removed from the codebase")
 def test_direct_mapping():
     """Test the dynamic mapping system directly."""
     print("Testing dynamic mapping system directly...")
     
     try:
         # Import only the specific modules we need
-        from xwlazy.lazy import LazyDiscovery
+        # from xwlazy.lazy import LazyDiscovery
+        raise ImportError("xwlazy has been removed")
         print("✓ LazyDiscovery imported")
         
         discovery = LazyDiscovery()

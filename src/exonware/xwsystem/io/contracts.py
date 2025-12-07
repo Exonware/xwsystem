@@ -2,23 +2,22 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 IO module contracts - interfaces and enums for input/output operations.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, AsyncGenerator, BinaryIO, TextIO, Generic, TypeVar, Protocol, runtime_checkable, Callable, Iterator
+from typing import Any, Optional, Union, AsyncGenerator, BinaryIO, TextIO, Protocol, runtime_checkable, Callable, Iterator
 from typing_extensions import TypeAlias
 from pathlib import Path
 
-T = TypeVar('T')
-R = TypeVar('R')
-
 # Type aliases for codec options
-EncodeOptions: TypeAlias = Dict[str, Any]
-DecodeOptions: TypeAlias = Dict[str, Any]
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
+EncodeOptions: TypeAlias = dict[str, Any]
+DecodeOptions: TypeAlias = dict[str, Any]
 Serializer: TypeAlias = 'ICodec[Any, bytes]'
 Formatter: TypeAlias = 'ICodec[Any, str]'
 
@@ -305,17 +304,17 @@ class IFolder(ABC):
         pass
     
     @abstractmethod
-    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> List[Path]:
+    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         pass
     
     @abstractmethod
-    def list_directories(self, recursive: bool = False) -> List[Path]:
+    def list_directories(self, recursive: bool = False) -> list[Path]:
         """List subdirectories."""
         pass
     
     @abstractmethod
-    def walk(self) -> List[tuple[Path, List[str], List[str]]]:
+    def walk(self) -> list[tuple[Path, list[str], list[str]]]:
         """Walk directory tree."""
         pass
     
@@ -363,19 +362,19 @@ class IFolder(ABC):
     
     @staticmethod
     @abstractmethod
-    def list_files_static(path: Union[str, Path], pattern: Optional[str] = None, recursive: bool = False) -> List[Path]:
+    def list_files_static(path: Union[str, Path], pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         pass
     
     @staticmethod
     @abstractmethod
-    def list_directories_static(path: Union[str, Path], recursive: bool = False) -> List[Path]:
+    def list_directories_static(path: Union[str, Path], recursive: bool = False) -> list[Path]:
         """List subdirectories."""
         pass
     
     @staticmethod
     @abstractmethod
-    def walk_static(path: Union[str, Path]) -> List[tuple[Path, List[str], List[str]]]:
+    def walk_static(path: Union[str, Path]) -> list[tuple[Path, list[str], list[str]]]:
         """Walk directory tree."""
         pass
     
@@ -818,7 +817,7 @@ class IBackupOperations(ABC):
         pass
     
     @abstractmethod
-    def list_backups(self, backup_dir: Union[str, Path]) -> List[Path]:
+    def list_backups(self, backup_dir: Union[str, Path]) -> list[Path]:
         """List available backups."""
         pass
     
@@ -850,7 +849,7 @@ class IBackupOperations(ABC):
     
     @staticmethod
     @abstractmethod
-    def list_backups_static(backup_dir: Union[str, Path]) -> List[Path]:
+    def list_backups_static(backup_dir: Union[str, Path]) -> list[Path]:
         """List available backups."""
         pass
     
@@ -1002,7 +1001,7 @@ class IFileManager(IFile, IFolder, IPath, IAtomicOperations, IBackupOperations, 
 # DATA SOURCE INTERFACES (Used by file/, stream/)
 # ============================================================================
 
-class IDataSource(ABC, Generic[T]):
+class IDataSource[T](ABC):
     """Universal data source interface for various data sources."""
     
     @abstractmethod
@@ -1016,11 +1015,11 @@ class IDataSource(ABC, Generic[T]):
         pass
 
 
-class IPagedDataSource(ABC, Generic[T]):
+class IPagedDataSource[T](ABC):
     """Paged data source interface for large data sets."""
     
     @abstractmethod
-    def read_page(self, page_number: int) -> List[T]:
+    def read_page(self, page_number: int) -> list[T]:
         """Read a specific page of data."""
         pass
     
@@ -1034,7 +1033,7 @@ class IPagedDataSource(ABC, Generic[T]):
 # CODEC-INTEGRATED IO INTERFACES (Used by stream/)
 # ============================================================================
 
-class ICodecIO(ABC, Generic[T, R]):
+class ICodecIO[T, R](ABC):
     """Codec-integrated IO interface with source type T and result type R."""
     
     @abstractmethod
@@ -1048,7 +1047,7 @@ class ICodecIO(ABC, Generic[T, R]):
         pass
 
 
-class IPagedCodecIO(ABC, Generic[T, R]):
+class IPagedCodecIO[T, R](ABC):
     """Paged codec-integrated IO interface with source type T and result type R."""
     
     @abstractmethod
@@ -1134,24 +1133,24 @@ class IArchiveFormat(Protocol):
         ...
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported file extensions."""
         ...
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """Supported MIME types."""
         ...
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """Create archive from files."""
         ...
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract archive."""
         ...
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List archive contents."""
         ...
     
@@ -1173,7 +1172,7 @@ class ICompressor(Protocol):
         ...
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported file extensions."""
         ...
     
@@ -1203,12 +1202,12 @@ class IArchiveMetadata(Protocol):
         ...
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         ...
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         ...
     
@@ -1221,7 +1220,7 @@ class IArchiveMetadata(Protocol):
 # From codec/
 
 @runtime_checkable
-class ICodec(Protocol[T, R]):
+class ICodec[T, R](Protocol):
     """
     Universal codec interface for bidirectional transformation.
     
@@ -1407,7 +1406,7 @@ class IAtomicWriter(Protocol):
 # ARCHIVE INTERFACES (Dual Architecture: Codec + File)
 # ============================================================================
 
-class IArchiver(ICodec[T, bytes]):
+class IArchiver[T](ICodec[T, bytes]):
     """
     Archive codec interface - operates in MEMORY on ANY data.
     
@@ -1457,17 +1456,17 @@ class IArchiveFile(IFile):
     """
     
     @abstractmethod
-    def add_files(self, files: List[Path], **options) -> None:
+    def add_files(self, files: list[Path], **options) -> None:
         """Add files to archive (uses archiver.compress internally)."""
         pass
     
     @abstractmethod
-    def extract_to(self, dest: Path, **options) -> List[Path]:
+    def extract_to(self, dest: Path, **options) -> list[Path]:
         """Extract archive to destination (uses archiver.extract internally)."""
         pass
     
     @abstractmethod
-    def list_contents(self) -> List[str]:
+    def list_contents(self) -> list[str]:
         """List files in archive."""
         pass
     
@@ -1671,7 +1670,7 @@ class IFolderSource(Protocol):
         """Delete directory."""
         ...
     
-    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> List[Path]:
+    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         ...
 
@@ -1694,13 +1693,9 @@ class IIOManager(Protocol):
 # From stream/
 
 
-class IPagedCodecIO(ICodecIO[T, R]):
+class IPagedCodecIO[T, R](ICodecIO[T, R]):
     """
     Interface for paged codec I/O.
-    
-    Root cause fixed: Removed Protocol from class that inherits from ABC.
-    Python 3.12 doesn't allow mixing Protocol with ABC inheritance.
-    ICodecIO is already an ABC, so this class inherits ABC behavior.
     """
     
     @abstractmethod

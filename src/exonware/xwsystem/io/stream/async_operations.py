@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Asynchronous I/O operations for non-blocking file handling.
@@ -15,7 +15,7 @@ import tempfile
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, AsyncContextManager, BinaryIO, List, Optional, TextIO, Union
+from typing import Any, AsyncContextManager, BinaryIO, Optional, TextIO, Union
 
 # Import aiofiles - lazy installation system will handle it if missing
 import aiofiles
@@ -441,7 +441,7 @@ async def async_safe_read_bytes(file_path: Union[str, Path], max_size_mb: float 
 async def async_safe_read_with_fallback(
     file_path: Union[str, Path],
     preferred_encoding: str = "utf-8",
-    fallback_encodings: Optional[List[str]] = None,
+    fallback_encodings: Optional[list[str]] = None,
     max_size_mb: float = 100.0,
 ) -> str:
     """

@@ -266,6 +266,26 @@ class IoCoreTester:
             print(f"[FAIL] Concurrent file operations tests failed: {e}")
             return False
     
+    def test_all_serialization_tests(self) -> int:
+        """Run all serialization core tests."""
+        print("[SERIALIZATION] XSystem Core Serialization Tests")
+        print("=" * 50)
+        print("Testing all main serialization features with comprehensive roundtrip testing")
+        print("=" * 50)
+        
+        # Run the actual XSystem serialization tests
+        try:
+            import sys
+            from pathlib import Path
+            test_xwsystem_path = Path(__file__).parent / "test_core_xwsystem_serialization.py"
+            sys.path.insert(0, str(test_xwsystem_path.parent))
+            
+            import test_core_xwsystem_serialization
+            return test_core_xwsystem_serialization.main()
+        except Exception as e:
+            print(f"[FAIL] Failed to run XSystem serialization tests: {e}")
+            return 1
+    
     def test_all_io_tests(self) -> int:
         """Run all I/O core tests."""
         print("[IO] XSystem Core I/O Tests")
@@ -273,7 +293,8 @@ class IoCoreTester:
         print("Testing all main I/O features with comprehensive validation")
         print("=" * 50)
         
-        # For now, run the basic tests that actually work
+        # Run I/O tests
+        io_result = 0
         try:
             import sys
             from pathlib import Path
@@ -281,16 +302,54 @@ class IoCoreTester:
             sys.path.insert(0, str(test_basic_path.parent))
             
             import test_core_xwsystem_io
-            return test_core_xwsystem_io.main()
+            io_result = test_core_xwsystem_io.main()
         except Exception as e:
             print(f"[FAIL] Failed to run basic I/O tests: {e}")
-            return 1
+            io_result = 1
+        
+        # Run serialization tests
+        serialization_result = self.test_all_serialization_tests()
+        
+        # Return failure if either failed
+        return 0 if (io_result == 0 and serialization_result == 0) else 1
 
 
 def run_all_io_tests() -> int:
-    """Main entry point for I/O core tests."""
-    tester = IoCoreTester()
-    return tester.test_all_io_tests()
+    """Main entry point for I/O core tests using pytest."""
+    import pytest
+    from pathlib import Path
+    
+    # Get test directory
+    test_dir = Path(__file__).parent
+    
+    # Run all core IO tests using pytest
+    exit_code = pytest.main([
+        "-v",
+        "--tb=short",
+        "-x",  # Stop on first failure
+        str(test_dir),
+        "-m", "xwsystem_core or xwsystem_io or xwsystem_serialization",
+    ])
+    
+    return exit_code
+
+
+def run_all_serialization_tests() -> int:
+    """Run serialization core tests."""
+    import pytest
+    from pathlib import Path
+    
+    test_dir = Path(__file__).parent
+    
+    exit_code = pytest.main([
+        "-v",
+        "--tb=short",
+        str(test_dir),
+        "-m", "xwsystem_serialization",
+        "-k", "serialization",
+    ])
+    
+    return exit_code
 
 
 if __name__ == "__main__":

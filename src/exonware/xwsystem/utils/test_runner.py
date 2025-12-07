@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 11-Oct-2025
 
 Reusable test runner utilities with colored output and Markdown generation.
@@ -13,7 +13,7 @@ import sys
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, List, Tuple
+from typing import Optional
 
 # Set UTF-8 encoding for Windows console to support emojis
 if sys.platform == 'win32':
@@ -244,10 +244,10 @@ def print_status(success: bool, message: str, output: Optional[DualOutput] = Non
 
 def run_pytest(
     test_dir: Path,
-    markers: List[str],
-    options: Optional[List[str]] = None,
+    markers: list[str],
+    options: Optional[list[str]] = None,
     output: Optional[DualOutput] = None
-) -> Tuple[int, str, str]:
+) -> tuple[int, str, str]:
     """
     Run pytest with specified options and capture output.
     
@@ -314,7 +314,7 @@ class TestRunner:
         layer_name: str,
         description: str,
         test_dir: Optional[Path] = None,
-        markers: Optional[List[str]] = None,
+        markers: Optional[list[str]] = None,
         output_file: Optional[Path] = None
     ):
         """

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 Archive facade using registry pattern.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Add formats via registry!
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 # IArchive removed - using IArchiver and IArchiveFile instead
 from .formats import get_archiver_for_file, get_archiver_by_id
@@ -43,7 +43,7 @@ class Archive:
         >>> archive.create([Path("file.txt")], Path("backup.7z"))  # Uses 7zArchiver
     """
     
-    def create(self, files: List[Path], output: Path, format: str = 'zip', **opts) -> None:
+    def create(self, files: list[Path], output: Path, format: str = 'zip', **opts) -> None:
         """
         Create archive - auto-detects handler.
         
@@ -65,7 +65,7 @@ class Archive:
         # Delegate to format-specific handler
         archiver.create(files, output, **opts)
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """
         Extract archive - auto-detects handler.
         """
@@ -78,7 +78,7 @@ class Archive:
         # Delegate to format-specific handler
         return archiver.extract(archive, output_dir, members, **opts)
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """
         List archive contents - auto-detects handler.
         """

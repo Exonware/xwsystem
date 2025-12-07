@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 26, 2025
 
 Operation tracker for monitoring operations with context management.
@@ -12,7 +12,7 @@ Operation tracker for monitoring operations with context management.
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Dict, List, Optional, Callable
+from typing import Any, Optional, Callable
 from .metrics import OperationMetrics, MetricSnapshot
 from ..config.logging_setup import get_logger
 
@@ -41,8 +41,8 @@ class OperationTracker:
         """
         self.max_recent_samples = max_recent_samples
         self._lock = threading.RLock()
-        self._metrics: Dict[str, OperationMetrics] = {}
-        self._callbacks: List[Callable[[str, float, bool], None]] = []
+        self._metrics: dict[str, OperationMetrics] = {}
+        self._callbacks: list[Callable[[str, float, bool], None]] = []
     
     def track_operation(
         self,
@@ -111,12 +111,12 @@ class OperationTracker:
         with self._lock:
             return self._metrics.get(operation_name)
     
-    def get_all_stats(self) -> Dict[str, OperationMetrics]:
+    def get_all_stats(self) -> dict[str, OperationMetrics]:
         """Get statistics for all operations."""
         with self._lock:
             return self._metrics.copy()
     
-    def get_summary_stats(self) -> Dict[str, Any]:
+    def get_summary_stats(self) -> dict[str, Any]:
         """Get summary statistics across all operations."""
         with self._lock:
             if not self._metrics:
@@ -142,7 +142,7 @@ class OperationTracker:
                 'error_rate': total_errors / max(1, total_calls),
             }
     
-    def get_top_operations(self, limit: int = 10, sort_by: str = 'total_calls') -> List[Dict[str, Any]]:
+    def get_top_operations(self, limit: int = 10, sort_by: str = 'total_calls') -> list[dict[str, Any]]:
         """
         Get top operations by specified metric.
         

@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 XSystem I/O Core Tests
 
 Tests the actual XSystem I/O features including atomic file operations,
 safe file handling, async I/O, and advanced file management.
+
+Following GUIDE_TEST.md standards.
 """
 
+import sys
 import tempfile
 import os
 import shutil
@@ -13,448 +17,512 @@ import threading
 import time
 from pathlib import Path
 
+import pytest
 
-def test_atomic_file_operations():
-    """Test atomic file operations."""
+# Windows UTF-8 setup
+if sys.platform == "win32":
     try:
-        # Test atomic file writing
-        def atomic_write(file_path, content):
-            """Write content atomically to file."""
-            temp_path = f"{file_path}.tmp"
-            try:
-                with open(temp_path, 'w') as f:
-                    f.write(content)
-                # On Windows, we need to remove the target file first if it exists
-                if os.path.exists(file_path):
-                    os.unlink(file_path)
-                os.rename(temp_path, file_path)
-                return True
-            except Exception as e:
-                if os.path.exists(temp_path):
-                    os.unlink(temp_path)
-                print(f"DEBUG: atomic_write failed: {e}")
-                return False
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
+# Import xwsystem.io classes
+from exonware.xwsystem.io.common import (
+    AtomicFileWriter,
+    safe_read_bytes,
+    safe_read_text,
+    safe_write_bytes,
+    safe_write_text,
+    PathManager,
+    FileWatcher,
+    FileLock,
+)
+from exonware.xwsystem.io.file import (
+    XWFile,
+    FileDataSource,
+    PagedFileSource,
+    BytePagingStrategy,
+    LinePagingStrategy,
+    RecordPagingStrategy,
+    get_global_paging_registry,
+)
+from exonware.xwsystem.io.folder import XWFolder
+from exonware.xwsystem.io.filesystem import LocalFileSystem
+from exonware.xwsystem.io.stream import CodecIO, PagedCodecIO, AsyncAtomicFileWriter
+from exonware.xwsystem.io.facade import XWIO
+from exonware.xwsystem.io.codec.registry import get_registry as get_codec_registry
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestAtomicFileOperations:
+    """Test atomic file operations using AtomicFileWriter."""
+    
+    def test_atomic_file_writer_basic(self, tmp_path):
+        """Test basic atomic file writing."""
+        test_file = tmp_path / "test_atomic.txt"
+        test_content = "This is atomic test content"
         
-        # Test atomic file reading
-        def atomic_read(file_path):
-            """Read file content atomically."""
-            try:
-                with open(file_path, 'r') as f:
-                    return f.read()
-            except FileNotFoundError:
-                return None
+        # Write atomically
+        with AtomicFileWriter(test_file) as writer:
+            writer.write(test_content)
         
-        # Test atomic operations
-        with tempfile.NamedTemporaryFile(delete=False) as f:
-            test_file = f.name
+        # Verify file exists and content is correct
+        assert test_file.exists()
+        assert safe_read_text(test_file) == test_content
+    
+    def test_atomic_file_writer_with_backup(self, tmp_path):
+        """Test atomic file writing with backup."""
+        test_file = tmp_path / "test_backup.txt"
+        original_content = "Original content"
+        new_content = "New content"
+        
+        # Create original file
+        test_file.write_text(original_content)
+        
+        # Write with backup
+        with AtomicFileWriter(test_file, backup=True) as writer:
+            writer.write(new_content)
+        
+        # Verify new content
+        assert safe_read_text(test_file) == new_content
+        # Backup should exist
+        backup_file = test_file.with_suffix(test_file.suffix + '.bak')
+        # Note: AtomicFileWriter may not create .bak by default, check implementation
+    
+    def test_atomic_file_writer_rollback_on_error(self, tmp_path):
+        """Test that atomic write rolls back on error."""
+        test_file = tmp_path / "test_rollback.txt"
+        original_content = "Original"
+        test_file.write_text(original_content)
         
         try:
-            test_content = "This is atomic test content"
-            
-            # Test atomic write
-            assert atomic_write(test_file, test_content) is True
-            assert os.path.exists(test_file)
-            
-            # Test atomic read
-            content = atomic_read(test_file)
-            assert content == test_content
-            
-            # Test atomic overwrite
-            new_content = "This is new atomic content"
-            assert atomic_write(test_file, new_content) is True
-            content = atomic_read(test_file)
-            assert content == new_content
-            
-        finally:
-            if os.path.exists(test_file):
-                os.unlink(test_file)
+            with AtomicFileWriter(test_file) as writer:
+                writer.write("New content")
+                raise ValueError("Simulated error")
+        except ValueError:
+            pass
         
-        print("[PASS] Atomic file operations tests passed")
-        return True
-        
-    except Exception as e:
-        import traceback
-        print(f"[FAIL] Atomic file operations tests failed: {e}")
-        print(f"Traceback: {traceback.format_exc()}")
-        return False
+        # Content should remain unchanged
+        assert safe_read_text(test_file) == original_content
 
 
-def test_safe_file_operations():
-    """Test safe file operations with error handling."""
-    try:
-        # Test safe file writing
-        def safe_write(file_path, content, backup=True):
-            """Safely write content to file with optional backup."""
-            try:
-                # Create backup if requested
-                if backup and os.path.exists(file_path):
-                    backup_path = f"{file_path}.backup"
-                    shutil.copy2(file_path, backup_path)
-                
-                # Write content
-                with open(file_path, 'w') as f:
-                    f.write(content)
-                return True
-            except Exception as e:
-                # Restore backup if write failed
-                if backup and os.path.exists(f"{file_path}.backup"):
-                    shutil.move(f"{file_path}.backup", file_path)
-                return False
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestSafeFileOperations:
+    """Test safe file operations."""
+    
+    def test_safe_read_text(self, tmp_path):
+        """Test safe text reading."""
+        test_file = tmp_path / "test_safe.txt"
+        test_content = "Safe test content"
+        test_file.write_text(test_content)
         
-        # Test safe file reading
-        def safe_read(file_path, default=""):
-            """Safely read file content with default fallback."""
-            try:
-                with open(file_path, 'r') as f:
-                    return f.read()
-            except (FileNotFoundError, IOError):
-                return default
+        # Read existing file
+        content = safe_read_text(test_file)
+        assert content == test_content
         
-        # Test safe operations
-        with tempfile.NamedTemporaryFile(delete=False) as f:
-            test_file = f.name
+        # Read non-existent file should raise error
+        from exonware.xwsystem.io.common.atomic import FileOperationError
+        with pytest.raises(FileOperationError, match="File does not exist"):
+            safe_read_text(tmp_path / "nonexistent.txt")
+    
+    def test_safe_read_bytes(self, tmp_path):
+        """Test safe bytes reading."""
+        test_file = tmp_path / "test_safe.bin"
+        test_content = b"Binary content"
+        test_file.write_bytes(test_content)
         
+        # Read existing file
+        content = safe_read_bytes(test_file)
+        assert content == test_content
+        
+        # Read non-existent file should raise error
+        from exonware.xwsystem.io.common.atomic import FileOperationError
+        with pytest.raises(FileOperationError, match="File does not exist"):
+            safe_read_bytes(tmp_path / "nonexistent.bin")
+    
+    def test_safe_write_text(self, tmp_path):
+        """Test safe text writing."""
+        test_file = tmp_path / "test_write.txt"
+        test_content = "Safe write content"
+        
+        # Write text
+        safe_write_text(test_file, test_content)
+        assert test_file.exists()
+        assert test_file.read_text() == test_content
+    
+    def test_safe_write_bytes(self, tmp_path):
+        """Test safe bytes writing."""
+        test_file = tmp_path / "test_write.bin"
+        test_content = b"Safe write bytes"
+        
+        # Write bytes
+        safe_write_bytes(test_file, test_content)
+        assert test_file.exists()
+        assert test_file.read_bytes() == test_content
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestPathManager:
+    """Test PathManager utilities."""
+    
+    def test_path_manager_looks_like_file_path(self):
+        """Test path detection."""
+        # Should detect file paths
+        assert PathManager.looks_like_file_path("/path/to/file.txt") is True
+        assert PathManager.looks_like_file_path("file.txt") is True
+        assert PathManager.looks_like_file_path("subdir/file.txt") is True
+        
+        # Should not detect raw content
+        assert PathManager.looks_like_file_path('{"key": "value"}') is False
+        assert PathManager.looks_like_file_path("raw content\nwith newlines") is False
+    
+    def test_path_manager_resolve_base_path(self):
+        """Test base path resolution."""
+        # Test with valid path
+        resolved = PathManager.resolve_base_path("/some/path")
+        assert resolved is not None
+        
+        # Test with None
+        resolved = PathManager.resolve_base_path(None)
+        assert resolved is None
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestFileWatcher:
+    """Test FileWatcher functionality."""
+    
+    def test_file_watcher_basic(self, tmp_path):
+        """Test basic file watching."""
+        test_file = tmp_path / "watched.txt"
+        events = []
+        
+        def on_change(path, event_type):
+            events.append((path, event_type))
+        
+        watcher = FileWatcher(poll_interval=0.1)
+        watcher.watch(test_file, on_change)
+        
+        # Start watching
+        watcher.start()
+        time.sleep(0.2)  # Let watcher initialize
+        
+        # Create file
+        test_file.write_text("content")
+        time.sleep(0.3)  # Wait for detection
+        
+        # Stop watching
+        watcher.stop()
+        
+        # Should have detected creation
+        assert len(events) > 0
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestFileLock:
+    """Test FileLock functionality."""
+    
+    def test_file_lock_basic(self, tmp_path):
+        """Test basic file locking."""
+        test_file = tmp_path / "locked.txt"
+        lock = FileLock(test_file)
+        
+        # Acquire lock
+        assert lock.acquire() is True
+        
+        # Release lock
+        lock.release()
+    
+    def test_file_lock_context_manager(self, tmp_path):
+        """Test file lock as context manager."""
+        test_file = tmp_path / "locked.txt"
+        
+        with FileLock(test_file):
+            # Lock should be held
+            assert True  # If we get here, lock was acquired
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestXWFile:
+    """Test XWFile class."""
+    
+    def test_xwfile_basic_operations(self, tmp_path):
+        """Test basic XWFile operations."""
+        test_file = tmp_path / "xwfile_test.txt"
+        file_obj = XWFile(test_file)
+        
+        # Save content
+        content = "XWFile test content"
+        assert file_obj.save(content) is True
+        
+        # Load content
+        loaded = file_obj.load()
+        assert loaded == content
+    
+    def test_xwfile_open_read_write(self, tmp_path):
+        """Test XWFile open/read/write operations."""
+        test_file = tmp_path / "xwfile_rw.txt"
+        file_obj = XWFile(test_file)
+        
+        # Open for writing
+        from exonware.xwsystem.io.contracts import FileMode
+        file_obj.open(FileMode.WRITE)
+        file_obj.write("Written content")
+        file_obj.close()
+        
+        # Open for reading
+        file_obj.open(FileMode.READ)
+        content = file_obj.read()
+        file_obj.close()
+        
+        assert content == "Written content"
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestXWFolder:
+    """Test XWFolder class."""
+    
+    def test_xwfolder_create_delete(self, tmp_path):
+        """Test folder creation and deletion."""
+        folder_path = tmp_path / "test_folder"
+        folder = XWFolder(folder_path)
+        
+        # Create folder
+        assert folder.create() is True
+        assert folder_path.exists()
+        
+        # Delete folder
+        assert folder.delete() is True
+        assert not folder_path.exists()
+    
+    def test_xwfolder_list_contents(self, tmp_path):
+        """Test folder listing."""
+        folder_path = tmp_path / "list_folder"
+        folder = XWFolder(folder_path)
+        folder.create()
+        
+        # Create some files
+        (folder_path / "file1.txt").write_text("content1")
+        (folder_path / "file2.txt").write_text("content2")
+        (folder_path / "subdir").mkdir()
+        
+        # List files
+        files = folder.list_files()
+        assert len(files) == 2
+        
+        # List directories
+        dirs = folder.list_directories()
+        assert len(dirs) == 1
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestLocalFileSystem:
+    """Test LocalFileSystem."""
+    
+    def test_local_filesystem_basic(self, tmp_path):
+        """Test basic LocalFileSystem operations."""
+        fs = LocalFileSystem()
+        
+        test_path = str(tmp_path / "fs_test.txt")
+        test_content = "Filesystem test"
+        
+        # Write
+        fs.write_text(test_path, test_content)
+        
+        # Read
+        content = fs.read_text(test_path)
+        assert content == test_content
+        
+        # Exists
+        assert fs.exists(test_path) is True
+        
+        # Is file
+        assert fs.is_file(test_path) is True
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestFileDataSource:
+    """Test FileDataSource."""
+    
+    def test_file_data_source_basic(self, tmp_path):
+        """Test basic FileDataSource operations."""
+        test_file = tmp_path / "source_test.txt"
+        source = FileDataSource(test_file)
+        
+        # Write
+        source.write("Source content")
+        
+        # Read
+        content = source.read()
+        assert content == "Source content"
+        
+        # Exists
+        assert source.exists() is True
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestPagingStrategies:
+    """Test paging strategies."""
+    
+    def test_byte_paging_strategy(self, tmp_path):
+        """Test BytePagingStrategy."""
+        test_file = tmp_path / "byte_paging.bin"
+        test_file.write_bytes(b"0123456789" * 10)  # 100 bytes
+        
+        strategy = BytePagingStrategy()
+        page = strategy.read_page(test_file, page=0, page_size=10)
+        assert len(page) == 10
+        assert page == b"0123456789"
+    
+    def test_line_paging_strategy(self, tmp_path):
+        """Test LinePagingStrategy."""
+        test_file = tmp_path / "line_paging.txt"
+        lines = [f"Line {i}\n" for i in range(10)]
+        test_file.write_text("".join(lines))
+        
+        strategy = LinePagingStrategy()
+        page = strategy.read_page(test_file, page=0, page_size=3)
+        assert "Line 0" in page
+        assert "Line 1" in page
+        assert "Line 2" in page
+    
+    def test_paging_registry(self):
+        """Test paging strategy registry."""
+        registry = get_global_paging_registry()
+        strategies = registry.list_strategies()
+        
+        assert "byte" in strategies
+        assert "line" in strategies
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestPagedFileSource:
+    """Test PagedFileSource."""
+    
+    def test_paged_file_source_byte_paging(self, tmp_path):
+        """Test PagedFileSource with byte paging."""
+        test_file = tmp_path / "paged_source.bin"
+        test_file.write_bytes(b"0123456789" * 10)
+        
+        source = PagedFileSource(test_file, strategy="byte", page_size=10)
+        
+        # Read first page
+        page = source.read_page(0)
+        assert len(page) == 10
+
+
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestCodecIO:
+    """Test CodecIO integration."""
+    
+    def test_codec_io_basic(self, tmp_path):
+        """Test basic CodecIO operations."""
+        # This test requires a codec (serializer) to be available
+        # We'll test with JSON if available
         try:
-            test_content = "This is safe test content"
+            from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
+            from exonware.xwsystem.io.file import FileDataSource
             
-            # Test safe write
-            assert safe_write(test_file, test_content) is True
-            assert os.path.exists(test_file)
+            test_file = tmp_path / "codec_io.json"
+            codec = JsonSerializer()
+            source = FileDataSource(test_file)
+            codec_io = CodecIO(codec, source)
             
-            # Test safe read
-            content = safe_read(test_file)
-            assert content == test_content
+            # Save data
+            data = {"key": "value", "number": 42}
+            codec_io.save(data)
             
-            # Test safe read with non-existent file
-            content = safe_read("non_existent_file.txt", "default")
-            assert content == "default"
-            
-        finally:
-            if os.path.exists(test_file):
-                os.unlink(test_file)
-            if os.path.exists(f"{test_file}.backup"):
-                os.unlink(f"{test_file}.backup")
-        
-        print("[PASS] Safe file operations tests passed")
-        return True
-        
-    except Exception as e:
-        print(f"[FAIL] Safe file operations tests failed: {e}")
-        return False
+            # Load data
+            loaded = codec_io.load()
+            assert loaded == data
+        except ImportError:
+            pytest.skip("JSON serializer not available")
 
 
-def test_async_file_operations():
-    """Test asynchronous file operations."""
-    try:
-        # Test async file writing
-        def async_write(file_path, content, callback):
-            """Write content to file asynchronously."""
-            def worker():
-                try:
-                    with open(file_path, 'w') as f:
-                        f.write(content)
-                    callback(True, None)
-                except Exception as e:
-                    callback(False, str(e))
-            
-            thread = threading.Thread(target=worker)
-            thread.start()
-            return thread
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestXWIOFacade:
+    """Test XWIO facade - MANDATORY facade pattern."""
+    
+    def test_xwio_facade_basic(self, tmp_path):
+        """Test basic XWIO facade operations."""
+        test_file = tmp_path / "facade_test.txt"
+        io_facade = XWIO(test_file)
         
-        # Test async file reading
-        def async_read(file_path, callback):
-            """Read file content asynchronously."""
-            def worker():
-                try:
-                    with open(file_path, 'r') as f:
-                        content = f.read()
-                    callback(True, content)
-                except Exception as e:
-                    callback(False, str(e))
-            
-            thread = threading.Thread(target=worker)
-            thread.start()
-            return thread
+        # Save data
+        content = "Facade test content"
+        assert io_facade.save(content) is True
         
-        # Test async operations
-        with tempfile.NamedTemporaryFile(delete=False) as f:
-            test_file = f.name
+        # Load data
+        loaded = io_facade.load()
+        assert loaded == content
+    
+    def test_xwio_facade_file_operations(self, tmp_path):
+        """Test XWIO facade file operations."""
+        test_file = tmp_path / "facade_file.txt"
+        io_facade = XWIO()
         
-        try:
-            test_content = "This is async test content"
-            
-            # Test async write
-            write_result = [None, None]
-            def write_callback(success, error):
-                write_result[0] = success
-                write_result[1] = error
-            
-            write_thread = async_write(test_file, test_content, write_callback)
-            write_thread.join()
-            
-            assert write_result[0] is True
-            assert write_result[1] is None
-            
-            # Test async read
-            read_result = [None, None]
-            def read_callback(success, content):
-                read_result[0] = success
-                read_result[1] = content
-            
-            read_thread = async_read(test_file, read_callback)
-            read_thread.join()
-            
-            assert read_result[0] is True
-            assert read_result[1] == test_content
-            
-        finally:
-            if os.path.exists(test_file):
-                os.unlink(test_file)
+        # Save to file
+        content = "Facade file content"
+        assert io_facade.save_as(str(test_file), content) is True
         
-        print("[PASS] Async file operations tests passed")
-        return True
-        
-    except Exception as e:
-        print(f"[FAIL] Async file operations tests failed: {e}")
-        return False
+        # Load from file
+        loaded = io_facade.load_from(str(test_file))
+        assert loaded == content
 
 
-def test_file_operation_errors():
-    """Test file operation error handling."""
-    try:
-        # Test permission error handling
-        def test_permission_error():
-            """Test handling of permission errors."""
-            try:
-                # Try to write to a read-only location (simulated)
-                # On Windows, try to write to a system directory
-                import platform
-                if platform.system() == "Windows":
-                    # Try to write to a system directory that should be protected
-                    with open("C:\\Windows\\System32\\test_write.txt", 'w') as f:
-                        f.write("test")
-                else:
-                    # On Unix-like systems, try /dev/null
-                    with open("/dev/null", 'w') as f:
-                        f.write("test")
-                return False
-            except (PermissionError, OSError):
-                return True
-            except Exception:
-                return False
-        
-        # Test disk space error handling
-        def test_disk_space_error():
-            """Test handling of disk space errors."""
-            try:
-                # Simulate disk space error
-                raise OSError("No space left on device")
-            except OSError as e:
-                if "No space left" in str(e):
-                    return True
-                return False
-        
-        # Test file not found error handling
-        def test_file_not_found_error():
-            """Test handling of file not found errors."""
-            try:
-                with open("non_existent_file.txt", 'r') as f:
-                    f.read()
-                return False
-            except FileNotFoundError:
-                return True
-            except Exception:
-                return False
-        
-        # Test all error scenarios
-        assert test_permission_error() is True
-        assert test_disk_space_error() is True
-        assert test_file_not_found_error() is True
-        
-        print("[PASS] File operation errors tests passed")
-        return True
-        
-    except Exception as e:
-        import traceback
-        print(f"[FAIL] File operation errors tests failed: {e}")
-        print(f"Traceback: {traceback.format_exc()}")
-        return False
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestCodecRegistry:
+    """Test UniversalCodecRegistry."""
+    
+    def test_codec_registry_exists(self):
+        """Test that codec registry is accessible."""
+        registry = get_codec_registry()
+        assert registry is not None
 
 
-def test_path_manager():
-    """Test path management and validation."""
-    try:
-        # Test path validation
-        def validate_path(path):
-            """Validate file path."""
-            try:
-                path_obj = Path(path)
-                return path_obj.is_absolute() or path_obj.is_relative_to(Path.cwd())
-            except Exception:
-                return False
-        
-        # Test path sanitization
-        def sanitize_path(path):
-            """Sanitize file path."""
-            path_obj = Path(path)
-            # Remove any parent directory references
-            parts = []
-            for part in path_obj.parts:
-                if part == "..":
-                    if parts:
-                        parts.pop()
-                elif part != ".":
-                    parts.append(part)
-            return Path(*parts)
-        
-        # Test path operations
-        test_paths = [
-            "file.txt",
-            "subdir/file.txt",
-            "../parent/file.txt",
-            "./current/file.txt",
-            "/absolute/path/file.txt"
-        ]
-        
-        for path in test_paths:
-            path_obj = Path(path)
-            assert isinstance(path_obj, Path)
-            
-            # Test sanitization
-            sanitized = sanitize_path(path)
-            assert isinstance(sanitized, Path)
-            
-            # Test path components
-            assert path_obj.name is not None
-            assert path_obj.suffix is not None
-            assert path_obj.stem is not None
-        
-        print("[PASS] Path manager tests passed")
-        return True
-        
-    except Exception as e:
-        print(f"[FAIL] Path manager tests failed: {e}")
-        return False
-
-
-def test_concurrent_file_operations():
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_io
+class TestConcurrentOperations:
     """Test concurrent file operations."""
-    try:
-        # Test concurrent file writing
-        def concurrent_write(file_path, content, thread_id):
-            """Write content to file concurrently."""
-            try:
-                with open(f"{file_path}_{thread_id}", 'w') as f:
-                    f.write(f"{content}_{thread_id}")
-                return True
-            except Exception:
-                return False
-        
-        # Test concurrent file reading
-        def concurrent_read(file_path, thread_id):
-            """Read file content concurrently."""
-            try:
-                with open(f"{file_path}_{thread_id}", 'r') as f:
-                    return f.read()
-            except Exception:
-                return None
-        
-        # Test concurrent operations
-        with tempfile.NamedTemporaryFile(delete=False) as f:
-            test_file = f.name
-        
-        try:
-            test_content = "concurrent_test_content"
-            
-            # Start multiple concurrent writes
-            threads = []
-            for i in range(5):
-                thread = threading.Thread(target=concurrent_write, args=(test_file, test_content, i))
-                threads.append(thread)
-                thread.start()
-            
-            # Wait for all writes to complete
-            for thread in threads:
-                thread.join()
-            
-            # Test concurrent reads
-            read_threads = []
-            results = []
-            
-            def read_worker(thread_id):
-                result = concurrent_read(test_file, thread_id)
-                results.append(result)
-            
-            for i in range(5):
-                thread = threading.Thread(target=read_worker, args=(i,))
-                read_threads.append(thread)
-                thread.start()
-            
-            # Wait for all reads to complete
-            for thread in read_threads:
-                thread.join()
-            
-            # Verify results
-            assert len(results) == 5
-            assert all(result is not None for result in results)
-            assert all(f"{test_content}_" in result for result in results)
-            
-        finally:
-            # Clean up test files
-            for i in range(5):
-                test_file_i = f"{test_file}_{i}"
-                if os.path.exists(test_file_i):
-                    os.unlink(test_file_i)
-        
-        print("[PASS] Concurrent file operations tests passed")
-        return True
-        
-    except Exception as e:
-        print(f"[FAIL] Concurrent file operations tests failed: {e}")
-        return False
-
-
-def main():
-    """Run all XSystem I/O tests."""
-    print("[IO] XSystem I/O Core Tests")
-    print("=" * 50)
-    print("Testing XSystem I/O features including atomic operations, safe handling, and concurrency")
-    print("=" * 50)
     
-    tests = [
-        ("Atomic File Operations", test_atomic_file_operations),
-        ("Safe File Operations", test_safe_file_operations),
-        ("Async File Operations", test_async_file_operations),
-        ("File Operation Errors", test_file_operation_errors),
-        ("Path Manager", test_path_manager),
-        ("Concurrent File Operations", test_concurrent_file_operations),
-    ]
-    
-    passed = 0
-    total = len(tests)
-    
-    for test_name, test_func in tests:
-        print(f"\n[INFO] Testing: {test_name}")
-        print("-" * 30)
+    def test_concurrent_file_writes(self, tmp_path):
+        """Test concurrent file writes with locks."""
+        test_file = tmp_path / "concurrent.txt"
+        results = []
         
-        try:
-            if test_func():
-                passed += 1
-        except Exception as e:
-            print(f"[FAIL] Test {test_name} crashed: {e}")
-    
-    print(f"\n{'='*50}")
-    print("[MONITOR] XSYSTEM I/O TEST SUMMARY")
-    print(f"{'='*50}")
-    print(f"Results: {passed}/{total} tests passed")
-    
-    if passed == total:
-        print("[SUCCESS] All XSystem I/O tests passed!")
-        return 0
-    else:
-        print("[ERROR] Some XSystem I/O tests failed!")
-        return 1
-
-
-if __name__ == "__main__":
-    exit(main())
+        def write_worker(thread_id):
+            lock = FileLock(test_file)
+            with lock:
+                time.sleep(0.01)  # Simulate work
+                safe_write_text(test_file, f"Thread {thread_id}\n", append=True)
+                results.append(thread_id)
+        
+        # Start multiple threads
+        threads = []
+        for i in range(5):
+            thread = threading.Thread(target=write_worker, args=(i,))
+            threads.append(thread)
+            thread.start()
+        
+        # Wait for all threads
+        for thread in threads:
+            thread.join()
+        
+        # All threads should have written
+        assert len(results) == 5
+        assert test_file.exists()

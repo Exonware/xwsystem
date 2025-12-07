@@ -3,14 +3,16 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Pattern contracts and interfaces for XWSystem design patterns.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Callable, Union
+from typing import Any, Optional, Type, Callable, Union
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 
 # Import enums from types module
 from .defs import (
@@ -42,16 +44,12 @@ from .defs import (
     AggregateType
 )
 
-T = TypeVar('T')
-K = TypeVar('K')
-V = TypeVar('V')
-
 
 # ============================================================================
 # CORE INTERFACES
 # ============================================================================
 
-class IHandler(ABC, Generic[T]):
+class IHandler[T](ABC):
     """Interface for handlers in the chain of responsibility pattern."""
     
     @abstractmethod
@@ -70,7 +68,7 @@ class IHandler(ABC, Generic[T]):
         pass
 
 
-class IHandlerFactory(ABC, Generic[T]):
+class IHandlerFactory[T](ABC):
     """Interface for handler factories."""
     
     @abstractmethod
@@ -89,7 +87,7 @@ class IHandlerFactory(ABC, Generic[T]):
         pass
     
     @abstractmethod
-    def list_handlers(self) -> List[str]:
+    def list_handlers(self) -> list[str]:
         """List all registered handler types."""
         pass
     
@@ -120,12 +118,12 @@ class IContextManager(ABC):
         pass
     
     @abstractmethod
-    def get_context_data(self) -> Dict[str, Any]:
+    def get_context_data(self) -> dict[str, Any]:
         """Get context data."""
         pass
 
 
-class IObjectPool(ABC, Generic[T]):
+class IObjectPool[T](ABC):
     """Interface for object pools."""
     
     @abstractmethod
@@ -144,7 +142,7 @@ class IObjectPool(ABC, Generic[T]):
         pass
     
     @abstractmethod
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get pool statistics."""
         pass
     
@@ -154,7 +152,7 @@ class IObjectPool(ABC, Generic[T]):
         pass
 
 
-class IRegistry(ABC, Generic[K, V]):
+class IRegistry[K, V](ABC):
     """Interface for registries."""
     
     @abstractmethod
@@ -178,12 +176,12 @@ class IRegistry(ABC, Generic[K, V]):
         pass
     
     @abstractmethod
-    def list_keys(self) -> List[K]:
+    def list_keys(self) -> list[K]:
         """List all keys."""
         pass
     
     @abstractmethod
-    def list_values(self) -> List[V]:
+    def list_values(self) -> list[V]:
         """List all values."""
         pass
     
@@ -293,7 +291,7 @@ class IState(ABC):
         pass
 
 
-class IBuilder(ABC, Generic[T]):
+class IBuilder[T](ABC):
     """Interface for builders."""
     
     @abstractmethod
@@ -312,7 +310,7 @@ class IBuilder(ABC, Generic[T]):
         pass
 
 
-class IPrototype(ABC, Generic[T]):
+class IPrototype[T](ABC):
     """Interface for prototypes."""
     
     @abstractmethod
@@ -355,7 +353,7 @@ class IAdapter(ABC):
         pass
 
 
-class IDecorator(ABC, Generic[T]):
+class IDecorator[T](ABC):
     """Interface for decorators."""
     
     @abstractmethod
@@ -374,7 +372,7 @@ class IDecorator(ABC, Generic[T]):
         pass
 
 
-class IProxy(ABC, Generic[T]):
+class IProxy[T](ABC):
     """Interface for proxies."""
     
     @abstractmethod
@@ -402,7 +400,7 @@ class IFacade(ABC):
         pass
     
     @abstractmethod
-    def get_available_operations(self) -> List[str]:
+    def get_available_operations(self) -> list[str]:
         """Get list of available operations."""
         pass
     
@@ -416,7 +414,7 @@ class IDynamicFacade(ABC):
     """Interface for dynamic facades."""
     
     @abstractmethod
-    def get_available_formats(self) -> List[str]:
+    def get_available_formats(self) -> list[str]:
         """Get list of available formats."""
         pass
     
@@ -535,7 +533,7 @@ class IElement(ABC):
         pass
 
 
-class IIterator(ABC, Generic[T]):
+class IIterator[T](ABC):
     """Interface for iterators."""
     
     @abstractmethod
@@ -602,7 +600,7 @@ class IArchitecturalPattern(ABC):
         pass
     
     @abstractmethod
-    def get_components(self) -> List[str]:
+    def get_components(self) -> list[str]:
         """Get list of components."""
         pass
 
@@ -664,7 +662,7 @@ class IAggregate(ABC):
         pass
     
     @abstractmethod
-    def get_uncommitted_events(self) -> List[Any]:
+    def get_uncommitted_events(self) -> list[Any]:
         """Get uncommitted events."""
         pass
     

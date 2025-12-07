@@ -44,6 +44,10 @@
 - **[REF_API.md](REF_API.md)** - Complete API reference (to be created)
   - Will consolidate: Serialization API, Core modules, Codec API
 
+**Serialization & I/O:**
+- **[SerializationAdvanceRequirements.md](SerializationAdvanceRequirements.md)** - Advanced serialization features requirements & implementation plan
+- **[LARGE_FILE_SUPPORT.md](LARGE_FILE_SUPPORT.md)** - Large file support architecture and capabilities
+
 **Current Reference Files (to be consolidated):**
 - [CHANGE_20251030_2221_SERIALIZATION_REFERENCE.md](logs/changes/CHANGE_20251030_2221_SERIALIZATION_REFERENCE.md) - Serialization formats reference
 - [CHANGE_20251104_1919_CORE_MODULES.md](logs/changes/CHANGE_20251104_1919_CORE_MODULES.md) - Core modules analysis

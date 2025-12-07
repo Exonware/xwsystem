@@ -112,10 +112,32 @@ class TestMultipleFormats:
         io = XWIO()
         test_file = tmp_path / f'data{extension}'
         
+        # INI format requires sections, so wrap data in a section
+        if format_id == 'ini':
+            ini_data = {'user': test_data}
+        else:
+            ini_data = test_data
+        
         # Write
-        io.save_as(test_file, test_data, format_id)
+        io.save_as(test_file, ini_data, format_id)
         
         # Read
         loaded = io.load_as(test_file, format_id)
-        assert loaded == test_data
+        
+        # INI format wraps flat dicts in DEFAULT section and converts values to strings
+        if format_id == 'ini':
+            # INI format returns dict with sections, and values are strings
+            assert 'user' in loaded or 'DEFAULT' in loaded
+            if 'user' in loaded:
+                # Values are strings in INI format
+                assert loaded['user']['name'] == 'Alice'
+                assert loaded['user']['age'] == '30'
+                assert loaded['user']['active'] == 'True'
+            else:
+                # Flat dict wrapped in DEFAULT
+                assert loaded['DEFAULT']['name'] == 'Alice'
+                assert loaded['DEFAULT']['age'] == '30'
+                assert loaded['DEFAULT']['active'] == 'True'
+        else:
+            assert loaded == test_data
 

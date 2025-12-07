@@ -9,7 +9,7 @@ framework-wide reusability.
 import logging
 import time
 from contextlib import contextmanager
-from typing import Any, ContextManager, Dict, List, Optional
+from typing import Any, ContextManager, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +30,8 @@ class PerformanceStats:
         """Initialize empty performance statistics."""
         self.operations_count = 0
         self.total_processing_time = 0.0
-        self.memory_usage_samples: List[Dict[str, Any]] = []
-        self.operation_history: List[Dict[str, Any]] = []
+        self.memory_usage_samples: list[dict[str, Any]] = []
+        self.operation_history: list[dict[str, Any]] = []
         self.error_count = 0
         self.cache_hits = 0
         self.cache_misses = 0
@@ -46,7 +46,7 @@ class PerformanceStats:
         self.cache_hits = 0
         self.cache_misses = 0
 
-    def to_native(self) -> Dict[str, Any]:
+    def to_native(self) -> dict[str, Any]:
         """Convert statistics to dictionary format."""
         return {
             "operations_count": self.operations_count,
@@ -58,7 +58,7 @@ class PerformanceStats:
             "cache_misses": self.cache_misses,
         }
 
-    def from_native(self, data: Dict[str, Any]) -> None:
+    def from_native(self, data: dict[str, Any]) -> None:
         """Load statistics from dictionary format."""
         self.operations_count = data.get("operations_count", 0)
         self.total_processing_time = data.get("total_processing_time", 0.0)
@@ -73,7 +73,7 @@ class PerformanceStats:
         operation_name: str,
         duration: float,
         success: bool = True,
-        memory_usage: Optional[Dict[str, Any]] = None,
+        memory_usage: Optional[dict[str, Any]] = None,
         **context_data: Any,
     ) -> None:
         """Add operation data to statistics."""
@@ -155,7 +155,7 @@ class PerformanceMonitor:
         """Get current performance statistics."""
         return self.stats
 
-    def get_stats_dict(self) -> Dict[str, Any]:
+    def get_stats_dict(self) -> dict[str, Any]:
         """Get performance statistics as dictionary."""
         return self.stats.to_native()
 
@@ -179,7 +179,7 @@ class PerformanceMonitor:
         operation_name: str,
         duration: float,
         success: bool = True,
-        memory_usage: Optional[Dict[str, Any]] = None,
+        memory_usage: Optional[dict[str, Any]] = None,
         **context_data: Any,
     ) -> None:
         """Record an operation manually."""
@@ -200,7 +200,7 @@ class PerformanceMonitor:
         if self._enabled:
             self.stats.cache_misses += 1
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get performance summary."""
         return {
             "monitor_name": self.name,
@@ -303,7 +303,7 @@ def enhanced_error_context(operation: str, **context_data: Any) -> ContextManage
     return ErrorContext()
 
 
-def calculate_performance_summary(stats: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_performance_summary(stats: dict[str, Any]) -> dict[str, Any]:
     """
     Calculate performance summary from statistics.
 
@@ -341,7 +341,7 @@ def calculate_performance_summary(stats: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def format_performance_report(
-    stats: Dict[str, Any], include_history: bool = False
+    stats: dict[str, Any], include_history: bool = False
 ) -> str:
     """
     Format performance statistics as a readable report.

@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 XWFolder - Concrete implementation of folder operations.
@@ -11,7 +11,7 @@ XWFolder - Concrete implementation of folder operations.
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from ..base import AFolder
 from ..contracts import OperationResult, IFolder
@@ -132,7 +132,7 @@ class XWFolder(AFolder):
     # UTILITY METHODS
     # ============================================================================
     
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """Get comprehensive directory information."""
         return {
             'dir_path': str(self.dir_path),
@@ -163,11 +163,11 @@ class XWFolder(AFolder):
         """Get total size of directory including subdirectories."""
         return self.get_size()
     
-    def find_files(self, pattern: str, recursive: bool = True) -> List[Path]:
+    def find_files(self, pattern: str, recursive: bool = True) -> list[Path]:
         """Find files matching pattern."""
         return self.list_files(pattern, recursive)
     
-    def find_directories(self, pattern: str, recursive: bool = True) -> List[Path]:
+    def find_directories(self, pattern: str, recursive: bool = True) -> list[Path]:
         """Find directories matching pattern."""
         if not self.dir_path.exists():
             return []

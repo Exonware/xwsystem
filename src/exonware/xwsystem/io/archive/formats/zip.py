@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 ZIP archive format implementation.
@@ -18,7 +18,7 @@ Priority 5 (Extensibility): Registered via registry
 
 import zipfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from ...contracts import IArchiveFormat
 
@@ -32,16 +32,16 @@ class ZipArchiver(IArchiveFormat):
         return "zip"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".zip", ".jar", ".war", ".ear"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/zip", "application/java-archive"]
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """Create ZIP archive."""
         output.parent.mkdir(parents=True, exist_ok=True)
         
@@ -60,10 +60,10 @@ class ZipArchiver(IArchiveFormat):
                             arcname = str(item.relative_to(file_path.parent))
                             zf.write(item, arcname=arcname)
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract ZIP archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
-        extracted: List[Path] = []
+        extracted: list[Path] = []
         
         with zipfile.ZipFile(archive, 'r') as zf:
             if members:
@@ -76,7 +76,7 @@ class ZipArchiver(IArchiveFormat):
         
         return extracted
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List ZIP contents."""
         with zipfile.ZipFile(archive, 'r') as zf:
             return zf.namelist()

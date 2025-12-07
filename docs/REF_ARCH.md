@@ -6,7 +6,7 @@
 
 ---
 
-## ?? Overview
+## 📊 Overview
 
 exonware-xwsystem is the foundation library for the entire eXonware ecosystem, providing core functionality through a modular, extensible architecture.
 
@@ -14,7 +14,7 @@ exonware-xwsystem is the foundation library for the entire eXonware ecosystem, p
 
 ---
 
-## ??? System Architecture
+## 🏗️ System Architecture
 
 ### High-Level Structure
 
@@ -41,7 +41,7 @@ exonware-xwsystem/
 
 ---
 
-## ?? Module Breakdown
+## 📦 Module Breakdown
 
 ### 1. IO Module (`io/`)
 
@@ -142,7 +142,7 @@ exonware-xwsystem/
 
 ---
 
-## ?? Design Patterns
+## 🎨 Design Patterns
 
 ### 1. Strategy Pattern (Serialization)
 
@@ -198,7 +198,7 @@ CodecBase (defines skeleton)
 
 ---
 
-## ?? Data Flow
+## 🔄 Data Flow
 
 ### Serialization Flow
 
@@ -230,7 +230,7 @@ Python Object
 
 ---
 
-## ?? Extensibility Points
+## 🔌 Extensibility Points
 
 ### 1. Custom Codecs
 
@@ -250,7 +250,7 @@ Implement custom HTTP transports (e.g., mock, retry logic)
 
 ---
 
-## ?? Security Architecture
+## 🔒 Security Architecture
 
 ### Defense-in-Depth Layers
 
@@ -278,7 +278,7 @@ Implement custom HTTP transports (e.g., mock, retry logic)
 
 ---
 
-## ?? Testing Architecture
+## 🧪 Testing Architecture
 
 ### 4-Layer Test Hierarchy
 
@@ -295,7 +295,7 @@ tests/
 
 ---
 
-## ?? Ecosystem Integration
+## 🌐 Ecosystem Integration
 
 ### Current Status
 
@@ -324,7 +324,7 @@ xwentity (uses xwschema + xwaction + xwdata)
 
 ---
 
-## ?? Architectural Principles
+## 📐 Architectural Principles
 
 ### 1. Single Responsibility
 
@@ -352,7 +352,7 @@ All serializers interchangeable through common interface
 
 ---
 
-## ?? Versioning Architecture
+## 🔢 Versioning Architecture
 
 ### Overview
 
@@ -515,7 +515,7 @@ def sync_wrapper_method(self, *args, **kwargs):
 
 ---
 
-## ?? Related Documentation
+## 📚 Related Documentation
 
 - [guides/GUIDE_ARCH.md](guides/GUIDE_ARCH.md) - Architecture playbook (cross-project standards)
 - [guides/GUIDE_COMP.md](guides/GUIDE_COMP.md) - Compliance program and Mars Standard roadmap

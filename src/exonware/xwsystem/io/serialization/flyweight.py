@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 05, 2025
 
 Flyweight Pattern Implementation for Serializers
@@ -14,15 +14,15 @@ configuration, which is especially important for high-throughput applications.
 """
 
 import threading
-from typing import Any, Dict, Hashable, Optional, Type, TypeVar, Union
+from typing import Any, Hashable, Optional, Type, Union
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from weakref import WeakValueDictionary
 
 from ...config.logging_setup import get_logger
 from .contracts import ISerialization
 
 logger = get_logger("xsystem.serialization.flyweight")
-
-T = TypeVar('T', bound=ISerialization)
 
 
 class SerializerFlyweight:
@@ -44,7 +44,7 @@ class SerializerFlyweight:
             'cache_misses': 0
         }
     
-    def get_serializer(
+    def get_serializer[T: ISerialization](
         self, 
         serializer_class: Type[T],
         **config: Any
@@ -85,7 +85,7 @@ class SerializerFlyweight:
                 logger.error(f"Failed to create {serializer_class.__name__} instance: {e}")
                 raise
     
-    def _create_cache_key(self, serializer_class: Type[T], config: Dict[str, Any]) -> str:
+    def _create_cache_key[T: ISerialization](self, serializer_class: Type[T], config: dict[str, Any]) -> str:
         """
         Create a hashable cache key from class and configuration.
         
@@ -118,7 +118,7 @@ class SerializerFlyweight:
         except TypeError:
             return False
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get flyweight usage statistics.
         
@@ -150,7 +150,7 @@ class SerializerFlyweight:
             self._instances.clear()
             logger.info(f"Cleared {cleared_count} serializer instances from cache")
     
-    def get_cache_info(self) -> Dict[str, Any]:
+    def get_cache_info(self) -> dict[str, Any]:
         """
         Get detailed cache information.
         
@@ -172,7 +172,7 @@ class SerializerFlyweight:
 _serializer_flyweight = SerializerFlyweight()
 
 
-def get_serializer(serializer_class: Type[T], **config: Any) -> T:
+def get_serializer[T: ISerialization](serializer_class: Type[T], **config: Any) -> T:
     """
     Get a serializer instance using the flyweight pattern.
     
@@ -196,7 +196,7 @@ def get_serializer(serializer_class: Type[T], **config: Any) -> T:
     return _serializer_flyweight.get_serializer(serializer_class, **config)
 
 
-def get_flyweight_stats() -> Dict[str, Any]:
+def get_flyweight_stats() -> dict[str, Any]:
     """
     Get flyweight usage statistics.
     
@@ -218,7 +218,7 @@ def clear_serializer_cache() -> None:
     _serializer_flyweight.clear_cache()
 
 
-def get_cache_info() -> Dict[str, Any]:
+def get_cache_info() -> dict[str, Any]:
     """Get detailed information about cached serializer instances."""
     return _serializer_flyweight.get_cache_info()
 
@@ -241,14 +241,14 @@ class SerializerPool:
         """
         self.max_size = max_size
         self.eviction_policy = eviction_policy
-        self._instances: Dict[str, ISerialization] = {}
-        self._access_order: Dict[str, int] = {}  # For LRU
-        self._access_count: Dict[str, int] = {}  # For LFU
-        self._insertion_order: Dict[str, int] = {}  # For FIFO
+        self._instances: dict[str, ISerialization] = {}
+        self._access_order: dict[str, int] = {}  # For LRU
+        self._access_count: dict[str, int] = {}  # For LFU
+        self._insertion_order: dict[str, int] = {}  # For FIFO
         self._counter = 0
         self._lock = threading.RLock()
     
-    def get_serializer(self, serializer_class: Type[T], **config: Any) -> T:
+    def get_serializer[T: ISerialization](self, serializer_class: Type[T], **config: Any) -> T:
         """Get serializer from pool with size-limited caching."""
         cache_key = self._create_cache_key(serializer_class, config)
         
@@ -302,11 +302,11 @@ class SerializerPool:
         
         logger.debug(f"Evicted serializer instance: {lru_key[:32]}...")
     
-    def _create_cache_key(self, serializer_class: Type[T], config: Dict[str, Any]) -> str:
+    def _create_cache_key[T: ISerialization](self, serializer_class: Type[T], config: dict[str, Any]) -> str:
         """Create cache key (same as flyweight implementation)."""
         return _serializer_flyweight._create_cache_key(serializer_class, config)
     
-    def get_pool_stats(self) -> Dict[str, Any]:
+    def get_pool_stats(self) -> dict[str, Any]:
         """Get pool statistics."""
         with self._lock:
             return {

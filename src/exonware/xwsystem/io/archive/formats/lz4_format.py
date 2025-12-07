@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 LZ4 compression format - RANK #7 FASTEST COMPRESSION.
@@ -20,7 +20,7 @@ Priority 5 (Extensibility): Lazy installation of lz4
 
 import tarfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
@@ -58,16 +58,16 @@ class Lz4Archiver(IArchiveFormat):
         return "lz4"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".lz4", ".tar.lz4", ".tlz4"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/x-lz4"]
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """
         Create LZ4-compressed tar archive.
         
@@ -100,7 +100,7 @@ class Lz4Archiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create lz4 archive: {e}")
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract LZ4 archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
         
@@ -127,7 +127,7 @@ class Lz4Archiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to extract lz4 archive: {e}")
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List LZ4 archive contents."""
         try:
             compressed = archive.read_bytes()

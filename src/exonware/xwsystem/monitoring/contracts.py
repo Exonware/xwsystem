@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Monitoring protocol interfaces for XWSystem.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Callable, Tuple, Protocol
+from typing import Any, Optional, Union, Iterator, Callable, Protocol
 from typing_extensions import runtime_checkable
 import time
 
@@ -63,7 +63,7 @@ class IPerformance(ABC):
         pass
     
     @abstractmethod
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """
         Get performance metrics.
         
@@ -172,7 +172,7 @@ class IMonitorable(ABC):
         pass
     
     @abstractmethod
-    def get_health(self) -> Dict[str, Any]:
+    def get_health(self) -> dict[str, Any]:
         """
         Get health information.
         
@@ -192,7 +192,7 @@ class IMonitorable(ABC):
         pass
     
     @abstractmethod
-    def get_monitoring_info(self) -> Dict[str, Any]:
+    def get_monitoring_info(self) -> dict[str, Any]:
         """
         Get monitoring information.
         
@@ -234,7 +234,7 @@ class IMetrics(ABC):
     """
     
     @abstractmethod
-    def collect_metrics(self) -> Dict[str, Any]:
+    def collect_metrics(self) -> dict[str, Any]:
         """
         Collect all metrics.
         
@@ -244,7 +244,7 @@ class IMetrics(ABC):
         pass
     
     @abstractmethod
-    def add_metric(self, name: str, value: Any, labels: Optional[Dict[str, str]] = None) -> None:
+    def add_metric(self, name: str, value: Any, labels: Optional[dict[str, str]] = None) -> None:
         """
         Add metric.
         
@@ -282,7 +282,7 @@ class IMetrics(ABC):
         pass
     
     @abstractmethod
-    def list_metrics(self) -> List[str]:
+    def list_metrics(self) -> list[str]:
         """
         List all metric names.
         
@@ -312,7 +312,7 @@ class IMetrics(ABC):
         pass
     
     @abstractmethod
-    def get_metrics_summary(self) -> Dict[str, Any]:
+    def get_metrics_summary(self) -> dict[str, Any]:
         """
         Get metrics summary.
         
@@ -344,7 +344,7 @@ class IHealthCheck(ABC):
         pass
     
     @abstractmethod
-    def get_health_details(self) -> Dict[str, Any]:
+    def get_health_details(self) -> dict[str, Any]:
         """
         Get detailed health information.
         
@@ -378,7 +378,7 @@ class IHealthCheck(ABC):
         pass
     
     @abstractmethod
-    def list_health_checks(self) -> List[str]:
+    def list_health_checks(self) -> list[str]:
         """
         List all health check names.
         
@@ -388,7 +388,7 @@ class IHealthCheck(ABC):
         pass
     
     @abstractmethod
-    def run_health_checks(self) -> Dict[str, HealthStatus]:
+    def run_health_checks(self) -> dict[str, HealthStatus]:
         """
         Run all health checks.
         
@@ -446,7 +446,7 @@ class IAlerting(ABC):
         pass
     
     @abstractmethod
-    def get_alert(self, alert_id: str) -> Optional[Dict[str, Any]]:
+    def get_alert(self, alert_id: str) -> Optional[dict[str, Any]]:
         """
         Get alert by ID.
         
@@ -459,7 +459,7 @@ class IAlerting(ABC):
         pass
     
     @abstractmethod
-    def list_alerts(self, level: Optional[AlertLevel] = None) -> List[Dict[str, Any]]:
+    def list_alerts(self, level: Optional[AlertLevel] = None) -> list[dict[str, Any]]:
         """
         List alerts.
         
@@ -513,7 +513,7 @@ class IAlerting(ABC):
         pass
     
     @abstractmethod
-    def get_alert_stats(self) -> Dict[str, int]:
+    def get_alert_stats(self) -> dict[str, int]:
         """
         Get alert statistics.
         
@@ -557,7 +557,7 @@ class ISystemMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_memory_usage(self) -> Dict[str, Any]:
+    def get_memory_usage(self) -> dict[str, Any]:
         """
         Get memory usage information.
         
@@ -567,7 +567,7 @@ class ISystemMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_disk_usage(self) -> Dict[str, Any]:
+    def get_disk_usage(self) -> dict[str, Any]:
         """
         Get disk usage information.
         
@@ -577,7 +577,7 @@ class ISystemMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_network_usage(self) -> Dict[str, Any]:
+    def get_network_usage(self) -> dict[str, Any]:
         """
         Get network usage information.
         
@@ -587,7 +587,7 @@ class ISystemMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_process_info(self) -> List[Dict[str, Any]]:
+    def get_process_info(self) -> list[dict[str, Any]]:
         """
         Get process information.
         
@@ -617,7 +617,7 @@ class ISystemMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_system_info(self) -> Dict[str, Any]:
+    def get_system_info(self) -> dict[str, Any]:
         """
         Get system information.
         
@@ -652,7 +652,7 @@ class IProfiler(ABC):
         pass
     
     @abstractmethod
-    def stop_profiling(self, session_id: str) -> Dict[str, Any]:
+    def stop_profiling(self, session_id: str) -> dict[str, Any]:
         """
         Stop profiling session.
         
@@ -665,7 +665,7 @@ class IProfiler(ABC):
         pass
     
     @abstractmethod
-    def profile_function(self, func: Callable, *args, **kwargs) -> Tuple[Any, Dict[str, Any]]:
+    def profile_function(self, func: Callable, *args, **kwargs) -> tuple[Any, dict[str, Any]]:
         """
         Profile function execution.
         
@@ -680,7 +680,7 @@ class IProfiler(ABC):
         pass
     
     @abstractmethod
-    def get_profiling_results(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def get_profiling_results(self, session_id: str) -> Optional[dict[str, Any]]:
         """
         Get profiling results.
         
@@ -693,7 +693,7 @@ class IProfiler(ABC):
         pass
     
     @abstractmethod
-    def list_profiling_sessions(self) -> List[str]:
+    def list_profiling_sessions(self) -> list[str]:
         """
         List profiling sessions.
         
@@ -813,7 +813,7 @@ class IMonitoringConfig(ABC):
         pass
     
     @abstractmethod
-    def get_monitoring_config(self) -> Dict[str, Any]:
+    def get_monitoring_config(self) -> dict[str, Any]:
         """
         Get monitoring configuration.
         
@@ -823,7 +823,7 @@ class IMonitoringConfig(ABC):
         pass
     
     @abstractmethod
-    def set_monitoring_config(self, config: Dict[str, Any]) -> None:
+    def set_monitoring_config(self, config: dict[str, Any]) -> None:
         """
         Set monitoring configuration.
         
@@ -849,6 +849,6 @@ class Monitorable(Protocol):
         """Stop performance monitoring."""
         ...
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get performance statistics."""
         ...

@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 10, 2025
 
 Shared protocol interfaces (merged from the former core module).
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Iterator, List, Optional, Union
+from typing import Any, Iterator, Optional, Union
 
 from .defs import CloneMode, CoreMode, CorePriority, CoreState, DataType
 
@@ -515,7 +515,7 @@ class IMetadata(ABC):
         pass
 
     @abstractmethod
-    def get_all_metadata(self) -> Dict[str, Any]:
+    def get_all_metadata(self) -> dict[str, Any]:
         """
         Get all metadata.
 
@@ -622,7 +622,7 @@ class IFactory(ABC):
         pass
 
     @abstractmethod
-    def create_from_config(self, config: Dict[str, Any]) -> Any:
+    def create_from_config(self, config: dict[str, Any]) -> Any:
         """
         Create instance from configuration.
 
@@ -635,7 +635,7 @@ class IFactory(ABC):
         pass
 
     @abstractmethod
-    def get_supported_types(self) -> List[str]:
+    def get_supported_types(self) -> list[str]:
         """
         Get list of supported types.
 
@@ -699,7 +699,7 @@ class ICore(ABC):
         pass
 
     @abstractmethod
-    def get_dependencies(self) -> List[str]:
+    def get_dependencies(self) -> list[str]:
         """Get all dependencies."""
         pass
 

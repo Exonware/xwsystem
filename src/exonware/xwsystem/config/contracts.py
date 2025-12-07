@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Configuration protocol interfaces for XWSystem.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Callable, Protocol
+from typing import Any, Optional, Union, Iterator, Callable, Protocol
 from typing_extensions import runtime_checkable
 from pathlib import Path
 import os
@@ -50,7 +50,7 @@ class IConfigurable(ABC):
         pass
     
     @abstractmethod
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """
         Get current configuration.
         
@@ -104,7 +104,7 @@ class IConfigurable(ABC):
         pass
     
     @abstractmethod
-    def merge_config(self, config: Dict[str, Any], priority: ConfigPriority = ConfigPriority.NORMAL) -> None:
+    def merge_config(self, config: dict[str, Any], priority: ConfigPriority = ConfigPriority.NORMAL) -> None:
         """
         Merge configuration with existing.
         
@@ -178,7 +178,7 @@ class ISettings(ABC):
         pass
     
     @abstractmethod
-    def get_all_settings(self) -> Dict[str, Any]:
+    def get_all_settings(self) -> dict[str, Any]:
         """
         Get all settings.
         
@@ -195,7 +195,7 @@ class ISettings(ABC):
         pass
     
     @abstractmethod
-    def load_settings(self, source: Union[str, Path, Dict[str, Any]]) -> None:
+    def load_settings(self, source: Union[str, Path, dict[str, Any]]) -> None:
         """
         Load settings from source.
         
@@ -304,7 +304,7 @@ class IEnvironment(ABC):
         pass
     
     @abstractmethod
-    def get_all_env(self) -> Dict[str, str]:
+    def get_all_env(self) -> dict[str, str]:
         """
         Get all environment variables.
         
@@ -333,7 +333,7 @@ class IConfigValidator(ABC):
     """
     
     @abstractmethod
-    def validate_config(self, config: Dict[str, Any]) -> bool:
+    def validate_config(self, config: dict[str, Any]) -> bool:
         """
         Validate configuration.
         
@@ -346,7 +346,7 @@ class IConfigValidator(ABC):
         pass
     
     @abstractmethod
-    def get_validation_errors(self, config: Dict[str, Any]) -> List[str]:
+    def get_validation_errors(self, config: dict[str, Any]) -> list[str]:
         """
         Get configuration validation errors.
         
@@ -416,7 +416,7 @@ class IConfigSource(ABC):
     """
     
     @abstractmethod
-    def load_config(self) -> Dict[str, Any]:
+    def load_config(self) -> dict[str, Any]:
         """
         Load configuration from source.
         
@@ -426,7 +426,7 @@ class IConfigSource(ABC):
         pass
     
     @abstractmethod
-    def save_config(self, config: Dict[str, Any]) -> bool:
+    def save_config(self, config: dict[str, Any]) -> bool:
         """
         Save configuration to source.
         
@@ -449,7 +449,7 @@ class IConfigSource(ABC):
         pass
     
     @abstractmethod
-    def get_source_info(self) -> Dict[str, Any]:
+    def get_source_info(self) -> dict[str, Any]:
         """
         Get source information.
         
@@ -514,7 +514,7 @@ class IConfigManager(ABC):
         pass
     
     @abstractmethod
-    def load_all_configs(self) -> Dict[str, Any]:
+    def load_all_configs(self) -> dict[str, Any]:
         """
         Load configuration from all sources.
         
@@ -524,7 +524,7 @@ class IConfigManager(ABC):
         pass
     
     @abstractmethod
-    def save_all_configs(self, config: Dict[str, Any]) -> bool:
+    def save_all_configs(self, config: dict[str, Any]) -> bool:
         """
         Save configuration to all sources.
         
@@ -569,7 +569,7 @@ class IConfigManager(ABC):
         pass
     
     @abstractmethod
-    def get_sources(self) -> List[IConfigSource]:
+    def get_sources(self) -> list[IConfigSource]:
         """
         Get all configuration sources.
         
@@ -638,7 +638,7 @@ class IConfigWatcher(ABC):
         pass
     
     @abstractmethod
-    def get_watched_keys(self) -> List[str]:
+    def get_watched_keys(self) -> list[str]:
         """
         Get list of watched configuration keys.
         
@@ -680,7 +680,7 @@ class IConfigTemplate(ABC):
     """
     
     @abstractmethod
-    def create_template(self, config: Dict[str, Any]) -> str:
+    def create_template(self, config: dict[str, Any]) -> str:
         """
         Create configuration template.
         
@@ -693,7 +693,7 @@ class IConfigTemplate(ABC):
         pass
     
     @abstractmethod
-    def apply_template(self, template: str, values: Dict[str, Any]) -> Dict[str, Any]:
+    def apply_template(self, template: str, values: dict[str, Any]) -> dict[str, Any]:
         """
         Apply template with values.
         
@@ -720,7 +720,7 @@ class IConfigTemplate(ABC):
         pass
     
     @abstractmethod
-    def get_template_variables(self, template: str) -> List[str]:
+    def get_template_variables(self, template: str) -> list[str]:
         """
         Get template variables.
         
@@ -831,7 +831,7 @@ class IConfigSecrets(ABC):
         pass
     
     @abstractmethod
-    def get_secret_keys(self) -> List[str]:
+    def get_secret_keys(self) -> list[str]:
         """
         Get list of secret configuration keys.
         
@@ -841,7 +841,7 @@ class IConfigSecrets(ABC):
         pass
     
     @abstractmethod
-    def sanitize_config(self, config: Dict[str, Any]) -> Dict[str, Any]:
+    def sanitize_config(self, config: dict[str, Any]) -> dict[str, Any]:
         """
         Sanitize configuration by hiding secrets.
         
@@ -866,7 +866,7 @@ class Configurable(Protocol):
         """Configure object with parameters."""
         ...
     
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get current configuration."""
         ...
 

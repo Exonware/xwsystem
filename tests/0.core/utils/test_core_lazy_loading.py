@@ -7,18 +7,16 @@ import sys
 
 import pytest
 
-from exonware.xwsystem import (
-    enable_lazy_install,
-    install_import_hook,
-    is_import_hook_installed,
-    get_lazy_install_stats,
-    get_all_lazy_install_stats,
-    list_available_formats,
-    JsonSerializer,
-)
-from xwlazy.lazy import DeferredImportError
+# xwlazy has been removed from the codebase, so these imports are no longer available
+# The test file is skipped via pytestmark below
+try:
+    from exonware.xwsystem import JsonSerializer
+except ImportError:
+    JsonSerializer = None  # Fallback if not available
+# from xwlazy.lazy import DeferredImportError
 
-pytestmark = pytest.mark.xsystem_core
+# Skip all tests in this file - xwlazy has been removed
+pytestmark = pytest.mark.skip(reason="xwlazy has been removed from the codebase")
 
 
 def test_stage1_import_without_dependencies():

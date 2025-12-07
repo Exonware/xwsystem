@@ -7,13 +7,13 @@ Production-grade CLI argument parsing for XWSystem.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generated: 2025-01-27
 """
 
 import argparse
 import sys
-from typing import Any, Dict, List, Optional, Callable, Union
+from typing import Any, Optional, Callable, Union
 from dataclasses import dataclass
 import logging
 from .defs import ArgumentType
@@ -40,7 +40,7 @@ class Argument:
     default: Any = None
     help_text: str = ""
     short_name: Optional[str] = None
-    choices: Optional[List[str]] = None
+    choices: Optional[list[str]] = None
     validator: Optional[Callable[[Any], bool]] = None
     action: str = "store"  # store, store_true, store_false, append, count
     nargs: Optional[Union[int, str]] = None  # Number of arguments
@@ -72,9 +72,9 @@ class Command:
     name: str
     handler: Callable
     description: str = ""
-    arguments: List[Argument] = None
-    subcommands: List['Command'] = None
-    examples: List[str] = None
+    arguments: list[Argument] = None
+    subcommands: list['Command'] = None
+    examples: list[str] = None
     
     def __post_init__(self):
         """Initialize command defaults."""
@@ -134,9 +134,9 @@ class ArgumentParser:
             )
         
         # Command registry
-        self._commands: Dict[str, Command] = {}
+        self._commands: dict[str, Command] = {}
         self._subparsers = None
-        self._global_arguments: List[Argument] = []
+        self._global_arguments: list[Argument] = []
     
     def add_argument(self, argument: Argument) -> 'ArgumentParser':
         """
@@ -256,7 +256,7 @@ class ArgumentParser:
         
         parser.add_argument(*names, **kwargs)
     
-    def parse_args(self, args: List[str] = None) -> argparse.Namespace:
+    def parse_args(self, args: list[str] = None) -> argparse.Namespace:
         """
         Parse command-line arguments.
         
@@ -282,7 +282,7 @@ class ArgumentParser:
             self._parser.print_help()
             sys.exit(1)
     
-    def execute(self, args: List[str] = None) -> Any:
+    def execute(self, args: list[str] = None) -> Any:
         """
         Parse arguments and execute the appropriate command.
         

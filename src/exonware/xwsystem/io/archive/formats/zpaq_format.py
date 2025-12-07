@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 ZPAQ journaled compression format - RANK #8 EXTREME COMPRESSION.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Lazy installation of zpaq
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 import subprocess
 import shutil
 
@@ -56,12 +56,12 @@ class ZpaqArchiver(IArchiveFormat):
         return "zpaq"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".zpaq"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/x-zpaq"]
     
@@ -74,7 +74,7 @@ class ZpaqArchiver(IArchiveFormat):
             )
         return Path(zpaq_path)
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """
         Create ZPAQ archive.
         
@@ -102,7 +102,7 @@ class ZpaqArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create zpaq archive: {e}")
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract ZPAQ archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
         zpaq = self._check_zpaq()
@@ -123,7 +123,7 @@ class ZpaqArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to extract zpaq archive: {e}")
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List ZPAQ contents."""
         zpaq = self._check_zpaq()
         

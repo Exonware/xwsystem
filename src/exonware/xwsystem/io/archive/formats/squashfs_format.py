@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 SquashFS filesystem format - RANK #10 EMBEDDED SYSTEMS.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Binary tool integration
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 import subprocess
 import shutil
 
@@ -56,12 +56,12 @@ class SquashfsArchiver(IArchiveFormat):
         return "squashfs"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".squashfs", ".sfs", ".sqfs"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/x-squashfs"]
     
@@ -80,7 +80,7 @@ class SquashfsArchiver(IArchiveFormat):
         
         return Path(mksquashfs), Path(unsquashfs)
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """
         Create SquashFS filesystem.
         
@@ -111,7 +111,7 @@ class SquashfsArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create squashfs: {e}")
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract SquashFS filesystem."""
         output_dir.mkdir(parents=True, exist_ok=True)
         _, unsquashfs = self._check_tools()
@@ -132,7 +132,7 @@ class SquashfsArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to extract squashfs: {e}")
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List SquashFS contents."""
         _, unsquashfs = self._check_tools()
         

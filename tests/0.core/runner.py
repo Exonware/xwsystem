@@ -391,6 +391,22 @@ class CoreTestRunner:
         utils_runner_path = Path(__file__).parent / "utils" / "runner.py"
         return self._run_test_subprocess("Utils", utils_runner_path)
     
+    def run_operations_tests(self) -> int:
+        """Run core operations tests."""
+        print(apply_emojis("[OPERATIONS] Running CORE Operations Tests..."))
+        print("=" * 50)
+        
+        operations_runner_path = Path(__file__).parent / "operations" / "runner.py"
+        return self._run_test_subprocess("Operations", operations_runner_path)
+    
+    def run_shared_tests(self) -> int:
+        """Run core shared tests."""
+        print(apply_emojis("[SHARED] Running CORE Shared Tests..."))
+        print("=" * 50)
+        
+        shared_runner_path = Path(__file__).parent / "shared" / "runner.py"
+        return self._run_test_subprocess("Shared", shared_runner_path)
+    
     def run_all_core_tests(self) -> int:
         """Run all core tests."""
         print(apply_emojis("[RUN] XSystem Core Test Suite"))
@@ -419,6 +435,8 @@ class CoreTestRunner:
             ('runtime', self.run_runtime_tests),
             ('structures', self.run_structures_tests),
             ('utils', self.run_utils_tests),
+            ('operations', self.run_operations_tests),
+            ('shared', self.run_shared_tests),
         ]
         
         for category, test_func in test_categories:
@@ -499,6 +517,10 @@ def main():
             return runner.run_structures_tests()
         elif command == "utils":
             return runner.run_utils_tests()
+        elif command == "operations":
+            return runner.run_operations_tests()
+        elif command == "shared":
+            return runner.run_shared_tests()
         elif command == "help" or command == "--help" or command == "-h":
             show_help()
             return 0
@@ -542,6 +564,8 @@ Commands:
   runtime                Run core runtime tests only
   structures             Run core structures tests only
   utils                  Run core utils tests only
+  operations             Run core operations tests only
+  shared                 Run core shared tests only
   help                   Show this help message
 
 Examples:

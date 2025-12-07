@@ -15,7 +15,7 @@ import re
 import sys
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ def _project_path_context(project_root: Optional[Path] = None):
 
 def _discover_classes_in_module(
     module, module_path: Path, init_folder_path: Path
-) -> List[Tuple[str, str]]:
+) -> list[tuple[str, str]]:
     """
     Discover all public classes in a module.
 
@@ -81,7 +81,7 @@ def _discover_classes_in_module(
 
 def _discover_classes_from_file(
     file_path: Path, init_folder_path: Path
-) -> List[Tuple[str, str]]:
+) -> list[tuple[str, str]]:
     """
     Discover classes in a Python file by parsing the AST (fallback when import fails).
 
@@ -120,8 +120,8 @@ def _discover_classes_from_file(
 
 
 def _generate_flat_imports(
-    source_folders: List[str], init_folder_path: Path, project_root: Path
-) -> Tuple[List[str], List[str]]:
+    source_folders: list[str], init_folder_path: Path, project_root: Path
+) -> tuple[list[str], list[str]]:
     """
     Generate flat import statements for all classes.
 
@@ -194,8 +194,8 @@ def _generate_flat_imports(
 
 
 def _generate_tree_imports(
-    source_folders: List[str], init_folder_path: Path, project_root: Path
-) -> Tuple[List[str], List[str]]:
+    source_folders: list[str], init_folder_path: Path, project_root: Path
+) -> tuple[list[str], list[str]]:
     """
     Generate tree-structured import statements for all classes.
 
@@ -267,8 +267,8 @@ def _generate_tree_imports(
 
 
 def _generate_code_block(
-    import_lines: List[str], all_class_names: List[str]
-) -> List[str]:
+    import_lines: list[str], all_class_names: list[str]
+) -> list[str]:
     """
     Generate the complete code block with imports and __all__.
 
@@ -294,8 +294,8 @@ def _generate_code_block(
 
 
 def _update_init_file_content(
-    existing_lines: List[str], generated_block: List[str], auto_markers: Tuple[str, str]
-) -> List[str]:
+    existing_lines: list[str], generated_block: list[str], auto_markers: tuple[str, str]
+) -> list[str]:
     """
     Update the content of an __init__.py file with generated imports.
 
@@ -336,9 +336,9 @@ def _update_init_file_content(
 
 def register_imports_flat(
     target_package: str,
-    source_folders: List[str],
+    source_folders: list[str],
     project_root: Optional[Path] = None,
-    auto_markers: Tuple[str, str] = DEFAULT_AUTO_MARKERS,
+    auto_markers: tuple[str, str] = DEFAULT_AUTO_MARKERS,
     logger_instance: Optional[logging.Logger] = None,
 ) -> bool:
     """
@@ -417,9 +417,9 @@ def register_imports_flat(
 
 def register_imports_tree(
     target_package: str,
-    source_folders: List[str],
+    source_folders: list[str],
     project_root: Optional[Path] = None,
-    auto_markers: Tuple[str, str] = DEFAULT_AUTO_MARKERS,
+    auto_markers: tuple[str, str] = DEFAULT_AUTO_MARKERS,
     logger_instance: Optional[logging.Logger] = None,
 ) -> bool:
     """
@@ -498,12 +498,12 @@ def register_imports_tree(
 
 
 def register_imports_batch(
-    tasks: List[Dict[str, Any]],
+    tasks: list[dict[str, Any]],
     registration_type: str = "flat",
     project_root: Optional[Path] = None,
-    auto_markers: Tuple[str, str] = DEFAULT_AUTO_MARKERS,
+    auto_markers: tuple[str, str] = DEFAULT_AUTO_MARKERS,
     logger_instance: Optional[logging.Logger] = None,
-) -> Dict[str, bool]:
+) -> dict[str, bool]:
     """
     Register imports for multiple packages in batch.
 
@@ -573,7 +573,7 @@ class ImportRegistry:
         self.project_root = project_root or Path.cwd().resolve()
         self._registered_imports = {}
     
-    def register_imports(self, target_package: str, source_folders: List[str], auto_markers: Optional[Tuple[str, str]] = None) -> bool:
+    def register_imports(self, target_package: str, source_folders: list[str], auto_markers: Optional[tuple[str, str]] = None) -> bool:
         """Register imports for a package."""
         return register_imports(
             target_package=target_package,
@@ -582,7 +582,7 @@ class ImportRegistry:
             auto_markers=auto_markers
         )
     
-    def batch_register_imports(self, tasks: List[Dict[str, Any]], auto_markers: Optional[Tuple[str, str]] = None) -> Dict[str, bool]:
+    def batch_register_imports(self, tasks: list[dict[str, Any]], auto_markers: Optional[tuple[str, str]] = None) -> dict[str, bool]:
         """Batch register imports for multiple packages."""
         return batch_register_imports(
             tasks=tasks,
@@ -590,7 +590,7 @@ class ImportRegistry:
             auto_markers=auto_markers
         )
     
-    def get_package_imports(self, package_name: str) -> List[str]:
+    def get_package_imports(self, package_name: str) -> list[str]:
         """Get imports for a package."""
         return self._registered_imports.get(package_name, [])
     
@@ -598,6 +598,6 @@ class ImportRegistry:
         """Clear the import registry."""
         self._registered_imports.clear()
     
-    def list_registered_packages(self) -> List[str]:
+    def list_registered_packages(self) -> list[str]:
         """List all registered packages."""
         return list(self._registered_imports.keys())

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Plugin system base classes and management.
@@ -15,7 +15,7 @@ import threading
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Type, Union
+from typing import Any, Optional, Type, Union
 
 from importlib.metadata import entry_points
 
@@ -39,8 +39,8 @@ class APluginInfo:
     class_name: str = ""
     enabled: bool = True
     priority: int = 100
-    dependencies: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    dependencies: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class APlugin(IPlugin):
@@ -50,7 +50,7 @@ class APlugin(IPlugin):
     Plugins should inherit from this class and implement the required methods.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: Optional[dict[str, Any]] = None) -> None:
         """
         Initialize plugin with optional configuration.
 
@@ -84,7 +84,7 @@ class APlugin(IPlugin):
         return ""
 
     @property
-    def dependencies(self) -> List[str]:
+    def dependencies(self) -> list[str]:
         """List of plugin dependencies."""
         return []
 
@@ -102,7 +102,7 @@ class APlugin(IPlugin):
         """Check if plugin is initialized."""
         return self._initialized
 
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """Get plugin information."""
         return {
             'name': self.name,
@@ -133,7 +133,7 @@ class APlugin(IPlugin):
         """Get plugin priority."""
         return PluginPriority.NORMAL
 
-    def get_dependencies(self) -> List[str]:
+    def get_dependencies(self) -> list[str]:
         """Get plugin dependencies."""
         return self.dependencies
 
@@ -169,9 +169,9 @@ class APluginRegistry:
 
     def __init__(self) -> None:
         """Initialize plugin registry."""
-        self._plugins: Dict[str, APlugin] = {}
-        self._plugin_info: Dict[str, APluginInfo] = {}
-        self._enabled_plugins: Set[str] = set()
+        self._plugins: dict[str, APlugin] = {}
+        self._plugin_info: dict[str, APluginInfo] = {}
+        self._enabled_plugins: set[str] = set()
         self._lock = threading.RLock()
 
     def register(self, plugin: APlugin) -> None:
@@ -234,12 +234,12 @@ class APluginRegistry:
         with self._lock:
             return self._plugins.get(plugin_name)
 
-    def get_all(self) -> Dict[str, APlugin]:
+    def get_all(self) -> dict[str, APlugin]:
         """Get all registered plugins."""
         with self._lock:
             return self._plugins.copy()
 
-    def get_enabled(self) -> Dict[str, APlugin]:
+    def get_enabled(self) -> dict[str, APlugin]:
         """Get all enabled plugins."""
         with self._lock:
             return {name: plugin for name, plugin in self._plugins.items() 
@@ -290,7 +290,7 @@ class APluginRegistry:
             logger.info(f"Disabled plugin: {plugin_name}")
             return True
 
-    def list_plugins(self) -> List[APluginInfo]:
+    def list_plugins(self) -> list[APluginInfo]:
         """Get information about all registered plugins."""
         with self._lock:
             return list(self._plugin_info.values())
@@ -326,9 +326,9 @@ class APluginManager:
             registry: Optional plugin registry to use
         """
         self.registry = registry or APluginRegistry()
-        self._discovered_plugins: Dict[str, Dict[str, Any]] = {}
+        self._discovered_plugins: dict[str, dict[str, Any]] = {}
 
-    def load_plugin_from_module(self, module_path: str, class_name: str, config: Optional[Dict[str, Any]] = None) -> APlugin:
+    def load_plugin_from_module(self, module_path: str, class_name: str, config: Optional[dict[str, Any]] = None) -> APlugin:
         """
         Load plugin from module path and class name.
 
@@ -357,7 +357,7 @@ class APluginManager:
         except Exception as e:
             raise PluginError(f"Failed to load plugin {module_path}.{class_name}: {e}") from e
 
-    def load_plugin_from_file(self, file_path: Union[str, Path], class_name: str, config: Optional[Dict[str, Any]] = None) -> APlugin:
+    def load_plugin_from_file(self, file_path: Union[str, Path], class_name: str, config: Optional[dict[str, Any]] = None) -> APlugin:
         """
         Load plugin from Python file.
 
@@ -403,7 +403,7 @@ class APluginManager:
         except Exception as e:
             raise PluginError(f"Failed to load plugin from {file_path}: {e}") from e
 
-    def discover_entry_points(self, group: str = "xsystem.plugins") -> Dict[str, Dict[str, Any]]:
+    def discover_entry_points(self, group: str = "xsystem.plugins") -> dict[str, dict[str, Any]]:
         """
         Discover plugins through entry points.
 
@@ -439,7 +439,7 @@ class APluginManager:
             
         return discovered
 
-    def discover_directory(self, directory: Union[str, Path], pattern: str = "*.py") -> Dict[str, Dict[str, Any]]:
+    def discover_directory(self, directory: Union[str, Path], pattern: str = "*.py") -> dict[str, dict[str, Any]]:
         """
         Discover plugins in a directory.
 
@@ -492,7 +492,7 @@ class APluginManager:
             
         return discovered
 
-    def load_discovered_plugins(self, plugin_names: Optional[List[str]] = None, config: Optional[Dict[str, Dict[str, Any]]] = None) -> List[APlugin]:
+    def load_discovered_plugins(self, plugin_names: Optional[list[str]] = None, config: Optional[dict[str, dict[str, Any]]] = None) -> list[APlugin]:
         """
         Load discovered plugins.
 
@@ -539,7 +539,7 @@ class APluginManager:
         logger.info(f"Loaded {len(loaded)} plugins")
         return loaded
 
-    def initialize_plugins(self, plugin_names: Optional[List[str]] = None) -> None:
+    def initialize_plugins(self, plugin_names: Optional[list[str]] = None) -> None:
         """
         Initialize plugins with dependency resolution.
 
@@ -585,7 +585,7 @@ class APluginManager:
                 except Exception as e:
                     logger.error(f"Error shutting down plugin {plugin.name}: {e}")
 
-    def get_discovered_plugins(self) -> Dict[str, Dict[str, Any]]:
+    def get_discovered_plugins(self) -> dict[str, dict[str, Any]]:
         """Get all discovered plugins."""
         return self._discovered_plugins.copy()
 
@@ -605,7 +605,7 @@ def get_plugin_manager() -> APluginManager:
 class BasePlugin(APlugin):
     """Base plugin class for backward compatibility."""
     
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[dict[str, Any]] = None):
         """Initialize base plugin."""
         super().__init__(config)
         self._name = "BasePlugin"

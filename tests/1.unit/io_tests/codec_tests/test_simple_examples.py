@@ -47,7 +47,7 @@ class SimpleJsonCodec(ACodec[dict, bytes]):
         return json.loads(repr.decode("utf-8"))
 
     def capabilities(self) -> CodecCapability:
-        return CodecCapability.BIDIRECTIONAL | CodecCapability.TEXT
+        return CodecCapability.BIDIRECTIONAL | CodecCapability.TEXT_OUTPUT
 
 
 class SimpleSqlFormatter(ACodec[dict, str]):
@@ -76,7 +76,7 @@ class SimpleSqlFormatter(ACodec[dict, str]):
         return {"raw": repr}
 
     def capabilities(self) -> CodecCapability:
-        return CodecCapability.BIDIRECTIONAL | CodecCapability.TEXT
+        return CodecCapability.BIDIRECTIONAL | CodecCapability.TEXT_OUTPUT
 
 
 # ============================================================================

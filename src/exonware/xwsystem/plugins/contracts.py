@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Plugin protocol interfaces for XWSystem.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Callable, Type, Tuple
+from typing import Any, Optional, Union, Iterator, Callable, Type
 import importlib
 
 # Import enums from types module
@@ -49,7 +49,7 @@ class IPlugin(ABC):
         pass
     
     @abstractmethod
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """
         Get plugin information.
         
@@ -113,7 +113,7 @@ class IPlugin(ABC):
         pass
     
     @abstractmethod
-    def get_dependencies(self) -> List[str]:
+    def get_dependencies(self) -> list[str]:
         """
         Get plugin dependencies.
         
@@ -191,7 +191,7 @@ class IExtensible(ABC):
         pass
     
     @abstractmethod
-    def get_extensions(self) -> List[Any]:
+    def get_extensions(self) -> list[Any]:
         """
         Get all extensions.
         
@@ -227,7 +227,7 @@ class IExtensible(ABC):
         pass
     
     @abstractmethod
-    def list_extension_names(self) -> List[str]:
+    def list_extension_names(self) -> list[str]:
         """
         List extension names.
         
@@ -309,7 +309,7 @@ class IHookable(ABC):
         pass
     
     @abstractmethod
-    def list_hooks(self, event: Optional[str] = None) -> List[Dict[str, Any]]:
+    def list_hooks(self, event: Optional[str] = None) -> list[dict[str, Any]]:
         """
         List hooks.
         
@@ -422,7 +422,7 @@ class IPluginManager(ABC):
         pass
     
     @abstractmethod
-    def list_plugins(self) -> List[str]:
+    def list_plugins(self) -> list[str]:
         """
         List all plugin names.
         
@@ -432,7 +432,7 @@ class IPluginManager(ABC):
         pass
     
     @abstractmethod
-    def list_loaded_plugins(self) -> List[str]:
+    def list_loaded_plugins(self) -> list[str]:
         """
         List loaded plugin names.
         
@@ -455,7 +455,7 @@ class IPluginManager(ABC):
         pass
     
     @abstractmethod
-    def get_plugin_info(self, plugin_name: str) -> Optional[Dict[str, Any]]:
+    def get_plugin_info(self, plugin_name: str) -> Optional[dict[str, Any]]:
         """
         Get plugin information.
         
@@ -508,7 +508,7 @@ class IPluginRegistry(ABC):
         pass
     
     @abstractmethod
-    def get_registered_plugins(self) -> Dict[str, Type[IPlugin]]:
+    def get_registered_plugins(self) -> dict[str, Type[IPlugin]]:
         """
         Get all registered plugins.
         
@@ -551,7 +551,7 @@ class IPluginRegistry(ABC):
         pass
     
     @abstractmethod
-    def get_registry_stats(self) -> Dict[str, Any]:
+    def get_registry_stats(self) -> dict[str, Any]:
         """
         Get registry statistics.
         
@@ -573,7 +573,7 @@ class IPluginDiscovery(ABC):
     """
     
     @abstractmethod
-    def discover_plugins(self, search_paths: List[str]) -> List[str]:
+    def discover_plugins(self, search_paths: list[str]) -> list[str]:
         """
         Discover plugins in search paths.
         
@@ -586,7 +586,7 @@ class IPluginDiscovery(ABC):
         pass
     
     @abstractmethod
-    def scan_directory(self, directory: str) -> List[str]:
+    def scan_directory(self, directory: str) -> list[str]:
         """
         Scan directory for plugins.
         
@@ -599,7 +599,7 @@ class IPluginDiscovery(ABC):
         pass
     
     @abstractmethod
-    def validate_plugin(self, plugin_path: str) -> Tuple[bool, List[str]]:
+    def validate_plugin(self, plugin_path: str) -> tuple[bool, list[str]]:
         """
         Validate plugin.
         
@@ -612,7 +612,7 @@ class IPluginDiscovery(ABC):
         pass
     
     @abstractmethod
-    def get_plugin_metadata(self, plugin_path: str) -> Optional[Dict[str, Any]]:
+    def get_plugin_metadata(self, plugin_path: str) -> Optional[dict[str, Any]]:
         """
         Get plugin metadata.
         
@@ -638,7 +638,7 @@ class IPluginDiscovery(ABC):
         pass
     
     @abstractmethod
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """
         Get supported plugin file extensions.
         
@@ -660,7 +660,7 @@ class IPluginConfig(ABC):
     """
     
     @abstractmethod
-    def get_plugin_config(self, plugin_name: str) -> Dict[str, Any]:
+    def get_plugin_config(self, plugin_name: str) -> dict[str, Any]:
         """
         Get plugin configuration.
         
@@ -673,7 +673,7 @@ class IPluginConfig(ABC):
         pass
     
     @abstractmethod
-    def set_plugin_config(self, plugin_name: str, config: Dict[str, Any]) -> None:
+    def set_plugin_config(self, plugin_name: str, config: dict[str, Any]) -> None:
         """
         Set plugin configuration.
         
@@ -828,7 +828,7 @@ class IPluginEvents(ABC):
         pass
     
     @abstractmethod
-    def get_event_subscribers(self, event: PluginEvent) -> List[Callable]:
+    def get_event_subscribers(self, event: PluginEvent) -> list[Callable]:
         """
         Get event subscribers.
         
@@ -851,7 +851,7 @@ class IPluginEvents(ABC):
         pass
     
     @abstractmethod
-    def get_event_history(self, event: Optional[PluginEvent] = None, limit: int = 100) -> List[Dict[str, Any]]:
+    def get_event_history(self, event: Optional[PluginEvent] = None, limit: int = 100) -> list[dict[str, Any]]:
         """
         Get event history.
         
@@ -910,7 +910,7 @@ class IPluginDependency(ABC):
         pass
     
     @abstractmethod
-    def get_dependencies(self, plugin_name: str) -> List[Dict[str, Any]]:
+    def get_dependencies(self, plugin_name: str) -> list[dict[str, Any]]:
         """
         Get plugin dependencies.
         
@@ -923,7 +923,7 @@ class IPluginDependency(ABC):
         pass
     
     @abstractmethod
-    def check_dependencies(self, plugin_name: str) -> Tuple[bool, List[str]]:
+    def check_dependencies(self, plugin_name: str) -> tuple[bool, list[str]]:
         """
         Check if plugin dependencies are satisfied.
         
@@ -936,7 +936,7 @@ class IPluginDependency(ABC):
         pass
     
     @abstractmethod
-    def resolve_dependencies(self, plugin_name: str) -> List[str]:
+    def resolve_dependencies(self, plugin_name: str) -> list[str]:
         """
         Resolve plugin dependency order.
         
@@ -949,7 +949,7 @@ class IPluginDependency(ABC):
         pass
     
     @abstractmethod
-    def get_dependents(self, plugin_name: str) -> List[str]:
+    def get_dependents(self, plugin_name: str) -> list[str]:
         """
         Get plugins that depend on this plugin.
         
@@ -975,7 +975,7 @@ class IPluginDependency(ABC):
         pass
     
     @abstractmethod
-    def get_dependency_graph(self) -> Dict[str, List[str]]:
+    def get_dependency_graph(self) -> dict[str, list[str]]:
         """
         Get plugin dependency graph.
         

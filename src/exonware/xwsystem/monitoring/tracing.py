@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 05, 2025
 
 Distributed Tracing Integration for Enterprise Observability
@@ -19,7 +19,7 @@ import time
 import uuid
 from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass, field
-from typing import Any, AsyncContextManager, ContextManager, Dict, Optional, Union
+from typing import Any, AsyncContextManager, ContextManager, Optional, Union
 from .base import ATracingProvider
 from .errors import TracingError
 from .defs import SpanKind
@@ -40,7 +40,7 @@ class SpanContext:
     trace_id: str
     span_id: str
     parent_span_id: Optional[str] = None
-    baggage: Dict[str, Any] = field(default_factory=dict)
+    baggage: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass 
@@ -77,7 +77,7 @@ class OpenTelemetryTracer(ATracingProvider):
         # OpenTelemetry is now required
         
         self.service_name = service_name
-        self._spans: Dict[str, Any] = {}
+        self._spans: dict[str, Any] = {}
         
         # Set up tracer provider
         trace.set_tracer_provider(TracerProvider())
@@ -126,7 +126,7 @@ class OpenTelemetryTracer(ATracingProvider):
         name: str, 
         kind: SpanKind = SpanKind.INTERNAL,
         parent: Optional[SpanContext] = None,
-        attributes: Optional[Dict[str, Any]] = None
+        attributes: Optional[dict[str, Any]] = None
     ) -> SpanContext:
         """Start a new span."""
         span = self.tracer.start_span(name)
@@ -163,7 +163,7 @@ class OpenTelemetryTracer(ATracingProvider):
         if span.span_id in self._spans:
             self._spans[span.span_id].set_attribute(key, value)
     
-    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[Dict[str, Any]] = None) -> None:
+    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[dict[str, Any]] = None) -> None:
         """Add event to span."""
         if span.span_id in self._spans:
             self._spans[span.span_id].add_event(name, attributes or {})
@@ -177,14 +177,14 @@ class JaegerTracer(ATracingProvider):
         self.service_name = service_name
         self.agent_host = agent_host
         self.agent_port = agent_port
-        self._spans: Dict[str, Dict[str, Any]] = {}
+        self._spans: dict[str, dict[str, Any]] = {}
     
     def start_span(
         self, 
         name: str, 
         kind: SpanKind = SpanKind.INTERNAL,
         parent: Optional[SpanContext] = None,
-        attributes: Optional[Dict[str, Any]] = None
+        attributes: Optional[dict[str, Any]] = None
     ) -> SpanContext:
         """Start a new span."""
         span_id = str(uuid.uuid4())
@@ -225,7 +225,7 @@ class JaegerTracer(ATracingProvider):
         if span.span_id in self._spans:
             self._spans[span.span_id]['attributes'][key] = value
     
-    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[Dict[str, Any]] = None) -> None:
+    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[dict[str, Any]] = None) -> None:
         """Add event to span."""
         if span.span_id in self._spans:
             self._spans[span.span_id]['events'].append({
@@ -272,7 +272,7 @@ class TracingManager:
         self, 
         name: str, 
         kind: SpanKind = SpanKind.INTERNAL,
-        attributes: Optional[Dict[str, Any]] = None
+        attributes: Optional[dict[str, Any]] = None
     ) -> ContextManager[SpanContext]:
         """Context manager for tracing an operation."""
         span = self.provider.start_span(name, kind=kind, attributes=attributes)
@@ -290,7 +290,7 @@ class TracingManager:
         self, 
         name: str, 
         kind: SpanKind = SpanKind.INTERNAL,
-        attributes: Optional[Dict[str, Any]] = None
+        attributes: Optional[dict[str, Any]] = None
     ) -> AsyncContextManager[SpanContext]:
         """Async context manager for tracing an operation."""
         span = self.provider.start_span(name, kind=kind, attributes=attributes)
@@ -309,7 +309,7 @@ class TracingManager:
             # This would add to the root span in a real implementation
             logger.debug(f"Trace attribute: {key}={value}")
     
-    def add_trace_event(self, name: str, attributes: Optional[Dict[str, Any]] = None) -> None:
+    def add_trace_event(self, name: str, attributes: Optional[dict[str, Any]] = None) -> None:
         """Add event to current trace."""
         if self._current_trace:
             # This would add to the current span in a real implementation
@@ -324,7 +324,7 @@ class TracingManager:
         # Placeholder - would return active span in full implementation
         return None
     
-    def start_span(self, name: str, parent: Optional[SpanContext] = None, attributes: Optional[Dict[str, Any]] = None) -> SpanContext:
+    def start_span(self, name: str, parent: Optional[SpanContext] = None, attributes: Optional[dict[str, Any]] = None) -> SpanContext:
         """Start a new span."""
         return self.provider.start_span(name, parent=parent, attributes=attributes)
     
@@ -336,7 +336,7 @@ class TracingManager:
         """Add attribute to span."""
         self.provider.add_span_attribute(span, key, value)
     
-    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[Dict[str, Any]] = None) -> None:
+    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[dict[str, Any]] = None) -> None:
         """Add event to span."""
         self.provider.add_span_event(span, name, attributes)
 
@@ -349,7 +349,7 @@ class NoOpTracingProvider(ATracingProvider):
         name: str, 
         kind: SpanKind = SpanKind.INTERNAL,
         parent: Optional[SpanContext] = None,
-        attributes: Optional[Dict[str, Any]] = None
+        attributes: Optional[dict[str, Any]] = None
     ) -> SpanContext:
         """Start a no-op span."""
         return SpanContext(
@@ -365,7 +365,7 @@ class NoOpTracingProvider(ATracingProvider):
         """Add attribute to no-op span."""
         pass
     
-    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[Dict[str, Any]] = None) -> None:
+    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[dict[str, Any]] = None) -> None:
         """Add event to no-op span."""
         pass
 
@@ -393,11 +393,11 @@ class DistributedTracing:
         if provider:
             self.manager.set_provider(provider)
     
-    def start_trace(self, name: str, attributes: Optional[Dict[str, Any]] = None) -> TraceContext:
+    def start_trace(self, name: str, attributes: Optional[dict[str, Any]] = None) -> TraceContext:
         """Start a new trace."""
         return self.manager.start_trace(name, **(attributes or {}))
     
-    def start_span(self, name: str, parent: Optional[SpanContext] = None, attributes: Optional[Dict[str, Any]] = None) -> SpanContext:
+    def start_span(self, name: str, parent: Optional[SpanContext] = None, attributes: Optional[dict[str, Any]] = None) -> SpanContext:
         """Start a new span."""
         return self.manager.start_span(name, parent, attributes)
     
@@ -409,7 +409,7 @@ class DistributedTracing:
         """Add attribute to span."""
         self.manager.add_span_attribute(span, key, value)
     
-    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[Dict[str, Any]] = None) -> None:
+    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[dict[str, Any]] = None) -> None:
         """Add event to span."""
         self.manager.add_span_event(span, name, attributes)
     

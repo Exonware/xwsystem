@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Metrics exporters for cache monitoring.
 Performance Priority #4 - Observability and monitoring integration.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from ..config.logging_setup import get_logger
 
 logger = get_logger("xsystem.caching.metrics_exporter")
@@ -95,7 +95,7 @@ class PrometheusExporter:
         
         return '\n'.join(lines) + '\n'
     
-    def export_dict(self) -> Dict[str, Any]:
+    def export_dict(self) -> dict[str, Any]:
         """
         Export metrics as dictionary.
         
@@ -135,7 +135,7 @@ class StatsCollector:
     
     def __init__(self):
         """Initialize stats collector."""
-        self._caches: Dict[str, Any] = {}
+        self._caches: dict[str, Any] = {}
     
     def register(self, name: str, cache: Any) -> None:
         """
@@ -158,7 +158,7 @@ class StatsCollector:
         if name in self._caches:
             del self._caches[name]
     
-    def collect_all(self) -> Dict[str, Dict]:
+    def collect_all(self) -> dict[str, dict[str, Any]]:
         """
         Collect stats from all registered caches.
         

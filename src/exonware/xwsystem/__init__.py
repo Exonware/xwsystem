@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 10, 2025
 
 XWSystem - Enterprise-grade Python framework with AI-powered performance optimization.
@@ -50,24 +50,12 @@ This module provides common utilities that can be used across different
 components including threading, security, I/O, data structures, and design patterns.
 """
 
-import importlib
 import logging
 from typing import TYPE_CHECKING
 
 # Performance optimization: lazy import expensive modules
 if TYPE_CHECKING:
     from typing import Any
-
-# =============================================================================
-# LAZY MODE INTEGRATION
-# =============================================================================
-# Minimal-intrusion lazy mode bootstrap (one line)
-# Enables optimized lazy mode for xwsystem if xwlazy is installed
-# Uses fastest mode from benchmarks: cached + full (1.482 ms)
-try:
-    from .lazy_bootstrap import _bootstrap_lazy_mode  # noqa: F401
-except ImportError:
-    pass  # xwlazy not installed - silently continue
 
 # Logging utilities
 from .config.logging_setup import get_logger, setup_logging
@@ -111,8 +99,8 @@ from .io.serialization import (
 )
 
 # HTTP utilities
-from .http import HttpClient, AsyncHttpClient, HttpError, RetryConfig
-from .http.advanced_client import (
+from .http_client import HttpClient, AsyncHttpClient, HttpError, RetryConfig
+from .http_client.advanced_client import (
     AdvancedHttpClient, AdvancedHttpConfig, Http2Config, 
     StreamingConfig, MockTransport, MockResponse
 )
@@ -124,6 +112,7 @@ from .runtime import EnvironmentManager, ReflectionUtils
 from .plugins import PluginManager, PluginBase, PluginRegistry
 
 # I/O utilities
+from .io.facade import XWIO
 from .io.common.atomic import (
     AtomicFileWriter,
     FileOperationError,
@@ -628,6 +617,7 @@ __all__ = [
     "hash_password", "hash_password_async",
     "verify_password", "verify_password_async",
     # I/O
+    "XWIO",
     "AtomicFileWriter",
     "FileOperationError",
     "safe_write_text",

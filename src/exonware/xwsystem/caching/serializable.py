@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Cache serialization utilities.
@@ -13,7 +13,7 @@ Usability Priority #2 - Persist and restore cache state.
 import pickle
 import json
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Union
 from .lru_cache import LRUCache
 from .lfu_optimized import OptimizedLFUCache
 from ..config.logging_setup import get_logger

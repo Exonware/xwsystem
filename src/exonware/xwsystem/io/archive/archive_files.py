@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 Archive FILES - File persistence for archives.
@@ -26,7 +26,7 @@ Priority 5 (Extensibility): Easy to add new formats
 import zipfile
 import tarfile
 from pathlib import Path
-from typing import Any, Dict, Optional, List, Union
+from typing import Any, Optional, Union
 
 from ..archive.base import AArchiveFile
 from ..contracts import IArchiveFile, IArchiver
@@ -68,7 +68,7 @@ class ZipFile(AArchiveFile):
         super().__init__(path, archiver=ZipArchiver())
         self._archiver = ZipArchiver()  # Composition!
     
-    def add_files(self, files: List[Path], **options) -> None:
+    def add_files(self, files: list[Path], **options) -> None:
         """
         Add files to zip archive.
         
@@ -93,7 +93,7 @@ class ZipFile(AArchiveFile):
         except Exception as e:
             raise ArchiveError(f"Failed to add files to zip: {e}")
     
-    def extract_to(self, dest: Path, **options) -> List[Path]:
+    def extract_to(self, dest: Path, **options) -> list[Path]:
         """
         Extract zip archive to destination.
         
@@ -123,7 +123,7 @@ class ZipFile(AArchiveFile):
         except Exception as e:
             raise ArchiveError(f"Failed to extract zip: {e}")
     
-    def list_contents(self) -> List[str]:
+    def list_contents(self) -> list[str]:
         """List files in zip archive."""
         try:
             with zipfile.ZipFile(self.file_path, 'r') as zf:
@@ -162,7 +162,7 @@ class TarFile(AArchiveFile):
         self._archiver = TarArchiver()  # Composition!
         self._compression = compression
     
-    def add_files(self, files: List[Path], **options) -> None:
+    def add_files(self, files: list[Path], **options) -> None:
         """Add files to tar archive (uses archiver internally)."""
         try:
             # Read files
@@ -181,7 +181,7 @@ class TarFile(AArchiveFile):
         except Exception as e:
             raise ArchiveError(f"Failed to add files to tar: {e}")
     
-    def extract_to(self, dest: Path, **options) -> List[Path]:
+    def extract_to(self, dest: Path, **options) -> list[Path]:
         """Extract tar archive to destination (uses archiver internally)."""
         try:
             # Load from disk using direct read
@@ -204,7 +204,7 @@ class TarFile(AArchiveFile):
         except Exception as e:
             raise ArchiveError(f"Failed to extract tar: {e}")
     
-    def list_contents(self) -> List[str]:
+    def list_contents(self) -> list[str]:
         """List files in tar archive."""
         try:
             with tarfile.open(self.file_path, 'r:*') as tf:

@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 2, 2025
 
 Serialization base classes - ASerialization abstract base.
@@ -15,7 +15,9 @@ Following I→A→XW pattern:
 
 import asyncio
 from abc import ABC, abstractmethod, ABCMeta
-from typing import Any, Union, Optional, BinaryIO, TextIO, AsyncIterator, Iterator, List, Dict, TYPE_CHECKING
+from typing import Any, Union, Optional, BinaryIO, TextIO, AsyncIterator, Iterator, TYPE_CHECKING
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
 
 from ..codec.base import ACodec
@@ -29,7 +31,7 @@ if TYPE_CHECKING:
     from .schema_registry import SchemaInfo
 
 
-class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
+class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     """
     Abstract base class for serialization - follows I→A→XW pattern.
     
@@ -53,9 +55,18 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
     - XWSystem integration
     """
     
-    def __init__(self):
-        """Initialize serialization base."""
-        super().__init__()
+    def __init__(self, max_depth: Optional[int] = None, max_size_mb: Optional[float] = None):
+        """
+        Initialize serialization base.
+        
+        Args:
+            max_depth: Maximum nesting depth allowed (default: from ACodec)
+            max_size_mb: Maximum estimated data size in MB (default: from ACodec)
+        
+        Note: Safety validation (depth and size limits) is inherited from ACodec base class.
+        See ACodec.__init__ for details.
+        """
+        super().__init__(max_depth=max_depth, max_size_mb=max_size_mb)
     
     # ========================================================================
     # CORE CODEC METHODS (Must implement in subclasses)
@@ -63,12 +74,22 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
     
     @abstractmethod
     def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
-        """Encode data to representation - must implement in subclass."""
+        """
+        Encode data to representation - must implement in subclass.
+        
+        Note: Safety validation is automatically performed in save_file() via inherited
+        _validate_data_limits() from ACodec. Subclasses can call it directly if needed.
+        """
         pass
     
     @abstractmethod
     def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
-        """Decode representation to data - must implement in subclass."""
+        """
+        Decode representation to data - must implement in subclass.
+        
+        Note: For decode operations, size validation happens on the input string/bytes,
+        not the resulting data structure. Subclasses should validate input size if needed.
+        """
         pass
     
     # ========================================================================
@@ -229,6 +250,23 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
     @property
     def supports_lazy_loading(self) -> bool:
         """
+        Whether this serializer supports lazy loading for large files (10GB+).
+        
+        Lazy loading means the serializer can:
+        - Skip full file validation for large files (size check skipped, depth still checked)
+        - Use atomic path operations without loading entire file into memory
+        - Handle both small (1KB) and large (10GB+) files efficiently
+        
+        Default: False. Override in subclasses that support lazy loading.
+        
+        Returns:
+            True if lazy loading is supported for large files
+        """
+        return False
+    
+    @property
+    def supports_lazy_loading(self) -> bool:
+        """
         Whether this serializer supports lazy loading for large files.
         
         Default: False. Override in subclasses that support lazy loading.
@@ -247,9 +285,10 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
         Save data to file with atomic operations.
         
         Default implementation:
-        1. Encode data using encode()
-        2. Write to file using Path.write_bytes() or write_text()
-        3. Uses atomic operations if configured
+        1. Validate data against safety limits (depth and size)
+        2. Encode data using encode()
+        3. Write to file using Path.write_bytes() or write_text()
+        4. Uses atomic operations if configured
         
         Args:
             data: Data to serialize and save
@@ -257,13 +296,21 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
             **options: Format-specific options
         
         Raises:
-            SerializationError: If save fails
+            SerializationError: If save fails or data exceeds limits
         """
         try:
             path = Path(file_path)
             
             # Ensure parent directory exists
             path.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Validate data limits (method inherited from ACodec base class)
+            # Note: For large files (10GB+), size validation is automatically skipped
+            # Only depth validation is performed (prevents infinite recursion)
+            skip_validation = options.get('skip_validation', False)
+            skip_size_check = options.get('skip_size_check', False)
+            if not skip_validation:
+                self._validate_data_limits(data, "serialize", file_path=path, skip_size_check=skip_size_check)
             
             # Encode data
             repr_data = self.encode(data, options=options or None)
@@ -531,7 +578,11 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
                 raise FileNotFoundError(f"File not found: {path_obj}")
             
             # Load entire file
-            data = self.load_file(file_path, **options)
+            # For large files, skip size validation (they use lazy loading/streaming)
+            # Root cause: Large files (10GB+) should use atomic path operations without full validation
+            # Solution: Skip size check for atomic operations (depth check still performed)
+            large_file_options = {**options, 'skip_size_check': True}
+            data = self.load_file(file_path, **large_file_options)
             
             # Update path in memory (simple dict/list update for now)
             # Subclasses should override with format-specific logic
@@ -616,7 +667,11 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
                 raise FileNotFoundError(f"File not found: {path_obj}")
             
             # Load entire file
-            data = self.load_file(file_path, **options)
+            # For large files, skip size validation (they use lazy loading/streaming)
+            # Root cause: Large files (10GB+) should use atomic path operations without full validation
+            # Solution: Skip size check for atomic operations (depth check still performed)
+            large_file_options = {**options, 'skip_size_check': True}
+            data = self.load_file(file_path, **large_file_options)
             
             # Extract path (simple dict/list access for now)
             if isinstance(data, dict) and path.startswith('/'):
@@ -777,6 +832,11 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
         Default implementation loads entire file and applies query in memory.
         Override in subclasses for format-specific query languages (JSONPath, XPath).
         
+        Root cause fixed: Method was loading entire file before raising error.
+        Solution: Raise NotImplementedError immediately if queries not supported,
+        preventing unnecessary file I/O operations.
+        Priority #4: Performance - Avoid loading files when operation will fail.
+        
         Args:
             file_path: Path to the file to query
             query_expr: Query expression (format-specific)
@@ -796,30 +856,19 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization, ABC):
                 f"Use load_file() and filter data manually instead."
             )
         
-        # Default fallback: load all, query in memory
-        try:
-            data = self.load_file(file_path, **options)
-            
-            # Simple query fallback (subclasses should override)
-            # This is a placeholder - real implementations should use format-specific query languages
-            raise ValueError(
-                f"Query operations require format-specific implementation. "
-                f"Load file and filter manually, or use a serializer that supports queries."
-            )
-            
-        except (ValueError, NotImplementedError):
-            raise
-        except Exception as e:
-            raise SerializationError(
-                f"Failed to query {self.format_name} file: {e}",
-                format_name=self.format_name,
-                original_error=e
-            ) from e
+        # Root cause fixed: Base class doesn't implement queries - raise immediately
+        # Subclasses should override this method to provide actual query implementation
+        # Priority #4: Performance - Don't load file if operation will fail
+        raise NotImplementedError(
+            f"Query operations require format-specific implementation for {self.format_name}. "
+            f"Subclasses must override query() method to provide query support. "
+            f"Alternatively, use load_file() and filter data manually."
+        )
     
     def merge(
         self, 
         file_path: Union[str, Path], 
-        updates: Dict[str, Any], 
+        updates: dict[str, Any], 
         **options
     ) -> None:
         """
@@ -917,7 +966,7 @@ class ASchemaRegistry(ABC):
         pass
     
     @abstractmethod
-    async def get_schema_versions(self, subject: str) -> List[int]:
+    async def get_schema_versions(self, subject: str) -> list[int]:
         """Get all versions for a subject."""
         pass
     

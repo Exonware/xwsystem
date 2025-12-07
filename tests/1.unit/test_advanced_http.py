@@ -13,7 +13,7 @@ import json
 import pytest
 from unittest.mock import Mock, AsyncMock
 
-from src.exonware.xwsystem.http.advanced_client import (
+from src.exonware.xwsystem.http_client.advanced_client import (
     AdvancedHttpClient,
     AdvancedHttpConfig,
     Http2Config,
@@ -21,7 +21,7 @@ from src.exonware.xwsystem.http.advanced_client import (
     MockTransport,
     MockResponse,
 )
-from src.exonware.xwsystem.http.client import HttpError
+from src.exonware.xwsystem.http_client.client import HttpError
 
 
 class TestMockTransport:

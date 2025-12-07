@@ -7,7 +7,7 @@ import os
 import stat
 import tempfile
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 logger = logging.getLogger(__name__)
 

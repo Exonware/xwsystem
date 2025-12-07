@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 7z archive format implementation - RANK #1 BEST COMPRESSION.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Lazy installation of py7zr
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
@@ -57,16 +57,16 @@ class SevenZipArchiver(IArchiveFormat):
         return "7z"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".7z"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/x-7z-compressed"]
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """
         Create 7z archive with optional encryption.
         
@@ -92,7 +92,7 @@ class SevenZipArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create 7z archive: {e}")
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """
         Extract 7z archive.
         
@@ -114,7 +114,7 @@ class SevenZipArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to extract 7z archive: {e}")
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List 7z contents."""
         try:
             with py7zr.SevenZipFile(archive, 'r') as zf:

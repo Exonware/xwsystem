@@ -10,7 +10,7 @@ import threading
 import time
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 from ..config.logging_setup import get_logger
 
@@ -25,8 +25,8 @@ class PerformanceMetric:
     duration: float  # seconds
     timestamp: float
     success: bool = True
-    error_info: Optional[Dict[str, Any]] = None
-    additional_data: Dict[str, Any] = field(default_factory=dict)
+    error_info: Optional[dict[str, Any]] = None
+    additional_data: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -57,8 +57,8 @@ class PerformanceReport:
     percentile_99: float
     error_rate: float
     throughput: float  # operations per second
-    threshold_violations: List[str] = field(default_factory=list)
-    recommendations: List[str] = field(default_factory=list)
+    threshold_violations: list[str] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
 
 
 class PerformanceValidator:
@@ -86,11 +86,11 @@ class PerformanceValidator:
         self.enable_regression_detection = enable_regression_detection
 
         # Performance data storage
-        self._metrics: Dict[str, deque] = defaultdict(
+        self._metrics: dict[str, deque] = defaultdict(
             lambda: deque(maxlen=max_metrics_per_operation)
         )
-        self._thresholds: Dict[str, PerformanceThreshold] = {}
-        self._baseline_performance: Dict[str, Dict[str, float]] = {}
+        self._thresholds: dict[str, PerformanceThreshold] = {}
+        self._baseline_performance: dict[str, dict[str, float]] = {}
 
         # Thread safety
         self._lock = threading.RLock()
@@ -103,8 +103,8 @@ class PerformanceValidator:
         self._regressions_detected = 0
 
         # Callbacks
-        self._threshold_violation_callbacks: List[Callable] = []
-        self._regression_detected_callbacks: List[Callable] = []
+        self._threshold_violation_callbacks: list[Callable] = []
+        self._regression_detected_callbacks: list[Callable] = []
 
         logger.info("📊 Performance validator initialized")
 
@@ -119,8 +119,8 @@ class PerformanceValidator:
         operation_name: str,
         duration: float,
         success: bool = True,
-        error_info: Optional[Dict[str, Any]] = None,
-        additional_data: Dict[str, Any] = None,
+        error_info: Optional[dict[str, Any]] = None,
+        additional_data: dict[str, Any] = None,
     ) -> None:
         """Record a performance metric."""
         if additional_data is None:
@@ -139,12 +139,12 @@ class PerformanceValidator:
             self._metrics[operation_name].append(metric)
             self._total_metrics_recorded += 1
 
-    def get_operation_metrics(self, operation_name: str) -> List[PerformanceMetric]:
+    def get_operation_metrics(self, operation_name: str) -> list[PerformanceMetric]:
         """Get all metrics for a specific operation."""
         with self._lock:
             return list(self._metrics.get(operation_name, []))
 
-    def calculate_percentiles(self, durations: List[float]) -> Dict[str, float]:
+    def calculate_percentiles(self, durations: list[float]) -> dict[str, float]:
         """Calculate percentiles for a list of durations."""
         if not durations:
             return {}
@@ -265,7 +265,7 @@ class PerformanceValidator:
 
         return report
 
-    def validate_all_operations(self) -> Dict[str, PerformanceReport]:
+    def validate_all_operations(self) -> dict[str, PerformanceReport]:
         """Validate performance for all operations."""
         with self._lock:
             operation_names = set(self._metrics.keys())
@@ -276,7 +276,7 @@ class PerformanceValidator:
 
         return reports
 
-    def detect_regression(self, operation_name: str) -> Optional[Dict[str, Any]]:
+    def detect_regression(self, operation_name: str) -> Optional[dict[str, Any]]:
         """Detect performance regression compared to baseline."""
         if not self.enable_regression_detection:
             return None
@@ -409,7 +409,7 @@ class PerformanceValidator:
                 logger.error(f"Error in validation loop: {e}")
                 time.sleep(1.0)  # Brief pause on error
 
-    def get_performance_statistics(self) -> Dict[str, Any]:
+    def get_performance_statistics(self) -> dict[str, Any]:
         """Get overall performance statistics."""
         with self._lock:
             total_operations = sum(len(metrics) for metrics in self._metrics.values())
@@ -482,8 +482,8 @@ def record_performance_metric(
     operation_name: str,
     duration: float,
     success: bool = True,
-    error_info: Optional[Dict[str, Any]] = None,
-    additional_data: Dict[str, Any] = None,
+    error_info: Optional[dict[str, Any]] = None,
+    additional_data: dict[str, Any] = None,
 ) -> None:
     """Record a global performance metric."""
     validator = get_performance_validator()
@@ -498,7 +498,7 @@ def validate_performance(operation_name: str) -> PerformanceReport:
     return validator.validate_performance(operation_name)
 
 
-def get_performance_statistics() -> Dict[str, Any]:
+def get_performance_statistics() -> dict[str, Any]:
     """Get global performance statistics."""
     validator = get_performance_validator()
     return validator.get_performance_statistics()

@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Caching protocol interfaces for XWSystem.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Callable, Tuple, Protocol
+from typing import Any, Optional, Union, Iterator, Callable, Protocol
 from typing_extensions import runtime_checkable
 import time
 
@@ -107,7 +107,7 @@ class ICacheable(ABC):
         pass
     
     @abstractmethod
-    def get_cache_info(self) -> Dict[str, Any]:
+    def get_cache_info(self) -> dict[str, Any]:
         """
         Get cache information.
         
@@ -170,7 +170,7 @@ class ICacheManager(ABC):
         pass
     
     @abstractmethod
-    def list_caches(self) -> List[str]:
+    def list_caches(self) -> list[str]:
         """
         List all cache names.
         
@@ -187,7 +187,7 @@ class ICacheManager(ABC):
         pass
     
     @abstractmethod
-    def get_cache_stats(self) -> Dict[str, Dict[str, Any]]:
+    def get_cache_stats(self) -> dict[str, dict[str, Any]]:
         """
         Get statistics for all caches.
         
@@ -320,7 +320,7 @@ class ICacheStorage(ABC):
         pass
     
     @abstractmethod
-    def items(self) -> Iterator[Tuple[str, Any]]:
+    def items(self) -> Iterator[tuple[str, Any]]:
         """
         Get iterator over cache items.
         
@@ -356,7 +356,7 @@ class ICacheEviction(ABC):
         pass
     
     @abstractmethod
-    def select_eviction_candidate(self, items: List[Tuple[str, Any, float]]) -> str:
+    def select_eviction_candidate(self, items: list[tuple[str, Any, float]]) -> str:
         """
         Select item to evict.
         
@@ -400,7 +400,7 @@ class ICacheEviction(ABC):
         pass
     
     @abstractmethod
-    def get_eviction_stats(self) -> Dict[str, Any]:
+    def get_eviction_stats(self) -> dict[str, Any]:
         """
         Get eviction statistics.
         
@@ -494,7 +494,7 @@ class ICacheMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get cache statistics.
         
@@ -533,7 +533,7 @@ class IDistributedCache(ABC):
         pass
     
     @abstractmethod
-    def get_cluster_nodes(self) -> List[str]:
+    def get_cluster_nodes(self) -> list[str]:
         """
         Get list of cluster nodes.
         
@@ -543,7 +543,7 @@ class IDistributedCache(ABC):
         pass
     
     @abstractmethod
-    def replicate(self, key: str, value: Any, nodes: List[str]) -> bool:
+    def replicate(self, key: str, value: Any, nodes: list[str]) -> bool:
         """
         Replicate cache entry to nodes.
         
@@ -558,7 +558,7 @@ class IDistributedCache(ABC):
         pass
     
     @abstractmethod
-    def invalidate(self, key: str, nodes: List[str]) -> bool:
+    def invalidate(self, key: str, nodes: list[str]) -> bool:
         """
         Invalidate cache entry on nodes.
         

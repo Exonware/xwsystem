@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 TAR archive format implementation.
@@ -18,7 +18,7 @@ Priority 5 (Extensibility): Registered via registry
 
 import tarfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from ...contracts import IArchiveFormat
 
@@ -32,12 +32,12 @@ class TarArchiver(IArchiveFormat):
         return "tar"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return [
             "application/x-tar",
@@ -61,7 +61,7 @@ class TarArchiver(IArchiveFormat):
         else:
             return 'r:*'  # Auto-detect compression on read
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """Create TAR archive."""
         output.parent.mkdir(parents=True, exist_ok=True)
         
@@ -72,10 +72,10 @@ class TarArchiver(IArchiveFormat):
                 arcname = opts.get('arcname', file_path.name)
                 tf.add(file_path, arcname=arcname)
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract TAR archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
-        extracted: List[Path] = []
+        extracted: list[Path] = []
         
         with tarfile.open(archive, 'r:*') as tf:
             if members:
@@ -88,7 +88,7 @@ class TarArchiver(IArchiveFormat):
         
         return extracted
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List TAR contents."""
         with tarfile.open(archive, 'r:*') as tf:
             return [member.name for member in tf.getmembers()]

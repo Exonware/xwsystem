@@ -7,7 +7,7 @@ previously embedded in xData but is generally useful across xLib components.
 
 import logging
 from collections.abc import Mapping, Sequence
-from typing import Any, Callable, Dict, List, Optional, Set, Union
+from typing import Any, Callable, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class TreeWalker:
         self,
         max_depth: int = 1000,
         track_visited: bool = True,
-        visit_tracker: Optional[Set[int]] = None,
+        visit_tracker: Optional[set[int]] = None,
     ):
         """
         Initialize tree walker.
@@ -140,7 +140,7 @@ class TreeWalker:
 
     def find_nodes(
         self, data: Any, predicate: Callable[[Any, str, int], bool], path: str = ""
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Find all nodes that match a predicate.
 
@@ -187,7 +187,7 @@ class TreeWalker:
 
 
 def walk_and_replace(
-    data: Any, replacements: Dict[Any, Any], max_depth: int = 1000
+    data: Any, replacements: dict[Any, Any], max_depth: int = 1000
 ) -> Any:
     """
     Walk data structure and replace values according to replacement map.
@@ -210,8 +210,8 @@ def walk_and_replace(
 
 def resolve_proxies_in_dict(
     data: Any,
-    resolving_paths: Set[str],
-    visited_objects: Optional[Set[int]] = None,
+    resolving_paths: set[str],
+    visited_objects: Optional[set[int]] = None,
     max_depth: int = 1000,
 ) -> Any:
     """
@@ -296,7 +296,7 @@ def apply_user_defined_links(
     return walker.walk_and_process(data, link_replacer)
 
 
-def count_nodes_by_type(data: Any, max_depth: int = 1000) -> Dict[str, int]:
+def count_nodes_by_type(data: Any, max_depth: int = 1000) -> dict[str, int]:
     """
     Count nodes in data structure by type.
 
@@ -319,7 +319,7 @@ def count_nodes_by_type(data: Any, max_depth: int = 1000) -> Dict[str, int]:
     return type_counts
 
 
-def find_deep_paths(data: Any, min_depth: int = 5, max_depth: int = 1000) -> List[str]:
+def find_deep_paths(data: Any, min_depth: int = 5, max_depth: int = 1000) -> list[str]:
     """
     Find paths that exceed a minimum depth threshold.
 

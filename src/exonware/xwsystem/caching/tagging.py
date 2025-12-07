@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Tag-based cache invalidation.
 Extensibility Priority #5 - Flexible invalidation patterns.
 """
 
-from typing import Any, Dict, List, Optional, Hashable, Set
+from typing import Any, Optional, Hashable
 from collections import defaultdict
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
@@ -51,11 +51,11 @@ class TaggedCache(LRUCache):
         super().__init__(capacity, ttl, name)
         
         # Tag tracking
-        self._key_to_tags: Dict[Hashable, Set[str]] = {}
-        self._tag_to_keys: Dict[str, Set[Hashable]] = defaultdict(set)
+        self._key_to_tags: dict[Hashable, set[str]] = {}
+        self._tag_to_keys: dict[str, set[Hashable]] = defaultdict(set)
         self._invalidations = 0
     
-    def put(self, key: Hashable, value: Any, tags: Optional[List[str]] = None) -> None:
+    def put(self, key: Hashable, value: Any, tags: Optional[list[str]] = None) -> None:
         """
         Put value with optional tags.
         
@@ -123,7 +123,7 @@ class TaggedCache(LRUCache):
         logger.info(f"Invalidated {count} entries with tag '{tag}'")
         return count
     
-    def invalidate_by_tags(self, tags: List[str]) -> int:
+    def invalidate_by_tags(self, tags: list[str]) -> int:
         """
         Invalidate all entries with any of the specified tags.
         
@@ -148,7 +148,7 @@ class TaggedCache(LRUCache):
         logger.info(f"Invalidated {count} entries with tags: {tags}")
         return count
     
-    def get_keys_by_tag(self, tag: str) -> Set[Hashable]:
+    def get_keys_by_tag(self, tag: str) -> set[Hashable]:
         """
         Get all keys associated with a tag.
         
@@ -160,7 +160,7 @@ class TaggedCache(LRUCache):
         """
         return self._tag_to_keys.get(tag, set()).copy()
     
-    def get_tags(self, key: Hashable) -> Set[str]:
+    def get_tags(self, key: Hashable) -> set[str]:
         """
         Get all tags associated with a key.
         
@@ -172,7 +172,7 @@ class TaggedCache(LRUCache):
         """
         return self._key_to_tags.get(key, set()).copy()
     
-    def get_all_tags(self) -> Set[str]:
+    def get_all_tags(self) -> set[str]:
         """
         Get all tags in cache.
         
@@ -187,7 +187,7 @@ class TaggedCache(LRUCache):
         self._key_to_tags.clear()
         self._tag_to_keys.clear()
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics including tag information."""
         stats = super().get_stats()
         stats['total_tags'] = len(self._tag_to_keys)

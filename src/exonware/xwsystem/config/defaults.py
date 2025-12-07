@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Default configuration constants for XSystem framework.
@@ -11,7 +11,7 @@ These constants provide default values and limits for system operations.
 All modules should import from this central location to ensure consistency.
 """
 
-from typing import Final, Dict, Any, Optional
+from typing import Final, Any, Optional
 from .base import AConfigBase
 from .contracts import ConfigType
 

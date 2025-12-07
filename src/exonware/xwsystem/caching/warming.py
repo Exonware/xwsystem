@@ -4,14 +4,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Cache warming utilities for preloading data.
 Performance Priority #4 - Reduce cold start penalties.
 """
 
-from typing import Any, Callable, List, Optional, Hashable, Dict
+from typing import Any, Callable, Optional, Hashable
 from abc import ABC, abstractmethod
 import time
 from ..config.logging_setup import get_logger
@@ -23,7 +23,7 @@ class AWarmingStrategy(ABC):
     """Abstract base class for cache warming strategies."""
     
     @abstractmethod
-    def warm(self, cache: Any, keys: List[Hashable], loader: Callable[[Hashable], Any]) -> int:
+    def warm(self, cache: Any, keys: list[Hashable], loader: Callable[[Hashable], Any]) -> int:
         """
         Warm cache with data.
         
@@ -45,7 +45,7 @@ class PreloadWarmingStrategy(AWarmingStrategy):
     Suitable for small datasets that fit entirely in cache.
     """
     
-    def warm(self, cache: Any, keys: List[Hashable], loader: Callable[[Hashable], Any]) -> int:
+    def warm(self, cache: Any, keys: list[Hashable], loader: Callable[[Hashable], Any]) -> int:
         """Preload all keys into cache."""
         success_count = 0
         failures = []
@@ -91,7 +91,7 @@ class LazyWarmingStrategy(AWarmingStrategy):
         """
         self.preload_limit = preload_limit
     
-    def warm(self, cache: Any, keys: List[Hashable], loader: Callable[[Hashable], Any]) -> int:
+    def warm(self, cache: Any, keys: list[Hashable], loader: Callable[[Hashable], Any]) -> int:
         """Preload limited number of keys, rest loaded lazily."""
         # Preload up to limit
         preload_keys = keys[:self.preload_limit]
@@ -129,7 +129,7 @@ class PriorityWarmingStrategy(AWarmingStrategy):
         """
         self.priority_func = priority_func
     
-    def warm(self, cache: Any, keys: List[Hashable], loader: Callable[[Hashable], Any]) -> int:
+    def warm(self, cache: Any, keys: list[Hashable], loader: Callable[[Hashable], Any]) -> int:
         """Load keys in priority order."""
         # Sort keys by priority (descending)
         sorted_keys = sorted(keys, key=self.priority_func, reverse=True)
@@ -151,7 +151,7 @@ class PriorityWarmingStrategy(AWarmingStrategy):
 def warm_cache(
     cache: Any,
     loader: Callable[[Hashable], Any],
-    keys: List[Hashable],
+    keys: list[Hashable],
     strategy: Optional[AWarmingStrategy] = None,
     on_progress: Optional[Callable[[int, int], None]] = None
 ) -> int:
@@ -198,7 +198,7 @@ def warm_cache(
 def warm_cache_async(
     cache: Any,
     loader: Callable,
-    keys: List[Hashable]
+    keys: list[Hashable]
 ) -> int:
     """
     Warm async cache with data.

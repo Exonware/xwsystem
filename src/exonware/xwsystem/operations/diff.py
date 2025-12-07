@@ -5,14 +5,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 27, 2025
 
 Diff operations implementation.
 """
 
 import threading
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from .base import IDiffOperation, DiffError
 from .defs import DiffMode, DiffResult
 from ..config.logging_setup import get_logger
@@ -76,7 +76,7 @@ class DiffOperation(IDiffOperation):
                 raise DiffError(f"Diff operation failed: {e}", "diff")
     
     def _structural_diff(self, original: Any, modified: Any, path: str, 
-                        operations: List, paths_changed: List) -> List:
+                        operations: list, paths_changed: list) -> list:
         """Compare structure only (keys, types)."""
         # Compare types
         if type(original) != type(modified):
@@ -133,7 +133,7 @@ class DiffOperation(IDiffOperation):
         return operations
     
     def _content_diff(self, original: Any, modified: Any, path: str,
-                     operations: List, paths_changed: List) -> List:
+                     operations: list, paths_changed: list) -> list:
         """Compare content only (values)."""
         if original != modified:
             operations.append({
@@ -148,7 +148,7 @@ class DiffOperation(IDiffOperation):
         return operations
     
     def _full_diff(self, original: Any, modified: Any, path: str,
-                  operations: List, paths_changed: List) -> List:
+                  operations: list, paths_changed: list) -> list:
         """
         Compare both structure and content recursively.
         

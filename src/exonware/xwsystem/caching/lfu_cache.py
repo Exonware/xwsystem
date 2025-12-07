@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 LFU (Least Frequently Used) Cache implementation with thread-safety and async support.
@@ -11,7 +11,7 @@ LFU (Least Frequently Used) Cache implementation with thread-safety and async su
 import asyncio
 import threading
 import time
-from typing import Any, Dict, Optional, Hashable
+from typing import Any, Optional, Hashable
 
 from ..config.logging_setup import get_logger
 from .base import ACache
@@ -56,8 +56,8 @@ class LFUCache(ACache):
         
         self.name = name or f"LFUCache-{id(self)}"
         
-        self._cache: Dict[Hashable, Any] = {}
-        self._frequencies: Dict[Hashable, int] = {}
+        self._cache: dict[Hashable, Any] = {}
+        self._frequencies: dict[Hashable, int] = {}
         self._lock = threading.RLock()
         
         # Statistics
@@ -153,7 +153,22 @@ class LFUCache(ACache):
                 self._evictions += 1
                 logger.debug(f"Cache {self.name} manually evicted LFU key: {lfu_key}")
     
-    def get_stats(self) -> Dict[str, Any]:
+    def keys(self) -> list[Hashable]:
+        """Get list of all cache keys."""
+        with self._lock:
+            return list(self._cache.keys())
+    
+    def values(self) -> list[Any]:
+        """Get list of all cache values."""
+        with self._lock:
+            return list(self._cache.values())
+    
+    def items(self) -> list[tuple[Hashable, Any]]:
+        """Get list of all key-value pairs."""
+        with self._lock:
+            return list(self._cache.items())
+    
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         with self._lock:
             total_requests = self._hits + self._misses
@@ -192,8 +207,8 @@ class AsyncLFUCache:
         self.capacity = capacity
         self.name = name or f"AsyncLFUCache-{id(self)}"
         
-        self._cache: Dict[Hashable, Any] = {}
-        self._frequencies: Dict[Hashable, int] = {}
+        self._cache: dict[Hashable, Any] = {}
+        self._frequencies: dict[Hashable, int] = {}
         self._lock = asyncio.Lock()
         
         # Statistics
@@ -247,7 +262,7 @@ class AsyncLFUCache:
         """Get current cache size asynchronously."""
         return len(self._cache)
     
-    async def get_stats(self) -> Dict[str, Any]:
+    async def get_stats(self) -> dict[str, Any]:
         """Get cache statistics asynchronously."""
         async with self._lock:
             total_requests = self._hits + self._misses

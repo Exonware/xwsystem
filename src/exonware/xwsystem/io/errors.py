@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri  
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 IO module errors - ALL exceptions in ONE place.
@@ -10,7 +10,7 @@ IO module errors - ALL exceptions in ONE place.
 Consolidated from all submodules for maintainability.
 """
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 from pathlib import Path
 
 
@@ -359,8 +359,37 @@ class SerializationError(Exception):
     
     Root cause fixed: Added missing SerializationError class that was being
     imported by serialization/base.py but didn't exist.
+    
+    Root cause fixed: Added __init__ to accept format_name and original_error
+    parameters that are used throughout the serialization codebase.
     """
-    pass
+    
+    def __init__(
+        self,
+        message: str,
+        format_name: Optional[str] = None,
+        original_error: Optional[Exception] = None
+    ):
+        """
+        Initialize SerializationError.
+        
+        Args:
+            message: Error message
+            format_name: Optional format name (e.g., "JSON", "XML")
+            original_error: Optional original exception that caused this error
+        """
+        super().__init__(message)
+        self.format_name = format_name
+        self.original_error = original_error
+    
+    def __str__(self) -> str:
+        """Format error message with optional context."""
+        parts = [super().__str__()]
+        if self.format_name:
+            parts.append(f"[format: {self.format_name}]")
+        if self.original_error:
+            parts.append(f"[caused by: {type(self.original_error).__name__}]")
+        return " ".join(parts)
 
 
 class EncodeError(CodecError):

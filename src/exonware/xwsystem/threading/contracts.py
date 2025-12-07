@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Threading protocol interfaces for XWSystem.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Callable, Coroutine, Awaitable
+from typing import Any, Optional, Union, Iterator, Callable, Coroutine, Awaitable
 import threading
 import asyncio
 
@@ -265,7 +265,7 @@ class IThreadSafe(ABC):
         pass
     
     @abstractmethod
-    def get_thread_info(self) -> Dict[str, Any]:
+    def get_thread_info(self) -> dict[str, Any]:
         """
         Get thread information.
         
@@ -585,7 +585,7 @@ class IDeadlockDetection(ABC):
     """
     
     @abstractmethod
-    def detect_deadlock(self) -> List[Dict[str, Any]]:
+    def detect_deadlock(self) -> list[dict[str, Any]]:
         """
         Detect deadlocks.
         
@@ -605,7 +605,7 @@ class IDeadlockDetection(ABC):
         pass
     
     @abstractmethod
-    def resolve_deadlock(self, deadlock_info: Dict[str, Any]) -> bool:
+    def resolve_deadlock(self, deadlock_info: dict[str, Any]) -> bool:
         """
         Resolve deadlock.
         
@@ -618,7 +618,7 @@ class IDeadlockDetection(ABC):
         pass
     
     @abstractmethod
-    def get_lock_graph(self) -> Dict[str, List[str]]:
+    def get_lock_graph(self) -> dict[str, list[str]]:
         """
         Get lock dependency graph.
         
@@ -682,7 +682,7 @@ class IThreadMonitor(ABC):
     """
     
     @abstractmethod
-    def get_thread_stats(self) -> Dict[str, Any]:
+    def get_thread_stats(self) -> dict[str, Any]:
         """
         Get thread statistics.
         
@@ -692,7 +692,7 @@ class IThreadMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_thread_list(self) -> List[Dict[str, Any]]:
+    def get_thread_list(self) -> list[dict[str, Any]]:
         """
         Get list of all threads.
         
@@ -702,7 +702,7 @@ class IThreadMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_thread_by_id(self, thread_id: int) -> Optional[Dict[str, Any]]:
+    def get_thread_by_id(self, thread_id: int) -> Optional[dict[str, Any]]:
         """
         Get thread by ID.
         
@@ -715,7 +715,7 @@ class IThreadMonitor(ABC):
         pass
     
     @abstractmethod
-    def monitor_thread_performance(self, thread_id: int) -> Dict[str, Any]:
+    def monitor_thread_performance(self, thread_id: int) -> dict[str, Any]:
         """
         Monitor thread performance.
         
@@ -728,7 +728,7 @@ class IThreadMonitor(ABC):
         pass
     
     @abstractmethod
-    def detect_thread_leaks(self) -> List[int]:
+    def detect_thread_leaks(self) -> list[int]:
         """
         Detect thread leaks.
         
@@ -738,7 +738,7 @@ class IThreadMonitor(ABC):
         pass
     
     @abstractmethod
-    def cleanup_thread_leaks(self, thread_ids: List[int]) -> int:
+    def cleanup_thread_leaks(self, thread_ids: list[int]) -> int:
         """
         Cleanup thread leaks.
         
@@ -825,7 +825,7 @@ class IAsyncContextManager(ABC):
         pass
     
     @abstractmethod
-    def get_async_context_info(self) -> Dict[str, Any]:
+    def get_async_context_info(self) -> dict[str, Any]:
         """
         Get async context information.
         

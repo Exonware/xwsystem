@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 09-Nov-2025
 
 Async Process Fabric
@@ -79,9 +79,9 @@ class FabricConfig:
     pool_factory: Callable[..., AsyncProcessPool] = AsyncProcessPool
     queue_factory: Callable[..., AsyncMessageQueue] = AsyncMessageQueue
     shared_memory_factory: Callable[..., SharedMemoryManager] = SharedMemoryManager
-    pool_kwargs: Dict[str, Any] = field(default_factory=dict)
-    queue_kwargs: Dict[str, Any] = field(default_factory=dict)
-    shared_memory_kwargs: Dict[str, Any] = field(default_factory=dict)
+    pool_kwargs: dict[str, Any] = field(default_factory=dict)
+    queue_kwargs: dict[str, Any] = field(default_factory=dict)
+    shared_memory_kwargs: dict[str, Any] = field(default_factory=dict)
 
 
 class AsyncProcessFabric:
@@ -106,9 +106,9 @@ class AsyncProcessFabric:
         pool_factory: Optional[Callable[..., AsyncProcessPool]] = None,
         queue_factory: Optional[Callable[..., AsyncMessageQueue]] = None,
         shared_memory_factory: Optional[Callable[..., SharedMemoryManager]] = None,
-        pool_kwargs: Optional[Dict[str, Any]] = None,
-        queue_kwargs: Optional[Dict[str, Any]] = None,
-        shared_memory_kwargs: Optional[Dict[str, Any]] = None,
+        pool_kwargs: Optional[dict[str, Any]] = None,
+        queue_kwargs: Optional[dict[str, Any]] = None,
+        shared_memory_kwargs: Optional[dict[str, Any]] = None,
         logger_instance: Optional[logging.Logger] = None,
     ) -> None:
         self._config = FabricConfig(

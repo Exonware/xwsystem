@@ -10,7 +10,7 @@ health monitoring, and recommendations without being tied to specific implementa
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 04, 2025
 """
 
@@ -18,7 +18,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from ..config.performance_modes import PerformanceMode
 from ..config.logging_setup import get_logger
@@ -34,7 +34,7 @@ class PerformanceRecommendation:
     priority: str  # 'low', 'medium', 'high', 'critical'
     message: str
     action: str
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -43,8 +43,8 @@ class HealthStatus:
 
     status: str  # 'excellent', 'good', 'fair', 'poor', 'critical'
     health_score: int  # 0-100
-    warnings: Dict[str, bool] = field(default_factory=dict)
-    details: Dict[str, Any] = field(default_factory=dict)
+    warnings: dict[str, bool] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
 
 class GenericPerformanceManager:
@@ -59,8 +59,8 @@ class GenericPerformanceManager:
         """Initialize generic performance manager."""
         self.component_name = component_name
         self._lock = threading.RLock()
-        self._mode_history: List[Dict[str, Any]] = []
-        self._performance_stats: Dict[str, Any] = {}
+        self._mode_history: list[dict[str, Any]] = []
+        self._performance_stats: dict[str, Any] = {}
         self._last_mode_change = time.time()
         self._local_mode = None
         self._local_config = None
@@ -121,7 +121,7 @@ class GenericPerformanceManager:
         # This should be overridden by subclasses
         return {"performance_mode": mode}
 
-    def get_mode_history(self) -> List[Dict[str, Any]]:
+    def get_mode_history(self) -> list[dict[str, Any]]:
         """Get the history of performance mode changes."""
         with self._lock:
             return self._mode_history.copy()
@@ -136,7 +136,7 @@ class GenericPerformanceManager:
     # GENERIC PERFORMANCE STATISTICS
     # ============================================================================
 
-    def get_performance_stats(self) -> Dict[str, Any]:
+    def get_performance_stats(self) -> dict[str, Any]:
         """Get comprehensive performance statistics."""
         with self._lock:
             current_mode = self.get_performance_mode()
@@ -282,7 +282,7 @@ class GenericPerformanceManager:
         logger.info(f"Performance monitoring stopped for {self.component_name}")
         return self
 
-    def get_performance_report(self) -> Dict[str, Any]:
+    def get_performance_report(self) -> dict[str, Any]:
         """Generate a comprehensive performance report."""
         stats = self.get_performance_stats()
         health = self.get_health_status()
@@ -296,8 +296,8 @@ class GenericPerformanceManager:
         }
 
     def benchmark_performance(
-        self, test_operations: List[callable] = None
-    ) -> Dict[str, Any]:
+        self, test_operations: list[callable] = None
+    ) -> dict[str, Any]:
         """Run performance benchmarks."""
         if test_operations is None:
             test_operations = []
@@ -337,11 +337,11 @@ class GenericPerformanceManager:
     # GENERIC HELPER METHODS (to be overridden by subclasses)
     # ============================================================================
 
-    def _get_cache_stats(self) -> Dict[str, Any]:
+    def _get_cache_stats(self) -> dict[str, Any]:
         """Get cache statistics. Override in subclasses."""
         return {"hit_rate": 0.0, "miss_rate": 0.0, "size": 0, "max_size": 0}
 
-    def _get_memory_stats(self) -> Dict[str, Any]:
+    def _get_memory_stats(self) -> dict[str, Any]:
         """Get memory usage statistics."""
         try:
             import os
@@ -361,7 +361,7 @@ class GenericPerformanceManager:
             logger.warning(f"Failed to get memory stats: {e}")
             return {"error": str(e)}
 
-    def _get_operation_stats(self) -> Dict[str, Any]:
+    def _get_operation_stats(self) -> dict[str, Any]:
         """Get operation statistics. Override in subclasses."""
         return {
             "total_operations": 0,
@@ -370,13 +370,13 @@ class GenericPerformanceManager:
             "fastest_operation": None,
         }
 
-    def _get_adaptive_stats(self) -> Dict[str, Any]:
+    def _get_adaptive_stats(self) -> dict[str, Any]:
         """Get adaptive learning statistics. Override in subclasses."""
         return {"learning_rate": 0.0, "adaptation_count": 0, "last_adaptation": None}
 
     def _generate_recommendations(
-        self, stats: Dict[str, Any], health: HealthStatus
-    ) -> List[PerformanceRecommendation]:
+        self, stats: dict[str, Any], health: HealthStatus
+    ) -> list[PerformanceRecommendation]:
         """Generate performance recommendations."""
         recommendations = []
 
@@ -463,7 +463,7 @@ class GenericPerformanceManager:
 
         return self
 
-    def _apply_manual_overrides(self, config_overrides: Dict[str, Any]) -> None:
+    def _apply_manual_overrides(self, config_overrides: dict[str, Any]) -> None:
         """Apply manual configuration overrides. Override in subclasses."""
         pass
 

@@ -7,12 +7,12 @@ Production-grade table formatting for XWSystem.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 05, 2025
 """
 
 import sys
-from typing import List, Dict, Any, Optional, Union, TextIO, Callable
+from typing import Any, Optional, Union, TextIO, Callable
 from dataclasses import dataclass
 # Import colors from our existing color module
 # Explicit import - colors module is part of the same package
@@ -116,7 +116,7 @@ class TableFormatter:
         
         return text
     
-    def calculate_widths(self, columns: List[Column], data: List[List[Any]]) -> List[int]:
+    def calculate_widths(self, columns: list[Column], data: list[list[Any]]) -> list[int]:
         """Calculate optimal column widths."""
         widths = []
         
@@ -150,7 +150,7 @@ class Table:
     """
     
     def __init__(self, 
-                 columns: List[Union[str, Column]] = None,
+                 columns: list[Union[str, Column]] = None,
                  formatter: TableFormatter = None,
                  title: str = ""):
         """Initialize table."""
@@ -182,7 +182,7 @@ class Table:
         self.rows.append(list(values))
         return self
     
-    def add_rows(self, rows: List[List[Any]]) -> 'Table':
+    def add_rows(self, rows: list[list[Any]]) -> 'Table':
         """Add multiple rows to the table."""
         self.rows.extend(rows)
         return self
@@ -236,14 +236,14 @@ class Table:
 
 
 # Utility functions
-def create_simple_table(headers: List[str], rows: List[List[Any]]) -> Table:
+def create_simple_table(headers: list[str], rows: list[list[Any]]) -> Table:
     """Create a simple table with basic formatting."""
     table = Table(headers)
     table.add_rows(rows)
     return table
 
 
-def print_key_value_table(data: Dict[str, Any], title: str = ""):
+def print_key_value_table(data: dict[str, Any], title: str = ""):
     """Print a key-value table."""
     table = Table([
         Column("Property", header_color=Colors.BLUE, header_style=Style.BOLD),

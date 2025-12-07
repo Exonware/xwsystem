@@ -10,7 +10,7 @@ import statistics
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 from .defs import AdvancedPerformanceMode
 
 import psutil
@@ -59,7 +59,7 @@ class PerformanceProfile:
     max_nodes: int
     max_path_length: int
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert profile to dictionary."""
         return {
             "path_cache_size": self.path_cache_size,
@@ -80,7 +80,7 @@ class PerformanceProfile:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "PerformanceProfile":
+    def from_dict(cls, data: dict[str, Any]) -> "PerformanceProfile":
         """Create profile from dictionary."""
         return cls(**data)
 
@@ -105,8 +105,8 @@ class AdaptiveProfile(PerformanceProfile):
     cooldown_period: float = 5.0  # Seconds between adaptations
 
     # Performance tracking
-    operation_history: List[Dict[str, Any]] = field(default_factory=list)
-    mode_performance: Dict[str, List[float]] = field(default_factory=dict)
+    operation_history: list[dict[str, Any]] = field(default_factory=list)
+    mode_performance: dict[str, list[float]] = field(default_factory=dict)
     last_adaptation: float = field(default_factory=time.time)
 
 
@@ -138,8 +138,8 @@ class DualAdaptiveProfile(PerformanceProfile):
     cooldown_period: float = 10.0  # 10 seconds between adaptations
 
     # Performance tracking
-    operation_history: List[Dict[str, Any]] = field(default_factory=list)
-    mode_performance: Dict[str, List[float]] = field(default_factory=dict)
+    operation_history: list[dict[str, Any]] = field(default_factory=list)
+    mode_performance: dict[str, list[float]] = field(default_factory=dict)
     last_adaptation: float = field(default_factory=time.time)
 
     # Phase tracking
@@ -183,9 +183,9 @@ class AdaptiveLearningEngine:
 
     def __init__(self, profile: AdaptiveProfile):
         self.profile = profile
-        self.metrics_history: List[PerformanceMetrics] = []
+        self.metrics_history: list[PerformanceMetrics] = []
         # Initialize mode performance tracking without causing recursion
-        self.mode_performance: Dict[str, List[float]] = {
+        self.mode_performance: dict[str, list[float]] = {
             "AUTO": [],
             "DEFAULT": [],
             "FAST": [],
@@ -195,7 +195,7 @@ class AdaptiveLearningEngine:
             "ADAPTIVE": [],
             "DUAL_ADAPTIVE": [],
         }
-        self.system_metrics: List[Dict[str, float]] = []
+        self.system_metrics: list[dict[str, float]] = []
         self._lock = threading.RLock()
         self._last_system_check = 0.0
 
@@ -218,7 +218,7 @@ class AdaptiveLearningEngine:
                 if len(self.mode_performance[metrics.mode_used.name]) > 100:
                     self.mode_performance[metrics.mode_used.name].pop(0)
 
-    def get_system_metrics(self) -> Dict[str, float]:
+    def get_system_metrics(self) -> dict[str, float]:
         """Get current system metrics."""
         current_time = time.time()
 
@@ -400,7 +400,7 @@ class AdaptiveLearningEngine:
                     60, self.profile.lazy_threshold_list * 2
                 )
 
-    def get_adaptive_stats(self) -> Dict[str, Any]:
+    def get_adaptive_stats(self) -> dict[str, Any]:
         """Get detailed adaptive learning statistics."""
         return {
             "metrics_count": len(self.metrics_history),
@@ -422,14 +422,14 @@ class DualPhaseAdaptiveEngine:
 
     def __init__(self, profile: DualAdaptiveProfile):
         self.profile = profile
-        self.metrics_history: List[PerformanceMetrics] = []
-        self.system_metrics: List[Dict[str, float]] = []
+        self.metrics_history: list[PerformanceMetrics] = []
+        self.system_metrics: list[dict[str, float]] = []
         self._lock = threading.RLock()
         self._last_system_check = 0.0
         self._operation_counter = 0
 
         # Initialize mode performance tracking
-        self.mode_performance: Dict[str, List[float]] = {
+        self.mode_performance: dict[str, list[float]] = {
             "AUTO": [],
             "DEFAULT": [],
             "FAST": [],
@@ -631,7 +631,7 @@ class DualPhaseAdaptiveEngine:
                 1024, self.profile.conversion_cache_size * 2
             )
 
-    def get_system_metrics(self) -> Dict[str, float]:
+    def get_system_metrics(self) -> dict[str, float]:
         """Get current system metrics (cached for efficiency)."""
         current_time = time.time()
 
@@ -673,7 +673,7 @@ class DualPhaseAdaptiveEngine:
                 "timestamp": current_time,
             }
 
-    def get_adaptive_stats(self) -> Dict[str, Any]:
+    def get_adaptive_stats(self) -> dict[str, Any]:
         """Get detailed adaptive learning statistics."""
         return {
             "current_phase": self.profile.current_phase,
@@ -885,7 +885,7 @@ class PerformanceModeManager:
     def __init__(self, default_mode: PerformanceMode = PerformanceMode.DEFAULT):
         self._mode = default_mode
         self._parent_mode: Optional[PerformanceMode] = None
-        self._manual_overrides: Dict[str, Any] = {}
+        self._manual_overrides: dict[str, Any] = {}
         self._adaptive_engine: Optional[AdaptiveLearningEngine] = None
         self._dual_adaptive_engine: Optional[DualPhaseAdaptiveEngine] = None
         self._lock = threading.RLock()
@@ -985,9 +985,9 @@ class PerformanceModeManager:
             )
             self._dual_adaptive_engine.record_operation(metrics)
 
-    def get_adaptive_stats(self) -> Dict[str, Any]:
+    def get_adaptive_stats(self) -> dict[str, Any]:
         """Get adaptive learning statistics."""
-        stats: Dict[str, Any] = {}
+        stats: dict[str, Any] = {}
 
         if self._adaptive_engine:
             stats.update(self._adaptive_engine.get_adaptive_stats())

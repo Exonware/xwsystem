@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Automatic serializer that detects format and delegates to appropriate serializer.
 """
 
 from pathlib import Path
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Optional, Type, Union
 
 from .format_detector import FormatDetector, detect_format
 from .contracts import ISerialization
@@ -36,7 +36,7 @@ class AutoSerializer:
             confidence_threshold: Minimum confidence for format detection
         """
         self._detector = FormatDetector(confidence_threshold)
-        self._serializer_cache: Dict[str, ISerialization] = {}
+        self._serializer_cache: dict[str, ISerialization] = {}
         self._default_format = default_format
     
     def _get_serializer_class(self, format_name: str) -> Type[ISerialization]:

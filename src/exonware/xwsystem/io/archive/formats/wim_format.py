@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 WIM (Windows Imaging) format - RANK #9 SYSTEM IMAGES.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Lazy installation of wimlib
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
@@ -55,16 +55,16 @@ class WimArchiver(IArchiveFormat):
         return "wim"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".wim", ".swm", ".esd"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/x-ms-wim"]
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """
         Create WIM image.
         
@@ -92,7 +92,7 @@ class WimArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create WIM image: {e}")
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract WIM image."""
         output_dir.mkdir(parents=True, exist_ok=True)
         
@@ -107,7 +107,7 @@ class WimArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to extract WIM image: {e}")
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List WIM contents."""
         try:
             wim = wimlib.WIM(str(archive), 'r')

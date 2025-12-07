@@ -9,7 +9,7 @@ import contextlib
 import logging
 import threading
 from contextlib import ExitStack, contextmanager
-from typing import Any, ContextManager, Dict, Generator, List, Optional, Type, Union
+from typing import Any, ContextManager, Generator, Optional, Type, Union
 
 logger = logging.getLogger(__name__)
 
@@ -273,8 +273,8 @@ class MultiContextManager:
 
     def __init__(self) -> None:
         """Initialize empty multi-context manager."""
-        self.contexts: List[ContextManager] = []
-        self.entered_contexts: List[Any] = []
+        self.contexts: list[ContextManager] = []
+        self.entered_contexts: list[Any] = []
         self.stack: Optional[ExitStack] = None
 
     def add_context(self, context: ContextManager):
@@ -283,7 +283,7 @@ class MultiContextManager:
             raise RuntimeError("Cannot add contexts after entering")
         self.contexts.append(context)
 
-    def __enter__(self) -> List[Any]:
+    def __enter__(self) -> list[Any]:
         """Enter all managed contexts."""
         self.stack = ExitStack()
         self.entered_contexts = []
@@ -327,7 +327,7 @@ class ContextManager:
     def __init__(self, name: str = "context"):
         """Initialize context manager."""
         self.name = name
-        self._contexts: Dict[str, Any] = {}
+        self._contexts: dict[str, Any] = {}
         self._active = False
     
     def __enter__(self):
@@ -360,6 +360,6 @@ class ContextManager:
         """Check if context is active."""
         return self._active
     
-    def get_all_contexts(self) -> Dict[str, Any]:
+    def get_all_contexts(self) -> dict[str, Any]:
         """Get all contexts."""
         return self._contexts.copy()

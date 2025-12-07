@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 IO module base classes - abstract classes for input/output functionality.
@@ -11,7 +11,7 @@ IO module base classes - abstract classes for input/output functionality.
 import os
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, BinaryIO, TextIO
+from typing import Any, Optional, Union, BinaryIO, TextIO
 from pathlib import Path
 from .contracts import FileMode, FileType, PathType, OperationResult, LockType, IFile, IFolder, IPath, IStream, IAsyncIO, IAtomicOperations, IBackupOperations, ITemporaryOperations, IUnifiedIO, IFileManager
 
@@ -354,15 +354,15 @@ class AFolder(IFolder, ABC):
         """Delete directory."""
         pass
     
-    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> List[Path]:
+    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         return AFolder.list_files_static(self.dir_path, pattern, recursive)
     
-    def list_directories(self, recursive: bool = False) -> List[Path]:
+    def list_directories(self, recursive: bool = False) -> list[Path]:
         """List subdirectories."""
         return AFolder.list_directories_static(self.dir_path, recursive)
     
-    def walk(self) -> List[tuple[Path, List[str], List[str]]]:
+    def walk(self) -> list[tuple[Path, list[str], list[str]]]:
         """Walk directory tree."""
         return AFolder.walk_static(self.dir_path)
     
@@ -414,7 +414,7 @@ class AFolder(IFolder, ABC):
             return False
     
     @staticmethod
-    def list_files_static(path: Union[str, Path], pattern: Optional[str] = None, recursive: bool = False) -> List[Path]:
+    def list_files_static(path: Union[str, Path], pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         if not AFolder.exists(path):
             return []
@@ -431,7 +431,7 @@ class AFolder(IFolder, ABC):
                 return [p for p in Path(path).iterdir() if p.is_file()]
     
     @staticmethod
-    def list_directories_static(path: Union[str, Path], recursive: bool = False) -> List[Path]:
+    def list_directories_static(path: Union[str, Path], recursive: bool = False) -> list[Path]:
         """List subdirectories."""
         if not AFolder.exists(path):
             return []
@@ -442,7 +442,7 @@ class AFolder(IFolder, ABC):
             return [p for p in Path(path).iterdir() if p.is_dir()]
     
     @staticmethod
-    def walk_static(path: Union[str, Path]) -> List[tuple[Path, List[str], List[str]]]:
+    def walk_static(path: Union[str, Path]) -> list[tuple[Path, list[str], list[str]]]:
         """Walk directory tree."""
         if not AFolder.exists(path):
             return []
@@ -935,7 +935,7 @@ class ABackupOperations(IBackupOperations, ABC):
         """Restore from backup."""
         pass
     
-    def list_backups(self, backup_dir: Union[str, Path]) -> List[Path]:
+    def list_backups(self, backup_dir: Union[str, Path]) -> list[Path]:
         """List available backups."""
         return ABackupOperations.list_backups_static(backup_dir)
     
@@ -1000,7 +1000,7 @@ class ABackupOperations(IBackupOperations, ABC):
             return OperationResult.FAILED
     
     @staticmethod
-    def list_backups_static(backup_dir: Union[str, Path]) -> List[Path]:
+    def list_backups_static(backup_dir: Union[str, Path]) -> list[Path]:
         """List available backups."""
         try:
             backup_path = Path(backup_dir)
@@ -1051,8 +1051,8 @@ class ATemporaryOperations(ITemporaryOperations, ABC):
     
     def __init__(self):
         """Initialize temporary operations base."""
-        self._temp_files: List[Path] = []
-        self._temp_dirs: List[Path] = []
+        self._temp_files: list[Path] = []
+        self._temp_dirs: list[Path] = []
         self._temp_base_dir: Optional[Path] = None
     
     # ============================================================================
@@ -1189,8 +1189,8 @@ class AUnifiedIO(AFile, AFolder, APath, AStream, AAsyncIO, AAtomicOperations, AB
         self.cleanup_temp_on_exit = config.get('cleanup_temp_on_exit', True)
         
         # Track temporary files for cleanup
-        self._temp_files: List[Path] = []
-        self._temp_dirs: List[Path] = []
+        self._temp_files: list[Path] = []
+        self._temp_dirs: list[Path] = []
     
     def __enter__(self):
         """Enter context manager for resource management."""
@@ -1256,8 +1256,8 @@ class AFileManager(AFile, AFolder, APath, AAtomicOperations, ABackupOperations, 
         self.max_file_size = config.get('max_file_size', 100 * 1024 * 1024)  # 100MB
         
         # Track temporary files for cleanup
-        self._temp_files: List[Path] = []
-        self._temp_dirs: List[Path] = []
+        self._temp_files: list[Path] = []
+        self._temp_dirs: list[Path] = []
     
     def __enter__(self):
         """Enter context manager for resource management."""
@@ -1315,7 +1315,7 @@ class AFileManager(AFile, AFolder, APath, AAtomicOperations, ABackupOperations, 
         
         return type_mappings.get(ext, 'unknown')
     
-    def get_file_info(self, file_path: Union[str, Path]) -> Dict[str, Any]:
+    def get_file_info(self, file_path: Union[str, Path]) -> dict[str, Any]:
         """
         Get comprehensive file information.
         

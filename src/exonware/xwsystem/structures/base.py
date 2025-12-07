@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Structures module base classes - abstract classes for data structure functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Tuple
+from typing import Any, Optional, Union, Iterator
 from .contracts import StructureType, TraversalType, ValidationLevel
 
 
@@ -26,7 +26,7 @@ class AStructureBase(ABC):
         """
         self.structure_type = structure_type
         self._size = 0
-        self._elements: List[Any] = []
+        self._elements: list[Any] = []
     
     @abstractmethod
     def add(self, element: Any) -> bool:
@@ -59,12 +59,12 @@ class AStructureBase(ABC):
         pass
     
     @abstractmethod
-    def to_list(self) -> List[Any]:
+    def to_list(self) -> list[Any]:
         """Convert structure to list."""
         pass
     
     @abstractmethod
-    def from_list(self, elements: List[Any]) -> None:
+    def from_list(self, elements: list[Any]) -> None:
         """Initialize structure from list."""
         pass
     
@@ -128,12 +128,12 @@ class ATreeBase(ABC):
         pass
     
     @abstractmethod
-    def get_leaves(self) -> List[Any]:
+    def get_leaves(self) -> list[Any]:
         """Get tree leaves."""
         pass
     
     @abstractmethod
-    def get_internal_nodes(self) -> List[Any]:
+    def get_internal_nodes(self) -> list[Any]:
         """Get internal nodes."""
         pass
 
@@ -149,8 +149,8 @@ class AGraphBase(ABC):
             directed: Whether graph is directed
         """
         self.directed = directed
-        self._vertices: Dict[Any, List[Any]] = {}
-        self._edges: List[Tuple[Any, Any]] = []
+        self._vertices: dict[Any, list[Any]] = {}
+        self._edges: list[tuple[Any, Any]] = []
         self._vertex_count = 0
         self._edge_count = 0
     
@@ -185,17 +185,17 @@ class AGraphBase(ABC):
         pass
     
     @abstractmethod
-    def get_vertices(self) -> List[Any]:
+    def get_vertices(self) -> list[Any]:
         """Get all vertices."""
         pass
     
     @abstractmethod
-    def get_edges(self) -> List[Tuple[Any, Any]]:
+    def get_edges(self) -> list[tuple[Any, Any]]:
         """Get all edges."""
         pass
     
     @abstractmethod
-    def get_neighbors(self, vertex: Any) -> List[Any]:
+    def get_neighbors(self, vertex: Any) -> list[Any]:
         """Get vertex neighbors."""
         pass
     
@@ -232,10 +232,10 @@ class ACircularDetectorBase(ABC):
         """Initialize circular detector."""
         self._visited: set = set()
         self._recursion_stack: set = set()
-        self._circular_refs: List[List[Any]] = []
+        self._circular_refs: list[list[Any]] = []
     
     @abstractmethod
-    def detect_circular_references(self, obj: Any, max_depth: int = 100) -> List[List[Any]]:
+    def detect_circular_references(self, obj: Any, max_depth: int = 100) -> list[list[Any]]:
         """Detect circular references in object."""
         pass
     
@@ -245,7 +245,7 @@ class ACircularDetectorBase(ABC):
         pass
     
     @abstractmethod
-    def get_circular_paths(self) -> List[List[Any]]:
+    def get_circular_paths(self) -> list[list[Any]]:
         """Get detected circular paths."""
         pass
     
@@ -270,7 +270,7 @@ class ACircularDetectorBase(ABC):
         pass
     
     @abstractmethod
-    def get_memory_usage(self, obj: Any) -> Dict[str, int]:
+    def get_memory_usage(self, obj: Any) -> dict[str, int]:
         """Get memory usage statistics."""
         pass
 
@@ -282,7 +282,7 @@ class ATreeWalkerBase(ABC):
         """Initialize tree walker."""
         self._current_node: Optional[Any] = None
         self._visited_nodes: set = set()
-        self._path: List[Any] = []
+        self._path: list[Any] = []
     
     @abstractmethod
     def walk(self, root: Any, traversal_type: TraversalType = TraversalType.INORDER) -> Iterator[Any]:
@@ -310,7 +310,7 @@ class ATreeWalkerBase(ABC):
         pass
     
     @abstractmethod
-    def find_path(self, root: Any, target: Any) -> Optional[List[Any]]:
+    def find_path(self, root: Any, target: Any) -> Optional[list[Any]]:
         """Find path to target node."""
         pass
     
@@ -320,27 +320,27 @@ class ATreeWalkerBase(ABC):
         pass
     
     @abstractmethod
-    def get_ancestors(self, root: Any, target: Any) -> List[Any]:
+    def get_ancestors(self, root: Any, target: Any) -> list[Any]:
         """Get ancestors of target node."""
         pass
     
     @abstractmethod
-    def get_descendants(self, root: Any, target: Any) -> List[Any]:
+    def get_descendants(self, root: Any, target: Any) -> list[Any]:
         """Get descendants of target node."""
         pass
     
     @abstractmethod
-    def get_siblings(self, root: Any, target: Any) -> List[Any]:
+    def get_siblings(self, root: Any, target: Any) -> list[Any]:
         """Get siblings of target node."""
         pass
     
     @abstractmethod
-    def get_leaf_nodes(self, root: Any) -> List[Any]:
+    def get_leaf_nodes(self, root: Any) -> list[Any]:
         """Get all leaf nodes."""
         pass
     
     @abstractmethod
-    def get_internal_nodes(self, root: Any) -> List[Any]:
+    def get_internal_nodes(self, root: Any) -> list[Any]:
         """Get all internal nodes."""
         pass
 
@@ -356,7 +356,7 @@ class AStructureValidatorBase(ABC):
             validation_level: Validation level
         """
         self.validation_level = validation_level
-        self._validation_errors: List[str] = []
+        self._validation_errors: list[str] = []
     
     @abstractmethod
     def validate_structure(self, structure: Any) -> bool:
@@ -379,7 +379,7 @@ class AStructureValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def get_validation_errors(self) -> List[str]:
+    def get_validation_errors(self) -> list[str]:
         """Get validation errors."""
         pass
     
@@ -410,7 +410,7 @@ class BaseStructure(AStructureBase):
     def __init__(self, structure_type: StructureType = StructureType.GENERIC):
         """Initialize base structure."""
         super().__init__(structure_type)
-        self._elements: List[Any] = []
+        self._elements: list[Any] = []
     
     def add(self, element: Any) -> bool:
         """Add element to structure."""
@@ -449,11 +449,11 @@ class BaseStructure(AStructureBase):
         self._elements.clear()
         self._size = 0
     
-    def to_list(self) -> List[Any]:
+    def to_list(self) -> list[Any]:
         """Convert structure to list."""
         return self._elements.copy()
     
-    def from_list(self, elements: List[Any]) -> None:
+    def from_list(self, elements: list[Any]) -> None:
         """Initialize structure from list."""
         self._elements = elements.copy()
         self._size = len(elements)

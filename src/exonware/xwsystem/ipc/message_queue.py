@@ -14,7 +14,7 @@ import asyncio
 import queue
 import threading
 import multiprocessing as mp
-from typing import Any, Optional, TypeVar, Generic, Callable
+from typing import Any, Optional, Callable
 from dataclasses import dataclass
 import time
 import logging
@@ -22,11 +22,9 @@ from .defs import MessageQueueType
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar('T')
-
 
 @dataclass
-class Message(Generic[T]):
+class Message[T]:
     """A message in the queue with metadata."""
     data: T
     timestamp: float
@@ -39,7 +37,7 @@ class Message(Generic[T]):
             self.timestamp = time.time()
 
 
-class MessageQueue(Generic[T]):
+class MessageQueue[T]:
     """
     Thread-safe message queue with advanced features.
     
@@ -270,7 +268,7 @@ class MessageQueue(Generic[T]):
         self.shutdown()
 
 
-class AsyncMessageQueue(Generic[T]):
+class AsyncMessageQueue[T]:
     """
     Async-compatible message queue.
     

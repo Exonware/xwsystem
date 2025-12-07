@@ -235,12 +235,16 @@ Examples:
   python runner.py unit-category security_tests  # Run security unit tests
 
 Available Unit Categories:
+  - caching_tests
+  - codec_tests
   - config_tests
   - io_tests
+  - operations_tests
   - patterns_tests
   - performance_tests
   - security_tests
   - serialization_tests
+  - shared_tests
   - structures_tests
   - threading_tests
 

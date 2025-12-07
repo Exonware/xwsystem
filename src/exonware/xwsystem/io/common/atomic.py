@@ -9,7 +9,7 @@ import tempfile
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, BinaryIO, List, Optional, TextIO, Union
+from typing import Any, BinaryIO, Optional, TextIO, Union
 
 logger = logging.getLogger(__name__)
 
@@ -421,7 +421,7 @@ def safe_read_bytes(file_path: Union[str, Path], max_size_mb: float = 100.0) -> 
 def safe_read_with_fallback(
     file_path: Union[str, Path],
     preferred_encoding: str = "utf-8",
-    fallback_encodings: Optional[List[str]] = None,
+    fallback_encodings: Optional[list[str]] = None,
     max_size_mb: float = 100.0,
 ) -> str:
     """

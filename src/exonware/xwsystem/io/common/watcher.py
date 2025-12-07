@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 File watching implementation for change monitoring.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Easy to add new event types
 import time
 import threading
 from pathlib import Path
-from typing import Dict, Any, Optional, Callable
+from typing import Any, Optional, Callable
 
 from ..contracts import IFileWatcher
 
@@ -56,8 +56,8 @@ class FileWatcher(IFileWatcher):
             poll_interval: Polling interval in seconds
         """
         self._poll_interval = poll_interval
-        self._watched: Dict[Path, Callable] = {}
-        self._file_states: Dict[Path, Dict[str, Any]] = {}
+        self._watched: dict[Path, Callable] = {}
+        self._file_states: dict[Path, dict[str, Any]] = {}
         self._running = False
         self._thread: Optional[threading.Thread] = None
     

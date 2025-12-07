@@ -3,13 +3,13 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 26, 2025
 
 Universal operations library for data manipulation.
 """
 
-from typing import Any, Dict, List, Optional, Union, Set
+from typing import Any, Optional, Union
 from enum import Enum
 from dataclasses import dataclass
 from ..config.logging_setup import get_logger
@@ -46,9 +46,9 @@ class PatchOperation(Enum):
 @dataclass
 class DiffResult:
     """Result of a diff operation."""
-    operations: List[Dict[str, Any]]
+    operations: list[dict[str, Any]]
     mode: DiffMode
-    paths_changed: List[str]
+    paths_changed: list[str]
     total_changes: int
 
 
@@ -57,7 +57,7 @@ class PatchResult:
     """Result of a patch operation."""
     success: bool
     operations_applied: int
-    errors: List[str]
+    errors: list[str]
     result: Any
 
 

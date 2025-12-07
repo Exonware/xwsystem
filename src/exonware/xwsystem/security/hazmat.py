@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Hazardous Materials (Hazmat) Layer - Low-level cryptographic primitives.
@@ -21,7 +21,7 @@ Features:
 """
 
 import os
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, ec, ed25519, x25519, padding
@@ -276,7 +276,7 @@ class X25519_KeyExchange:
             raise HazmatError(f"X25519 key exchange failed: {e}")
     
     @staticmethod
-    def generate_keypair() -> Tuple[bytes, bytes]:
+    def generate_keypair() -> tuple[bytes, bytes]:
         """
         Generate X25519 key pair.
         
@@ -383,7 +383,7 @@ class Ed25519_Signature:
             return False
     
     @staticmethod
-    def generate_keypair() -> Tuple[bytes, bytes]:
+    def generate_keypair() -> tuple[bytes, bytes]:
         """
         Generate Ed25519 key pair.
         
@@ -532,7 +532,7 @@ class X509Certificate:
             except ValueError as e:
                 raise HazmatError(f"Invalid certificate format: {e}")
     
-    def get_subject(self) -> Dict[str, str]:
+    def get_subject(self) -> dict[str, str]:
         """Get certificate subject information."""
         subject_dict = {}
         for attribute in self._cert.subject:
@@ -541,7 +541,7 @@ class X509Certificate:
             subject_dict[name] = value
         return subject_dict
     
-    def get_issuer(self) -> Dict[str, str]:
+    def get_issuer(self) -> dict[str, str]:
         """Get certificate issuer information."""
         issuer_dict = {}
         for attribute in self._cert.issuer:

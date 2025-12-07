@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 Zstandard (.zst) compression format - RANK #2 MODERN STANDARD.
@@ -20,7 +20,7 @@ Priority 5 (Extensibility): Lazy installation of zstandard
 
 import tarfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
@@ -59,16 +59,16 @@ class ZstandardArchiver(IArchiveFormat):
         return "zst"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".zst", ".tar.zst", ".tzst"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/zstd", "application/x-zstd"]
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """
         Create Zstandard-compressed tar archive.
         
@@ -98,7 +98,7 @@ class ZstandardArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create zst archive: {e}")
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract Zstandard archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
         
@@ -122,7 +122,7 @@ class ZstandardArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to extract zst archive: {e}")
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List Zstandard archive contents."""
         try:
             dctx = zstandard.ZstdDecompressor()

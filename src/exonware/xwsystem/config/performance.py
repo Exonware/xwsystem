@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Performance Configuration Management
@@ -10,7 +10,7 @@ Performance Configuration Management
 Centralized configuration for XSystem performance limits, timeouts, and optimization settings.
 """
 
-from typing import Any, Dict, Final, Optional
+from typing import Any, Final, Optional
 from dataclasses import dataclass, field
 import os
 from pathlib import Path
@@ -214,7 +214,7 @@ class PerformanceConfig:
         except Exception as e:
             logger.error(f"Failed to load configuration file {config_file}: {e}")
     
-    def _apply_config_data(self, config_data: Dict[str, Any]) -> None:
+    def _apply_config_data(self, config_data: dict[str, Any]) -> None:
         """Apply configuration data to limits."""
         
         if 'serialization' in config_data:
@@ -245,7 +245,7 @@ class PerformanceConfig:
         """Get current performance limits."""
         return self._limits
     
-    def get_serialization_config(self) -> Dict[str, Any]:
+    def get_serialization_config(self) -> dict[str, Any]:
         """Get serialization configuration dictionary."""
         return {
             'max_size_mb': self._limits.serialization.max_size_mb,
@@ -256,7 +256,7 @@ class PerformanceConfig:
             'validate_paths': self._limits.serialization.validate_paths,
         }
     
-    def get_network_config(self) -> Dict[str, Any]:
+    def get_network_config(self) -> dict[str, Any]:
         """Get network configuration dictionary."""
         return {
             'connect_timeout': self._limits.network.connect_timeout,
@@ -266,7 +266,7 @@ class PerformanceConfig:
             'max_response_size_mb': self._limits.network.max_response_size_mb,
         }
     
-    def get_security_config(self) -> Dict[str, Any]:
+    def get_security_config(self) -> dict[str, Any]:
         """Get security configuration dictionary."""
         return {
             'allow_absolute_paths': self._limits.security.allow_absolute_paths,
@@ -323,7 +323,7 @@ class PerformanceConfig:
         
         logger.info(f"Performance optimized for mode: {self._mode}")
     
-    def export_config(self, format: str = 'json') -> Dict[str, Any]:
+    def export_config(self, format: str = 'json') -> dict[str, Any]:
         """
         Export current configuration.
         

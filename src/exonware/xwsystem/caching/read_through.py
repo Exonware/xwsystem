@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Read-through and Write-through cache implementations.
 Extensibility Priority #5 - Auto-loading and auto-writing patterns.
 """
 
-from typing import Any, Callable, Dict, Optional, Hashable
+from typing import Any, Callable, Optional, Hashable
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
 
@@ -92,7 +92,7 @@ class ReadThroughCache(LRUCache):
         
         return default
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics including loader calls."""
         stats = super().get_stats()
         stats['loader_calls'] = self._loader_calls
@@ -162,7 +162,7 @@ class WriteThroughCache(LRUCache):
         # Then cache
         super().put(key, value)
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics including writer calls."""
         stats = super().get_stats()
         stats['writer_calls'] = self._writer_calls
@@ -235,7 +235,7 @@ class ReadWriteThroughCache(LRUCache):
         
         super().put(key, value)
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics."""
         stats = super().get_stats()
         stats['loader_calls'] = self._loader_calls

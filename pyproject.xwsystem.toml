@@ -11,7 +11,7 @@ dynamic = [
 ]
 description = "Convenience wrapper for exonware-xwsystem - provides 'import xwsystem' alias"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 keywords = [
     "enterprise",
     "framework",
@@ -40,10 +40,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: System :: Systems Administration",
@@ -63,9 +59,6 @@ authors = [
 text = "MIT"
 
 [project.optional-dependencies]
-lazy = [
-    "exonware-xwsystem[lazy]",
-]
 full = [
     "exonware-xwsystem[full]",
 ]
@@ -78,7 +71,7 @@ Documentation = "https://github.com/exonware/xwsystem#readme"
 [tool.black]
 line-length = 88
 target-version = [
-    "py38",
+    "py312",
 ]
 
 [tool.isort]
@@ -86,7 +79,7 @@ profile = "black"
 line_length = 88
 
 [tool.mypy]
-python_version = "0.0.1.408"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true

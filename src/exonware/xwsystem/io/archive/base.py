@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 Base classes and registries for archive system.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Easy to add 7z, RAR, etc.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, Type, List, Union, Any
+from typing import Optional, Type, Union, Any
 from pathlib import Path
 
 from ..contracts import IArchiveFormat, ICompressor, IArchiveMetadata, IArchiver, IArchiveFile, EncodeOptions, DecodeOptions
@@ -50,12 +50,12 @@ class AArchiveFormat(IArchiveFormat, ABC):
     
     @property
     @abstractmethod
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported file extensions."""
         pass
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """Supported MIME types."""
         return []  # Default: no MIME types
 
@@ -71,7 +71,7 @@ class ACompressor(ICompressor, ABC):
     
     @property
     @abstractmethod
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported file extensions."""
         pass
 
@@ -210,7 +210,7 @@ class AArchiveFile(AFile, IArchiveFile, ABC):
         pass
     
     @abstractmethod
-    def add_files(self, files: List[Path], **options) -> None:
+    def add_files(self, files: list[Path], **options) -> None:
         """
         Add files to archive - must implement in subclass.
         
@@ -219,7 +219,7 @@ class AArchiveFile(AFile, IArchiveFile, ABC):
         pass
     
     @abstractmethod
-    def extract_to(self, dest: Path, **options) -> List[Path]:
+    def extract_to(self, dest: Path, **options) -> list[Path]:
         """
         Extract archive to destination - must implement in subclass.
         
@@ -228,7 +228,7 @@ class AArchiveFile(AFile, IArchiveFile, ABC):
         pass
     
     @abstractmethod
-    def list_contents(self) -> List[str]:
+    def list_contents(self) -> list[str]:
         """List files in archive - must implement in subclass."""
         pass
 
@@ -252,9 +252,9 @@ class ArchiveFormatRegistry:
     
     def __init__(self):
         """Initialize registry."""
-        self._formats: Dict[str, Type[IArchiveFormat]] = {}
-        self._instances: Dict[str, IArchiveFormat] = {}
-        self._extension_map: Dict[str, str] = {}  # .zip → "zip"
+        self._formats: dict[str, Type[IArchiveFormat]] = {}
+        self._instances: dict[str, IArchiveFormat] = {}
+        self._extension_map: dict[str, str] = {}  # .zip → "zip"
     
     def register(self, format_class: Type[IArchiveFormat]) -> None:
         """
@@ -312,7 +312,7 @@ class ArchiveFormatRegistry:
         
         return None
     
-    def list_formats(self) -> List[str]:
+    def list_formats(self) -> list[str]:
         """List all registered format IDs."""
         return list(self._formats.keys())
 
@@ -326,8 +326,8 @@ class CompressionRegistry:
     
     def __init__(self):
         """Initialize registry."""
-        self._algorithms: Dict[str, Type[ICompressor]] = {}
-        self._instances: Dict[str, ICompressor] = {}
+        self._algorithms: dict[str, Type[ICompressor]] = {}
+        self._instances: dict[str, ICompressor] = {}
     
     def register(self, compressor_class: Type[ICompressor]) -> None:
         """Register a compression algorithm."""
@@ -348,7 +348,7 @@ class CompressionRegistry:
                 return compressor
         return None
     
-    def list_algorithms(self) -> List[str]:
+    def list_algorithms(self) -> list[str]:
         """List all registered algorithm IDs."""
         return list(self._algorithms.keys())
 

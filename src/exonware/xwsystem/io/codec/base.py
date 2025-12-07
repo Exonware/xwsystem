@@ -4,23 +4,34 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 30, 2025
 
 Base classes, registry, adapters, and helper functions for codec system.
 """
 
 from __future__ import annotations
-from typing import TypeVar, Generic, Optional, Dict, Any, Type, IO
+from typing import Optional, Any, Type, IO, Union
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 import mimetypes
+import sys
 
 from .contracts import ICodec, ICodecMetadata
 from ..contracts import Serializer, Formatter, EncodeOptions, DecodeOptions
 from ..defs import CodecCapability
-from ..errors import EncodeError, DecodeError, CodecNotFoundError, CodecRegistrationError
+from ..errors import EncodeError, DecodeError, CodecNotFoundError, CodecRegistrationError, SerializationError
+
+# Default safety limits to prevent infinite recursion and excessive memory usage
+# Root cause: Some codecs (like JSON5) hang on very large/deep nested structures
+# Solution: Add configurable limits at base class level
+# Priority #1: Security - Prevent DoS via excessive nesting
+# Priority #4: Performance - Prevent hangs on large data
+DEFAULT_MAX_DEPTH = 100  # Maximum nesting depth
+DEFAULT_MAX_SIZE_MB = 100  # Maximum estimated size in MB
 
 __all__ = [
     'ACodec',
@@ -30,9 +41,6 @@ __all__ = [
     'FormatterToSerializer',
     'SerializerToFormatter',
 ]
-
-T = TypeVar("T")
-R = TypeVar("R")
 
 
 # ============================================================================
@@ -112,10 +120,10 @@ class CodecRegistry:
     """
     
     def __init__(self) -> None:
-        self._by_media_type: Dict[MediaKey, Type[ICodec]] = {}
-        self._by_extension: Dict[str, Type[ICodec]] = {}
-        self._by_id: Dict[str, Type[ICodec]] = {}
-        self._instances: Dict[str, ICodec] = {}  # Cached instances
+        self._by_media_type: dict[MediaKey, Type[ICodec]] = {}
+        self._by_extension: dict[str, Type[ICodec]] = {}
+        self._by_id: dict[str, Type[ICodec]] = {}
+        self._instances: dict[str, ICodec] = {}  # Cached instances
     
     def register(self, codec_class: Type[ICodec]) -> None:
         """
@@ -296,7 +304,7 @@ def get_global_registry() -> CodecRegistry:
 # BASE CODEC CLASS WITH CONVENIENCE METHODS
 # ============================================================================
 
-class ACodec(Generic[T, R], ICodec[T, R], ICodecMetadata, ABC):
+class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
     """
     Base codec class with all convenience methods.
     
@@ -305,6 +313,7 @@ class ACodec(Generic[T, R], ICodec[T, R], ICodecMetadata, ABC):
     - All convenience aliases (dumps/loads/serialize/etc.)
     - File I/O helpers (save/load/export/import)
     - Stream operations (write/read)
+    - Safety validation (depth and size limits with caching)
     
     Subclasses only need to implement:
     - encode()
@@ -327,6 +336,244 @@ class ACodec(Generic[T, R], ICodec[T, R], ICodecMetadata, ABC):
         ...     def capabilities(self):
         ...         return CodecCapability.BIDIRECTIONAL | CodecCapability.TEXT
     """
+    
+    def __init__(self, max_depth: Optional[int] = None, max_size_mb: Optional[float] = None):
+        """
+        Initialize codec base.
+        
+        Args:
+            max_depth: Maximum nesting depth allowed (default: DEFAULT_MAX_DEPTH)
+            max_size_mb: Maximum estimated data size in MB (default: DEFAULT_MAX_SIZE_MB)
+        
+        Root cause: Codecs can hang on very large/deep nested structures.
+        Solution: Add configurable limits to prevent infinite recursion and excessive memory.
+        Priority #1: Security - Prevent DoS via excessive nesting
+        Priority #4: Performance - Prevent hangs on large data
+        """
+        self._max_depth = max_depth if max_depth is not None else DEFAULT_MAX_DEPTH
+        self._max_size_mb = max_size_mb if max_size_mb is not None else DEFAULT_MAX_SIZE_MB
+        # Cache for depth/size calculations to avoid reprocessing same objects
+        self._depth_cache: dict[int, int] = {}  # obj_id -> depth
+        self._size_cache: dict[int, float] = {}  # obj_id -> size_mb
+    
+    # ========================================================================
+    # SAFETY VALIDATION METHODS (Protect against infinite recursion)
+    # ========================================================================
+    
+    def _get_data_depth(self, data: Any, cache: Optional[dict[int, int]] = None, visited: Optional[set] = None, current_depth: int = 0) -> int:
+        """
+        Calculate maximum nesting depth of data structure using caching.
+        
+        Root cause: Deeply nested structures can cause infinite recursion in parsers.
+        Solution: Recursively calculate depth with cycle detection and caching.
+        Priority #1: Security - Prevent DoS via excessive nesting
+        Priority #4: Performance - Detect problematic structures early, cache results
+        
+        Args:
+            data: Data structure to analyze
+            cache: Optional cache dictionary (uses instance cache if None)
+            visited: Set of object IDs currently being processed (for cycle detection)
+            current_depth: Current recursion depth
+        
+        Returns:
+            Maximum nesting depth found
+        """
+        if cache is None:
+            cache = self._depth_cache
+        if visited is None:
+            visited = set()
+        
+        # Safety check: prevent infinite recursion
+        if current_depth > self._max_depth * 2:  # Allow some overhead for cycle detection
+            return current_depth
+        
+        # Handle primitive types (no nesting)
+        if data is None or isinstance(data, (str, int, float, bool, bytes)):
+            return current_depth
+        
+        obj_id = id(data)
+        
+        # Handle cycles (reference to currently-being-processed object)
+        if obj_id in visited:
+            return current_depth  # Cycle detected, don't count as additional depth
+        
+        # Check cache first (avoid reprocessing same object)
+        if obj_id in cache:
+            # Use cached depth (maximum depth from this object), add current_depth
+            return cache[obj_id] + current_depth
+        
+        # Mark as being processed
+        visited.add(obj_id)
+        
+        try:
+            # Calculate maximum depth from this object (relative depth)
+            max_relative_depth = 0
+            
+            if isinstance(data, dict):
+                if data:  # Non-empty dict
+                    child_depths = [
+                        self._get_data_depth(v, cache, visited, current_depth + 1) - current_depth - 1
+                        for v in data.values()
+                    ]
+                    max_relative_depth = max(child_depths) if child_depths else 1
+                else:
+                    max_relative_depth = 1  # Empty dict still counts as one level
+            
+            elif isinstance(data, (list, tuple)):
+                if data:  # Non-empty list/tuple
+                    child_depths = [
+                        self._get_data_depth(item, cache, visited, current_depth + 1) - current_depth - 1
+                        for item in data
+                    ]
+                    max_relative_depth = max(child_depths) if child_depths else 1
+                else:
+                    max_relative_depth = 1  # Empty list still counts as one level
+            
+            elif hasattr(data, '__dict__'):
+                # Custom object with attributes
+                child_depths = [
+                    self._get_data_depth(v, cache, visited, current_depth + 1) - current_depth - 1
+                    for v in vars(data).values()
+                ]
+                max_relative_depth = max(child_depths) if child_depths else 0
+            
+            # Cache the result (maximum relative depth from this object)
+            cache[obj_id] = max_relative_depth
+            
+            return max_relative_depth + current_depth
+        
+        except RecursionError:
+            # Fallback if recursion limit hit
+            return current_depth
+        finally:
+            # Remove from visited when done processing
+            visited.discard(obj_id)
+    
+    def _estimate_data_size_mb(self, data: Any, cache: Optional[dict[int, float]] = None) -> float:
+        """
+        Estimate data size in megabytes using caching.
+        
+        Root cause: Very large data structures can cause memory issues and hangs.
+        Solution: Recursively estimate size with cycle detection and caching.
+        Priority #4: Performance - Detect large structures early, cache results
+        
+        Args:
+            data: Data structure to analyze
+            cache: Optional cache dictionary (uses instance cache if None)
+        
+        Returns:
+            Estimated size in megabytes
+        """
+        if cache is None:
+            cache = self._size_cache
+        
+        # Check cache first (avoid reprocessing same object)
+        obj_id = id(data)
+        if obj_id in cache:
+            return cache[obj_id]
+        
+        # Calculate size for this object
+        size_bytes = 0.0
+        
+        if isinstance(data, (str, bytes)):
+            size_bytes = len(data)
+        elif isinstance(data, (int, float)):
+            size_bytes = 8  # Approximate
+        elif isinstance(data, bool):
+            size_bytes = 1
+        elif isinstance(data, dict):
+            size_bytes = sys.getsizeof(data)
+            for k, v in data.items():
+                size_bytes += self._estimate_data_size_mb(k, cache) * 1024 * 1024
+                size_bytes += self._estimate_data_size_mb(v, cache) * 1024 * 1024
+        elif isinstance(data, (list, tuple)):
+            size_bytes = sys.getsizeof(data)
+            for item in data:
+                size_bytes += self._estimate_data_size_mb(item, cache) * 1024 * 1024
+        else:
+            size_bytes = sys.getsizeof(data)
+            if hasattr(data, '__dict__'):
+                for v in vars(data).values():
+                    size_bytes += self._estimate_data_size_mb(v, cache) * 1024 * 1024
+        
+        size_mb = size_bytes / (1024 * 1024)  # Convert to MB
+        
+        # Cache the result
+        cache[obj_id] = size_mb
+        
+        return size_mb
+    
+    def _validate_data_limits(
+        self, 
+        data: Any, 
+        operation: str = "encode",
+        file_path: Optional[Union[str, Path]] = None,
+        skip_size_check: bool = False
+    ) -> None:
+        """
+        Validate data structure against safety limits.
+        
+        Root cause: Some codecs hang on very large/deep nested structures.
+        Solution: Check depth (always) and size (only for in-memory data, not large files).
+        Priority #1: Security - Prevent DoS via excessive nesting
+        Priority #4: Performance - Prevent hangs on large data
+        
+        Args:
+            data: Data structure to validate
+            operation: Operation name for error messages (encode/decode)
+            file_path: Optional file path - if provided and file is large, skip size check
+            skip_size_check: If True, skip size validation (for large files that use lazy loading)
+        
+        Raises:
+            SerializationError: If data exceeds safety limits
+        
+        Note:
+            - Depth validation is ALWAYS performed (prevents infinite recursion)
+            - Size validation is SKIPPED for large files (10GB+ files are expected)
+            - Size validation is performed for in-memory data to catch problematic structures
+        """
+        # Clear caches for fresh calculation
+        self._depth_cache.clear()
+        self._size_cache.clear()
+        
+        # ALWAYS check depth - this prevents infinite recursion which is the real security issue
+        depth = self._get_data_depth(data)
+        if depth > self._max_depth:
+            raise SerializationError(
+                f"Data structure exceeds maximum nesting depth of {self._max_depth} "
+                f"(found {depth} levels). This may cause infinite recursion in {self.codec_id} {operation}. "
+                f"Consider flattening the data structure or using a different format.",
+                format_name=getattr(self, 'format_name', self.codec_id)
+            )
+        
+        # Size check: Skip for large files (they use lazy loading/streaming)
+        # Only validate size for in-memory data structures
+        if skip_size_check:
+            return  # Skip size check (e.g., for atomic path operations on large files)
+        
+        # Check if file exists and is large - if so, skip size validation
+        if file_path:
+            try:
+                path_obj = Path(file_path)
+                if path_obj.exists():
+                    file_size_mb = path_obj.stat().st_size / (1024 * 1024)
+                    # If file is > 1GB, assume it's meant to be large and skip size validation
+                    # Large files should use lazy loading/streaming features
+                    if file_size_mb > 1024:  # 1GB threshold
+                        return  # Skip size check for large files
+            except (OSError, ValueError):
+                pass  # If we can't check file size, proceed with validation
+        
+        # Check size for in-memory data (not from large files)
+        size_mb = self._estimate_data_size_mb(data)
+        if size_mb > self._max_size_mb:
+            raise SerializationError(
+                f"Data structure exceeds maximum size of {self._max_size_mb}MB "
+                f"(estimated {size_mb:.1f}MB). This may cause memory issues or hangs. "
+                f"For large files (10GB+), use lazy loading or streaming features. "
+                f"Consider splitting the data or using a streaming format.",
+                format_name=getattr(self, 'format_name', self.codec_id)
+            )
     
     # ========================================================================
     # CORE METHODS (Must implement in subclasses)
@@ -543,7 +790,7 @@ class ACodec(Generic[T, R], ICodec[T, R], ICodecMetadata, ABC):
 # ADAPTERS (Bytes ↔ String)
 # ============================================================================
 
-class FormatterToSerializer(Generic[T]):
+class FormatterToSerializer[T]:
     """
     Adapter: Formatter[T, str] → Serializer[T, bytes].
     
@@ -589,7 +836,7 @@ class FormatterToSerializer(Generic[T]):
         return self._formatter.decode(text, options=options)
 
 
-class SerializerToFormatter(Generic[T]):
+class SerializerToFormatter[T]:
     """
     Adapter: Serializer[T, bytes] → Formatter[T, str].
     

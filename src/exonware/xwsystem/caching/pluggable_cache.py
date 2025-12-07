@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Pluggable cache with runtime-switchable eviction strategies.
@@ -12,7 +12,7 @@ Extensibility Priority #5 - Maximum flexibility for custom behaviors.
 """
 
 import threading
-from typing import Any, Optional, Hashable, Dict, Tuple, List
+from typing import Any, Optional, Hashable
 from .base import ACache
 from .eviction_strategies import AEvictionStrategy, LRUEvictionStrategy
 from ..config.logging_setup import get_logger
@@ -61,8 +61,8 @@ class PluggableCache(ACache):
         self.strategy = strategy or LRUEvictionStrategy()
         
         # Storage
-        self._cache: Dict[Hashable, Any] = {}
-        self._metadata: Dict[Hashable, dict] = {}
+        self._cache: dict[Hashable, Any] = {}
+        self._metadata: dict[Hashable, dict] = {}
         self._lock = threading.RLock()
         
         # Statistics
@@ -137,22 +137,22 @@ class PluggableCache(ACache):
             if len(self._cache) > 0:
                 self._evict_using_strategy()
     
-    def keys(self) -> List[Hashable]:
+    def keys(self) -> list[Hashable]:
         """Get list of all keys."""
         with self._lock:
             return list(self._cache.keys())
     
-    def values(self) -> List[Any]:
+    def values(self) -> list[Any]:
         """Get list of all values."""
         with self._lock:
             return list(self._cache.values())
     
-    def items(self) -> List[Tuple[Hashable, Any]]:
+    def items(self) -> list[tuple[Hashable, Any]]:
         """Get list of all key-value pairs."""
         with self._lock:
             return list(self._cache.items())
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         with self._lock:
             total_requests = self._hits + self._misses

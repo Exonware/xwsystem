@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Async-aware concurrency primitives and synchronization utilities.
@@ -13,7 +13,7 @@ import logging
 import time
 import weakref
 from contextlib import asynccontextmanager
-from typing import Any, AsyncContextManager, Dict, Optional, Set, Union
+from typing import Any, AsyncContextManager, Optional, Union
 from collections import defaultdict
 
 from ..config.logging_setup import get_logger
@@ -129,7 +129,7 @@ class AsyncSemaphore:
         self._semaphore = asyncio.Semaphore(value)
         self.name = name or f"AsyncSemaphore-{id(self)}"
         self._initial_value = value
-        self._acquired_tasks: Set[str] = set()
+        self._acquired_tasks: set[str] = set()
 
     async def acquire(self, timeout: Optional[float] = None) -> bool:
         """
@@ -194,7 +194,7 @@ class AsyncEvent:
         self._event = asyncio.Event()
         self.name = name or f"AsyncEvent-{id(self)}"
         self._set_at: Optional[float] = None
-        self._waiting_tasks: Set[str] = set()
+        self._waiting_tasks: set[str] = set()
 
     async def wait(self, timeout: Optional[float] = None) -> bool:
         """
@@ -385,7 +385,7 @@ class AsyncCondition:
         self._lock = lock or AsyncLock()
         self._condition = asyncio.Condition(self._lock._lock)
         self.name = name or f"AsyncCondition-{id(self)}"
-        self._waiting_tasks: Set[str] = set()
+        self._waiting_tasks: set[str] = set()
 
     async def acquire(self, timeout: Optional[float] = None) -> bool:
         """Acquire the underlying lock."""
@@ -466,7 +466,7 @@ class AsyncResourcePool:
         """
         self.name = name or f"AsyncResourcePool-{id(self)}"
         self._available = asyncio.Queue()
-        self._in_use: Dict[Any, str] = {}
+        self._in_use: dict[Any, str] = {}
         self._total_resources = len(resources)
         
         # Put all resources in the available queue

@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 2, 2025
 
 TOML serialization - Configuration file format.
@@ -122,11 +122,51 @@ class TomlSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using tomllib/tomli + tomli_w)
     # ========================================================================
     
+    def _remove_none_values(self, data: Any) -> Any:
+        """
+        Recursively remove None values from data structure.
+        
+        Root cause fixed: TOML doesn't support None/null values natively.
+        Solution: Recursively remove None values before encoding (omit them).
+        Priority #2: Usability - Ensure all data structures can be serialized to TOML.
+        
+        Args:
+            data: Data structure (dict, list, or primitive)
+            
+        Returns:
+            Data structure with None values removed
+        """
+        if isinstance(data, dict):
+            # Remove None values and recursively process remaining values
+            result = {}
+            for key, value in data.items():
+                if value is not None:
+                    cleaned_value = self._remove_none_values(value)
+                    # Only add if cleaned value is not None (handles nested None removal)
+                    if cleaned_value is not None:
+                        result[key] = cleaned_value
+            return result
+        elif isinstance(data, list):
+            # Process list items and filter out None values
+            result = []
+            for item in data:
+                cleaned_item = self._remove_none_values(item)
+                if cleaned_item is not None:
+                    result.append(cleaned_item)
+            return result
+        else:
+            # Primitive values - return as-is (None will be filtered out by caller)
+            return data
+    
     def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
         """
         Encode data to TOML string.
         
         Uses tomli_w.dumps().
+        
+        Root cause fixed: TOML doesn't support None/null values.
+        Solution: Remove None values before encoding using _remove_none_values().
+        Priority #2: Usability - Ensure all data structures can be serialized to TOML.
         
         Args:
             value: Data to serialize (must be dict)
@@ -144,9 +184,14 @@ class TomlSerializer(ASerialization):
             
             opts = options or {}
             
+            # Root cause fixed: Remove None values before encoding (TOML doesn't support None).
+            # Solution: Recursively remove None values to ensure TOML compatibility.
+            # Priority #2: Usability - All data structures should be serializable.
+            cleaned_value = self._remove_none_values(value)
+            
             # Encode to TOML string
             toml_str = tomli_w.dumps(
-                value,
+                cleaned_value,
                 multiline_strings=opts.get('multiline_strings', False)
             )
             

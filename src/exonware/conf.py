@@ -9,7 +9,7 @@ works across all exonware packages (xwsystem, xwnode, xwdata, etc.).
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 11-Nov-2025
 """
 
@@ -95,25 +95,15 @@ if sys.platform == "win32":
         except Exception:
             pass  # Silently fail if wrapping is not possible
 
-try:
-    # Try new path first (exonware.xwlazy.host.conf)
-    from exonware.xwlazy.host.conf import get_conf_module
-except ImportError:
-    try:
-        # Fall back to old path (xwlazy.lazy.host_conf) for installed packages
-        from xwlazy.lazy.host_conf import get_conf_module
-    except ImportError:  # xwlazy not installed yet
-        class _UnavailableConf(types.ModuleType):
-            def __getattr__(self, name: str):
-                raise RuntimeError(
-                    "Lazy configuration requires 'exonware-xwlazy'. "
-                    "Install it via 'pip install exonware-xwlazy' to enable lazy mode."
-                )
-        _module_instance = _UnavailableConf(__name__, __doc__)
-    else:
-        _module_instance = get_conf_module(__name__, __doc__)
-else:
-    _module_instance = get_conf_module(__name__, __doc__)
+# Configuration module - self-contained without xwlazy dependency
+class _ConfModule(types.ModuleType):
+    """Self-contained configuration module without xwlazy dependency."""
+    def __getattr__(self, name: str):
+        # Return a simple configuration object
+        # This can be extended later if needed
+        raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+_module_instance = _ConfModule(__name__, __doc__)
 
 sys.modules[__name__] = _module_instance
 

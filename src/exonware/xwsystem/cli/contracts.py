@@ -2,14 +2,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 CLI module contracts - interfaces and enums for command-line interface functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 # Import enums from types module
 from .defs import (
@@ -95,7 +95,7 @@ class IArgumentParser(ABC):
         pass
     
     @abstractmethod
-    def parse_args(self, args: Optional[List[str]] = None) -> Any:
+    def parse_args(self, args: Optional[list[str]] = None) -> Any:
         """Parse command line arguments."""
         pass
 
@@ -126,7 +126,7 @@ class ICLI(ABC):
         pass
     
     @abstractmethod
-    def run(self, args: Optional[List[str]] = None) -> int:
+    def run(self, args: Optional[list[str]] = None) -> int:
         """Run the CLI."""
         pass
     
@@ -169,7 +169,7 @@ class IPrompts(ABC):
         pass
     
     @abstractmethod
-    def select(self, message: str, choices: List[str], default: Optional[str] = None) -> str:
+    def select(self, message: str, choices: list[str], default: Optional[str] = None) -> str:
         """Ask user to select from choices."""
         pass
 

@@ -2,7 +2,7 @@
 # Company: eXonware.com
 # Author: Eng. Muhammad AlShehri
 # Email: connect@exonware.com
-# Version: 0.0.1.409
+# Version: 0.0.1.410
 # Generation Date: 02-Nov-2025
 #
 # This file contains dependencies for xSystem's 17 core lightweight serialization formats (~10 MB)
@@ -32,8 +32,8 @@ toml>=0.10.2                     # Legacy TOML parser (lazy installer runtime)
 
 # XML Support - Full Features + Security (~2 MB)
 lxml>=4.9.0                      # Fast XML/HTML parser with XPath/XSLT
-xmltodict>=0.12.0                # XML ↔ dict conversion
-dicttoxml>=1.7.0                 # Dict → XML conversion
+xmltodict>=0.13.0                # XML ↔ dict conversion (requires >=0.13.0 for security features)
+dicttoxml>=1.7.0                 # Optional fallback for encoding (not recommended for round-trip)
 defusedxml>=0.7.0                # Secure XML (prevents XXE attacks)
 xmlschema>=2.0.0                 # XML Schema validation
 

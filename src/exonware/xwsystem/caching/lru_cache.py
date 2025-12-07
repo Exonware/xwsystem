@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 LRU (Least Recently Used) Cache implementation with thread-safety and async support.
@@ -12,7 +12,7 @@ import asyncio
 import threading
 import time
 from collections import OrderedDict
-from typing import Any, Dict, Optional, Union, Callable, Hashable
+from typing import Any, Optional, Union, Callable, Hashable
 
 from ..config.logging_setup import get_logger
 from .base import ACache
@@ -70,7 +70,7 @@ class LRUCache(ACache):
         self.name = name or f"LRUCache-{id(self)}"
         
         # Cache storage
-        self._cache: Dict[Hashable, CacheNode] = {}
+        self._cache: dict[Hashable, CacheNode] = {}
         self._lock = threading.RLock()
         
         # Doubly-linked list for LRU ordering
@@ -119,6 +119,13 @@ class LRUCache(ACache):
             
             self._hits += 1
             logger.debug(f"Cache {self.name} hit for key: {key}")
+            
+            # Handle None values: if value is None, treat as "not found" and return default
+            # This allows None to be a sentinel for "not cached" while still allowing
+            # explicit None storage via put() (design decision for cache semantics)
+            if node.value is None:
+                return default
+            
             return node.value
     
     def put(self, key: Hashable, value: Any) -> None:
@@ -249,7 +256,7 @@ class LRUCache(ACache):
                 node = node.next
             return items
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         with self._lock:
             total_requests = self._hits + self._misses
@@ -357,7 +364,7 @@ class AsyncLRUCache:
         self.name = name or f"AsyncLRUCache-{id(self)}"
         
         # Cache storage
-        self._cache: Dict[Hashable, CacheNode] = {}
+        self._cache: dict[Hashable, CacheNode] = {}
         self._lock = asyncio.Lock()
         
         # Doubly-linked list for LRU ordering
@@ -508,7 +515,7 @@ class AsyncLRUCache:
                 node = node.next
             return items
     
-    async def get_stats(self) -> Dict[str, Any]:
+    async def get_stats(self) -> dict[str, Any]:
         """Get cache statistics asynchronously."""
         async with self._lock:
             total_requests = self._hits + self._misses

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 RAR5 archive format implementation - RANK #3 PROPRIETARY COMPRESSION.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Optional rarfile dependency
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
@@ -58,16 +58,16 @@ class RarArchiver(IArchiveFormat):
         return "rar"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".rar", ".r00", ".r01"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/vnd.rar", "application/x-rar-compressed"]
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """
         RAR creation not supported (proprietary).
         
@@ -78,7 +78,7 @@ class RarArchiver(IArchiveFormat):
             "Use SevenZipArchiver or ZstandardArchiver instead for creation."
         )
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """
         Extract RAR archive.
         
@@ -106,7 +106,7 @@ class RarArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to extract RAR archive: {e}")
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List RAR contents."""
         if rarfile is None:
             raise ArchiveError("rarfile not installed. Install with: pip install rarfile")

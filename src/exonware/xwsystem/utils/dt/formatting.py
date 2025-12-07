@@ -2,14 +2,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 DateTime formatting utilities for XSystem.
 """
 
 from datetime import datetime, date, time
-from typing import Optional, Dict, Any
+from typing import Optional, Any
 from .contracts import IDateTimeFormatter, TimeFormat, DateFormat
 from .errors import DateTimeFormatError
 
@@ -71,7 +71,7 @@ class DateTimeFormatter(IDateTimeFormatter):
         except Exception as e:
             raise DateTimeFormatError(f"Failed to format with custom format: {e}")
     
-    def get_available_formats(self) -> Dict[str, str]:
+    def get_available_formats(self) -> dict[str, str]:
         """Get available format types."""
         return {
             "ISO": "ISO 8601 format",

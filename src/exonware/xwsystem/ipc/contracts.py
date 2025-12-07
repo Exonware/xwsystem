@@ -2,14 +2,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 IPC module contracts - interfaces and enums for inter-process communication.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, AsyncGenerator, Callable
+from typing import Any, Optional, Union, AsyncGenerator, Callable
 from multiprocessing import Process
 
 # Import enums from types module
@@ -163,12 +163,12 @@ class IProcessPool(ABC):
         pass
     
     @abstractmethod
-    def map(self, func: Callable, iterable: List[Any]) -> List[Any]:
+    def map(self, func: Callable, iterable: list[Any]) -> list[Any]:
         """Map function over iterable."""
         pass
     
     @abstractmethod
-    async def map_async(self, func: Callable, iterable: List[Any]) -> List[Any]:
+    async def map_async(self, func: Callable, iterable: list[Any]) -> list[Any]:
         """Map function over iterable asynchronously."""
         pass
     

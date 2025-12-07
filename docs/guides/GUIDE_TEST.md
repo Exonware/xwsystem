@@ -3,12 +3,12 @@
 **Company:** eXonware.com
 **Author:** Eng. Muhammad AlShehri
 **Email:** connect@exonware.com
-**Version:** 0.0.1.409
+**Version:** 0.0.1.410
 **Generation Date:** 11-Oct-2025
 
 ---
 
-## ?? AI-Friendly Document
+## 📋 AI-Friendly Document
 
 **This document is designed for both human developers and AI assistants.** All testing guidelines, rules, and principles must be followed for ANY test implementation - not just test code, but runners, fixtures, markers, and all test-related deliverables. Use this as your comprehensive testing quality standard.
 
@@ -20,7 +20,7 @@
 
 ---
 
-## ?? Overview
+## 📊 Overview
 
 This document standardizes pytest-based testing across all eXonware libraries (`xwsystem`, `xwnode`, `xwdata`, `xwschema`, `xwaction`, `xwentity`). It defines a **four-layer hierarchical testing strategy** with runnable commands, shared fixtures, markers, and CI integration�optimized for fast failure diagnosis and 80/20 coverage.
 
@@ -48,7 +48,7 @@ python tests/runner.py --integration # End-to-end scenarios
 
 ---
 
-## ?? Directory Structure
+## 📁 Directory Structure
 
 All eXonware libraries follow this standard test structure with **hierarchical runners**:
 
@@ -156,7 +156,7 @@ library-name/
 
 ---
 
-## ?? Naming & Discovery
+## 🏷️ Naming & Discovery
 
 ### Pytest Discovery Rules
 
@@ -206,7 +206,7 @@ def test_data_handling(data, expected):
 
 ---
 
-## ??? Markers & Selection
+## 🎯 Markers & Selection
 
 ### Standard Markers
 
@@ -262,7 +262,7 @@ markers =
 
 ### pytest.ini Configuration
 
-**?? IMPORTANT: This configuration follows error-fixing best practices**
+**⚠️ IMPORTANT: This configuration follows error-fixing best practices**
 
 ```ini
 [tool:pytest]
@@ -289,7 +289,7 @@ markers =
  xsystem_serialization: Serialization format tests
 
 # Test output configuration
-# ?? CRITICAL: Do NOT use --disable-warnings or --maxfail=10
+# ⚠️ CRITICAL: Do NOT use --disable-warnings or --maxfail=10
 # These flags hide real problems and violate root cause fixing principles
 addopts =
  -v # Verbose: show all test details
@@ -359,7 +359,7 @@ pytest -m "not slow"
 
 ---
 
-## ?? Runners & Scripts
+## 🚀 Runners & Scripts
 
 All eXonware libraries use a **hierarchical runner architecture** where the main runner orchestrates specialized sub-runners.
 
@@ -549,7 +549,7 @@ def main():
 
 ### Windows Console UTF-8 Configuration
 
-**?? CRITICAL for Windows: This configuration is REQUIRED at the start of every runner script**
+**⚠️ CRITICAL for Windows: This configuration is REQUIRED at the start of every runner script**
 
 Windows console does not use UTF-8 encoding by default, which causes:
 - ? Emojis to display as `?` or crash with encoding errors
@@ -565,7 +565,7 @@ Windows console does not use UTF-8 encoding by default, which causes:
 import sys
 from pathlib import Path
 
-# ?? CRITICAL: Configure UTF-8 encoding for Windows console
+# ⚠️ CRITICAL: Configure UTF-8 encoding for Windows console
 # This MUST be at the top, before any print statements with emojis
 if sys.platform == "win32":
     try:
@@ -576,8 +576,8 @@ if sys.platform == "win32":
         pass  # If reconfiguration fails, continue with default encoding
 
 # Now safe to use emojis and Unicode
-print("? UTF-8 encoding configured successfully")
-print("?? Runner starting...")
+print("✅ UTF-8 encoding configured successfully")
+print("🚀 Runner starting...")
 ```
 
 **Why this is needed:**
@@ -601,9 +601,9 @@ print("?? Runner starting...")
 ? Results: 100%
 
 # Windows console output WITH UTF-8 config:
-? UTF-8 encoding test
-?? Tests PASSED
-?? Results: 100%
+✅ UTF-8 encoding test
+✅ Tests PASSED
+✅ Results: 100%
 ```
 
 **Output Format Guidelines:**
@@ -621,11 +621,11 @@ print("?? Runner starting...")
  - Include in both terminal and Markdown output
 
 3. **Color Scheme:**
- - ?? Green with ?: Success, passed tests
- - ?? Red with ?: Errors, failed tests
- - ?? Blue with ??: Info messages, paths
- - ?? Yellow with ??: Warnings
- - ? White/Bold: Headers and titles
+ - ✅ Green with ✅: Success, passed tests
+ - ❌ Red with ❌: Errors, failed tests
+ - ℹ️ Blue with ℹ️: Info messages, paths
+ - ⚠️ Yellow with ⚠️: Warnings
+ - 📋 White/Bold: Headers and titles
 
 4. **Emoji Usage:**
  - Use emojis consistently for visual feedback
@@ -746,7 +746,7 @@ from pathlib import Path
 from datetime import datetime
 from io import StringIO
 
-# ?? CRITICAL: Configure UTF-8 encoding for Windows console (GUIDE_TEST.md compliance)
+# ⚠️ CRITICAL: Configure UTF-8 encoding for Windows console (GUIDE_TEST.md compliance)
 if sys.platform == "win32":
     try:
         import io
@@ -870,7 +870,7 @@ def main():
  if advance_runner.exists():
  exit_codes.append(run_sub_runner(advance_runner, "Advance Tests", output))
  else:
- msg = "\n?? Advance tests not available (requires v1.0.0)"
+ msg = "\n⚠️ Advance tests not available (requires v1.0.0)"
  output.print(msg, f"\n> {msg}")
 
  elif "--security" in args or "--performance" in args or "--usability" in args or "--maintainability" in args or "--extensibility" in args:
@@ -879,12 +879,12 @@ def main():
  result = subprocess.run([sys.executable, str(advance_runner)] + args)
  exit_codes.append(result.returncode)
  else:
- msg = "\n?? Advance tests not available (requires v1.0.0)"
+ msg = "\n⚠️ Advance tests not available (requires v1.0.0)"
  output.print(msg, f"\n> {msg}")
 
  else:
  # Run all tests in sequence
- msg_header = "\n?? Running: ALL Tests"
+ msg_header = "\n🚀 Running: ALL Tests"
  msg_layers = " Layers: 0.core ? 1.unit ? 2.integration ? 3.advance"
  output.print(msg_header, "\n## Running All Test Layers")
  output.print(msg_layers, f"\n**Execution Order:** 0.core ? 1.unit ? 2.integration ? 3.advance\n")
@@ -908,8 +908,8 @@ def main():
 
  # Print summary
  summary_header = f"\n{'='*80}"
- output.print(summary_header, f"\n---\n\n## ?? Test Execution Summary")
- output.print("?? TEST EXECUTION SUMMARY", "")
+ output.print(summary_header, f"\n---\n\n## 📈 Test Execution Summary")
+ output.print("📈 TEST EXECUTION SUMMARY", "")
  output.print(f"{'='*80}", "")
 
  total_runs = len(exit_codes)
@@ -927,7 +927,7 @@ def main():
 
  # Save output
  output.save()
- print(f"\n?? Test results saved to: {output_file}")
+ print(f"\n💾 Test results saved to: {output_file}")
 
  sys.exit(0)
  else:
@@ -936,7 +936,7 @@ def main():
 
  # Save output
  output.save()
- print(f"\n?? Test results saved to: {output_file}")
+ print(f"\n💾 Test results saved to: {output_file}")
 
  sys.exit(1)
 
@@ -955,10 +955,10 @@ The runner generates two outputs simultaneously:
 xwsystem Test Runner
 Main Orchestrator - Hierarchical Test Execution
 ================================================================================
-?? Running: ALL Tests
- Layers: 0.core ? 1.unit ? 2.integration ? 3.advance
+🚀 Running: ALL Tests
+ Layers: 0.core ✅ 1.unit ✅ 2.integration ✅ 3.advance
 ? ALL TESTS PASSED!
-?? Test results saved to: docs/tests/TEST_<timestamp>_SUMMARY.md
+💾 Test results saved to: docs/tests/TEST_<timestamp>_SUMMARY.md
 ```
 
 2. **Markdown Output** (`docs/tests/TEST_<timestamp>_SUMMARY.md`):
@@ -986,7 +986,7 @@ Main Orchestrator - Hierarchical Test Execution
 
 ---
 
-## ?? Test Execution Summary
+## 📈 Test Execution Summary
 
 - **Total Layers:** 4
 - **Passed:** 4
@@ -1001,13 +1001,13 @@ No additional ignore rules are required for test reports. The only Markdown arti
 
 ---
 
-## ?? Error Fixing in Tests
+## 🔧 Error Fixing in Tests
 
 ### Root Cause Analysis is MANDATORY
 
-**?? CRITICAL RULE: Never rig tests to pass. Always fix the root cause.**
+**⚠️ CRITICAL RULE: Never rig tests to pass. Always fix the root cause.**
 
-**?? Complete Error Fixing Philosophy: [GUIDE_DEV.md - Error Fixing Philosophy](GUIDE_DEV.md#error-fixing-philosophy)**
+**📖 Complete Error Fixing Philosophy: [GUIDE_DEV.md - Error Fixing Philosophy](GUIDE_DEV.md#error-fixing-philosophy)**
 
 This section provides **testing-specific** guidance for applying the error fixing philosophy from GUIDE_DEV.md.
 
@@ -1031,7 +1031,7 @@ This section provides **testing-specific** guidance for applying the error fixin
 
 **Testing-specific forbidden practices:**
 
-**?? NEVER:**
+**❌ NEVER:**
 
 1. **Use `pass` to make tests pass**
 2. **Remove features to eliminate bugs**
@@ -1056,7 +1056,7 @@ This section provides **testing-specific** guidance for applying the error fixin
 
 ### Forbidden pytest Flags & Configurations
 
-**?? CRITICAL: These flags/options are BANNED - they hide real problems**
+**⚠️ CRITICAL: These flags/options are BANNED - they hide real problems**
 
 | Flag/Option | Why It's Forbidden | What To Do Instead |
 |-------------|-------------------|-------------------|
@@ -1076,13 +1076,13 @@ This section provides **testing-specific** guidance for applying the error fixin
 | `--no-cov` | **Disables coverage** | **Keep coverage enabled** |
 
 **Why these are forbidden:**
-- ?? They hide real bugs that will surface in use
-- ?? They violate the "Fix root causes" principle
-- ?? They create false confidence in code quality
-- ?? They accumulate technical debt
-- ?? They prevent proper debugging
-- ?? They mask security vulnerabilities
-- ?? They allow performance regressions
+- ❌ They hide real bugs that will surface in use
+- ❌ They violate the "Fix root causes" principle
+- ❌ They create false confidence in code quality
+- ❌ They accumulate technical debt
+- ❌ They prevent proper debugging
+- ❌ They mask security vulnerabilities
+- ❌ They allow performance regressions
 
 **? ALLOWED pytest flags (approved for use):**
 - `-v` / `--verbose` - More output helps debugging
@@ -1265,7 +1265,7 @@ def test_calculate_total_with_empty_list():
 
 ### Red Flags That Indicate Wrong Approach
 
-**?? Warning signs you're fixing incorrectly:**
+**⚠️ Warning signs you're fixing incorrectly:**
 
 **Code-level bypasses:**
 - Adding `# TODO: Fix this properly later`
@@ -1298,11 +1298,11 @@ def test_calculate_total_with_empty_list():
 - Running subset of tests in CI
 - "It works on my machine" syndrome
 
-**?? When you see ANY of these, STOP immediately and fix the root cause properly.**
+**⚠️ When you see ANY of these, STOP immediately and fix the root cause properly.**
 
 ---
 
-## ?? Testing Best Practices
+## ✨ Testing Best Practices
 
 ### Test Design Principles
 

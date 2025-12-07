@@ -12,7 +12,7 @@ import time
 import weakref
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Optional
 
 import psutil
 
@@ -28,7 +28,7 @@ class MemorySnapshot:
     timestamp: float
     memory_usage: int  # bytes
     object_count: int
-    gc_stats: Dict[str, Any]
+    gc_stats: dict[str, Any]
     node_count: int
     edge_count: int
     cache_size: int
@@ -45,7 +45,7 @@ class MemoryLeakReport:
     affected_objects: int
     memory_increase: int  # bytes
     time_period: float  # seconds
-    recommendations: List[str] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
 
 
 class MemoryMonitor:
@@ -76,9 +76,9 @@ class MemoryMonitor:
 
         # Monitoring state
         self._snapshots: deque = deque(maxlen=100)  # Keep last 100 snapshots
-        self._object_registry: Dict[int, Dict[str, Any]] = {}
-        self._weak_refs: Set[weakref.ReferenceType] = set()
-        self._leak_reports: List[MemoryLeakReport] = []
+        self._object_registry: dict[int, dict[str, Any]] = {}
+        self._weak_refs: set[weakref.ReferenceType] = set()
+        self._leak_reports: list[MemoryLeakReport] = []
 
         # Thread safety
         self._lock = threading.RLock()
@@ -92,8 +92,8 @@ class MemoryMonitor:
         self._cleanup_count = 0
 
         # Callbacks for external systems
-        self._memory_pressure_callbacks: List[Callable] = []
-        self._leak_detected_callbacks: List[Callable] = []
+        self._memory_pressure_callbacks: list[Callable] = []
+        self._leak_detected_callbacks: list[Callable] = []
 
         logger.info("🔍 Memory monitor initialized")
 
@@ -318,7 +318,7 @@ class MemoryMonitor:
         self._weak_refs.discard(weak_ref)
         self._total_objects_destroyed += 1
 
-    def get_memory_stats(self) -> Dict[str, Any]:
+    def get_memory_stats(self) -> dict[str, Any]:
         """Get current memory statistics."""
         if not self._snapshots:
             return {}
@@ -337,7 +337,7 @@ class MemoryMonitor:
             "snapshots_count": len(self._snapshots),
         }
 
-    def get_leak_reports(self) -> List[MemoryLeakReport]:
+    def get_leak_reports(self) -> list[MemoryLeakReport]:
         """Get all memory leak reports."""
         with self._lock:
             return self._leak_reports.copy()
@@ -388,7 +388,7 @@ def force_memory_cleanup() -> None:
     monitor.force_cleanup()
 
 
-def get_memory_stats() -> Dict[str, Any]:
+def get_memory_stats() -> dict[str, Any]:
     """Get global memory statistics."""
     monitor = get_memory_monitor()
     return monitor.get_memory_stats()

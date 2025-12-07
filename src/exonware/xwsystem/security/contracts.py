@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Security protocol interfaces for XWSystem.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Iterator, Callable, Tuple, Protocol
+from typing import Any, Optional, Union, Iterator, Callable, Protocol
 from typing_extensions import runtime_checkable
 import hashlib
 
@@ -145,7 +145,7 @@ class IAuthenticatable(ABC):
     """
     
     @abstractmethod
-    def authenticate(self, credentials: Dict[str, Any]) -> bool:
+    def authenticate(self, credentials: dict[str, Any]) -> bool:
         """
         Authenticate user with credentials.
         
@@ -199,7 +199,7 @@ class IAuthenticatable(ABC):
         pass
     
     @abstractmethod
-    def get_user_permissions(self, user: str) -> List[str]:
+    def get_user_permissions(self, user: str) -> list[str]:
         """
         Get user permissions.
         
@@ -212,7 +212,7 @@ class IAuthenticatable(ABC):
         pass
     
     @abstractmethod
-    def set_user_permissions(self, user: str, permissions: List[str]) -> None:
+    def set_user_permissions(self, user: str, permissions: list[str]) -> None:
         """
         Set user permissions.
         
@@ -223,7 +223,7 @@ class IAuthenticatable(ABC):
         pass
     
     @abstractmethod
-    def validate_credentials(self, credentials: Dict[str, Any]) -> bool:
+    def validate_credentials(self, credentials: dict[str, Any]) -> bool:
         """
         Validate credential format.
         
@@ -258,7 +258,7 @@ class IAuditable(ABC):
     """
     
     @abstractmethod
-    def log_action(self, action: AuditEvent, user: str, resource: str, details: Dict[str, Any] = None) -> None:
+    def log_action(self, action: AuditEvent, user: str, resource: str, details: dict[str, Any] = None) -> None:
         """
         Log audit action.
         
@@ -272,7 +272,7 @@ class IAuditable(ABC):
     
     @abstractmethod
     def get_audit_trail(self, user: Optional[str] = None, resource: Optional[str] = None, 
-                       start_time: Optional[float] = None, end_time: Optional[float] = None) -> List[Dict[str, Any]]:
+                       start_time: Optional[float] = None, end_time: Optional[float] = None) -> list[dict[str, Any]]:
         """
         Get audit trail.
         
@@ -315,7 +315,7 @@ class IAuditable(ABC):
         pass
     
     @abstractmethod
-    def get_audit_stats(self) -> Dict[str, Any]:
+    def get_audit_stats(self) -> dict[str, Any]:
         """
         Get audit statistics.
         
@@ -406,7 +406,7 @@ class IAuthorization(ABC):
         pass
     
     @abstractmethod
-    def get_user_roles(self, user: str) -> List[str]:
+    def get_user_roles(self, user: str) -> list[str]:
         """
         Get user roles.
         
@@ -447,7 +447,7 @@ class IAuthorization(ABC):
         pass
     
     @abstractmethod
-    def get_role_permissions(self, role: str) -> List[str]:
+    def get_role_permissions(self, role: str) -> list[str]:
         """
         Get role permissions.
         
@@ -460,7 +460,7 @@ class IAuthorization(ABC):
         pass
     
     @abstractmethod
-    def set_role_permissions(self, role: str, permissions: List[str]) -> None:
+    def set_role_permissions(self, role: str, permissions: list[str]) -> None:
         """
         Set role permissions.
         
@@ -483,7 +483,7 @@ class ISecurityValidator(ABC):
     """
     
     @abstractmethod
-    def validate_password(self, password: str) -> Tuple[bool, List[str]]:
+    def validate_password(self, password: str) -> tuple[bool, list[str]]:
         """
         Validate password strength.
         
@@ -496,7 +496,7 @@ class ISecurityValidator(ABC):
         pass
     
     @abstractmethod
-    def validate_input(self, input_data: str, input_type: str) -> Tuple[bool, List[str]]:
+    def validate_input(self, input_data: str, input_type: str) -> tuple[bool, list[str]]:
         """
         Validate input data.
         
@@ -549,7 +549,7 @@ class ISecurityValidator(ABC):
         pass
     
     @abstractmethod
-    def validate_certificate(self, certificate: bytes) -> Tuple[bool, str]:
+    def validate_certificate(self, certificate: bytes) -> tuple[bool, str]:
         """
         Validate certificate.
         
@@ -562,7 +562,7 @@ class ISecurityValidator(ABC):
         pass
     
     @abstractmethod
-    def check_security_headers(self, headers: Dict[str, str]) -> Dict[str, bool]:
+    def check_security_headers(self, headers: dict[str, str]) -> dict[str, bool]:
         """
         Check security headers.
         
@@ -587,7 +587,7 @@ class ISecurityMonitor(ABC):
     """
     
     @abstractmethod
-    def detect_intrusion(self, event_data: Dict[str, Any]) -> bool:
+    def detect_intrusion(self, event_data: dict[str, Any]) -> bool:
         """
         Detect intrusion attempts.
         
@@ -614,7 +614,7 @@ class ISecurityMonitor(ABC):
         pass
     
     @abstractmethod
-    def detect_anomaly(self, behavior_data: Dict[str, Any]) -> bool:
+    def detect_anomaly(self, behavior_data: dict[str, Any]) -> bool:
         """
         Detect anomalous behavior.
         
@@ -627,7 +627,7 @@ class ISecurityMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_security_alerts(self) -> List[Dict[str, Any]]:
+    def get_security_alerts(self) -> list[dict[str, Any]]:
         """
         Get security alerts.
         
@@ -664,7 +664,7 @@ class ISecurityMonitor(ABC):
         pass
     
     @abstractmethod
-    def get_security_metrics(self) -> Dict[str, Any]:
+    def get_security_metrics(self) -> dict[str, Any]:
         """
         Get security metrics.
         
@@ -686,7 +686,7 @@ class ISecurityPolicy(ABC):
     """
     
     @abstractmethod
-    def get_policy(self, policy_name: str) -> Dict[str, Any]:
+    def get_policy(self, policy_name: str) -> dict[str, Any]:
         """
         Get security policy.
         
@@ -699,7 +699,7 @@ class ISecurityPolicy(ABC):
         pass
     
     @abstractmethod
-    def set_policy(self, policy_name: str, policy: Dict[str, Any]) -> None:
+    def set_policy(self, policy_name: str, policy: dict[str, Any]) -> None:
         """
         Set security policy.
         
@@ -710,7 +710,7 @@ class ISecurityPolicy(ABC):
         pass
     
     @abstractmethod
-    def validate_policy(self, policy: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    def validate_policy(self, policy: dict[str, Any]) -> tuple[bool, list[str]]:
         """
         Validate security policy.
         
@@ -723,7 +723,7 @@ class ISecurityPolicy(ABC):
         pass
     
     @abstractmethod
-    def apply_policy(self, policy_name: str, context: Dict[str, Any]) -> bool:
+    def apply_policy(self, policy_name: str, context: dict[str, Any]) -> bool:
         """
         Apply security policy.
         
@@ -737,7 +737,7 @@ class ISecurityPolicy(ABC):
         pass
     
     @abstractmethod
-    def list_policies(self) -> List[str]:
+    def list_policies(self) -> list[str]:
         """
         List all security policies.
         
@@ -760,7 +760,7 @@ class ISecurityPolicy(ABC):
         pass
     
     @abstractmethod
-    def get_policy_violations(self) -> List[Dict[str, Any]]:
+    def get_policy_violations(self) -> list[dict[str, Any]]:
         """
         Get policy violations.
         
@@ -789,7 +789,7 @@ class ISecurityToken(ABC):
     """
     
     @abstractmethod
-    def generate_token(self, payload: Dict[str, Any], expires_in: int = 3600) -> str:
+    def generate_token(self, payload: dict[str, Any], expires_in: int = 3600) -> str:
         """
         Generate security token.
         
@@ -803,7 +803,7 @@ class ISecurityToken(ABC):
         pass
     
     @abstractmethod
-    def validate_token(self, token: str) -> Tuple[bool, Dict[str, Any]]:
+    def validate_token(self, token: str) -> tuple[bool, dict[str, Any]]:
         """
         Validate security token.
         
@@ -856,7 +856,7 @@ class ISecurityToken(ABC):
         pass
     
     @abstractmethod
-    def get_token_info(self, token: str) -> Dict[str, Any]:
+    def get_token_info(self, token: str) -> dict[str, Any]:
         """
         Get token information.
         
@@ -869,7 +869,7 @@ class ISecurityToken(ABC):
         pass
     
     @abstractmethod
-    def list_active_tokens(self, user: Optional[str] = None) -> List[str]:
+    def list_active_tokens(self, user: Optional[str] = None) -> list[str]:
         """
         List active tokens.
         

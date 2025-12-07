@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 02-Nov-2025
 
 JSON Lines (JSONL/NDJSON) Serialization - Newline-Delimited JSON
@@ -22,7 +22,7 @@ Priority 4 (Performance): Memory-efficient streaming
 Priority 5 (Extensibility): Compatible with standard JSON
 """
 
-from typing import Any, Dict, Optional, Union, List
+from typing import Any, Optional, Union
 from pathlib import Path
 import json
 
@@ -68,7 +68,7 @@ class JsonLinesSerializer(ASerialization):
         """JSON Lines is a data exchange format."""
         return ["data", "serialization"]
     
-    def encode(self, data: Any, options: Optional[Dict[str, Any]] = None) -> str:
+    def encode(self, data: Any, options: Optional[dict[str, Any]] = None) -> str:
         """
         Encode data to JSON Lines string.
         
@@ -89,7 +89,7 @@ class JsonLinesSerializer(ASerialization):
         
         return '\n'.join(lines)
     
-    def decode(self, data: Union[str, bytes], options: Optional[Dict[str, Any]] = None) -> List[Any]:
+    def decode(self, data: Union[str, bytes], options: Optional[dict[str, Any]] = None) -> list[Any]:
         """
         Decode JSON Lines string to list of Python objects.
         

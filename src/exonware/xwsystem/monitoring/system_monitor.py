@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 System-wide monitoring and hardware introspection utilities.
@@ -12,7 +12,7 @@ import os
 import platform
 import time
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any, Tuple, Union
+from typing import Optional, Any, Union
 from pathlib import Path
 
 # Import psutil - lazy installation system will handle it if missing
@@ -37,7 +37,7 @@ class ProcessInfo:
     create_time: float
     num_threads: int
     username: Optional[str] = None
-    cmdline: Optional[List[str]] = None
+    cmdline: Optional[list[str]] = None
     cwd: Optional[str] = None
     exe: Optional[str] = None
 
@@ -149,7 +149,7 @@ class SystemMonitor:
     # PROCESS MONITORING
     # =============================================================================
     
-    def list_processes(self, attrs: Optional[List[str]] = None) -> List[ProcessInfo]:
+    def list_processes(self, attrs: Optional[list[str]] = None) -> list[ProcessInfo]:
         """
         List all running processes.
         
@@ -251,7 +251,7 @@ class SystemMonitor:
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             return None
     
-    def find_processes_by_name(self, name: str) -> List[ProcessInfo]:
+    def find_processes_by_name(self, name: str) -> list[ProcessInfo]:
         """
         Find processes by name.
         
@@ -357,7 +357,7 @@ class SystemMonitor:
         
         return SystemInfo(**system_info)
     
-    def get_cpu_usage(self, interval: float = 1.0, per_cpu: bool = False) -> Union[float, List[float]]:
+    def get_cpu_usage(self, interval: float = 1.0, per_cpu: bool = False) -> Union[float, list[float]]:
         """
         Get CPU usage percentage.
         
@@ -372,7 +372,7 @@ class SystemMonitor:
         
         return psutil.cpu_percent(interval=interval, percpu=per_cpu)
     
-    def get_memory_usage(self) -> Dict[str, Any]:
+    def get_memory_usage(self) -> dict[str, Any]:
         """
         Get memory usage information.
         
@@ -394,7 +394,7 @@ class SystemMonitor:
             'cached': getattr(memory, 'cached', 0),
         }
     
-    def get_disk_usage(self) -> List[DiskInfo]:
+    def get_disk_usage(self) -> list[DiskInfo]:
         """
         Get disk usage information for all mounted disks.
         
@@ -427,7 +427,7 @@ class SystemMonitor:
         
         return disks
     
-    def get_network_interfaces(self) -> List[NetworkInfo]:
+    def get_network_interfaces(self) -> list[NetworkInfo]:
         """
         Get network interface statistics.
         
@@ -468,7 +468,7 @@ class SystemMonitor:
         
         return interfaces
     
-    def get_network_connections(self, kind: str = 'inet') -> List[NetworkConnection]:
+    def get_network_connections(self, kind: str = 'inet') -> list[NetworkConnection]:
         """
         Get network connections.
         
@@ -518,7 +518,7 @@ class SystemMonitor:
     # HARDWARE INFORMATION
     # =============================================================================
     
-    def get_hardware_info(self) -> Dict[str, Any]:
+    def get_hardware_info(self) -> dict[str, Any]:
         """
         Get detailed hardware information.
         
@@ -648,11 +648,11 @@ class SystemMonitor:
             # Fallback to environment variables
             return os.getenv('USER') or os.getenv('USERNAME') or 'unknown'
     
-    def get_environment_variables(self) -> Dict[str, str]:
+    def get_environment_variables(self) -> dict[str, str]:
         """Get all environment variables."""
         return dict(os.environ)
     
-    def get_python_info(self) -> Dict[str, Any]:
+    def get_python_info(self) -> dict[str, Any]:
         """Get Python runtime information."""
         import sys
         
@@ -670,7 +670,7 @@ class SystemMonitor:
 _system_monitor = SystemMonitor()
 
 # Convenience functions
-def list_processes() -> List[ProcessInfo]:
+def list_processes() -> list[ProcessInfo]:
     """List all running processes."""
     return _system_monitor.list_processes()
 
@@ -686,11 +686,11 @@ def get_cpu_usage(interval: float = 1.0) -> float:
     """Get CPU usage percentage."""
     return _system_monitor.get_cpu_usage(interval)
 
-def get_memory_usage() -> Dict[str, Any]:
+def get_memory_usage() -> dict[str, Any]:
     """Get memory usage information."""
     return _system_monitor.get_memory_usage()
 
-def get_hardware_info() -> Dict[str, Any]:
+def get_hardware_info() -> dict[str, Any]:
     """Get hardware information."""
     return _system_monitor.get_hardware_info()
 

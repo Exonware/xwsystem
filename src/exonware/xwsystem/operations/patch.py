@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 27, 2025
 
 Patch operations implementation (RFC 6902 JSON Patch).
@@ -13,7 +13,7 @@ Patch operations implementation (RFC 6902 JSON Patch).
 
 import threading
 import copy
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from .base import IPatchOperation, PatchError
 from .defs import PatchOperation, PatchResult
 from ..config.logging_setup import get_logger
@@ -36,7 +36,7 @@ class PatchOperationImpl(IPatchOperation):
         
         return self.apply_patch(data, operations)
     
-    def apply_patch(self, data: Any, operations: List[Dict[str, Any]]) -> PatchResult:
+    def apply_patch(self, data: Any, operations: list[dict[str, Any]]) -> PatchResult:
         """
         Apply patch operations to data (RFC 6902 JSON Patch).
         
@@ -97,7 +97,7 @@ class PatchOperationImpl(IPatchOperation):
             except Exception as e:
                 raise PatchError(f"Patch operation failed: {e}", "patch")
     
-    def _parse_path(self, path: str) -> List[str]:
+    def _parse_path(self, path: str) -> list[str]:
         """Parse JSON Pointer path."""
         if path == "/":
             return []
@@ -218,7 +218,7 @@ class PatchOperationImpl(IPatchOperation):
 
 
 # Convenience function
-def apply_patch(data: Any, operations: List[Dict[str, Any]]) -> PatchResult:
+def apply_patch(data: Any, operations: list[dict[str, Any]]) -> PatchResult:
     """
     Convenience function for patch operations.
     

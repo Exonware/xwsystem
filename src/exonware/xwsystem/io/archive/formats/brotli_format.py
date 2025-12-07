@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 1, 2025
 
 Brotli (.br) compression format - RANK #6 WEB COMPRESSION.
@@ -20,7 +20,7 @@ Priority 5 (Extensibility): Lazy installation of brotli
 
 import tarfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
@@ -58,16 +58,16 @@ class BrotliArchiver(IArchiveFormat):
         return "br"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Supported extensions."""
         return [".br", ".tar.br", ".tbr"]
     
     @property
-    def mime_types(self) -> List[str]:
+    def mime_types(self) -> list[str]:
         """MIME types."""
         return ["application/x-brotli"]
     
-    def create(self, files: List[Path], output: Path, **opts) -> None:
+    def create(self, files: list[Path], output: Path, **opts) -> None:
         """
         Create Brotli-compressed tar archive.
         
@@ -101,7 +101,7 @@ class BrotliArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create brotli archive: {e}")
     
-    def extract(self, archive: Path, output_dir: Path, members: Optional[List[str]] = None, **opts) -> List[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
         """Extract Brotli archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
         
@@ -128,7 +128,7 @@ class BrotliArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to extract brotli archive: {e}")
     
-    def list_contents(self, archive: Path) -> List[str]:
+    def list_contents(self, archive: Path) -> list[str]:
         """List Brotli archive contents."""
         try:
             compressed = archive.read_bytes()

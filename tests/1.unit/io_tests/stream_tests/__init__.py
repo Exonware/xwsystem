@@ -1,2 +1,1 @@
-"""Unit tests for io.stream sub-package."""
-
+"""Unit tests for stream operations."""

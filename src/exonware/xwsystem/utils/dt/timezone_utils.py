@@ -2,14 +2,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Timezone utilities - Placeholder.
 """
 
 from datetime import datetime, timezone
-from typing import List, Optional, Dict, Any
+from typing import Optional, Any
 import pytz
 
 
@@ -27,7 +27,7 @@ class TimezoneManager:
         except pytz.UnknownTimeZoneError:
             return None
     
-    def list_timezones(self) -> List[str]:
+    def list_timezones(self) -> list[str]:
         """List all available timezones."""
         return pytz.all_timezones
     
@@ -57,7 +57,7 @@ class TimezoneUtils:
         return dt.astimezone(target_timezone)
     
     @staticmethod
-    def get_timezone_info(tz_name: str) -> Dict[str, Any]:
+    def get_timezone_info(tz_name: str) -> dict[str, Any]:
         """Get timezone information.
         
         Args:
@@ -79,7 +79,7 @@ class TimezoneUtils:
             return {}
     
     @staticmethod
-    def list_timezones() -> List[str]:
+    def list_timezones() -> list[str]:
         """List all available timezones."""
         return pytz.all_timezones
     

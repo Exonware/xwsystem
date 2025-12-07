@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 26, 2025
 
 Two-tier cache implementation combining memory and disk caching.
 """
 
 import threading
-from typing import Any, Optional, Dict
+from typing import Any, Optional
 from .lru_cache import LRUCache
 from .disk_cache import DiskCache
 from .contracts import ICache
@@ -169,7 +169,7 @@ class TwoTierCache(ICache):
         with self._lock:
             return self.memory_cache.size() + self.disk_cache.size()
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get comprehensive statistics for both tiers."""
         with self._lock:
             memory_stats = self.memory_cache.get_stats()
@@ -197,11 +197,11 @@ class TwoTierCache(ICache):
                 'disk_stats': disk_stats,
             }
     
-    def get_memory_stats(self) -> Dict[str, Any]:
+    def get_memory_stats(self) -> dict[str, Any]:
         """Get memory tier statistics."""
         return self.memory_cache.get_stats()
     
-    def get_disk_stats(self) -> Dict[str, Any]:
+    def get_disk_stats(self) -> dict[str, Any]:
         """Get disk tier statistics."""
         return self.disk_cache.get_stats()
     

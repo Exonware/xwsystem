@@ -34,12 +34,15 @@ from typing import Iterator
 
 import pytest
 
+# Skip all tests in this file - xwlazy has been removed
+pytestmark = pytest.mark.skip(reason="xwlazy has been removed from the codebase")
+
 # Import after setting up mocks/environment
-from xwlazy.lazy.lazy_core import (
-    is_import_hook_installed,
-    uninstall_import_hook,
-    is_lazy_install_enabled,
-)
+# from xwlazy.lazy.lazy_core import (
+#     is_import_hook_installed,
+#     uninstall_import_hook,
+#     is_lazy_install_enabled,
+# )
 
 
 @contextmanager

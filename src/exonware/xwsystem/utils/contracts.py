@@ -2,14 +2,16 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Utils module contracts - interfaces and enums for utility functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Callable, TypeVar, Generic
+from typing import Any, Optional, Union, Callable
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
 
 # Import enums from types module
@@ -21,10 +23,8 @@ from .defs import (
     PathType
 )
 
-T = TypeVar('T')
 
-
-class ILazyLoader(ABC, Generic[T]):
+class ILazyLoader[T](ABC):
     """Interface for lazy loading operations."""
     
     @abstractmethod
@@ -111,7 +111,7 @@ class IUtilityRegistry(ABC):
         pass
     
     @abstractmethod
-    def list_utilities(self) -> List[str]:
+    def list_utilities(self) -> list[str]:
         """List all registered utilities."""
         pass
     
@@ -135,7 +135,7 @@ class IConfigManager(ABC):
         pass
     
     @abstractmethod
-    def load_config(self, source: Union[str, Path, Dict]) -> None:
+    def load_config(self, source: Union[str, Path, dict[str, Any]]) -> None:
         """Load configuration from source."""
         pass
     
@@ -145,7 +145,7 @@ class IConfigManager(ABC):
         pass
     
     @abstractmethod
-    def get_all_config(self) -> Dict[str, Any]:
+    def get_all_config(self) -> dict[str, Any]:
         """Get all configuration."""
         pass
     
@@ -179,6 +179,6 @@ class IResourceManager(ABC):
         pass
     
     @abstractmethod
-    def get_available_resources(self) -> List[str]:
+    def get_available_resources(self) -> list[str]:
         """Get list of available resources."""
         pass

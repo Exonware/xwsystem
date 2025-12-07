@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Threading module base classes - abstract classes for threading functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Callable, Coroutine
+from typing import Any, Optional, Union, Callable, Coroutine
 from .contracts import ThreadState, LockType, AsyncPrimitiveType, ConcurrencyMode
 
 
@@ -30,7 +30,7 @@ class AThreadBase(ABC):
         self._state = ThreadState.NEW
         self._target: Optional[Callable] = None
         self._args: tuple = ()
-        self._kwargs: Dict[str, Any] = {}
+        self._kwargs: dict[str, Any] = {}
     
     @abstractmethod
     def start(self) -> None:
@@ -96,7 +96,7 @@ class ALockBase(ABC):
         self.lock_type = lock_type
         self._locked = False
         self._owner: Optional[int] = None
-        self._waiting_threads: List[int] = []
+        self._waiting_threads: list[int] = []
     
     @abstractmethod
     def acquire(self, blocking: bool = True, timeout: Optional[float] = None) -> bool:
@@ -156,7 +156,7 @@ class AAsyncPrimitiveBase(ABC):
         """
         self.primitive_type = primitive_type
         self._state = False
-        self._waiting_coroutines: List[Coroutine] = []
+        self._waiting_coroutines: list[Coroutine] = []
     
     @abstractmethod
     async def wait(self, timeout: Optional[float] = None) -> bool:
@@ -210,8 +210,8 @@ class ASafeFactoryBase(ABC):
             concurrency_mode: Concurrency mode
         """
         self.concurrency_mode = concurrency_mode
-        self._instances: Dict[str, Any] = {}
-        self._locks: Dict[str, ALockBase] = {}
+        self._instances: dict[str, Any] = {}
+        self._locks: dict[str, ALockBase] = {}
     
     @abstractmethod
     def create_instance(self, instance_type: str, *args, **kwargs) -> Any:
@@ -229,7 +229,7 @@ class ASafeFactoryBase(ABC):
         pass
     
     @abstractmethod
-    def list_instances(self) -> List[str]:
+    def list_instances(self) -> list[str]:
         """List all instance IDs."""
         pass
     
@@ -249,7 +249,7 @@ class ASafeFactoryBase(ABC):
         pass
     
     @abstractmethod
-    def get_instance_info(self, instance_id: str) -> Dict[str, Any]:
+    def get_instance_info(self, instance_id: str) -> dict[str, Any]:
         """Get instance information."""
         pass
 
@@ -265,9 +265,9 @@ class AThreadPoolBase(ABC):
             max_workers: Maximum number of worker threads
         """
         self.max_workers = max_workers
-        self._workers: List[AThreadBase] = []
-        self._task_queue: List[tuple] = []
-        self._result_queue: List[Any] = []
+        self._workers: list[AThreadBase] = []
+        self._task_queue: list[tuple] = []
+        self._result_queue: list[Any] = []
         self._shutdown = False
     
     @abstractmethod
@@ -276,7 +276,7 @@ class AThreadPoolBase(ABC):
         pass
     
     @abstractmethod
-    def map(self, func: Callable, iterable: List[Any]) -> List[Any]:
+    def map(self, func: Callable, iterable: list[Any]) -> list[Any]:
         """Map function over iterable using thread pool."""
         pass
     
@@ -316,9 +316,9 @@ class AConcurrencyManagerBase(ABC):
     
     def __init__(self):
         """Initialize concurrency manager."""
-        self._threads: Dict[str, AThreadBase] = {}
-        self._locks: Dict[str, ALockBase] = {}
-        self._async_primitives: Dict[str, AAsyncPrimitiveBase] = {}
+        self._threads: dict[str, AThreadBase] = {}
+        self._locks: dict[str, ALockBase] = {}
+        self._async_primitives: dict[str, AAsyncPrimitiveBase] = {}
         self._deadlock_detector_enabled = False
     
     @abstractmethod
@@ -367,7 +367,7 @@ class AConcurrencyManagerBase(ABC):
         pass
     
     @abstractmethod
-    def detect_deadlocks(self) -> List[List[str]]:
+    def detect_deadlocks(self) -> list[list[str]]:
         """Detect potential deadlocks."""
         pass
     
@@ -382,7 +382,7 @@ class AConcurrencyManagerBase(ABC):
         pass
     
     @abstractmethod
-    def get_concurrency_stats(self) -> Dict[str, Any]:
+    def get_concurrency_stats(self) -> dict[str, Any]:
         """Get concurrency statistics."""
         pass
     

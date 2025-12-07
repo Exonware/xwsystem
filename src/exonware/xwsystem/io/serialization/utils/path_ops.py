@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 9, 2025
 
 Path operations utilities for serialization formats.
@@ -13,7 +13,7 @@ Provides JSONPointer path parsing and manipulation utilities that serializers
 can use for path-based operations. Includes path validation for security.
 """
 
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 from pathlib import Path
 
 from ...errors import SerializationError
@@ -65,7 +65,7 @@ def validate_json_pointer(path: str) -> bool:
     return True
 
 
-def parse_json_pointer(path: str) -> List[Union[str, int]]:
+def parse_json_pointer(path: str) -> list[Union[str, int]]:
     """
     Parse a JSONPointer path into a list of keys/indices.
     

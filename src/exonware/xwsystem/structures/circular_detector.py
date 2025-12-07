@@ -5,7 +5,7 @@ Circular reference detection and management utilities.
 import logging
 import weakref
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -32,13 +32,13 @@ class CircularReferenceDetector:
             max_depth: Maximum traversal depth before considering it circular
         """
         self.max_depth = max_depth
-        self._visiting: Set[int] = set()  # Currently being visited objects
-        self._visited: Set[int] = set()  # All visited objects
-        self._depth_map: Dict[int, int] = {}  # Object ID to depth mapping
-        self._reference_graph: Dict[int, Set[int]] = defaultdict(set)
+        self._visiting: set[int] = set()  # Currently being visited objects
+        self._visited: set[int] = set()  # All visited objects
+        self._depth_map: dict[int, int] = {}  # Object ID to depth mapping
+        self._reference_graph: dict[int, set[int]] = defaultdict(set)
         self._current_depth = 0
 
-    def is_circular(self, obj: Any, path: Optional[List[str]] = None) -> bool:
+    def is_circular(self, obj: Any, path: Optional[list[str]] = None) -> bool:
         """
         Check if an object contains circular references.
 
@@ -57,7 +57,7 @@ class CircularReferenceDetector:
         finally:
             self.reset()
 
-    def traverse(self, obj: Any, path: List[str]) -> None:
+    def traverse(self, obj: Any, path: list[str]) -> None:
         """
         Traverse an object checking for circular references.
 
@@ -121,7 +121,7 @@ class CircularReferenceDetector:
             self._visiting.discard(obj_id)
             self._current_depth -= 1
 
-    def _traverse_dict(self, obj: dict, path: List[str]) -> None:
+    def _traverse_dict(self, obj: dict, path: list[str]) -> None:
         """Traverse dictionary objects."""
         for key, value in obj.items():
             # Convert key to string for path tracking
@@ -139,7 +139,7 @@ class CircularReferenceDetector:
 
             self.traverse(value, new_path)
 
-    def _traverse_sequence(self, obj: Union[list, tuple, set], path: List[str]) -> None:
+    def _traverse_sequence(self, obj: Union[list, tuple, set], path: list[str]) -> None:
         """Traverse sequence objects (list, tuple, set)."""
         for i, item in enumerate(obj):
             new_path = path + [f"[{i}]"]
@@ -155,7 +155,7 @@ class CircularReferenceDetector:
 
             self.traverse(item, new_path)
 
-    def _traverse_object(self, obj: Any, path: List[str]) -> None:
+    def _traverse_object(self, obj: Any, path: list[str]) -> None:
         """Traverse custom objects via their __dict__."""
         # Skip certain types that are known to be safe
         if isinstance(obj, (type, weakref.ref, weakref.ProxyType)):
@@ -193,7 +193,7 @@ class CircularReferenceDetector:
         self._reference_graph.clear()
         self._current_depth = 0
 
-    def get_reference_graph(self) -> Dict[int, Set[int]]:
+    def get_reference_graph(self) -> dict[int, set[int]]:
         """
         Get the reference graph discovered during traversal.
 
@@ -202,7 +202,7 @@ class CircularReferenceDetector:
         """
         return dict(self._reference_graph)
 
-    def find_circular_paths(self, obj: Any) -> List[List[str]]:
+    def find_circular_paths(self, obj: Any) -> list[list[str]]:
         """
         Find all circular reference paths in an object.
 
@@ -216,8 +216,8 @@ class CircularReferenceDetector:
 
         def traverse_with_path_tracking(
             current_obj: Any,
-            current_path: List[str],
-            path_objects: Dict[int, List[str]],
+            current_path: list[str],
+            path_objects: dict[int, list[str]],
         ) -> None:
             if current_obj is None or isinstance(
                 current_obj, (str, int, float, bool, bytes)
@@ -330,7 +330,7 @@ def safe_traverse(obj: Any, visitor_func: callable, max_depth: int = 100) -> Any
     """
     detector = CircularReferenceDetector(max_depth=max_depth)
 
-    def safe_visit(current_obj: Any, path: List[str]) -> Any:
+    def safe_visit(current_obj: Any, path: list[str]) -> Any:
         try:
             detector.traverse(current_obj, path)
             return visitor_func(current_obj)

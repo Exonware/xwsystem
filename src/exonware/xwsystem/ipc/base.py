@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 IPC module base classes - abstract classes for inter-process communication functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from .contracts import MessageType, QueueType, ProcessState, SharedMemoryType
 
 
@@ -215,10 +215,10 @@ class AProcessManagerBase(ABC):
     
     def __init__(self):
         """Initialize process manager."""
-        self._processes: Dict[str, Any] = {}
+        self._processes: dict[str, Any] = {}
     
     @abstractmethod
-    def start_process(self, name: str, command: List[str], **kwargs) -> bool:
+    def start_process(self, name: str, command: list[str], **kwargs) -> bool:
         """Start new process."""
         pass
     
@@ -238,7 +238,7 @@ class AProcessManagerBase(ABC):
         pass
     
     @abstractmethod
-    def list_processes(self) -> List[str]:
+    def list_processes(self) -> list[str]:
         """List all managed processes."""
         pass
     
@@ -279,9 +279,9 @@ class AProcessPoolBase(ABC):
             max_processes: Maximum number of processes in pool
         """
         self.max_processes = max_processes
-        self._processes: List[Any] = []
-        self._available_processes: List[Any] = []
-        self._busy_processes: List[Any] = []
+        self._processes: list[Any] = []
+        self._available_processes: list[Any] = []
+        self._busy_processes: list[Any] = []
     
     @abstractmethod
     def initialize(self) -> None:

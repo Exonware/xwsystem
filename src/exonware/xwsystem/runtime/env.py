@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Environment management utilities for runtime configuration and detection.
@@ -12,7 +12,7 @@ import os
 import platform
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from ..config.logging_setup import get_logger
 
@@ -27,11 +27,11 @@ class EnvironmentManager:
 
     def __init__(self) -> None:
         """Initialize environment manager."""
-        self._cache: Dict[str, Any] = {}
-        self._env_vars: Dict[str, str] = dict(os.environ)
+        self._cache: dict[str, Any] = {}
+        self._env_vars: dict[str, str] = dict(os.environ)
 
     @property
-    def platform_info(self) -> Dict[str, str]:
+    def platform_info(self) -> dict[str, str]:
         """Get comprehensive platform information."""
         if 'platform_info' not in self._cache:
             self._cache['platform_info'] = {
@@ -68,7 +68,7 @@ class EnvironmentManager:
         return platform.architecture()[0] == '64bit'
 
     @property
-    def python_info(self) -> Dict[str, Any]:
+    def python_info(self) -> dict[str, Any]:
         """Get Python runtime information."""
         if 'python_info' not in self._cache:
             self._cache['python_info'] = {
@@ -159,7 +159,7 @@ class EnvironmentManager:
             logger.warning(f"Invalid float value for {key}: {value}, using default: {default}")
             return default
 
-    def get_env_list(self, key: str, separator: str = ',', default: Optional[List[str]] = None) -> List[str]:
+    def get_env_list(self, key: str, separator: str = ',', default: Optional[list[str]] = None) -> list[str]:
         """
         Get environment variable as list.
 
@@ -357,7 +357,7 @@ class EnvironmentManager:
         """Get number of CPU cores."""
         return os.cpu_count() or 1
 
-    def get_environment_summary(self) -> Dict[str, Any]:
+    def get_environment_summary(self) -> dict[str, Any]:
         """Get comprehensive environment summary."""
         return {
             'platform': self.platform_info,

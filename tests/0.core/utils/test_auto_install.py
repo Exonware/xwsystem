@@ -4,11 +4,13 @@ Test auto-installation of missing packages using xwimport
 """
 
 import sys
+import pytest
 from pathlib import Path
 
 # Add the src directory to the path
 sys.path.insert(0, str(Path(__file__).parent / 'src'))
 
+@pytest.mark.skip(reason="xwlazy has been removed from the codebase")
 def test_auto_install():
     """Test if xwimport automatically installs missing packages."""
     print("🧪 Testing Auto-Installation Feature")
@@ -16,7 +18,8 @@ def test_auto_install():
     
     print("1. Testing direct xwimport...")
     try:
-        from xwlazy.lazy import xwimport
+        # from xwlazy.lazy import xwimport
+        raise ImportError("xwlazy has been removed")
         
         print("   Attempting to import fastavro using xwimport...")
         fastavro = xwimport("fastavro")

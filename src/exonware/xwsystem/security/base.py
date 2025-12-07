@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Security module base classes - abstract classes for security functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, Tuple
+from typing import Any, Optional, Union
 from .defs import HashAlgorithm, EncryptionAlgorithm, SecurityLevel
 
 
@@ -118,7 +118,7 @@ class AHashBase(ABC):
         pass
     
     @abstractmethod
-    def hash_with_salt(self, data: Union[str, bytes]) -> Tuple[str, bytes]:
+    def hash_with_salt(self, data: Union[str, bytes]) -> tuple[str, bytes]:
         """Hash data with generated salt."""
         pass
 
@@ -189,8 +189,8 @@ class APathValidatorBase(ABC):
             security_level: Security level for validation
         """
         self.security_level = security_level
-        self._allowed_paths: List[str] = []
-        self._blocked_paths: List[str] = []
+        self._allowed_paths: list[str] = []
+        self._blocked_paths: list[str] = []
     
     @abstractmethod
     def validate_path(self, path: Union[str, bytes]) -> bool:
@@ -238,12 +238,12 @@ class APathValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def get_allowed_paths(self) -> List[str]:
+    def get_allowed_paths(self) -> list[str]:
         """Get allowed paths."""
         pass
     
     @abstractmethod
-    def get_blocked_paths(self) -> List[str]:
+    def get_blocked_paths(self) -> list[str]:
         """Get blocked paths."""
         pass
 
@@ -253,8 +253,8 @@ class AResourceLimitsBase(ABC):
     
     def __init__(self):
         """Initialize resource limits."""
-        self._limits: Dict[str, int] = {}
-        self._current_usage: Dict[str, int] = {}
+        self._limits: dict[str, int] = {}
+        self._current_usage: dict[str, int] = {}
     
     @abstractmethod
     def set_limit(self, resource: str, limit: int) -> None:
@@ -297,12 +297,12 @@ class AResourceLimitsBase(ABC):
         pass
     
     @abstractmethod
-    def get_all_limits(self) -> Dict[str, int]:
+    def get_all_limits(self) -> dict[str, int]:
         """Get all resource limits."""
         pass
     
     @abstractmethod
-    def get_all_usage(self) -> Dict[str, int]:
+    def get_all_usage(self) -> dict[str, int]:
         """Get all resource usage."""
         pass
     
@@ -323,7 +323,7 @@ class ASecurityValidatorBase(ABC):
             security_level: Security level for validation
         """
         self.security_level = security_level
-        self._validation_rules: Dict[str, callable] = {}
+        self._validation_rules: dict[str, callable] = {}
     
     @abstractmethod
     def validate_input(self, data: Any, input_type: str) -> bool:
@@ -351,7 +351,7 @@ class ASecurityValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def get_validation_errors(self) -> List[str]:
+    def get_validation_errors(self) -> list[str]:
         """Get validation errors."""
         pass
     
@@ -394,15 +394,15 @@ class AUserInfo:
     user_id: str
     username: Optional[str] = None
     email: Optional[str] = None
-    roles: List[str] = field(default_factory=list)
-    attributes: Dict[str, Any] = field(default_factory=dict)
+    roles: list[str] = field(default_factory=list)
+    attributes: dict[str, Any] = field(default_factory=dict)
 
 
 class AAuthProvider(ABC):
     """Abstract base class for authentication providers."""
     
     @abstractmethod
-    async def authenticate(self, credentials: Dict[str, Any]) -> ATokenInfo:
+    async def authenticate(self, credentials: dict[str, Any]) -> ATokenInfo:
         """Authenticate user with credentials."""
         pass
     

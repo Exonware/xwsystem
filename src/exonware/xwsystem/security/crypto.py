@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Cryptographic utilities for secure data handling and protection.
@@ -13,7 +13,7 @@ import hmac
 import secrets
 import time
 from base64 import b64decode, b64encode
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes, serialization
@@ -452,9 +452,9 @@ class SecureStorage:
             key: Encryption key or None to generate new key
         """
         self.encryption = SymmetricEncryption(key)
-        self._storage: Dict[str, Dict[str, Any]] = {}
+        self._storage: dict[str, dict[str, Any]] = {}
 
-    def store(self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None) -> None:
+    def store(self, key: str, value: Any, metadata: Optional[dict[str, Any]] = None) -> None:
         """
         Store value securely.
 
@@ -526,7 +526,7 @@ class SecureStorage:
         """Get list of all storage keys."""
         return list(self._storage.keys())
 
-    def get_metadata(self, key: str) -> Dict[str, Any]:
+    def get_metadata(self, key: str) -> dict[str, Any]:
         """
         Get metadata for a key.
 
@@ -733,7 +733,7 @@ class AsyncSecureStorage:
         """Initialize async secure storage."""
         self._storage = SecureStorage(key)
     
-    async def store(self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None) -> None:
+    async def store(self, key: str, value: Any, metadata: Optional[dict[str, Any]] = None) -> None:
         """Store value securely (async)."""
         import asyncio
         await asyncio.to_thread(self._storage.store, key, value, metadata)
@@ -758,7 +758,7 @@ class AsyncSecureStorage:
         import asyncio
         return await asyncio.to_thread(self._storage.list_keys)
     
-    async def get_metadata(self, key: str) -> Dict[str, Any]:
+    async def get_metadata(self, key: str) -> dict[str, Any]:
         """Get metadata for a key (async)."""
         import asyncio
         return await asyncio.to_thread(self._storage.get_metadata, key)

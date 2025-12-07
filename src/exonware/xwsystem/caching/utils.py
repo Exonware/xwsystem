@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Common utility functions for caching module.
@@ -13,7 +13,7 @@ Common utility functions for caching module.
 import sys
 import hashlib
 import pickle
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 
 
 def estimate_object_size(obj: Any) -> int:
@@ -110,7 +110,7 @@ def format_bytes(size: int) -> str:
     return f"{size_float:.2f} {units[unit_index]}"
 
 
-def default_key_builder(func: Callable, args: Tuple, kwargs: dict) -> str:
+def default_key_builder(func: Callable, args: tuple, kwargs: dict) -> str:
     """
     Build cache key from function and arguments.
     

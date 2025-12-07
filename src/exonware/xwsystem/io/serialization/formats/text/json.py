@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 2, 2025
 
 JSON serialization - Universal, human-readable data interchange format.
@@ -108,6 +108,16 @@ class JsonSerializer(ASerialization):
     @property
     def supports_query(self) -> bool:
         """JSON supports queries via JSONPath."""
+        return True
+    
+    @property
+    def supports_lazy_loading(self) -> bool:
+        """
+        JSON supports lazy loading for large files.
+        
+        For large files (10GB+), use atomic path operations (atomic_read_path, atomic_update_path)
+        which skip full file validation and only load what's needed.
+        """
         return True
     
     # ========================================================================
@@ -247,8 +257,12 @@ class JsonSerializer(ASerialization):
             from ...utils.path_ops import validate_path_security
             validate_path_security(path)
             
-            # Load entire file (for now - future: streaming parser for large files)
-            data = self.load_file(file_path, **options)
+            # Load entire file
+            # For large files (10GB+), skip size validation to allow atomic operations
+            # Root cause: Large files should use atomic path operations without full validation
+            # Solution: Skip size check for atomic operations (depth check still performed)
+            large_file_options = {**options, 'skip_size_check': True}
+            data = self.load_file(file_path, **large_file_options)
             
             # Use jsonpointer to set value
             jsonpointer.set_pointer(data, path, value)
@@ -317,8 +331,12 @@ class JsonSerializer(ASerialization):
             from ...utils.path_ops import validate_path_security
             validate_path_security(path)
             
-            # Load entire file (for now - future: streaming parser for large files)
-            data = self.load_file(file_path, **options)
+            # Load entire file
+            # For large files (10GB+), skip size validation to allow atomic operations
+            # Root cause: Large files should use atomic path operations without full validation
+            # Solution: Skip size check for atomic operations (depth check still performed)
+            large_file_options = {**options, 'skip_size_check': True}
+            data = self.load_file(file_path, **large_file_options)
             
             # Use jsonpointer to get value
             return jsonpointer.resolve_pointer(data, path)

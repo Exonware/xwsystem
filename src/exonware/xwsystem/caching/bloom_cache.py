@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Bloom filter-enhanced cache for faster negative lookups.
@@ -11,7 +11,7 @@ Performance Priority #4 - Probabilistic data structure for efficiency.
 """
 
 import hashlib
-from typing import Any, Dict, List, Optional, Hashable
+from typing import Any, Optional, Hashable
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
 
@@ -38,7 +38,7 @@ class SimpleBloomFilter:
         self.bit_array = [False] * size
         self.items_added = 0
     
-    def _hashes(self, item: Any) -> List[int]:
+    def _hashes(self, item: Any) -> list[int]:
         """Generate multiple hash values for item."""
         hashes = []
         item_bytes = str(item).encode('utf-8')
@@ -191,7 +191,7 @@ class BloomFilterCache(LRUCache):
             self._bloom.add(key)
         logger.info("Bloom filter rebuilt")
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics including Bloom filter metrics."""
         stats = super().get_stats()
         stats['bloom_size'] = self._bloom.size

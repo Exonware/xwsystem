@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 XWFile - Concrete implementation of file operations.
@@ -10,7 +10,7 @@ XWFile - Concrete implementation of file operations.
 
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, BinaryIO, TextIO
+from typing import Any, Optional, Union, BinaryIO, TextIO
 
 from ..base import AFile
 from ..contracts import FileMode, OperationResult, IFile
@@ -208,7 +208,7 @@ class XWFile(AFile):
     # UTILITY METHODS
     # ============================================================================
     
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """Get comprehensive file information."""
         return {
             'file_path': str(self.file_path),

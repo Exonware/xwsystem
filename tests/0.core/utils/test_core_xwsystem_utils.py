@@ -14,8 +14,11 @@ from unittest.mock import patch, MagicMock
 # Add the src directory to the path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
 
+# Skip xwlazy imports - xwlazy has been removed
+# try:
+#     from xwlazy.lazy import LazyLoader
 try:
-    from xwlazy.lazy import LazyLoader
+    LazyLoader = None  # xwlazy removed
     from exonware.xwsystem.utils.paths import PathUtils
     from exonware.xwsystem.utils.base import BaseUtils
     from exonware.xwsystem.utils.contracts import ILazyLoader, IPathUtils

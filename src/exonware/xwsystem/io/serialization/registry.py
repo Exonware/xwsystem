@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: November 2, 2025
 
 Serialization Registry - Delegates to UniversalCodecRegistry.
@@ -10,7 +10,7 @@ Serialization Registry - Delegates to UniversalCodecRegistry.
 Provides serialization-specific convenience methods for format discovery.
 """
 
-from typing import Optional, List, Union
+from typing import Optional, Union
 from pathlib import Path
 
 from ..codec.registry import UniversalCodecRegistry, get_registry
@@ -117,7 +117,7 @@ class SerializationRegistry:
         """
         return self._codec_registry.get_by_mime_type(mime_type)
     
-    def list_formats(self) -> List[str]:
+    def list_formats(self) -> list[str]:
         """
         List all registered format IDs.
         
@@ -130,7 +130,7 @@ class SerializationRegistry:
         """
         return self._codec_registry.list_codecs()
     
-    def list_extensions(self) -> List[str]:
+    def list_extensions(self) -> list[str]:
         """
         List all registered file extensions.
         
@@ -143,7 +143,7 @@ class SerializationRegistry:
         """
         return self._codec_registry.list_extensions()
     
-    def list_mime_types(self) -> List[str]:
+    def list_mime_types(self) -> list[str]:
         """
         List all registered MIME types.
         

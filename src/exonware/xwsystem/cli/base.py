@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 CLI module base classes - abstract classes for command-line interface functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from .contracts import ColorType, ProgressStyle, TableStyle, PromptType, ICLI
 from ..version import __version__
 
@@ -85,7 +85,7 @@ class AProgressBarBase(ABC):
 class ATableBase(ABC):
     """Abstract base class for table operations."""
     
-    def __init__(self, headers: List[str], style: TableStyle = TableStyle.SIMPLE):
+    def __init__(self, headers: list[str], style: TableStyle = TableStyle.SIMPLE):
         """
         Initialize table.
         
@@ -95,7 +95,7 @@ class ATableBase(ABC):
         """
         self.headers = headers
         self.style = style
-        self.rows: List[List[str]] = []
+        self.rows: list[list[str]] = []
     
     @abstractmethod
     def add_row(self, *values: Any) -> None:
@@ -132,12 +132,12 @@ class APromptBase(ABC):
         pass
     
     @abstractmethod
-    def select(self, message: str, choices: List[str], default: Optional[str] = None) -> str:
+    def select(self, message: str, choices: list[str], default: Optional[str] = None) -> str:
         """Ask user to select from choices."""
         pass
     
     @abstractmethod
-    def multiselect(self, message: str, choices: List[str], default: Optional[List[str]] = None) -> List[str]:
+    def multiselect(self, message: str, choices: list[str], default: Optional[list[str]] = None) -> list[str]:
         """Ask user to select multiple choices."""
         pass
 
@@ -153,7 +153,7 @@ class AArgumentParserBase(ABC):
             description: Parser description
         """
         self.description = description
-        self.arguments: List[Dict[str, Any]] = []
+        self.arguments: list[dict[str, Any]] = []
     
     @abstractmethod
     def add_argument(self, *args, **kwargs) -> None:
@@ -161,7 +161,7 @@ class AArgumentParserBase(ABC):
         pass
     
     @abstractmethod
-    def parse_args(self, args: Optional[List[str]] = None) -> Any:
+    def parse_args(self, args: Optional[list[str]] = None) -> Any:
         """Parse command line arguments."""
         pass
     
@@ -190,7 +190,7 @@ class AColorBase(ABC):
         pass
     
     @abstractmethod
-    def get_color_codes(self) -> Dict[ColorType, str]:
+    def get_color_codes(self) -> dict[ColorType, str]:
         """Get color codes mapping."""
         pass
 
@@ -207,8 +207,8 @@ class BaseCLI(ICLI):
         """
         self._name = name
         self._version = version or __version__
-        self._commands: Dict[str, Any] = {}
-        self._options: Dict[str, Any] = {}
+        self._commands: dict[str, Any] = {}
+        self._options: dict[str, Any] = {}
     
     @property
     def name(self) -> str:
@@ -238,7 +238,7 @@ class BaseCLI(ICLI):
         """
         self._options[name] = option
     
-    def run(self, args: Optional[List[str]] = None) -> int:
+    def run(self, args: Optional[list[str]] = None) -> int:
         """Run the CLI.
         
         Args:
@@ -262,8 +262,8 @@ class BaseCLI(ICLI):
         """Initialize base CLI."""
         self._name = name
         self._version = version or __version__
-        self._commands: Dict[str, Any] = {}
-        self._options: Dict[str, Any] = {}
+        self._commands: dict[str, Any] = {}
+        self._options: dict[str, Any] = {}
     
     @property
     def name(self) -> str:
@@ -283,7 +283,7 @@ class BaseCLI(ICLI):
         """Add an option to the CLI."""
         self._options[name] = option
     
-    def run(self, args: Optional[List[str]] = None) -> int:
+    def run(self, args: Optional[list[str]] = None) -> int:
         """Run the CLI."""
         if not args:
             args = []

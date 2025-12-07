@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Conditional eviction policies for caching.
@@ -11,7 +11,7 @@ Extensibility Priority #5 - Customizable eviction behavior.
 """
 
 import time
-from typing import Any, Callable, Dict, Optional, Hashable
+from typing import Any, Callable, Optional, Hashable
 from .lru_cache import LRUCache, CacheNode
 from ..config.logging_setup import get_logger
 
@@ -136,7 +136,7 @@ class ConditionalEvictionCache(LRUCache):
         self.eviction_policy = policy
         logger.info("Eviction policy updated")
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics including eviction rejections."""
         stats = super().get_stats()
         stats['eviction_rejections'] = self._eviction_rejections

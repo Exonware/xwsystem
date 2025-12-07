@@ -8,7 +8,7 @@
 
 ---
 
-## ?? AI-Friendly Document
+## 📋 AI-Friendly Document
 
 **This document is designed for both human developers and AI assistants.**  
 Provides comprehensive guidelines for creating, managing, and executing plans in eXonware projects. This reference document backs the lifecycle defined in `guides/GUIDE_PLAN.md` and routes you to the appropriate standards based on the type of work being planned.
@@ -96,7 +96,7 @@ Provides comprehensive guidelines for creating, managing, and executing plans in
 9. **Architecture Changes** - Design pattern modifications
 10. **Migration Tasks** - Version upgrades or API changes
 
-### ?? Consider a Plan For:
+### 💡 Consider a Plan For:
 
 1. **Minor Features** - Small additions with dependencies
 2. **Bug Fixes (Moderate)** - Bugs affecting multiple components
@@ -278,7 +278,7 @@ This comprehensive template includes all required sections for creating plans th
 
 ---
 
-## ?? Context
+## 📝 Context
 
 **Why this plan exists:**
 [Describe the problem, opportunity, or requirement that prompted this plan]
@@ -291,7 +291,7 @@ This comprehensive template includes all required sections for creating plans th
 
 ---
 
-## ?? Objectives
+## 🎯 Objectives
 
 **Primary Goal:**
 [One sentence describing the main objective]
@@ -416,7 +416,7 @@ This comprehensive template includes all required sections for creating plans th
 
 ---
 
-## ?? Impact Analysis
+## 📊 Impact Analysis
 
 **Files/Modules Affected:**
 - `module/file1.py` - [description of changes]
@@ -437,7 +437,7 @@ This comprehensive template includes all required sections for creating plans th
 
 ---
 
-## ?? Risks & Mitigation
+## ⚠️ Risks & Mitigation
 
 **Risk 1:** [Description]
 - **Likelihood:** [Low|Medium|High]
@@ -961,7 +961,7 @@ Use this template for all plan types (DEV, TEST, DOCS, PROJECT, BENCH, MIXED). I
 
 ---
 
-## ?? Planning Examples
+## 📚 Planning Examples
 
 ### Example 1: Simple Development Plan
 

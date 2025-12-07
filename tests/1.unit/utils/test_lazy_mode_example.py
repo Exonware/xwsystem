@@ -19,11 +19,14 @@ from typing import Iterator, Tuple
 
 import pytest
 
-from xwlazy.lazy import (
-    LazyInstallConfig,
-    config_package_lazy_install_enabled,
-    is_import_hook_installed,
-)
+# Skip all tests in this file - xwlazy has been removed
+pytestmark = pytest.mark.skip(reason="xwlazy has been removed from the codebase")
+
+# from xwlazy.lazy import (
+#     LazyInstallConfig,
+#     config_package_lazy_install_enabled,
+#     is_import_hook_installed,
+# )
 
 PACKAGE_NAME = "xwsystem"
 EXAMPLE_MODULE = "lazy_mode_quick_check"

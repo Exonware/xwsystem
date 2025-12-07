@@ -32,6 +32,9 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
+# Skip all tests in this file - xwlazy has been removed
+pytestmark = pytest.mark.skip(reason="xwlazy has been removed from the codebase")
+
 
 @contextmanager
 def clean_lazy_state() -> Iterator[None]:

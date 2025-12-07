@@ -3,20 +3,20 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Plugin-specific error classes for XSystem plugin system.
 """
 
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Optional, Type
 
 
 class PluginError(Exception):
     """Base exception for all plugin-related errors."""
     
     def __init__(self, message: str, plugin_name: Optional[str] = None, 
-                 plugin_version: Optional[str] = None, context: Optional[Dict[str, Any]] = None, 
+                 plugin_version: Optional[str] = None, context: Optional[dict[str, Any]] = None, 
                  original_error: Optional[Exception] = None):
         super().__init__(message)
         self.plugin_name = plugin_name
@@ -39,7 +39,7 @@ class PluginError(Exception):
 class PluginNotFoundError(PluginError):
     """Error when a requested plugin is not found."""
     
-    def __init__(self, plugin_name: str, available_plugins: Optional[List[str]] = None, **kwargs):
+    def __init__(self, plugin_name: str, available_plugins: Optional[list[str]] = None, **kwargs):
         message = f"Plugin '{plugin_name}' not found"
         if available_plugins:
             message += f". Available plugins: {', '.join(available_plugins)}"
@@ -66,7 +66,7 @@ class PluginImportError(PluginLoadError):
 class PluginDependencyError(PluginLoadError):
     """Error when plugin dependencies are not met."""
     
-    def __init__(self, message: str, plugin_name: str, missing_dependencies: Optional[List[str]] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, missing_dependencies: Optional[list[str]] = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.missing_dependencies = missing_dependencies or []
 
@@ -100,7 +100,7 @@ class PluginDuplicateError(PluginRegistrationError):
 class PluginValidationError(PluginRegistrationError):
     """Error when plugin validation fails."""
     
-    def __init__(self, message: str, plugin_name: str, validation_errors: Optional[List[str]] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, validation_errors: Optional[list[str]] = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.validation_errors = validation_errors or []
 
@@ -350,7 +350,7 @@ class PluginPriorityError(PluginError):
 class PluginDependencyCycleError(PluginError):
     """Error when plugin dependency cycle is detected."""
     
-    def __init__(self, message: str, plugin_name: str, dependency_cycle: Optional[List[str]] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, dependency_cycle: Optional[list[str]] = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.dependency_cycle = dependency_cycle or []
 

@@ -6,13 +6,13 @@
 
 ---
 
-## ?? Overview
+## 📊 Overview
 
 Complete API reference for exonware-xwsystem. This document provides technical specifications for all public APIs.
 
 ---
 
-## ?? Core Modules
+## 🔧 Core Modules
 
 ### Serialization Module
 
@@ -194,7 +194,7 @@ async with fabric.session() as session:
 
 ---
 
-## ?? Serialization Formats
+## 📄 Serialization Formats
 
 See [logs/changes/CHANGE_20251030_2221_SERIALIZATION_REFERENCE.md](logs/changes/CHANGE_20251030_2221_SERIALIZATION_REFERENCE.md) for detailed format specifications.
 
@@ -233,7 +233,7 @@ See [logs/changes/CHANGE_20251030_2221_SERIALIZATION_REFERENCE.md](logs/changes/
 
 ---
 
-## ?? Codec System
+## 🔧 Codec System
 
 ### Understanding Codec Architecture
 
@@ -271,7 +271,7 @@ class CustomCodec(CodecBase[MyModel, bytes]):
 
 ---
 
-## ?? Security
+## 🔒 Security
 
 ### Path Validation
 
@@ -319,7 +319,7 @@ clean_data = sanitize_input(user_input)
 
 ---
 
-## ?? Related Documentation
+## 📚 Related Documentation
 
 - [GUIDE_DEV.md](guides/GUIDE_DEV.md) - Development standards
 - [GUIDE_TEST.md](guides/GUIDE_TEST.md) - Testing standards

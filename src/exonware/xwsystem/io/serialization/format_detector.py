@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Intelligent format detection for automatic serialization format selection.
@@ -11,7 +11,7 @@ Intelligent format detection for automatic serialization format selection.
 
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Optional, Union
 
 from ...config.logging_setup import get_logger
 
@@ -38,7 +38,7 @@ class FormatDetector:
         self._magic_bytes = self._build_magic_bytes_map()
         self._content_patterns = self._build_content_patterns()
     
-    def _build_extension_map(self) -> Dict[str, List[str]]:
+    def _build_extension_map(self) -> dict[str, list[str]]:
         """Build mapping from file extensions to format names."""
         return {
             # Text formats
@@ -70,7 +70,7 @@ class FormatDetector:
             '.fbs': ['FlatBuffers'],
         }
     
-    def _build_magic_bytes_map(self) -> Dict[bytes, List[str]]:
+    def _build_magic_bytes_map(self) -> dict[bytes, list[str]]:
         """Build mapping from magic bytes to format names."""
         return {
             # Binary formats with clear magic bytes
@@ -87,7 +87,7 @@ class FormatDetector:
             b'FLATB': ['FlatBuffers'],  # FlatBuffers magic
         }
     
-    def _build_content_patterns(self) -> Dict[str, List[Tuple[re.Pattern, float]]]:
+    def _build_content_patterns(self) -> dict[str, list[tuple[re.Pattern, float]]]:
         """Build regex patterns for content-based detection with confidence scores."""
         return {
             'JSON': [
@@ -124,7 +124,7 @@ class FormatDetector:
             ],
         }
     
-    def detect_from_extension(self, file_path: Union[str, Path]) -> List[str]:
+    def detect_from_extension(self, file_path: Union[str, Path]) -> list[str]:
         """
         Detect format from file extension.
         
@@ -139,7 +139,7 @@ class FormatDetector:
         
         return self._extension_map.get(extension, [])
     
-    def detect_from_magic_bytes(self, data: bytes, max_bytes: int = 64) -> List[str]:
+    def detect_from_magic_bytes(self, data: bytes, max_bytes: int = 64) -> list[str]:
         """
         Detect format from magic bytes at the beginning of data.
         
@@ -161,7 +161,7 @@ class FormatDetector:
         
         return []
     
-    def detect_from_content(self, content: Union[str, bytes]) -> Dict[str, float]:
+    def detect_from_content(self, content: Union[str, bytes]) -> dict[str, float]:
         """
         Detect format from content analysis with confidence scores.
         
@@ -208,7 +208,7 @@ class FormatDetector:
         file_path: Optional[Union[str, Path]] = None,
         content: Optional[Union[str, bytes]] = None,
         data: Optional[bytes] = None
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Comprehensive format detection using all available methods.
         
@@ -284,7 +284,7 @@ class FormatDetector:
         content: Optional[Union[str, bytes]] = None,
         data: Optional[bytes] = None,
         max_suggestions: int = 3
-    ) -> List[Tuple[str, float]]:
+    ) -> list[tuple[str, float]]:
         """
         Get ranked format suggestions with confidence scores.
         
@@ -361,7 +361,7 @@ def get_format_suggestions(
     content: Optional[Union[str, bytes]] = None,
     data: Optional[bytes] = None,
     max_suggestions: int = 3
-) -> List[Tuple[str, float]]:
+) -> list[tuple[str, float]]:
     """
     Convenience function for format suggestions using global detector.
     

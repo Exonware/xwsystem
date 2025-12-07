@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/patterns/registry.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: October 26, 2025
 
 Generic registry pattern for dynamic registration and discovery.
@@ -11,13 +12,13 @@ Generic registry pattern for dynamic registration and discovery.
 
 import threading
 import time
-from typing import Any, Dict, List, Optional, Type, TypeVar, Callable, Set
+from typing import Any, Optional, Type, Callable
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from abc import ABC, abstractmethod
 from ..config.logging_setup import get_logger
 
 logger = get_logger("xwsystem.patterns.registry")
-
-T = TypeVar('T')
 
 
 class RegistryError(Exception):
@@ -25,11 +26,16 @@ class RegistryError(Exception):
     pass
 
 
-class IRegistry(ABC):
-    """Interface for registry implementations."""
+class IRegistry[T](ABC):
+    """
+    Interface for registry implementations.
+    
+    Root cause: Adding generic type parameter for better type safety.
+    Priority #3: Maintainability - Generic types improve code clarity and type checking.
+    """
     
     @abstractmethod
-    def register(self, name: str, item: Any, metadata: Optional[Dict[str, Any]] = None) -> bool:
+    def register(self, name: str, item: T, metadata: Optional[dict[str, Any]] = None) -> bool:
         """Register an item with optional metadata."""
         pass
     
@@ -39,12 +45,12 @@ class IRegistry(ABC):
         pass
     
     @abstractmethod
-    def get(self, name: str) -> Optional[Any]:
+    def get(self, name: str) -> Optional[T]:
         """Get an item by name."""
         pass
     
     @abstractmethod
-    def list_names(self) -> List[str]:
+    def list_names(self) -> list[str]:
         """List all registered names."""
         pass
     
@@ -59,7 +65,7 @@ class IRegistry(ABC):
         pass
 
 
-class GenericRegistry(IRegistry):
+class GenericRegistry[T](IRegistry[T]):
     """
     Generic registry for dynamic registration and discovery.
     
@@ -97,13 +103,13 @@ class GenericRegistry(IRegistry):
         self._lock = threading.RLock()
         
         # Storage
-        self._items: Dict[str, Any] = {}
-        self._metadata: Dict[str, Dict[str, Any]] = {}
-        self._factories: Dict[str, Callable[[], Any]] = {}
+        self._items: dict[str, T] = {}
+        self._metadata: dict[str, dict[str, Any]] = {}
+        self._factories: dict[str, Callable[[], T]] = {}
         
         # Callbacks
-        self._registration_callbacks: List[Callable[[str, Any, Dict[str, Any]], None]] = []
-        self._unregistration_callbacks: List[Callable[[str, Any], None]] = []
+        self._registration_callbacks: list[Callable[[str, T, dict[str, Any]], None]] = []
+        self._unregistration_callbacks: list[Callable[[str, T], None]] = []
         
         # Statistics
         self._stats = {
@@ -119,9 +125,9 @@ class GenericRegistry(IRegistry):
     def register(
         self,
         name: str,
-        item: Any,
-        metadata: Optional[Dict[str, Any]] = None,
-        factory: Optional[Callable[[], Any]] = None
+        item: T,
+        metadata: Optional[dict[str, Any]] = None,
+        factory: Optional[Callable[[], T]] = None
     ) -> bool:
         """
         Register an item with optional metadata and factory.
@@ -229,7 +235,7 @@ class GenericRegistry(IRegistry):
                 logger.error(f"Failed to unregister item '{name}': {e}")
                 return False
     
-    def get(self, name: str) -> Optional[Any]:
+    def get(self, name: str) -> Optional[T]:
         """
         Get an item by name.
         
@@ -265,7 +271,7 @@ class GenericRegistry(IRegistry):
                 self._stats['misses'] += 1
                 return None
     
-    def list_names(self) -> List[str]:
+    def list_names(self) -> list[str]:
         """List all registered names."""
         with self._lock:
             return list(self._items.keys())
@@ -299,12 +305,12 @@ class GenericRegistry(IRegistry):
                 logger.error(f"Failed to clear registry '{self.name}': {e}")
                 return False
     
-    def get_metadata(self, name: str) -> Optional[Dict[str, Any]]:
+    def get_metadata(self, name: str) -> Optional[dict[str, Any]]:
         """Get metadata for an item."""
         with self._lock:
             return self._metadata.get(name)
     
-    def update_metadata(self, name: str, metadata: Dict[str, Any]) -> bool:
+    def update_metadata(self, name: str, metadata: dict[str, Any]) -> bool:
         """Update metadata for an item."""
         with self._lock:
             if name not in self._items:
@@ -316,17 +322,17 @@ class GenericRegistry(IRegistry):
             self._metadata[name].update(metadata)
             return True
     
-    def add_registration_callback(self, callback: Callable[[str, Any, Dict[str, Any]], None]):
+    def add_registration_callback(self, callback: Callable[[str, T, dict[str, Any]], None]):
         """Add callback for registration events."""
         with self._lock:
             self._registration_callbacks.append(callback)
     
-    def add_unregistration_callback(self, callback: Callable[[str, Any], None]):
+    def add_unregistration_callback(self, callback: Callable[[str, T], None]):
         """Add callback for unregistration events."""
         with self._lock:
             self._unregistration_callbacks.append(callback)
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get registry statistics."""
         with self._lock:
             total_lookups = self._stats['hits'] + self._stats['misses']
@@ -346,7 +352,7 @@ class GenericRegistry(IRegistry):
                 'auto_discovery': self.auto_discovery,
             }
     
-    def discover_items(self, discovery_func: Callable[[], List[tuple]]) -> int:
+    def discover_items(self, discovery_func: Callable[[], list[tuple[str, T, dict[str, Any]]]]) -> int:
         """
         Discover and register items using a discovery function.
         
@@ -374,28 +380,35 @@ class GenericRegistry(IRegistry):
 
 
 # Global registry manager
-_registries: Dict[str, GenericRegistry] = {}
+_registries: dict[str, GenericRegistry[Any]] = {}
 _registry_lock = threading.RLock()
 
 
-def get_registry(name: str, **kwargs) -> GenericRegistry:
+def get_registry(name: str, **kwargs) -> GenericRegistry[Any]:
     """
     Get or create a registry by name.
+    
+    Root cause: Global registry storage uses GenericRegistry[Any] for flexibility.
+    Users can create typed registries directly: GenericRegistry[MyType]().
+    Priority #3: Maintainability - Clear API design.
     
     Args:
         name: Registry name
         **kwargs: Additional arguments for registry creation
         
     Returns:
-        Registry instance
+        Registry instance (untyped for global registry flexibility)
+        
+    Note:
+        For type-safe registries, create directly: GenericRegistry[MyType]()
     """
     with _registry_lock:
         if name not in _registries:
-            _registries[name] = GenericRegistry(name=name, **kwargs)
+            _registries[name] = GenericRegistry[Any](name=name, **kwargs)
         return _registries[name]
 
 
-def list_registries() -> List[str]:
+def list_registries() -> list[str]:
     """List all registry names."""
     with _registry_lock:
         return list(_registries.keys())

@@ -4,18 +4,18 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Statistics formatting utilities for caching module.
 Usability Priority #2 - Human-readable statistics display.
 """
 
-from typing import Dict, Any
+from typing import Any
 from .utils import format_bytes
 
 
-def format_cache_stats(stats: Dict[str, Any], style: str = 'box') -> str:
+def format_cache_stats(stats: dict[str, Any], style: str = 'box') -> str:
     """
     Format cache statistics as human-readable string.
     
@@ -36,7 +36,7 @@ def format_cache_stats(stats: Dict[str, Any], style: str = 'box') -> str:
         return _format_box_style(stats)
 
 
-def _format_box_style(stats: Dict[str, Any]) -> str:
+def _format_box_style(stats: dict[str, Any]) -> str:
     """Format statistics in box style with borders."""
     name = stats.get('name', 'Unknown')
     cache_type = stats.get('type', 'Unknown')
@@ -79,7 +79,7 @@ def _format_box_style(stats: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def _format_table_style(stats: Dict[str, Any]) -> str:
+def _format_table_style(stats: dict[str, Any]) -> str:
     """Format statistics in table style."""
     name = stats.get('name', 'Unknown')
     cache_type = stats.get('type', 'Unknown')
@@ -106,7 +106,7 @@ def _format_table_style(stats: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def _format_compact_style(stats: Dict[str, Any]) -> str:
+def _format_compact_style(stats: dict[str, Any]) -> str:
     """Format statistics in compact one-line style."""
     name = stats.get('name', 'Unknown')
     cache_type = stats.get('type', 'Unknown')
@@ -166,7 +166,7 @@ def format_cache_stats_table(cache_list: list) -> str:
     return "\n".join(lines)
 
 
-def get_stats_summary(stats: Dict[str, Any]) -> str:
+def get_stats_summary(stats: dict[str, Any]) -> str:
     """
     Get one-line summary of cache statistics.
     

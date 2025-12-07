@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 DateTime module base classes - abstract classes for date/time functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from datetime import datetime, date, time, timedelta
 from .contracts import DateTimeFormat, TimezoneType, HumanizeStyle
 
@@ -78,7 +78,7 @@ class ATimezoneBase(ABC):
         pass
     
     @abstractmethod
-    def list_timezones(self) -> List[str]:
+    def list_timezones(self) -> list[str]:
         """List available timezones."""
         pass
 
@@ -131,7 +131,7 @@ class ADateFormatBase(ABC):
         pass
     
     @abstractmethod
-    def get_common_formats(self) -> Dict[str, str]:
+    def get_common_formats(self) -> dict[str, str]:
         """Get common date/time formats."""
         pass
     
@@ -175,7 +175,7 @@ class ADateTimeValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def get_validation_errors(self) -> List[str]:
+    def get_validation_errors(self) -> list[str]:
         """Get validation errors."""
         pass
 

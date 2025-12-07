@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Optimized O(1) LFU Cache implementation.
@@ -19,7 +19,7 @@ Performance Improvement:
 import threading
 import asyncio
 from collections import defaultdict, OrderedDict
-from typing import Any, Dict, List, Optional, Hashable, Tuple
+from typing import Any, Optional, Hashable
 from .base import ACache
 from ..config.logging_setup import get_logger
 
@@ -31,7 +31,7 @@ class OptimizedLFUCache(ACache):
     O(1) LFU Cache using frequency buckets.
     
     Algorithm:
-        - Frequency buckets: Dict[freq -> OrderedDict[key -> value]]
+        - Frequency buckets: dict[freq -> OrderedDict[key -> value]]
         - Min frequency tracking for O(1) eviction
         - All operations are O(1) complexity
     
@@ -66,9 +66,9 @@ class OptimizedLFUCache(ACache):
         self.name = name or f"OptimizedLFUCache-{id(self)}"
         
         # Core data structures
-        self._cache: Dict[Hashable, Any] = {}
-        self._key_to_freq: Dict[Hashable, int] = {}
-        self._freq_to_keys: Dict[int, OrderedDict] = defaultdict(OrderedDict)
+        self._cache: dict[Hashable, Any] = {}
+        self._key_to_freq: dict[Hashable, int] = {}
+        self._freq_to_keys: dict[int, OrderedDict] = defaultdict(OrderedDict)
         self._min_freq = 0
         
         # Thread safety
@@ -189,22 +189,22 @@ class OptimizedLFUCache(ACache):
             if len(self._cache) > 0:
                 self._evict_lfu()
     
-    def keys(self) -> List[Hashable]:
+    def keys(self) -> list[Hashable]:
         """Get list of all keys."""
         with self._lock:
             return list(self._cache.keys())
     
-    def values(self) -> List[Any]:
+    def values(self) -> list[Any]:
         """Get list of all values."""
         with self._lock:
             return list(self._cache.values())
     
-    def items(self) -> List[Tuple[Hashable, Any]]:
+    def items(self) -> list[tuple[Hashable, Any]]:
         """Get list of all key-value pairs."""
         with self._lock:
             return list(self._cache.items())
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         with self._lock:
             total_requests = self._hits + self._misses
@@ -277,7 +277,7 @@ class OptimizedLFUCache(ACache):
         self._evictions += 1
         logger.debug(f"Cache {self.name} evicted LFU key: {lfu_key} (freq: {self._min_freq})")
     
-    def get_many(self, keys: List[Hashable]) -> Dict[Hashable, Any]:
+    def get_many(self, keys: list[Hashable]) -> dict[Hashable, Any]:
         """
         Get multiple values in a single operation (optimized batch get).
         
@@ -303,7 +303,7 @@ class OptimizedLFUCache(ACache):
                     self._misses += 1
             return results
     
-    def put_many(self, items: Dict[Hashable, Any]) -> int:
+    def put_many(self, items: dict[Hashable, Any]) -> int:
         """
         Put multiple key-value pairs in a single operation (optimized batch put).
         
@@ -329,7 +329,7 @@ class OptimizedLFUCache(ACache):
                     pass
             return count
     
-    def delete_many(self, keys: List[Hashable]) -> int:
+    def delete_many(self, keys: list[Hashable]) -> int:
         """
         Delete multiple keys in a single operation (optimized batch delete).
         
@@ -379,9 +379,9 @@ class AsyncOptimizedLFUCache:
         self.name = name or f"AsyncOptimizedLFUCache-{id(self)}"
         
         # Core data structures
-        self._cache: Dict[Hashable, Any] = {}
-        self._key_to_freq: Dict[Hashable, int] = {}
-        self._freq_to_keys: Dict[int, OrderedDict] = defaultdict(OrderedDict)
+        self._cache: dict[Hashable, Any] = {}
+        self._key_to_freq: dict[Hashable, int] = {}
+        self._freq_to_keys: dict[int, OrderedDict] = defaultdict(OrderedDict)
         self._min_freq = 0
         
         # Async safety
@@ -446,7 +446,7 @@ class AsyncOptimizedLFUCache:
         """Get current cache size asynchronously."""
         return len(self._cache)
     
-    async def get_stats(self) -> Dict[str, Any]:
+    async def get_stats(self) -> dict[str, Any]:
         """Get cache statistics asynchronously."""
         async with self._lock:
             total_requests = self._hits + self._misses
@@ -499,7 +499,7 @@ class AsyncOptimizedLFUCache:
         
         self._evictions += 1
     
-    async def keys(self) -> List[Hashable]:
+    async def keys(self) -> list[Hashable]:
         """
         Get list of all keys asynchronously.
         
@@ -508,7 +508,7 @@ class AsyncOptimizedLFUCache:
         async with self._lock:
             return list(self._cache.keys())
     
-    async def values(self) -> List[Any]:
+    async def values(self) -> list[Any]:
         """
         Get list of all values asynchronously.
         
@@ -517,7 +517,7 @@ class AsyncOptimizedLFUCache:
         async with self._lock:
             return list(self._cache.values())
     
-    async def items(self) -> List[Tuple[Hashable, Any]]:
+    async def items(self) -> list[tuple[Hashable, Any]]:
         """
         Get list of all key-value pairs asynchronously.
         

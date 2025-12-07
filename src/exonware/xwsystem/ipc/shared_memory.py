@@ -16,16 +16,16 @@ import mmap
 import struct
 import pickle
 import threading
-from typing import Any, Dict, Optional, Union, TypeVar, Generic
+from typing import Any, Optional, Union
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 from contextlib import contextmanager
 import logging
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar('T')
 
-
-class SharedData(Generic[T]):
+class SharedData[T]:
     """
     Thread-safe shared data container with automatic serialization.
     
@@ -242,7 +242,7 @@ class SharedMemoryManager:
     """
     
     def __init__(self):
-        self._segments: Dict[str, SharedData] = {}
+        self._segments: dict[str, SharedData] = {}
         self._lock = threading.RLock()
     
     def create_segment(self, name: str, size: int = 1024 * 1024) -> SharedData:

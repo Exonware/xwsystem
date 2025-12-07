@@ -4,14 +4,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 01-Nov-2025
 
 Memory-bounded cache implementations.
 Performance Priority #4 - Memory budget enforcement for controlled memory usage.
 """
 
-from typing import Any, Optional, Hashable, Dict
+from typing import Any, Optional, Hashable
 from .lru_cache import LRUCache
 from .lfu_optimized import OptimizedLFUCache
 from .utils import estimate_object_size, format_bytes
@@ -55,7 +55,7 @@ class MemoryBoundedLRUCache(LRUCache):
         self.memory_budget_mb = memory_budget_mb
         self.memory_budget_bytes = int(memory_budget_mb * 1024 * 1024)
         self._current_memory_bytes = 0
-        self._value_sizes: Dict[Hashable, int] = {}
+        self._value_sizes: dict[Hashable, int] = {}
         
         logger.info(
             f"Memory-bounded LRU cache {self.name} initialized: "
@@ -152,7 +152,7 @@ class MemoryBoundedLRUCache(LRUCache):
             f"freed {format_bytes(value_size)}"
         )
     
-    def get_memory_stats(self) -> Dict[str, Any]:
+    def get_memory_stats(self) -> dict[str, Any]:
         """Get memory-specific statistics."""
         with self._lock:
             return {
@@ -169,7 +169,7 @@ class MemoryBoundedLRUCache(LRUCache):
                 ),
             }
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics including memory metrics."""
         stats = super().get_stats()
         stats.update(self.get_memory_stats())
@@ -195,7 +195,7 @@ class MemoryBoundedLFUCache(OptimizedLFUCache):
         self.memory_budget_mb = memory_budget_mb
         self.memory_budget_bytes = int(memory_budget_mb * 1024 * 1024)
         self._current_memory_bytes = 0
-        self._value_sizes: Dict[Hashable, int] = {}
+        self._value_sizes: dict[Hashable, int] = {}
     
     def put(self, key: Hashable, value: Any) -> None:
         """Put value with memory budget enforcement."""
@@ -268,7 +268,7 @@ class MemoryBoundedLFUCache(OptimizedLFUCache):
         
         self._evictions += 1
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics including memory metrics."""
         stats = super().get_stats()
         stats.update({

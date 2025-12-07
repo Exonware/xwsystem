@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: 30-Oct-2025
 
 Base classes for file operations.
@@ -20,7 +20,7 @@ Priority 5 (Extensibility): Ready for new file types
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Union, Optional, Dict, Any
+from typing import Union, Optional, Any
 
 from ..contracts import IFileSource, IPagedSource, IPagingStrategy
 from ..defs import PagingMode

@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.409
+Version: 0.0.1.410
 Generation Date: September 04, 2025
 
 Reflection utilities for dynamic code inspection and manipulation.
@@ -12,7 +12,7 @@ import importlib
 import inspect
 import sys
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Optional, Type, Union
 
 from ..config.logging_setup import get_logger
 
@@ -26,7 +26,7 @@ class ReflectionUtils:
     """
 
     @staticmethod
-    def get_class_info(cls: Type) -> Dict[str, Any]:
+    def get_class_info(cls: Type) -> dict[str, Any]:
         """
         Get comprehensive information about a class.
 
@@ -53,7 +53,7 @@ class ReflectionUtils:
         }
 
     @staticmethod
-    def get_function_info(func: Callable) -> Dict[str, Any]:
+    def get_function_info(func: Callable) -> dict[str, Any]:
         """
         Get comprehensive information about a function.
 
@@ -87,7 +87,7 @@ class ReflectionUtils:
         }
 
     @staticmethod
-    def get_module_info(module: Any) -> Dict[str, Any]:
+    def get_module_info(module: Any) -> dict[str, Any]:
         """
         Get comprehensive information about a module.
 
@@ -113,7 +113,7 @@ class ReflectionUtils:
         }
 
     @staticmethod
-    def _get_source_lines(obj: Any) -> Optional[Dict[str, Any]]:
+    def _get_source_lines(obj: Any) -> Optional[dict[str, Any]]:
         """Get source lines for an object."""
         try:
             source_lines, start_line = inspect.getsourcelines(obj)
@@ -240,7 +240,7 @@ class ReflectionUtils:
         return func(*args, **kwargs)
 
     @staticmethod
-    def find_classes_in_module(module: Any, base_class: Optional[Type] = None) -> List[Type]:
+    def find_classes_in_module(module: Any, base_class: Optional[Type] = None) -> list[Type]:
         """
         Find all classes in a module, optionally filtered by base class.
 
@@ -259,7 +259,7 @@ class ReflectionUtils:
         return classes
 
     @staticmethod
-    def find_functions_in_module(module: Any, decorator: Optional[Any] = None) -> List[Callable]:
+    def find_functions_in_module(module: Any, decorator: Optional[Any] = None) -> list[Callable]:
         """
         Find all functions in a module, optionally filtered by decorator.
 
@@ -278,7 +278,7 @@ class ReflectionUtils:
         return functions
 
     @staticmethod
-    def get_all_subclasses(cls: Type) -> List[Type]:
+    def get_all_subclasses(cls: Type) -> list[Type]:
         """
         Get all subclasses of a class recursively.
 
@@ -313,7 +313,7 @@ class ReflectionUtils:
             return False
 
     @staticmethod
-    def get_method_resolution_order(cls: Type) -> List[str]:
+    def get_method_resolution_order(cls: Type) -> list[str]:
         """
         Get method resolution order for a class.
 
@@ -339,7 +339,7 @@ class ReflectionUtils:
         return sys.getsizeof(obj)
 
     @staticmethod
-    def get_module_dependencies(module_name: str) -> List[str]:
+    def get_module_dependencies(module_name: str) -> list[str]:
         """
         Get list of modules that a module depends on.
 
@@ -377,7 +377,7 @@ class ReflectionUtils:
         return dependencies
 
     @staticmethod
-    def get_runtime_info() -> Dict[str, Any]:
+    def get_runtime_info() -> dict[str, Any]:
         """
         Get comprehensive runtime reflection information.
 
@@ -393,7 +393,7 @@ class ReflectionUtils:
         }
 
     @staticmethod
-    def _get_current_frame_info() -> Dict[str, Any]:
+    def _get_current_frame_info() -> dict[str, Any]:
         """Get information about the current execution frame."""
         frame = inspect.currentframe()
         if frame and frame.f_back:

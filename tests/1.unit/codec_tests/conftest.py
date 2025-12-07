@@ -31,16 +31,16 @@ def fresh_registry():
 def populated_registry():
     """Create registry with common codecs registered."""
     from exonware.xwsystem.io.codec.registry import UniversalCodecRegistry
-    from exonware.xwsystem.io.serialization.formats.text.json import XWJsonSerializer
-    from exonware.xwsystem.io.serialization.formats.text.yaml import XWYamlSerializer
-    from exonware.xwsystem.io.serialization.formats.text.xml import XWXmlSerializer
-    from exonware.xwsystem.io.serialization.formats.text.toml import XWTomlSerializer
+    from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
+    from exonware.xwsystem.io.serialization.formats.text.yaml import YamlSerializer
+    from exonware.xwsystem.io.serialization.formats.text.xml import XmlSerializer
+    from exonware.xwsystem.io.serialization.formats.text.toml import TomlSerializer
     
     registry = UniversalCodecRegistry()
-    registry.register(XWJsonSerializer)
-    registry.register(XWYamlSerializer)
-    registry.register(XWXmlSerializer)
-    registry.register(XWTomlSerializer)
+    registry.register(JsonSerializer)
+    registry.register(YamlSerializer)
+    registry.register(XmlSerializer)
+    registry.register(TomlSerializer)
     
     return registry
 

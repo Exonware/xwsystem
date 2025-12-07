@@ -6,13 +6,13 @@
 
 ---
 
-## ?? Audience & Purpose
+## 📖 Audience & Purpose
 
 Authoritative usage patterns for `exonware-xwsystem`. Start here to see how installation, dependency orchestration, codecs, configuration, and runtime services come together in real projects.
 
 ---
 
-## ?? Quick Start
+## 🚀 Quick Start
 
 ### 1. Install Once
 
@@ -32,7 +32,7 @@ from exonware.xwsystem import JsonSerializer
 
 ---
 
-## ?? Dependency Autopilot
+## 🤖 Dependency Autopilot
 
 ### How it Works
 
@@ -52,7 +52,7 @@ cv2 = xwimport("cv2")
 
 ---
 
-## ?? Configuration System
+## ⚙️ Configuration System
 
 ### Central Contract
 
@@ -90,7 +90,7 @@ policy = cfg.dependencies.prefer_binary
 
 ---
 
-## ?? Codec Powerhouse
+## 🔧 Codec Powerhouse
 
 ### Use Built-in Codecs
 
@@ -136,7 +136,7 @@ register_codec(MetricsCodec)
 
 ---
 
-## ?? Smart Serialization Workflows
+## 📝 Smart Serialization Workflows
 
 ### Files & Streams
 
@@ -163,7 +163,7 @@ representation = codec.dumps(data)
 
 ---
 
-## ?? Runtime Services Tour
+## 🎯 Runtime Services Tour
 
 - **Advanced HTTP Client** – HTTP/2, retry, streaming, and mock transport for tests.
 - **Validation (xModel)** – Pydantic-style models with coercion, schema export, and config-driven constraints.
@@ -215,7 +215,7 @@ if __name__ == "__main__":
 
 ---
 
-## ?? Operations & Governance
+## 🛡️ Operations & Governance
 
 - **Dependency Audit:** `xwsystem` records provenance for auto-installed packages; export via `xw deps report`.
 - **Sandbox Modes:** Restrict auto-installation to approved registries or freeze to curated mirrors.
@@ -223,7 +223,7 @@ if __name__ == "__main__":
 
 ---
 
-## ?? Troubleshooting Checklist
+## 🔍 Troubleshooting Checklist
 
 | Scenario | Quick Fix |
 |----------|-----------|
@@ -234,7 +234,7 @@ if __name__ == "__main__":
 
 ---
 
-## ?? Related Resources
+## 📚 Related Resources
 
 - [GUIDE_USAGE.md](guides/GUIDE_USAGE.md) – Narrative walkthroughs and tutorials
 - [REF_API.md](REF_API.md) – Public API surface

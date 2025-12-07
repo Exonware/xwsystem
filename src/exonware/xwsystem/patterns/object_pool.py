@@ -1,3 +1,4 @@
+#exonware/xwsystem/patterns/object_pool.py
 """
 Generic object pool implementation for XSystem framework.
 
@@ -6,11 +7,11 @@ components to reduce memory allocation overhead and improve performance.
 """
 
 import threading
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar
+from typing import Any, Callable, Optional, Type
+# Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
+# Priority #3: Maintainability - Modern type annotations improve code clarity
 
 from ..config.logging_setup import get_logger
-
-T = TypeVar("T")
 
 
 class ObjectPool:
@@ -35,13 +36,13 @@ class ObjectPool:
             enable_thread_safety: Whether to use thread-safe operations
             component_name: Name for logging purposes
         """
-        self._pools: Dict[Type, List[Any]] = {}
+        self._pools: dict[Type, list[Any]] = {}
         self._max_size = max_size
         self._lock = threading.RLock() if enable_thread_safety else None
         self._logger = get_logger(f"{component_name}.object_pool")
         self._stats = {"created": 0, "reused": 0, "released": 0, "discarded": 0}
 
-    def get(self, obj_type: Type[T], *args, **kwargs) -> T:
+    def get[T](self, obj_type: Type[T], *args, **kwargs) -> T:
         """
         Get an object from the pool or create a new one if the pool is empty.
 
@@ -61,7 +62,7 @@ class ObjectPool:
         else:
             return self._get_from_pool(obj_type, pool, *args, **kwargs)
 
-    def _get_from_pool(self, obj_type: Type[T], pool: List[Any], *args, **kwargs) -> T:
+    def _get_from_pool[T](self, obj_type: Type[T], pool: list[Any], *args, **kwargs) -> T:
         """Internal method to get object from pool."""
         if pool:
             obj = pool.pop()
@@ -140,7 +141,7 @@ class ObjectPool:
                 self._pools[obj_type].clear()
                 self._logger.info(f"Cleared pool for {obj_type.__name__}")
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get pool statistics.
 
@@ -153,7 +154,7 @@ class ObjectPool:
         else:
             return self._get_pool_stats()
 
-    def _get_pool_stats(self) -> Dict[str, Any]:
+    def _get_pool_stats(self) -> dict[str, Any]:
         """Internal method to get pool statistics."""
         pool_sizes = {t.__name__: len(pool) for t, pool in self._pools.items()}
 
@@ -199,7 +200,7 @@ class PooledObject:
 
 
 # Global object pool registry
-_pool_registry: Dict[str, ObjectPool] = {}
+_pool_registry: dict[str, ObjectPool] = {}
 _pool_registry_lock = threading.RLock()
 
 
@@ -242,7 +243,7 @@ def clear_object_pool(component_name: str) -> None:
             del _pool_registry[component_name]
 
 
-def get_all_pool_stats() -> Dict[str, Dict[str, Any]]:
+def get_all_pool_stats() -> dict[str, dict[str, Any]]:
     """
     Get statistics for all object pools.
 
