@@ -3,13 +3,13 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: October 26, 2025
 
 Fluent validator with chainable API for data validation.
 """
 
-from typing import Any, Callable, Optional, Union, Type
+from typing import Any, Callable, Optional, Union
 from .errors import ValidationError
 from ..config.logging_setup import get_logger
 
@@ -65,7 +65,7 @@ class FluentValidator:
         
         return self
     
-    def type_check(self, expected_type: Type, message: Optional[str] = None) -> 'FluentValidator':
+    def type_check(self, expected_type: type, message: Optional[str] = None) -> 'FluentValidator':
         """
         Check if data is of expected type.
         
@@ -361,7 +361,7 @@ def is_required(field_name: str) -> Callable[[FluentValidator], FluentValidator]
     return lambda v: v.require(field_name)
 
 
-def is_type(expected_type: Type) -> Callable[[FluentValidator], FluentValidator]:
+def is_type(expected_type: type) -> Callable[[FluentValidator], FluentValidator]:
     """Create a type check rule."""
     return lambda v: v.type_check(expected_type)
 

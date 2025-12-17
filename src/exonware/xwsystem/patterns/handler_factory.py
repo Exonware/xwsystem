@@ -1,10 +1,10 @@
 #exonware/xwsystem/patterns/handler_factory.py
 """
-Generic handler factory pattern combining all xsystem utilities.
+Generic handler factory pattern combining all xwsystem utilities.
 """
 
 import logging
-from typing import Any, Callable, Optional, Type
+from typing import Any, Callable, Optional
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     """
-    Enhanced handler factory that combines all xsystem utilities.
+    Enhanced handler factory that combines all xwsystem utilities.
 
     This factory provides thread-safe handler registration with additional
     features like path validation, atomic operations, and circular reference
@@ -73,7 +73,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     def register_safe(
         self,
         name: str,
-        handler_class: Type[T],
+        handler_class: type[T],
         extensions: Optional[list[str]] = None,
         validate_class: bool = True,
     ) -> None:
@@ -240,7 +240,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
 
     def generate_enhanced_methods(
         self,
-        target_class: Type,
+        target_class: type,
         method_template: Callable,
         method_name_pattern: str = "{action}_{format}",
         method_doc_pattern: str = "{action} data to {format} format.",
@@ -328,7 +328,7 @@ class HandlerFactory[T](GenericHandlerFactory[T]):
         
         return handler_class(*args, **kwargs)
     
-    def register_handler(self, name: str, handler_class: Type[T], extensions: Optional[list[str]] = None):
+    def register_handler(self, name: str, handler_class: type[T], extensions: Optional[list[str]] = None):
         """Register a handler class."""
         self.register_safe(name, handler_class, extensions)
     

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: October 10, 2025
 
 XWSystem - Enterprise-grade Python framework with AI-powered performance optimization.
@@ -491,7 +491,7 @@ def list_available_formats():
     List all available serialization formats.
     
     Returns:
-        Dict with format categories and their available formats
+        dict with format categories and their available formats
         
     Example:
         >>> formats = list_available_formats()

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Advanced cache decorators with hooks and customization.
@@ -18,7 +18,7 @@ from .lru_cache import LRUCache, AsyncLRUCache
 from .utils import default_key_builder
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.decorators")
+logger = get_logger("xwsystem.caching.decorators")
 
 
 def xwcached(

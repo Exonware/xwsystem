@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 2, 2025
 
 TOML serialization - Configuration file format.
@@ -180,8 +180,17 @@ class TomlSerializer(ASerialization):
         """
         try:
             if not isinstance(value, dict):
-                raise TypeError("TOML can only serialize dictionaries")
-            
+                # TOML requires a table (dict) at the top level. For data-oriented
+                # use cases (e.g. record lists), transparently wrap common patterns
+                # so that higher-level APIs (record paging, etc.) can still work
+                # uniformly across formats.
+                if isinstance(value, list):
+                    # Auto-wrap top-level list into "items" table.
+                    value = {"items": value}
+                else:
+                    # Fallback: wrap primitive/other types into a single "value" key.
+                    value = {"value": value}
+
             opts = options or {}
             
             # Root cause fixed: Remove None values before encoding (TOML doesn't support None).
@@ -227,6 +236,13 @@ class TomlSerializer(ASerialization):
             
             # Decode from TOML string
             data = tomllib.loads(repr)
+
+            # If this looks like an auto-wrapped list payload (see encode),
+            # unwrap it for callers so that higher-level APIs (including the
+            # generic record-level operations in ASerialization) see the
+            # natural Python structure (a list of records).
+            if isinstance(data, dict) and set(data.keys()) == {"items"} and isinstance(data["items"], list):
+                return data["items"]
             
             return data
             

@@ -16,14 +16,14 @@ import sys
 import asyncio
 import threading
 import time
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class ThreadingCoreTester:
     """Core tester for threading functionality."""
     
     def __init__(self):
-        self.results: Dict[str, bool] = {}
+        self.results: dict[str, bool] = {}
         
     def test_thread_safe_factory(self) -> bool:
         """Test thread-safe factory functionality."""

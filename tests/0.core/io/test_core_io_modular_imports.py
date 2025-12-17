@@ -6,7 +6,7 @@ Core-level sanity checks for IO package reorganisation.
 import pytest
 
 
-@pytest.mark.xsystem_core
+@pytest.mark.xwsystem_core
 def test_io_module_imports():
     """Ensure top-level IO module and key submodules import cleanly."""
     import exonware.xwsystem.io as io_module  # noqa: F401
@@ -19,7 +19,7 @@ def test_io_module_imports():
     from exonware.xwsystem.io.common import AtomicFileWriter, FileLock, FileWatcher  # noqa: F401
 
 
-@pytest.mark.xsystem_core
+@pytest.mark.xwsystem_core
 def test_io_registries_expose_entries():
     """Verify registry utilities expose non-empty listings."""
     from exonware.xwsystem.io.file import get_global_paging_registry

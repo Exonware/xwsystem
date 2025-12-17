@@ -18,7 +18,7 @@ def debug_bson():
     print("=" * 40)
     
     try:
-        from exonware.xwsystem.serialization.bson import BsonSerializer
+        from exonware.xwsystem.io.serialization import BsonSerializer
         
         # Create serializer with minimal validation
         serializer = BsonSerializer(

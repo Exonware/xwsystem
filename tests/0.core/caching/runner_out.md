@@ -11,7 +11,7 @@
 
 **Command:** `python tests/0.core/caching/runner.py`
 
-**Markers:** `xsystem_core and xsystem_caching`
+**Markers:** `xwsystem_core and xwsystem_caching`
 
 **Options:**
 - Verbose output (`-v`)

@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 2, 2025
 
 XML serialization - Extensible Markup Language.
@@ -426,6 +426,13 @@ class XmlSerializer(ASerialization):
         # Convert bytes to str if needed
         if isinstance(repr, bytes):
             repr = repr.decode('utf-8')
+        
+        # Trim leading BOM/whitespace before XML declaration.
+        # Root cause: Some producers emit a blank line or BOM before '<?xml ...?>',
+        # which causes ExpatError: "XML or text declaration not at start of entity".
+        # Priority #2 (Usability): Be forgiving on harmless leading whitespace/BOM
+        # while keeping strict parsing for the actual XML content.
+        repr = repr.lstrip("\ufeff\r\n\t ")
         
         opts = options or {}
         root_name = opts.get('root', 'root')

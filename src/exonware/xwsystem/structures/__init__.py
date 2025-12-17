@@ -1,5 +1,5 @@
 """
-Data structure utilities for xsystem.
+Data structure utilities for xwsystem.
 """
 
 from .circular_detector import CircularReferenceDetector, CircularReferenceError

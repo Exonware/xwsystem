@@ -14,7 +14,7 @@ from exonware.xwsystem.io.archive.archivers import ZipArchiver, TarArchiver
 from exonware.xwsystem.io.archive.base import AArchiver
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestZipArchiver:
     """Test XWZipArchiver implementation."""
     
@@ -34,7 +34,7 @@ class TestZipArchiver:
         assert hasattr(archiver, 'decode')
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestTarArchiver:
     """Test XWTarArchiver implementation."""
     
@@ -54,7 +54,7 @@ class TestTarArchiver:
         assert hasattr(archiver, 'decode')
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestBackwardCompatibility:
     """Test backward compatibility aliases."""
     

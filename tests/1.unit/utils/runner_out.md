@@ -17,7 +17,7 @@
 
 ## Running Tests
 ```bash
-C:\Users\muham\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe -m pytest -v --tb=short d:\OneDrive\DEV\exonware\xwsystem\tests\1.unit\utils -m xsystem_unit
+C:\Users\muham\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe -m pytest -v --tb=short d:\OneDrive\DEV\exonware\xwsystem\tests\1.unit\utils -m xwsystem_unit
 ```
 **Working directory:** `D:\OneDrive\DEV\exonware\xwsystem\tests\1.unit`
 
@@ -41,12 +41,12 @@ C:\Users\muham\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n
     from . import cElementTree
 
 utils\test_lazy_mode_example.py:60
-  d:\OneDrive\DEV\exonware\xwsystem\tests\1.unit\utils\test_lazy_mode_example.py:60: PytestUnknownMarkWarning: Unknown pytest.mark.xsystem_unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
-    @pytest.mark.xsystem_unit
+  d:\OneDrive\DEV\exonware\xwsystem\tests\1.unit\utils\test_lazy_mode_example.py:60: PytestUnknownMarkWarning: Unknown pytest.mark.xwsystem_unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.xwsystem_unit
 
 utils\test_lazy_mode_example.py:88
-  d:\OneDrive\DEV\exonware\xwsystem\tests\1.unit\utils\test_lazy_mode_example.py:88: PytestUnknownMarkWarning: Unknown pytest.mark.xsystem_unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
-    @pytest.mark.xsystem_unit
+  d:\OneDrive\DEV\exonware\xwsystem\tests\1.unit\utils\test_lazy_mode_example.py:88: PytestUnknownMarkWarning: Unknown pytest.mark.xwsystem_unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.xwsystem_unit
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 ======================== 2 passed, 3 warnings in 0.53s ========================

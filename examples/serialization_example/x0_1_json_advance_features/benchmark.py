@@ -24,7 +24,7 @@ import time
 import psutil
 import json
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Optional
 from datetime import datetime, timedelta
 import random
 import string
@@ -49,8 +49,8 @@ class SocialMediaDataGenerator:
         """
         self.target_size_gb = target_size_gb
         self.target_size_bytes = int(target_size_gb * 1024 * 1024 * 1024)
-        self.users: List[Dict[str, Any]] = []
-        self.user_ids: List[str] = []
+        self.users: list[dict[str, Any]] = []
+        self.user_ids: list[str] = []
         
     def _generate_user_id(self) -> str:
         """Generate a unique user ID."""
@@ -62,7 +62,7 @@ class SocialMediaDataGenerator:
         nouns = ["ninja", "warrior", "hero", "star", "king", "queen", "master", "pro"]
         return f"{random.choice(adjectives)}_{random.choice(nouns)}_{random.randint(100, 999)}"
     
-    def _generate_profile(self, user_id: str) -> Dict[str, Any]:
+    def _generate_profile(self, user_id: str) -> dict[str, Any]:
         """Generate user profile data."""
         return {
             "id": user_id,
@@ -83,7 +83,7 @@ class SocialMediaDataGenerator:
             "timezone": random.choice(["UTC", "EST", "PST", "GMT", "JST"]),
         }
     
-    def _generate_post(self, user_id: str, post_id: str) -> Dict[str, Any]:
+    def _generate_post(self, user_id: str, post_id: str) -> dict[str, Any]:
         """Generate a social media post."""
         content_types = ["text", "image", "video", "link", "poll"]
         content_type = random.choice(content_types)
@@ -149,7 +149,7 @@ class SocialMediaDataGenerator:
         )
         return text
     
-    def generate_data(self) -> Dict[str, Any]:
+    def generate_data(self) -> dict[str, Any]:
         """
         Generate social media data structure targeting ~1GB.
         

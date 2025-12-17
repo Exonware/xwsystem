@@ -36,7 +36,7 @@ def main():
         "--tb=short",
         "-x",
         str(Path(__file__).parent),
-        "-m", "xsystem_integration and xsystem_caching"
+        "-m", "xwsystem_integration and xwsystem_caching"
     ])
 
     # Status output
@@ -63,7 +63,7 @@ def main():
 
 **Command:** `python tests/2.integration/caching/runner.py`
 
-**Markers:** `xsystem_integration and xsystem_caching`
+**Markers:** `xwsystem_integration and xwsystem_caching`
 
 **Options:**
 - Verbose output (`-v`)

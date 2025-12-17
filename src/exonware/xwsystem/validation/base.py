@@ -1,16 +1,16 @@
-#exonware/xsystem/validation/base.py
+#exonware/xwsystem/validation/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Validation module base classes - abstract classes for validation functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Callable, Type
+from typing import Any, Optional, Union, Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from .contracts import ValidationType, ValidationLevel, ConstraintType, SchemaType
@@ -82,17 +82,17 @@ class ADataValidatorBase(ABC):
     
     def __init__(self):
         """Initialize data validator."""
-        self._validators: dict[Type, AValidatorBase] = {}
+        self._validators: dict[type, AValidatorBase] = {}
         self._custom_validators: dict[str, Callable] = {}
         self._validation_cache: dict[str, bool] = {}
     
     @abstractmethod
-    def validate_data(self, data: Any, data_type: Optional[Type] = None) -> bool:
+    def validate_data(self, data: Any, data_type: Optional[type] = None) -> bool:
         """Validate data."""
         pass
     
     @abstractmethod
-    def validate_type(self, data: Any, expected_type: Type) -> bool:
+    def validate_type(self, data: Any, expected_type: type) -> bool:
         """Validate data type."""
         pass
     
@@ -134,17 +134,17 @@ class ADataValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def register_validator(self, data_type: Type, validator: AValidatorBase) -> None:
+    def register_validator(self, data_type: type, validator: AValidatorBase) -> None:
         """Register validator for data type."""
         pass
     
     @abstractmethod
-    def unregister_validator(self, data_type: Type) -> None:
+    def unregister_validator(self, data_type: type) -> None:
         """Unregister validator for data type."""
         pass
     
     @abstractmethod
-    def get_validator(self, data_type: Type) -> Optional[AValidatorBase]:
+    def get_validator(self, data_type: type) -> Optional[AValidatorBase]:
         """Get validator for data type."""
         pass
 
@@ -154,27 +154,27 @@ class ATypeSafetyBase(ABC):
     
     def __init__(self):
         """Initialize type safety."""
-        self._type_annotations: dict[str, Type] = {}
+        self._type_annotations: dict[str, type] = {}
         self._type_checks: dict[str, bool] = {}
         self._strict_mode = False
     
     @abstractmethod
-    def check_type(self, data: Any, expected_type: Type) -> bool:
+    def check_type(self, data: Any, expected_type: type) -> bool:
         """Check data type."""
         pass
     
     @abstractmethod
-    def check_types(self, data: dict[str, Any], type_annotations: dict[str, Type]) -> bool:
+    def check_types(self, data: dict[str, Any], type_annotations: dict[str, type]) -> bool:
         """Check multiple data types."""
         pass
     
     @abstractmethod
-    def coerce_type(self, data: Any, target_type: Type) -> Any:
+    def coerce_type(self, data: Any, target_type: type) -> Any:
         """Coerce data to target type."""
         pass
     
     @abstractmethod
-    def is_type_safe(self, data: Any, expected_type: Type) -> bool:
+    def is_type_safe(self, data: Any, expected_type: type) -> bool:
         """Check if data is type safe."""
         pass
     
@@ -184,7 +184,7 @@ class ATypeSafetyBase(ABC):
         pass
     
     @abstractmethod
-    def validate_type_annotations(self, annotations: dict[str, Type]) -> bool:
+    def validate_type_annotations(self, annotations: dict[str, type]) -> bool:
         """Validate type annotations."""
         pass
     

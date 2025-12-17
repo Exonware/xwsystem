@@ -14,7 +14,6 @@ from pathlib import Path
 
 from exonware.xwsystem.security.crypto import (
     AsymmetricEncryption,
-    CryptoError,
     SecureHash,
     SecureRandom,
     SecureStorage,
@@ -371,8 +370,9 @@ class TestCryptoErrorHandling:
     """Test error handling in crypto operations."""
 
     def test_crypto_error_instantiation(self):
-        """Test CryptoError exception."""
-        error = CryptoError("test error")
+        """Test CryptographicError exception."""
+        from exonware.xwsystem.security.errors import CryptographicError
+        error = CryptographicError("test error")
         assert str(error) == "test error"
 
     def test_invalid_encryption_key(self):

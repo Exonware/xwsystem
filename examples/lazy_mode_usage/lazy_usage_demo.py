@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 import sys
 import traceback
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 from xwlazy.lazy import (
     LazyInstallConfig,
@@ -38,7 +38,7 @@ OPTIONAL_MODULE = "msgpack"
 def verify_lazy_installation(
     package_name: str = PACKAGE_NAME,
     module_name: str = OPTIONAL_MODULE,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Temporarily enable lazy mode and exercise a lazy import.
 
@@ -53,13 +53,13 @@ def verify_lazy_installation(
 
     demo_enabled = initial_enabled
     demo_mode = initial_mode
-    import_attempt: Dict[str, Any] = {
+    import_attempt: dict[str, Any] = {
         "module": module_name,
         "available": False,
         "skipped": True,
         "reason": "lazy configuration not applied",
     }
-    stats: Dict[str, Any] = {}
+    stats: dict[str, Any] = {}
 
     try:
         config_package_lazy_install_enabled(

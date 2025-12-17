@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Cache serialization utilities.
@@ -18,7 +18,7 @@ from .lru_cache import LRUCache
 from .lfu_optimized import OptimizedLFUCache
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.serializable")
+logger = get_logger("xwsystem.caching.serializable")
 
 
 class SerializableCache(LRUCache):

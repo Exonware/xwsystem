@@ -29,11 +29,8 @@ import xml.etree.ElementTree as ET
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src'))
 
-from exonware.xwsystem.serialization.json import JsonSerializer
-from exonware.xwsystem.serialization.xml import XmlSerializer
-from exonware.xwsystem.serialization.toml import TomlSerializer
-from exonware.xwsystem.serialization.yaml import YamlSerializer
-from exonware.xwsystem.serialization.errors import SerializationError, FormatDetectionError, ValidationError
+from exonware.xwsystem.io.serialization import JsonSerializer, XmlSerializer, TomlSerializer, YamlSerializer
+from exonware.xwsystem.io.serialization.errors import SerializationError, FormatDetectionError, ValidationError
 
 
 class TestSerializationSecurityPerformance:
@@ -164,11 +161,11 @@ class TestSerializationSecurityPerformance:
     
     def test_path_traversal_protection(self):
         """Test path traversal protection."""
-        from exonware.xwsystem.serialization.xw_serialization import XWSerialization
+        from exonware.xwsystem.io.serialization import XWSerializer
         
         for path_payload in self.security_payloads['path_traversal']:
-            # Test file operations using XWSerialization
-            xw_serializer = XWSerialization()
+            # Test file operations using XWSerializer
+            xw_serializer = XWSerializer()
             with pytest.raises((SerializationError, ValueError, OSError, FileNotFoundError)):
                 xw_serializer.load_file(path_payload)
             

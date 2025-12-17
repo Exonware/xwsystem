@@ -11,7 +11,7 @@ Generation Date: 02-Nov-2025
 """
 
 import pytest
-from exonware.xwsystem.io.serialization.formats.text import XWJson5Serializer
+from exonware.xwsystem.io.serialization.formats.text.json5 import Json5Serializer
 
 
 @pytest.mark.xwsystem_unit
@@ -20,14 +20,14 @@ class TestJSON5Serializer:
     
     def test_serializer_initialization(self):
         """Test JSON5 serializer can be initialized."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         assert serializer is not None
         assert serializer.codec_id == "json5"
         assert serializer.format_name == "JSON5"
     
     def test_encode_simple_dict(self):
         """Test encoding simple dictionary."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         data = {"name": "Alice", "age": 30}
         
         result = serializer.encode(data)
@@ -38,7 +38,7 @@ class TestJSON5Serializer:
     
     def test_decode_simple_json5(self):
         """Test decoding simple JSON5 string."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         json5_str = '{"name": "Alice", "age": 30}'
         
         result = serializer.decode(json5_str)
@@ -46,7 +46,7 @@ class TestJSON5Serializer:
     
     def test_decode_json5_with_comments(self):
         """Test decoding JSON5 with comments."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         json5_str = '''
         {
             // User information
@@ -61,7 +61,7 @@ class TestJSON5Serializer:
     
     def test_decode_json5_with_trailing_commas(self):
         """Test decoding JSON5 with trailing commas."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         json5_str = '{"name": "Alice", "age": 30,}'  # trailing comma
         
         result = serializer.decode(json5_str)
@@ -69,7 +69,7 @@ class TestJSON5Serializer:
     
     def test_roundtrip_encoding(self):
         """Test encoding and decoding preserves data."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         original_data = {
             "string": "value",
             "number": 42,
@@ -86,7 +86,7 @@ class TestJSON5Serializer:
     
     def test_decode_bytes_input(self):
         """Test decoding from bytes input."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         json5_bytes = b'{"name": "Alice", "age": 30}'
         
         result = serializer.decode(json5_bytes)

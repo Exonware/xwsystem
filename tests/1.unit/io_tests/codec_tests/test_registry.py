@@ -13,7 +13,7 @@ import pytest
 from exonware.xwsystem.io.codec.registry import UniversalCodecRegistry, get_registry
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestUniversalCodecRegistry:
     """Test UniversalCodecRegistry functionality."""
     
@@ -50,7 +50,7 @@ class TestUniversalCodecRegistry:
         assert hasattr(registry, 'list_mime_types')
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestCodecRegistration:
     """Test codec registration functionality."""
     

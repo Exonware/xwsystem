@@ -14,7 +14,7 @@ tests/core/
 │   ├── __init__.py
 │   ├── runner.py              # I/O and serialization test runner
 │   ├── test_core_xwsystem_io.py             # XSystem I/O tests
-│   ├── test_core_xsystem_serialization.py   # XSystem serialization tests
+│   ├── test_core_xwsystem_serialization.py   # XSystem serialization tests
 │   ├── test_core_serialization_fixed_features.py  # Serialization feature tests
 │   ├── test_yaml_import_behavior.py         # YAML import behavior tests
 │   └── data/                  # Test data directory
@@ -51,12 +51,12 @@ tests/core/
 ├── operations/                # Operations core tests
 │   ├── __init__.py
 │   ├── runner.py              # Operations test runner
-│   ├── test_core_xsystem_operations.py     # XSystem operations tests
+│   ├── test_core_xwsystem_operations.py     # XSystem operations tests
 │   └── data/                  # Test data directory
 └── shared/                    # Shared core tests
     ├── __init__.py
     ├── runner.py              # Shared test runner
-    ├── test_core_xsystem_shared.py          # XSystem shared tests
+    ├── test_core_xwsystem_shared.py          # XSystem shared tests
     └── data/                  # Test data directory
 ```
 

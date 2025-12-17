@@ -20,7 +20,7 @@ class TestOptimizedSerializers:
         """Test optimized text format serializers."""
         # Test XML
         try:
-            from exonware.xwsystem.serialization.xml import XmlSerializer
+            from exonware.xwsystem.io.serialization import XmlSerializer
             xml_ser = XmlSerializer()
             assert not xml_ser.is_binary_format
             xml_str = xml_ser.dumps(test_data)
@@ -32,7 +32,7 @@ class TestOptimizedSerializers:
         
         # Test JSON
         try:
-            from exonware.xwsystem.serialization.json import JsonSerializer
+            from exonware.xwsystem.io.serialization import JsonSerializer
             json_ser = JsonSerializer()
             assert not json_ser.is_binary_format
             json_str = json_ser.dumps(test_data)
@@ -44,7 +44,7 @@ class TestOptimizedSerializers:
         
         # Test CSV
         try:
-            from exonware.xwsystem.serialization.csv import CsvSerializer
+            from exonware.xwsystem.io.serialization import CsvSerializer
             csv_ser = CsvSerializer()
             assert not csv_ser.is_binary_format
             # CSV needs flat data that doesn't exceed depth 2
@@ -60,7 +60,7 @@ class TestOptimizedSerializers:
         """Test optimized binary format serializers."""
         # Test BSON
         try:
-            from exonware.xwsystem.serialization.bson import BsonSerializer
+            from exonware.xwsystem.io.serialization import BsonSerializer
             bson_ser = BsonSerializer()
             assert bson_ser.is_binary_format
             bson_str = bson_ser.dumps(test_data)
@@ -72,7 +72,7 @@ class TestOptimizedSerializers:
         
         # Test Pickle
         try:
-            from exonware.xwsystem.serialization.pickle import PickleSerializer
+            from exonware.xwsystem.io.serialization import PickleSerializer
             pickle_ser = PickleSerializer(allow_unsafe=True)
             assert pickle_ser.is_binary_format
             pickle_bytes = pickle_ser.dumps(test_data)
@@ -84,7 +84,7 @@ class TestOptimizedSerializers:
         
         # Test Marshal
         try:
-            from exonware.xwsystem.serialization.marshal import MarshalSerializer
+            from exonware.xwsystem.io.serialization import MarshalSerializer
             marshal_ser = MarshalSerializer()
             assert marshal_ser.is_binary_format
             marshal_bytes = marshal_ser.dumps(test_data)
@@ -96,7 +96,7 @@ class TestOptimizedSerializers:
         
         # Test MessagePack
         try:
-            from exonware.xwsystem.serialization.msgpack import MsgPackSerializer
+            from exonware.xwsystem.io.serialization import MsgPackSerializer
             msgpack_ser = MsgPackSerializer()
             assert msgpack_ser.is_binary_format
             msgpack_bytes = msgpack_ser.dumps(test_data)
@@ -108,7 +108,7 @@ class TestOptimizedSerializers:
         
         # Test CBOR
         try:
-            from exonware.xwsystem.serialization.cbor import CborSerializer
+            from exonware.xwsystem.io.serialization import CborSerializer
             cbor_ser = CborSerializer()
             assert cbor_ser.is_binary_format
             cbor_bytes = cbor_ser.dumps(test_data)
@@ -124,13 +124,13 @@ class TestOptimizedSerializers:
         
         # Collect available optimized serializers
         try:
-            from exonware.xwsystem.serialization.json import JsonSerializer
+            from exonware.xwsystem.io.serialization import JsonSerializer
             serializers.append(("JSON", JsonSerializer(), ".json"))
         except ImportError:
             pass
         
         try:
-            from exonware.xwsystem.serialization.pickle import PickleSerializer
+            from exonware.xwsystem.io.serialization import PickleSerializer
             serializers.append(("Pickle", PickleSerializer(allow_unsafe=True), ".pkl"))
         except ImportError:
             pass

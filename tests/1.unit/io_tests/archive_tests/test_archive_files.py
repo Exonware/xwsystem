@@ -14,7 +14,7 @@ from exonware.xwsystem.io.archive.archive_files import ZipFile, TarFile
 from exonware.xwsystem.io.archive.base import AArchiveFile
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestZipFile:
     """Test ZipFile implementation."""
     
@@ -29,7 +29,7 @@ class TestZipFile:
         from exonware.xwsystem.io.archive.archivers import ZipArchiver
         assert ZipArchiver is not None
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestTarFile:
     """Test TarFile implementation."""
     

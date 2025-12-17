@@ -20,7 +20,7 @@ from exonware.xwsystem.io.errors import (
 )
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestFileExceptions:
     """Test file-related exceptions."""
     
@@ -54,7 +54,7 @@ class TestFileExceptions:
         assert issubclass(FileDeleteError, IOError)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestExceptionUsability:
     """Test exception usability (Priority #2)."""
     

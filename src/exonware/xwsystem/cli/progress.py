@@ -7,7 +7,7 @@ Production-grade progress indicators for XSystem.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 05, 2025
 """
 

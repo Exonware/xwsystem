@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Optimized O(1) LFU Cache implementation.
@@ -23,7 +23,7 @@ from typing import Any, Optional, Hashable
 from .base import ACache
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.lfu_optimized")
+logger = get_logger("xwsystem.caching.lfu_optimized")
 
 
 class OptimizedLFUCache(ACache):
@@ -31,7 +31,7 @@ class OptimizedLFUCache(ACache):
     O(1) LFU Cache using frequency buckets.
     
     Algorithm:
-        - Frequency buckets: dict[freq -> OrderedDict[key -> value]]
+        - Frequency buckets: dict[freq -> Ordereddict[key -> value]]
         - Min frequency tracking for O(1) eviction
         - All operations are O(1) complexity
     

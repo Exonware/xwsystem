@@ -68,7 +68,7 @@ class SharedData[T]:
                 # Unix: Use /dev/shm or temporary files
                 import tempfile
                 self._file_handle = tempfile.NamedTemporaryFile(
-                    prefix=f"xsystem_shared_{self.name}_",
+                    prefix=f"xwsystem_shared_{self.name}_",
                     delete=False
                 )
                 self._file_handle.write(b'\x00' * self.size)
@@ -364,7 +364,7 @@ class SharedMemory:
             name: Name for the shared memory segment
             size: Size of the memory segment
         """
-        self.name = name or f"xsystem_shared_{os.getpid()}"
+        self.name = name or f"xwsystem_shared_{os.getpid()}"
         self.size = size
         self._manager = SharedMemoryManager()
         self._segment = None

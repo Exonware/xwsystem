@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Pluggable cache with runtime-switchable eviction strategies.
@@ -17,7 +17,7 @@ from .base import ACache
 from .eviction_strategies import AEvictionStrategy, LRUEvictionStrategy
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.pluggable")
+logger = get_logger("xwsystem.caching.pluggable")
 
 
 class PluggableCache(ACache):

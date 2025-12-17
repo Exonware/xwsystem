@@ -6,7 +6,7 @@ Thread-safe factory pattern for handler registration and management.
 import logging
 import threading
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Optional, Type
+from typing import Any, Callable, Optional
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 
@@ -22,14 +22,14 @@ class ThreadSafeFactory[T]:
     """
 
     def __init__(self) -> None:
-        self._handlers: dict[str, Type[T]] = {}
+        self._handlers: dict[str, type[T]] = {}
         self._extensions: dict[str, str] = {}
         self._lock = threading.RLock()  # Reentrant lock for thread safety
         self._methods_generated = False
         self._methods_lock = threading.Lock()
 
     def register(
-        self, name: str, handler_class: Type[T], extensions: Optional[list[str]] = None
+        self, name: str, handler_class: type[T], extensions: Optional[list[str]] = None
     ) -> None:
         """
         Register a handler with optional file extensions.
@@ -58,7 +58,7 @@ class ThreadSafeFactory[T]:
                     )
                 self._extensions[ext] = name_lower
 
-    def get_handler(self, name: str) -> Type[T]:
+    def get_handler(self, name: str) -> type[T]:
         """
         Get a handler by name.
 
@@ -77,7 +77,7 @@ class ThreadSafeFactory[T]:
                 raise KeyError(f"No handler registered for: {name}")
             return handler
 
-    def get_handler_if_exists(self, name: str) -> Optional[Type[T]]:
+    def get_handler_if_exists(self, name: str) -> Optional[type[T]]:
         """
         Get a handler by name, returning None if not found.
 
@@ -167,7 +167,7 @@ class MethodGenerator:
 
     @staticmethod
     def generate_export_methods(
-        target_class: Type,
+        target_class: type,
         factory: ThreadSafeFactory,
         method_template: Callable,
         method_name_pattern: str = "{action}_{format}",

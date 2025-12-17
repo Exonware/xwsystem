@@ -8,7 +8,7 @@ Generation Date: August 31, 2025
 
 xSystem Utilities - Practical Usage Examples
 
-This file demonstrates real-world usage patterns for the xsystem utilities.
+This file demonstrates real-world usage patterns for the xwsystem utilities.
 These examples show how to integrate multiple utilities for safe, robust operations.
 """
 
@@ -16,9 +16,9 @@ import json
 import time
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
-# Import xsystem utilities
+# Import xwsystem utilities
 from exonware.xwsystem import (
     ThreadSafeFactory,
     PathValidator,
@@ -101,7 +101,7 @@ def advanced_integration_example():
             self.factory = GenericHandlerFactory(base_path=base_path, enable_security=True)
             self.detector = CircularReferenceDetector()
             
-        def process_json_safely(self, file_path: str, data: Dict[str, Any]) -> bool:
+        def process_json_safely(self, file_path: str, data: dict[str, Any]) -> bool:
             """Process JSON data with full safety checks."""
             
             # 1. Check for circular references

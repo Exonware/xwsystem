@@ -24,15 +24,6 @@ Following GUIDE_TEST.md standards:
 import sys
 import pytest
 
-# CRITICAL: Configure UTF-8 encoding for Windows console (GUIDE_TEST.md compliance)
-if sys.platform == "win32":
-    try:
-        import io
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
-    except Exception:
-        pass
-
 # Skip all tests in this file - xwlazy has been removed from the codebase
 pytestmark = pytest.mark.skip(reason="xwlazy has been removed from the codebase")
 

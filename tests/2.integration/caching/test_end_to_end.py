@@ -22,8 +22,8 @@ from exonware.xwsystem.caching.secure_cache import SecureLRUCache
 from exonware.xwsystem.caching.decorators import xwcached  # New XW-prefixed decorator
 
 
-@pytest.mark.xsystem_integration
-@pytest.mark.xsystem_caching
+@pytest.mark.xwsystem_integration
+@pytest.mark.xwsystem_caching
 class TestCachingIntegration:
     """Integration tests for caching workflows."""
     
@@ -99,8 +99,9 @@ class TestCachingIntegration:
         elapsed2 = time.time() - start
         
         assert result1 == result2
-        assert call_count[0] == 1
-        assert elapsed2 < elapsed1  # Cached call faster
+        assert call_count[0] == 1  # Function only called once (cached on second call)
+        # Cached call should be faster or equal (when operations are very fast, both may be 0.0)
+        assert elapsed2 <= elapsed1, f"Cached call should be faster or equal: {elapsed2} <= {elapsed1}"
     
     def test_cache_migration_between_types(self):
         """
@@ -123,7 +124,7 @@ class TestCachingIntegration:
         for i in range(50):
             assert lfu_cache.get(f'key_{i}') == f'value_{i}'
     
-    @pytest.mark.xsystem_security
+    @pytest.mark.xwsystem_security
     def test_secure_cache_end_to_end(self):
         """
         Given: Secure cache with validation
@@ -147,7 +148,7 @@ class TestCachingIntegration:
         assert stats['enable_integrity'] is True
         assert stats['enable_rate_limit'] is True
     
-    @pytest.mark.xsystem_performance
+    @pytest.mark.xwsystem_performance
     @pytest.mark.slow
     def test_performance_under_load(self):
         """

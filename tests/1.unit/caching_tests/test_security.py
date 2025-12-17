@@ -23,8 +23,8 @@ from exonware.xwsystem.caching.errors import (
 )
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 class TestRateLimiter:
     """Test rate limiting functionality."""
     
@@ -79,8 +79,8 @@ class TestRateLimiter:
         assert stats['rejected_requests'] > 0
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 class TestIntegrityVerification:
     """Test cache integrity verification."""
     
@@ -123,8 +123,8 @@ class TestIntegrityVerification:
             verify_entry_integrity(entry)
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 class TestSecureLRUCache:
     """Test secure LRU cache."""
     
@@ -206,8 +206,8 @@ class TestSecureLRUCache:
         assert stats['enable_rate_limit'] is True
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security  
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security  
 class TestSecurityDefenseInDepth:
     """Test defense-in-depth security approach."""
     

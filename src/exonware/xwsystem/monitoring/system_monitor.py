@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 System-wide monitoring and hardware introspection utilities.
@@ -20,7 +20,7 @@ import psutil
 
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.monitoring.system_monitor")
+logger = get_logger("xwsystem.monitoring.system_monitor")
 
 
 @dataclass

@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 2, 2025
 
 Serialization contracts - ISerialization interface extending ICodec.
@@ -434,4 +434,91 @@ class ISerialization(ICodec[Any, Union[bytes, str]]):
             SerializationError: If merge operation fails
         """
         pass
+
+    # ========================================================================
+    # RECORD-LEVEL OPERATIONS (Optional, generic defaults in ASerialization)
+    # ========================================================================
+
+    def stream_read_record(
+        self,
+        file_path: Union[str, Path],
+        match: callable,
+        projection: Optional[list[Any]] = None,
+        **options: Any,
+    ) -> Any:
+        """
+        Stream-style read of a single logical record from a file.
+
+        Semantics:
+        - Treat the underlying representation as a sequence of logical records
+          (e.g., list elements, table rows, NDJSON records).
+        - Return the first record that satisfies `match(record)`.
+        - If `projection` is provided, return only that sub-structure.
+
+        Concrete serializers may override this for efficient, true streaming
+        (e.g., NDJSON line-by-line). The default implementation in ASerialization
+        is allowed to load the full file and scan in memory.
+        """
+        raise NotImplementedError
+
+    def stream_update_record(
+        self,
+        file_path: Union[str, Path],
+        match: callable,
+        updater: callable,
+        *,
+        atomic: bool = True,
+        **options: Any,
+    ) -> int:
+        """
+        Stream-style update of logical records in a file.
+
+        Semantics:
+        - Apply `updater(record)` to each record for which `match(record)` is True.
+        - When `atomic=True`, must preserve atomicity guarantees (temp file +
+          replace, or equivalent) provided by the underlying serializer/I/O.
+        - Returns the number of updated records.
+
+        Concrete serializers may override this to avoid loading the full file.
+        The default implementation in ASerialization may be full-load.
+        """
+        raise NotImplementedError
+
+    def get_record_page(
+        self,
+        file_path: Union[str, Path],
+        page_number: int,
+        page_size: int,
+        **options: Any,
+    ) -> list[Any]:
+        """
+        Retrieve a logical page of records from a file.
+
+        Semantics:
+        - page_number is 1-based.
+        - page_size is the number of records.
+        - Returns a list of native records.
+
+        Concrete serializers may override this to use indexes or streaming.
+        The default implementation in ASerialization may load the entire file
+        and slice a top-level list.
+        """
+        raise NotImplementedError
+
+    def get_record_by_id(
+        self,
+        file_path: Union[str, Path],
+        id_value: Any,
+        *,
+        id_field: str = "id",
+        **options: Any,
+    ) -> Any:
+        """
+        Retrieve a logical record by identifier (e.g., record[id_field] == id_value).
+
+        Concrete serializers may override this to use an index or format-specific
+        mechanisms. The default implementation in ASerialization may perform a
+        linear scan over a top-level list.
+        """
+        raise NotImplementedError
 

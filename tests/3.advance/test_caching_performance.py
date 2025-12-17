@@ -17,8 +17,8 @@ from exonware.xwsystem.caching.lfu_optimized import OptimizedLFUCache
 from exonware.xwsystem.caching.memory_bounded import MemoryBoundedLRUCache
 
 
-@pytest.mark.xsystem_advance
-@pytest.mark.xsystem_performance
+@pytest.mark.xwsystem_advance
+@pytest.mark.xwsystem_performance
 class TestCachingPerformanceExcellence:
     """Performance excellence tests for caching."""
     

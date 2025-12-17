@@ -21,9 +21,9 @@ from exonware.xwsystem.caching.errors import (
 )
 
 
-@pytest.mark.xsystem_advance
-@pytest.mark.xsystem_security
-@pytest.mark.xsystem_caching
+@pytest.mark.xwsystem_advance
+@pytest.mark.xwsystem_security
+@pytest.mark.xwsystem_caching
 class TestCachingSecurityExcellence:
     """Security excellence validation - Priority #1."""
     

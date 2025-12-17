@@ -2,13 +2,13 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 04, 2025
 
 Universal Codec Registry - High-performance registry for all codec types.
 """
 
-from typing import Optional, Type, Union, Any, Callable
+from typing import Optional, Union, Any, Callable
 from pathlib import Path
 from threading import RLock
 from functools import lru_cache
@@ -104,7 +104,7 @@ class UniversalCodecRegistry:
     def __init__(self):
         """Initialize the universal codec registry."""
         # Core mappings (codec_id is always lowercase)
-        self._by_id: dict[str, Type[ICodec]] = {}
+        self._by_id: dict[str, type[ICodec]] = {}
         self._by_extension: dict[str, list[tuple[str, int]]] = {}  # ext -> [(codec_id, priority)]
         self._by_mime_type: dict[str, list[tuple[str, int]]] = {}  # mime -> [(codec_id, priority)]
         self._by_alias: dict[str, str] = {}  # alias -> codec_id (1:1 mapping)
@@ -130,7 +130,7 @@ class UniversalCodecRegistry:
     
     def register(
         self,
-        codec_class: Type[ICodec],
+        codec_class: type[ICodec],
         codec_instance: Optional[ICodec] = None,
         priority: int = 0,
         magic_bytes: Optional[list[bytes]] = None
@@ -702,7 +702,7 @@ class UniversalCodecRegistry:
     # BULK OPERATIONS
     # ========================================================================
     
-    def register_bulk(self, codec_classes: list[Type[ICodec]], priorities: Optional[list[int]] = None) -> int:
+    def register_bulk(self, codec_classes: list[type[ICodec]], priorities: Optional[list[int]] = None) -> int:
         """
         Register multiple codecs efficiently.
         

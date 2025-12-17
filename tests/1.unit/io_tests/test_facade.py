@@ -14,7 +14,7 @@ from pathlib import Path
 from exonware.xwsystem.io.facade import XWIO
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestXWIOFacade:
     """Test XWIO facade initialization and structure."""
     
@@ -55,7 +55,7 @@ class TestXWIOFacade:
         assert hasattr(io, 'write_file')
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestXWIOIntegration:
     """Test XWIO integration with underlying components."""
     

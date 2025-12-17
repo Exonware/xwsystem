@@ -9,7 +9,7 @@ import contextlib
 import logging
 import threading
 from contextlib import ExitStack, contextmanager
-from typing import Any, ContextManager, Generator, Optional, Type, Union
+from typing import Any, ContextManager, Generator, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -297,7 +297,7 @@ class MultiContextManager:
             self.stack.__exit__(None, None, None)
             raise
 
-    def __exit__(self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[Any]) -> None:
+    def __exit__(self, exc_type: Optional[type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[Any]) -> None:
         """Exit all managed contexts."""
         if self.stack is not None:
             return self.stack.__exit__(exc_type, exc_val, exc_tb)

@@ -16,15 +16,12 @@ import os
 from pathlib import Path
 from decimal import Decimal
 from dataclasses import dataclass
-from typing import List, Dict, Any, Union
+from typing import Any, Union
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src'))
 
-from exonware.xwsystem.serialization.json import JsonSerializer
-from exonware.xwsystem.serialization.xml import XmlSerializer
-from exonware.xwsystem.serialization.toml import TomlSerializer
-from exonware.xwsystem.serialization.yaml import YamlSerializer
+from exonware.xwsystem.io.serialization import JsonSerializer, XmlSerializer, TomlSerializer, YamlSerializer
 
 
 class TestSerializationBasicFeatures:

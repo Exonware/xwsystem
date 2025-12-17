@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Metrics exporters for cache monitoring.
@@ -13,7 +13,7 @@ Performance Priority #4 - Observability and monitoring integration.
 from typing import Any, Optional
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.metrics_exporter")
+logger = get_logger("xwsystem.caching.metrics_exporter")
 
 
 class PrometheusExporter:

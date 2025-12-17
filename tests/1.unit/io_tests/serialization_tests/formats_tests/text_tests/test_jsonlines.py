@@ -11,7 +11,7 @@ Generation Date: 02-Nov-2025
 """
 
 import pytest
-from exonware.xwsystem.io.serialization.formats.text import XWJsonLinesSerializer
+from exonware.xwsystem.io.serialization.formats.text.jsonlines import JsonLinesSerializer
 
 
 @pytest.mark.xwsystem_unit
@@ -20,14 +20,14 @@ class TestJSONLinesSerializer:
     
     def test_serializer_initialization(self):
         """Test JSONL serializer can be initialized."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         assert serializer is not None
         assert serializer.codec_id == "jsonl"
         assert "JSON" in serializer.format_name
     
     def test_encode_list_of_objects(self):
         """Test encoding list of objects."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         data = [
             {"name": "Alice", "age": 30},
             {"name": "Bob", "age": 25}
@@ -43,7 +43,7 @@ class TestJSONLinesSerializer:
     
     def test_encode_single_object(self):
         """Test encoding single object wraps in list."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         data = {"name": "Alice", "age": 30}
         
         result = serializer.encode(data)
@@ -53,7 +53,7 @@ class TestJSONLinesSerializer:
     
     def test_decode_jsonlines_string(self):
         """Test decoding JSONL string."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         jsonl_str = '{"name": "Alice", "age": 30}\n{"name": "Bob", "age": 25}'
         
         result = serializer.decode(jsonl_str)
@@ -63,7 +63,7 @@ class TestJSONLinesSerializer:
     
     def test_decode_bytes_input(self):
         """Test decoding from bytes input."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         jsonl_bytes = b'{"name": "Alice"}\n{"name": "Bob"}'
         
         result = serializer.decode(jsonl_bytes)
@@ -73,7 +73,7 @@ class TestJSONLinesSerializer:
     
     def test_roundtrip_encoding(self):
         """Test encoding and decoding preserves data."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         original_data = [
             {"id": 1, "value": "first"},
             {"id": 2, "value": "second"},

@@ -104,7 +104,7 @@
 
 ### Test Standards
 - ✅ All tests follow GUIDELINES_TEST.md
-- ✅ Proper markers (`@pytest.mark.xsystem_unit`)
+- ✅ Proper markers (`@pytest.mark.xwsystem_unit`)
 - ✅ Clear docstrings
 - ✅ Descriptive names
 - ✅ Skip markers with clear reasons

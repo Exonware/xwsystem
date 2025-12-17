@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 XWIO - Main facade for all I/O operations (MANDATORY facade pattern).
@@ -92,7 +92,7 @@ class XWIO(AUnifiedIO):
         
         with performance_monitor("file_open"):
             # Ensure parent directory exists
-            if self.auto_create_dirs and mode in [FileMode.WRITE, FileMode.APPEND, FileMode.WRITE_PLUS]:
+            if self.auto_create_dirs and mode in [FileMode.WRITE, FileMode.APPEND, FileMode.WRITE_READ]:
                 target_path.parent.mkdir(parents=True, exist_ok=True)
             
             # Open file

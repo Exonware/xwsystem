@@ -218,6 +218,16 @@ class DataValidator:
         self.max_path_depth = max_path_depth or DEFAULT_MAX_PATH_DEPTH
         self.max_resolution_depth = max_resolution_depth or DEFAULT_MAX_RESOLUTION_DEPTH
 
+    def validate_data(
+        self, data: Any, operation_name: str = "data_validation"
+    ) -> None:
+        """
+        Validate data structure depth and complexity.
+        
+        This is a convenience method that wraps validate_data_structure.
+        """
+        self.validate_data_structure(data, operation_name)
+
     def validate_data_structure(
         self, data: Any, operation_name: str = "data_validation"
     ) -> None:

@@ -16,7 +16,7 @@ from exonware.xwsystem.io.serialization.contracts import ISerialization
 from exonware.xwsystem.io.codec.base import ACodec
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestASerializationBase:
     """Test ASerialization abstract base class."""
     
@@ -38,7 +38,7 @@ class TestASerializationBase:
             ASerialization()
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestASerializationXWSystemIntegration:
     """Test ASerialization XWSystem integration."""
     

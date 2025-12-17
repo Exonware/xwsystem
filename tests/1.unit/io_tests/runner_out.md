@@ -33,7 +33,7 @@ Following GUIDELINES_TEST.md structure, mirroring io module organization:
 
 **Command:** `python tests/1.unit/io_tests/runner.py`
 
-**Markers:** `xsystem_unit`
+**Markers:** `xwsystem_unit`
 
 **Options:**
 - Verbose output (`-v`)

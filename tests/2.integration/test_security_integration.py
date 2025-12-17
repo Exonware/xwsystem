@@ -15,9 +15,9 @@ from pathlib import Path
 
 from exonware.xwsystem.security.path_validator import PathValidator, PathSecurityError
 from exonware.xwsystem.security.crypto import SymmetricEncryption, SecureStorage
-from exonware.xwsystem.io.atomic_file import AtomicFileWriter
+from exonware.xwsystem.io import AtomicFileWriter
 from exonware.xwsystem.validation.data_validator import DataValidator
-from exonware.xwsystem.serialization.json import JsonSerializer
+from exonware.xwsystem.io.serialization import JsonSerializer
 from exonware.xwsystem.monitoring.error_recovery import ErrorRecoveryManager
 
 

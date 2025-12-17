@@ -1,4 +1,4 @@
-#exonware/xwsystem/tests/core/enterprise/test_core_xsystem_enterprise.py
+#exonware/xwsystem/tests/core/enterprise/test_core_xwsystem_enterprise.py
 """
 XSystem Enterprise Features Core Tests
 
@@ -18,15 +18,6 @@ import sys
 import os
 from pathlib import Path
 from unittest.mock import patch, MagicMock
-
-# Configure UTF-8 encoding for Windows console
-if sys.platform == "win32":
-    try:
-        import io
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
-    except Exception:
-        pass  # If reconfiguration fails, continue with default encoding
 
 # Add the src directory to the path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))

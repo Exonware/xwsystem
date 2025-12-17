@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 30-Oct-2025
 
 Base classes and registries for archive system.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Easy to add 7z, RAR, etc.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Type, Union, Any
+from typing import Optional, Union, Any
 from pathlib import Path
 
 from ..contracts import IArchiveFormat, ICompressor, IArchiveMetadata, IArchiver, IArchiveFile, EncodeOptions, DecodeOptions
@@ -252,11 +252,11 @@ class ArchiveFormatRegistry:
     
     def __init__(self):
         """Initialize registry."""
-        self._formats: dict[str, Type[IArchiveFormat]] = {}
+        self._formats: dict[str, type[IArchiveFormat]] = {}
         self._instances: dict[str, IArchiveFormat] = {}
         self._extension_map: dict[str, str] = {}  # .zip → "zip"
     
-    def register(self, format_class: Type[IArchiveFormat]) -> None:
+    def register(self, format_class: type[IArchiveFormat]) -> None:
         """
         Register an archive format.
         
@@ -326,10 +326,10 @@ class CompressionRegistry:
     
     def __init__(self):
         """Initialize registry."""
-        self._algorithms: dict[str, Type[ICompressor]] = {}
+        self._algorithms: dict[str, type[ICompressor]] = {}
         self._instances: dict[str, ICompressor] = {}
     
-    def register(self, compressor_class: Type[ICompressor]) -> None:
+    def register(self, compressor_class: type[ICompressor]) -> None:
         """Register a compression algorithm."""
         instance = compressor_class()
         algo_id = instance.algorithm_id

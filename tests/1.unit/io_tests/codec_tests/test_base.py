@@ -15,7 +15,7 @@ from exonware.xwsystem.io.codec.base import ACodec
 from exonware.xwsystem.io.codec.contracts import ICodec, ICodecMetadata
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestACodecBase:
     """Test ACodec abstract base class."""
     
@@ -39,7 +39,7 @@ class TestACodecBase:
             ACodec()
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestACodecConvenienceMethods:
     """Test ACodec convenience methods."""
     

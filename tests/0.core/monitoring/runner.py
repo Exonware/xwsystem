@@ -14,14 +14,14 @@ Generation Date: January 02, 2025
 
 import sys
 import time
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class MonitoringCoreTester:
     """Core tester for monitoring functionality."""
     
     def __init__(self):
-        self.results: Dict[str, bool] = {}
+        self.results: dict[str, bool] = {}
         
     def test_performance_monitor(self) -> bool:
         """Test performance monitoring functionality."""

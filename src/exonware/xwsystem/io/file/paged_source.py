@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 30-Oct-2025
 
 Paged file source with MODULAR paging system.
@@ -154,3 +154,10 @@ class PagedFileSource(FileDataSource, IPagedDataSource[Union[bytes, str]]):
                 break
             yield chunk
             offset += len(chunk) if isinstance(chunk, (bytes, str)) else chunk_size
+    
+    def get_page_count(self, page_size: int = 1024) -> int:
+        """Get total number of pages."""
+        total_size = self.total_size
+        if total_size < 0:
+            return 0
+        return (total_size + page_size - 1) // page_size  # Ceiling division

@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Advanced HTTP client with HTTP/2, streaming, pluggable transports, and modern features.
@@ -28,7 +28,7 @@ from ..config.logging_setup import get_logger
 from ..monitoring.error_recovery import retry_with_backoff
 from .client import HttpError, RetryConfig
 
-logger = get_logger("xsystem.http_client.advanced_client")
+logger = get_logger("xwsystem.http_client.advanced_client")
 
 
 

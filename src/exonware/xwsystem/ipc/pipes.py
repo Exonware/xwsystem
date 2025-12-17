@@ -50,7 +50,7 @@ class Pipe:
         if sys.platform == 'win32':
             # Windows named pipes
             import uuid
-            self.pipe_name = f"\\\\.\\pipe\\xsystem_{uuid.uuid4().hex}"
+            self.pipe_name = f"\\\\.\\pipe\\xwsystem_{uuid.uuid4().hex}"
             self._create_windows_pipe()
         else:
             # Unix domain sockets or os.pipe()
@@ -251,7 +251,7 @@ class AsyncPipe:
         
         # Create temporary socket path
         temp_dir = tempfile.gettempdir()
-        self._pipe_path = os.path.join(temp_dir, f"xsystem_pipe_{os.getpid()}")
+        self._pipe_path = os.path.join(temp_dir, f"xwsystem_pipe_{os.getpid()}")
         
         # Remove existing socket file
         try:

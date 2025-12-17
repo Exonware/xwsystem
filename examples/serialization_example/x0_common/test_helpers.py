@@ -11,7 +11,7 @@ Generation Date: October 12, 2025
 """
 
 import time
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 from pathlib import Path
 
 
@@ -24,7 +24,7 @@ def print_result(title: str, result: Any, max_length: int = 100):
     print(f"  {result_str}")
 
 
-def compare_performance(operations: Dict[str, Callable], iterations: int = 100) -> Dict[str, float]:
+def compare_performance(operations: dict[str, Callable], iterations: int = 100) -> dict[str, float]:
     """Compare performance of multiple operations"""
     results = {}
     

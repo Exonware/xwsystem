@@ -16,7 +16,7 @@ import tempfile
 import os
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestXWIOCodecIntegration:
     """Test XWIO facade with UniversalCodecRegistry."""
     
@@ -95,7 +95,7 @@ class TestXWIOCodecIntegration:
             io.serialize({}, 'invalid_format')
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestMultipleFormats:
     """Test operations with multiple formats."""
     

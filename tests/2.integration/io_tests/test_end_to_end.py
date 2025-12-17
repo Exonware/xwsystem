@@ -15,7 +15,7 @@ from pathlib import Path
 from exonware.xwsystem.io.facade import XWIO
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestSerializationIntegration:
     """Test complete serialization workflows."""
     
@@ -60,7 +60,7 @@ class TestSerializationIntegration:
         assert loaded_data == test_data
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestCodecRegistryIntegration:
     """Test codec registry integration across modules."""
     
@@ -85,7 +85,7 @@ class TestCodecRegistryIntegration:
         assert len(extensions) > 0
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestArchiveIntegration:
     """Test archive operations integration."""
     

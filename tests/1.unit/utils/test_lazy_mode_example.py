@@ -15,7 +15,7 @@ from __future__ import annotations
 import runpy
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator, Tuple
+from typing import Iterator
 
 import pytest
 
@@ -33,7 +33,7 @@ EXAMPLE_MODULE = "lazy_mode_quick_check"
 
 
 @contextmanager
-def preserve_lazy_configuration(package_name: str = PACKAGE_NAME) -> Iterator[Tuple[bool, str]]:
+def preserve_lazy_configuration(package_name: str = PACKAGE_NAME) -> Iterator[tuple[bool, str]]:
     """
     Preserve existing lazy install configuration for the duration of a test.
 
@@ -60,7 +60,7 @@ def load_example_globals() -> dict:
     return runpy.run_path(str(example_path))
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_lazy_mode_demo_enables_and_restores_configuration() -> None:
     """
     Ensure the example toggles lazy install and restores previous state.
@@ -88,7 +88,7 @@ def test_lazy_mode_demo_enables_and_restores_configuration() -> None:
         assert "total_installed" in result["stats"]
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_config_package_lazy_install_enabled_respects_install_hook_flag() -> None:
     """
     Verify that the helper toggles lazy mode without mutating the import hook.

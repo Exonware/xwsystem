@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Plugin protocol interfaces for XWSystem.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Iterator, Callable, Type
+from typing import Any, Optional, Union, Iterator, Callable
 import importlib
 
 # Import enums from types module
@@ -480,7 +480,7 @@ class IPluginRegistry(ABC):
     """
     
     @abstractmethod
-    def register_plugin(self, plugin_class: Type[IPlugin], name: str, priority: PluginPriority = PluginPriority.NORMAL) -> bool:
+    def register_plugin(self, plugin_class: type[IPlugin], name: str, priority: PluginPriority = PluginPriority.NORMAL) -> bool:
         """
         Register plugin class.
         
@@ -508,7 +508,7 @@ class IPluginRegistry(ABC):
         pass
     
     @abstractmethod
-    def get_registered_plugins(self) -> dict[str, Type[IPlugin]]:
+    def get_registered_plugins(self) -> dict[str, type[IPlugin]]:
         """
         Get all registered plugins.
         
@@ -531,7 +531,7 @@ class IPluginRegistry(ABC):
         pass
     
     @abstractmethod
-    def get_plugin_class(self, name: str) -> Optional[Type[IPlugin]]:
+    def get_plugin_class(self, name: str) -> Optional[type[IPlugin]]:
         """
         Get plugin class by name.
         

@@ -12,7 +12,7 @@ This test suite follows eXonware's hierarchical testing standards as defined in 
 tests/
 ├── 0.core/
 │   └── io/                               # Core IO tests (fast, high-value)
-│       ├── test_core_xsystem_io.py
+│       ├── test_core_xwsystem_io.py
 │       ├── runner.py
 │       └── data/
 │
@@ -94,11 +94,11 @@ pytest tests/1.unit/io_tests/archive_tests/ -v
 
 ### Run by Marker
 ```bash
-# Run all xsystem unit tests
-pytest -m xsystem_unit -v
+# Run all xwsystem unit tests
+pytest -m xwsystem_unit -v
 
-# Run all xsystem unit tests in io_tests directory
-pytest tests/1.unit/io_tests/ -m xsystem_unit -v
+# Run all xwsystem unit tests in io_tests directory
+pytest tests/1.unit/io_tests/ -m xwsystem_unit -v
 ```
 
 ## Test Coverage
@@ -128,7 +128,7 @@ Following GUIDELINES_TEST.md:
 
 1. **Mirror Structure** - Tests mirror the source code structure
 2. **Clear Naming** - `test_<module>_<feature>.py`
-3. **Proper Markers** - `@pytest.mark.xsystem_unit`
+3. **Proper Markers** - `@pytest.mark.xwsystem_unit`
 4. **Isolation** - Each test is independent
 5. **Fast Execution** - Unit tests run quickly (< 100ms each)
 6. **No External Dependencies** - Use mocks for external services
@@ -138,11 +138,11 @@ Following GUIDELINES_TEST.md:
 
 All tests use appropriate markers from `pytest.ini`:
 
-- `xsystem_unit` - Unit tests for individual components
-- `xsystem_core` - Core functionality tests (in 0.core/)
-- `xsystem_integration` - Integration tests (in 2.integration/)
-- `xsystem_security` - Security-specific tests (Priority #1)
-- `xsystem_performance` - Performance benchmarks (Priority #4)
+- `xwsystem_unit` - Unit tests for individual components
+- `xwsystem_core` - Core functionality tests (in 0.core/)
+- `xwsystem_integration` - Integration tests (in 2.integration/)
+- `xwsystem_security` - Security-specific tests (Priority #1)
+- `xwsystem_performance` - Performance benchmarks (Priority #4)
 
 ## Architecture Validation
 
@@ -165,7 +165,7 @@ Tests verify backward compatibility aliases:
 When adding new tests:
 
 1. Follow the mirror structure (match `io/` module layout)
-2. Use appropriate markers (`@pytest.mark.xsystem_unit`)
+2. Use appropriate markers (`@pytest.mark.xwsystem_unit`)
 3. Add docstrings explaining test purpose
 4. Test both success and failure cases
 5. Update this README with new coverage

@@ -8,7 +8,7 @@ def test_multilingual_emojis():
     """Test extreme Unicode complexity with multiple languages and emojis."""
     
     try:
-        from exonware.xwsystem.serialization.bson import BsonSerializer
+        from exonware.xwsystem.io.serialization import BsonSerializer
         
         print("🌍 MULTILINGUAL + EMOJI BSON TEST")
         print("=" * 50)

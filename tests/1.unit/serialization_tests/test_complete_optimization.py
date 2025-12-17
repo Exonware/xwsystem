@@ -36,35 +36,35 @@ class TestCompleteOptimization:
         
         # JSON
         try:
-            from exonware.xwsystem.serialization.json import JsonSerializer
+            from exonware.xwsystem.io.serialization import JsonSerializer
             text_serializers.append(("JSON", JsonSerializer()))
         except ImportError:
             pass
         
         # XML
         try:
-            from exonware.xwsystem.serialization.xml import XmlSerializer
+            from exonware.xwsystem.io.serialization import XmlSerializer
             text_serializers.append(("XML", XmlSerializer()))
         except ImportError:
             pass
         
         # YAML
         try:
-            from exonware.xwsystem.serialization.yaml import YamlSerializer
+            from exonware.xwsystem.io.serialization import YamlSerializer
             text_serializers.append(("YAML", YamlSerializer()))
         except ImportError:
             pass
         
         # TOML
         try:
-            from exonware.xwsystem.serialization.toml import TomlSerializer
+            from exonware.xwsystem.io.serialization import TomlSerializer
             text_serializers.append(("TOML", TomlSerializer()))
         except ImportError:
             pass
         
         # CSV
         try:
-            from exonware.xwsystem.serialization.csv import CsvSerializer
+            from exonware.xwsystem.io.serialization import CsvSerializer
             # CSV needs flat data - avoid nested lists that exceed depth 2
             csv_data = [{"test": "optimization_complete", "number": 100, "status": "active"}]
             text_serializers.append(("CSV", CsvSerializer(), csv_data))
@@ -73,7 +73,7 @@ class TestCompleteOptimization:
         
         # ConfigParser
         try:
-            from exonware.xwsystem.serialization.configparser import ConfigParserSerializer
+            from exonware.xwsystem.io.serialization import ConfigParserSerializer
             config_data = {"section1": test_data}  # ConfigParser needs sections
             text_serializers.append(("ConfigParser", ConfigParserSerializer(), config_data))
         except ImportError:
@@ -81,14 +81,14 @@ class TestCompleteOptimization:
         
         # FormData
         try:
-            from exonware.xwsystem.serialization.formdata import FormDataSerializer
+            from exonware.xwsystem.io.serialization import FormDataSerializer
             text_serializers.append(("FormData", FormDataSerializer()))
         except ImportError:
             pass
         
         # Multipart
         try:
-            from exonware.xwsystem.serialization.multipart import MultipartSerializer
+            from exonware.xwsystem.io.serialization import MultipartSerializer
             text_serializers.append(("Multipart", MultipartSerializer()))
         except ImportError:
             pass
@@ -119,42 +119,42 @@ class TestCompleteOptimization:
         
         # BSON
         try:
-            from exonware.xwsystem.serialization.bson import BsonSerializer
+            from exonware.xwsystem.io.serialization import BsonSerializer
             binary_serializers.append(("BSON", BsonSerializer()))
         except ImportError:
             pass
         
         # MessagePack
         try:
-            from exonware.xwsystem.serialization.msgpack import MsgPackSerializer
+            from exonware.xwsystem.io.serialization import MsgPackSerializer
             binary_serializers.append(("MessagePack", MsgPackSerializer()))
         except ImportError:
             pass
         
         # CBOR
         try:
-            from exonware.xwsystem.serialization.cbor import CborSerializer
+            from exonware.xwsystem.io.serialization import CborSerializer
             binary_serializers.append(("CBOR", CborSerializer()))
         except ImportError:
             pass
         
         # Pickle
         try:
-            from exonware.xwsystem.serialization.pickle import PickleSerializer
+            from exonware.xwsystem.io.serialization import PickleSerializer
             binary_serializers.append(("Pickle", PickleSerializer(allow_unsafe=True)))
         except ImportError:
             pass
         
         # Marshal
         try:
-            from exonware.xwsystem.serialization.marshal import MarshalSerializer
+            from exonware.xwsystem.io.serialization import MarshalSerializer
             binary_serializers.append(("Marshal", MarshalSerializer()))
         except ImportError:
             pass
         
         # Plistlib (Binary format)
         try:
-            from exonware.xwsystem.serialization.plistlib import PlistlibSerializer
+            from exonware.xwsystem.io.serialization import PlistSerializer as PlistlibSerializer
             import plistlib
             binary_serializers.append(("Plistlib", PlistlibSerializer(fmt=plistlib.FMT_BINARY)))
         except ImportError:
@@ -162,7 +162,7 @@ class TestCompleteOptimization:
         
         # SQLite3
         try:
-            from exonware.xwsystem.serialization.sqlite3 import Sqlite3Serializer
+            from exonware.xwsystem.io.serialization import Sqlite3Serializer
             sqlite_data = [test_data]  # SQLite needs list of dicts
             binary_serializers.append(("SQLite3", Sqlite3Serializer(), sqlite_data))
         except ImportError:
@@ -170,14 +170,14 @@ class TestCompleteOptimization:
         
         # DBM
         try:
-            from exonware.xwsystem.serialization.dbm import DbmSerializer
+            from exonware.xwsystem.io.serialization import DbmSerializer
             binary_serializers.append(("DBM", DbmSerializer()))
         except ImportError:
             pass
         
         # Shelve
         try:
-            from exonware.xwsystem.serialization.shelve import ShelveSerializer
+            from exonware.xwsystem.io.serialization import ShelveSerializer
             binary_serializers.append(("Shelve", ShelveSerializer(allow_unsafe=True)))
         except ImportError:
             pass

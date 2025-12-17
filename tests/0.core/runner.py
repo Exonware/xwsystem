@@ -18,7 +18,7 @@ import sys
 import subprocess
 import os
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Any
 
 # Set up UTF-8 environment for emoji support
 os.environ['PYTHONIOENCODING'] = 'utf-8'
@@ -203,7 +203,7 @@ class CoreTestRunner:
     
     def __init__(self):
         self.test_dir = Path(__file__).parent
-        self.results: Dict[str, int] = {}
+        self.results: dict[str, int] = {}
     
     def _run_test_subprocess(self, test_name: str, runner_path: Path) -> int:
         """Helper method to run test subprocess with proper error handling."""

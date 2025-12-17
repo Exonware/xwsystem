@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 XWSerializer - Unified intelligent serializer with I/O integration and auto-serialization.
@@ -11,7 +11,7 @@ XWSerializer - Unified intelligent serializer with I/O integration and auto-seri
 import os
 import time
 from pathlib import Path
-from typing import Any, Optional, Union, Callable, Type
+from typing import Any, Optional, Union, Callable
 
 from .base import ASerialization
 from .contracts import ISerialization
@@ -97,7 +97,7 @@ class XWSerializer(ASerialization):
     # FORMAT DETECTION AND TRANSFORMATION (from XWSerialization)
     # ============================================================================
     
-    def _get_serializer_class(self, format_name: str) -> Type[ISerialization]:
+    def _get_serializer_class(self, format_name: str) -> type[ISerialization]:
         """Get serializer class for format name."""
         module_map = {
             'JSON': ('json', 'JsonSerializer'),
@@ -775,6 +775,178 @@ class XWSerializer(ASerialization):
             except Exception as e:
                 logger.error(f"Merge failed for {target_path}: {e}")
                 raise SerializationError(f"Merge failed: {e}") from e
+
+    # ============================================================================
+    # RECORD-LEVEL OPERATIONS (delegated to specialized serializers)
+    # ============================================================================
+
+    def stream_read_record(
+        self,
+        file_path: Union[str, Path],
+        match: callable,
+        projection: Optional[list[Any]] = None,
+        **options: Any,
+    ) -> Any:
+        """
+        Stream-style read of a single logical record.
+
+        Delegates to the specialized serializer when available (e.g. JSONL /
+        NDJSON), falling back to the generic ASerialization implementation
+        which may load the entire file and scan in memory.
+        """
+        target_path = Path(file_path)
+
+        if self.validate_paths:
+            self._path_validator.validate_path(target_path)
+
+        format_hint = self._detect_format_from_path(target_path)
+        specialized = self._ensure_specialized(
+            file_path=target_path,
+            format_hint=format_hint,
+        )
+
+        try:
+            return specialized.stream_read_record(
+                target_path,
+                match,
+                projection=projection,
+                **options,
+            )
+        except NotImplementedError:
+            # Fallback to generic full-load behavior from ASerialization
+            return super().stream_read_record(
+                target_path,
+                match,
+                projection=projection,
+                **options,
+            )
+
+    def stream_update_record(
+        self,
+        file_path: Union[str, Path],
+        match: callable,
+        updater: callable,
+        *,
+        atomic: bool = True,
+        **options: Any,
+    ) -> int:
+        """
+        Stream-style update of logical records.
+
+        Delegates to the specialized serializer when it provides a streaming
+        implementation (e.g. JSONL). Falls back to the generic
+        ASerialization implementation that may load the full file, but still
+        honours atomic save semantics.
+        """
+        target_path = Path(file_path)
+
+        if self.validate_paths:
+            self._path_validator.validate_path(target_path)
+
+        format_hint = self._detect_format_from_path(target_path)
+        specialized = self._ensure_specialized(
+            file_path=target_path,
+            format_hint=format_hint,
+        )
+
+        try:
+            return specialized.stream_update_record(
+                target_path,
+                match,
+                updater,
+                atomic=atomic,
+                **options,
+            )
+        except NotImplementedError:
+            return super().stream_update_record(
+                target_path,
+                match,
+                updater,
+                atomic=atomic,
+                **options,
+            )
+
+    def get_record_page(
+        self,
+        file_path: Union[str, Path],
+        page_number: int,
+        page_size: int,
+        **options: Any,
+    ) -> list[Any]:
+        """
+        Retrieve a logical page of records from a file.
+
+        Delegates to the specialized serializer when supported (for example,
+        JSONL can implement true streaming paging). Falls back to the generic
+        ASerialization implementation, which may load the entire file and
+        slice a top-level list.
+        """
+        target_path = Path(file_path)
+
+        if self.validate_paths:
+            self._path_validator.validate_path(target_path)
+
+        format_hint = self._detect_format_from_path(target_path)
+        specialized = self._ensure_specialized(
+            file_path=target_path,
+            format_hint=format_hint,
+        )
+
+        try:
+            return specialized.get_record_page(
+                target_path,
+                page_number,
+                page_size,
+                **options,
+            )
+        except NotImplementedError:
+            return super().get_record_page(
+                target_path,
+                page_number,
+                page_size,
+                **options,
+            )
+
+    def get_record_by_id(
+        self,
+        file_path: Union[str, Path],
+        id_value: Any,
+        *,
+        id_field: str = "id",
+        **options: Any,
+    ) -> Any:
+        """
+        Retrieve a logical record by identifier.
+
+        Delegates to the specialized serializer where possible; falls back to
+        the generic ASerialization implementation which performs a linear scan
+        over a top-level list.
+        """
+        target_path = Path(file_path)
+
+        if self.validate_paths:
+            self._path_validator.validate_path(target_path)
+
+        format_hint = self._detect_format_from_path(target_path)
+        specialized = self._ensure_specialized(
+            file_path=target_path,
+            format_hint=format_hint,
+        )
+
+        try:
+            return specialized.get_record_by_id(
+                target_path,
+                id_value,
+                id_field=id_field,
+                **options,
+            )
+        except NotImplementedError:
+            return super().get_record_by_id(
+                target_path,
+                id_value,
+                id_field=id_field,
+                **options,
+            )
     
     # ============================================================================
     # BATCH OPERATIONS

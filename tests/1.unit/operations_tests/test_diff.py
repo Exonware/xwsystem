@@ -29,7 +29,7 @@ from exonware.xwsystem.operations import (
 )
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestDiffOperationCore:
     """Core diff operation tests."""
     
@@ -84,7 +84,7 @@ class TestDiffOperationCore:
         assert "/a/b/c" in result.paths_changed
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestDiffModes:
     """Tests for different diff modes."""
     
@@ -119,8 +119,8 @@ class TestDiffModes:
         assert result.total_changes > 0
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 class TestDiffSecurity:
     """Security tests for diff operations (Priority #1)."""
     
@@ -147,8 +147,8 @@ class TestDiffSecurity:
         assert result is not None
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_usability
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_usability
 class TestDiffUsability:
     """Usability tests for diff operations (Priority #2)."""
     
@@ -182,8 +182,8 @@ class TestDiffUsability:
         assert result.total_changes > 0
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_performance
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_performance
 class TestDiffPerformance:
     """Performance tests for diff operations (Priority #4)."""
     
@@ -201,8 +201,8 @@ class TestDiffPerformance:
         assert result.total_changes > 0
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_extensibility
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_extensibility
 class TestDiffExtensibility:
     """Extensibility tests for diff operations (Priority #5)."""
     
@@ -227,7 +227,7 @@ class TestDiffExtensibility:
         assert result == {"custom": True}
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestDiffEdgeCases:
     """Edge case tests for diff operations."""
     

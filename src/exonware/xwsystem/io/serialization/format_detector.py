@@ -1,9 +1,9 @@
-#exonware\xsystem\serialization\format_detector.py
+#exonware\xwsystem\serialization\format_detector.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Intelligent format detection for automatic serialization format selection.
@@ -15,7 +15,7 @@ from typing import Any, Optional, Union
 
 from ...config.logging_setup import get_logger
 
-logger = get_logger("xsystem.serialization.format_detector")
+logger = get_logger("xwsystem.serialization.format_detector")
 
 
 class FormatDetector:
@@ -26,12 +26,15 @@ class FormatDetector:
     
     __slots__ = ('_extension_map', '_magic_bytes', '_content_patterns', '_confidence_threshold')
     
-    def __init__(self, confidence_threshold: float = 0.7):
+    def __init__(self, confidence_threshold: float = 0.3):
         """
         Initialize format detector.
         
         Args:
-            confidence_threshold: Minimum confidence level for format detection
+            confidence_threshold: Minimum confidence level for format detection.
+                Default is 0.3 so that simple, high-signal heuristics like
+                extension-only detection (e.g. ``test.json``) are accepted
+                without requiring magic-bytes or content analysis.
         """
         self._confidence_threshold = confidence_threshold
         self._extension_map = self._build_extension_map()

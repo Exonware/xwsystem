@@ -26,7 +26,7 @@ from exonware.xwsystem.caching.decorators import cached, async_cached
 from exonware.xwsystem.caching.warming import warm_cache, PreloadWarmingStrategy
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestMultiCacheCoordination:
     """Test coordination between multiple cache instances."""
     
@@ -70,7 +70,7 @@ class TestMultiCacheCoordination:
         assert l1_stats['hit_rate'] > 0.5
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestConcurrentCacheAccess:
     """Test concurrent access scenarios."""
     
@@ -108,7 +108,7 @@ class TestConcurrentCacheAccess:
         assert stats['evictions'] >= 0
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestCacheWithDecorators:
     """Test cache decorators in real-world scenarios."""
     
@@ -159,7 +159,7 @@ class TestCacheWithDecorators:
         assert call_count[0] == 1  # Still 1
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestCacheWarming:
     """Test cache warming scenarios."""
     
@@ -189,7 +189,7 @@ class TestCacheWarming:
             assert cache.get(key) is not None
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestObservableCacheEvents:
     """Test observable cache with event hooks."""
     
@@ -224,7 +224,7 @@ class TestObservableCacheEvents:
         assert ('MISS', 'k2') in events_log
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 class TestPerformanceOptimizations:
     """Test end-to-end performance optimizations."""
     

@@ -14,8 +14,8 @@ import time
 from exonware.xwsystem.caching.lfu_optimized import OptimizedLFUCache
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_performance
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_performance
 class TestOptimizedLFUCache:
     """Test optimized O(1) LFU cache."""
     
@@ -124,8 +124,8 @@ class TestOptimizedLFUCache:
             assert cache.get("key") == "value"
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_performance
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_performance
 class TestOptimizedLFUPerformance:
     """Performance-specific tests for optimized LFU."""
     

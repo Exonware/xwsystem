@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 2, 2025
 
 Serialization base classes - ASerialization abstract base.
@@ -275,6 +275,27 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
             True if lazy loading is supported
         """
         return False
+
+    @property
+    def supports_record_streaming(self) -> bool:
+        """
+        Whether this serializer exposes record-level streaming operations
+        (stream_read_record / stream_update_record).
+
+        Default: False. Override in subclasses that provide efficient record
+        streaming on top of their underlying format.
+        """
+        return False
+
+    @property
+    def supports_record_paging(self) -> bool:
+        """
+        Whether this serializer supports efficient record-level paging.
+
+        Default: False. Override in subclasses that can page records without
+        loading the entire dataset.
+        """
+        return False
     
     # ========================================================================
     # FILE I/O METHODS (Default implementations using encode/decode)
@@ -373,6 +394,149 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
                 format_name=self.format_name,
                 original_error=e
             )
+
+    # ========================================================================
+    # RECORD-LEVEL OPERATIONS (Generic defaults – can be overridden)
+    # ========================================================================
+
+    def stream_read_record(
+        self,
+        file_path: Union[str, Path],
+        match: callable,
+        projection: Optional[list[Any]] = None,
+        **options: Any,
+    ) -> Any:
+        """
+        Default record-level read:
+        - Load the entire file via load_file().
+        - If top-level is a list, scan until match(record) is True.
+        - Apply optional projection and return the first matching record.
+
+        This is format-agnostic but may be expensive for huge files. Formats
+        that support true streaming should override this method.
+        """
+        data = self.load_file(file_path, **options)
+
+        if isinstance(data, list):
+            for record in data:
+                if match(record):
+                    return self._apply_projection(record, projection)
+
+        # Fallback: treat entire object as a single "record"
+        if match(data):
+            return self._apply_projection(data, projection)
+
+        raise KeyError("No matching record found")
+
+    def stream_update_record(
+        self,
+        file_path: Union[str, Path],
+        match: callable,
+        updater: callable,
+        *,
+        atomic: bool = True,
+        **options: Any,
+    ) -> int:
+        """
+        Default record-level update:
+        - Load entire file via load_file().
+        - If top-level is a list, apply updater() to matching records.
+        - Save the modified data back via save_file().
+
+        This is generic and honours the serializer's existing atomic/write
+        behavior, but may be expensive for huge files. Formats that support
+        streaming/partial updates should override this method.
+        """
+        data = self.load_file(file_path, **options)
+        updated = 0
+
+        if isinstance(data, list):
+            new_records: list[Any] = []
+            for record in data:
+                if match(record):
+                    record = updater(record)
+                    updated += 1
+                new_records.append(record)
+            data = new_records
+        else:
+            if match(data):
+                data = updater(data)
+                updated = 1
+
+        # Delegate to existing save_file() which may already be atomic.
+        self.save_file(data, file_path, **options)
+        return updated
+
+    def get_record_page(
+        self,
+        file_path: Union[str, Path],
+        page_number: int,
+        page_size: int,
+        **options: Any,
+    ) -> list[Any]:
+        """
+        Default record-level paging:
+        - Load entire file via load_file().
+        - If top-level is a list, return a slice corresponding to the requested page.
+
+        Formats that support indexed or streaming paging should override this
+        method for better performance on very large datasets.
+        """
+        if page_number < 1 or page_size <= 0:
+            raise ValueError("Invalid page_number or page_size")
+
+        data = self.load_file(file_path, **options)
+
+        if isinstance(data, list):
+            start = (page_number - 1) * page_size
+            end = start + page_size
+            return data[start:end]
+
+        # Non-list data: treat as a single record page
+        if page_number == 1 and page_size > 0:
+            return [data]
+
+        return []
+
+    def get_record_by_id(
+        self,
+        file_path: Union[str, Path],
+        id_value: Any,
+        *,
+        id_field: str = "id",
+        **options: Any,
+    ) -> Any:
+        """
+        Default record lookup by id:
+        - Load entire file via load_file().
+        - If top-level is a list of dict-like records, scan for record[id_field].
+        """
+        data = self.load_file(file_path, **options)
+
+        if isinstance(data, list):
+            for record in data:
+                if isinstance(record, dict) and record.get(id_field) == id_value:
+                    return record
+
+        # Single-record fallback
+        if isinstance(data, dict) and data.get(id_field) == id_value:
+            return data
+
+        raise KeyError(f"Record with {id_field}={id_value!r} not found")
+
+    # Small helper for projection handling
+    def _apply_projection(self, record: Any, projection: Optional[list[Any]]) -> Any:
+        if not projection:
+            return record
+        current = record
+        for key in projection:
+            if isinstance(current, dict) and isinstance(key, str):
+                current = current[key]
+            elif isinstance(current, list) and isinstance(key, int):
+                current = current[key]
+            else:
+                raise KeyError(key)
+        return current
     
     # ========================================================================
     # VALIDATION METHODS (Default implementations)

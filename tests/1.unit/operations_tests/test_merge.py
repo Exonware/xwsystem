@@ -29,7 +29,7 @@ from exonware.xwsystem.operations import (
 )
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestMergeOperationCore:
     """Core merge operation tests."""
     
@@ -88,8 +88,8 @@ class TestMergeOperationCore:
         assert result["items"].index(1) < result["items"].index(4)
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 class TestMergeSecurity:
     """Security tests for merge operations (Priority #1)."""
     
@@ -126,8 +126,8 @@ class TestMergeSecurity:
         assert result["c"] is None
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_usability
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_usability
 class TestMergeUsability:
     """Usability tests for merge operations (Priority #2)."""
     
@@ -156,7 +156,7 @@ class TestMergeUsability:
         assert MergeStrategy.APPEND.value == "append"
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestMergeMaintainability:
     """Maintainability tests for merge operations (Priority #3)."""
     
@@ -181,8 +181,8 @@ class TestMergeMaintainability:
             assert result is not None
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_performance
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_performance
 class TestMergePerformance:
     """Performance tests for merge operations (Priority #4)."""
     
@@ -224,8 +224,8 @@ class TestMergePerformance:
         assert len(results) == 10
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_extensibility
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_extensibility
 class TestMergeExtensibility:
     """Extensibility tests for merge operations (Priority #5)."""
     
@@ -258,7 +258,7 @@ class TestMergeExtensibility:
         assert result == {"custom": True}
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestMergeEdgeCases:
     """Edge case tests for merge operations."""
     

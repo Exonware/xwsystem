@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 05, 2025
 
 Logging configuration setup for XSystem.
@@ -19,7 +19,7 @@ from .defaults import LOGGING_ENABLED, LOGGING_LEVEL
 
 
 def setup_logging(
-    log_file="logs/xsystem.log",
+    log_file="logs/xwsystem.log",
     level=logging.INFO,
     max_bytes=10 * 1024 * 1024,
     backup_count=5,

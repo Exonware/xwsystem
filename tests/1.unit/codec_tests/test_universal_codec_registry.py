@@ -14,7 +14,7 @@ import pytest
 from pathlib import Path
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestUniversalCodecRegistryCore:
     """Test UniversalCodecRegistry core functionality."""
     
@@ -130,7 +130,7 @@ class TestUniversalCodecRegistryCore:
         assert fresh_registry.get_by_id('json') is None
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestMultiTypeSupport:
     """Test multi-type codec support."""
     
@@ -163,7 +163,7 @@ class TestMultiTypeSupport:
         assert codec.codec_id == 'xml'
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestCodecInstanceCaching:
     """Test instance caching for performance."""
     
@@ -185,7 +185,7 @@ class TestCodecInstanceCaching:
         assert codec1 is codec2
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestRegistryMetadata:
     """Test metadata retrieval and statistics."""
     
@@ -216,7 +216,7 @@ class TestRegistryMetadata:
         assert 'config' in types  # From TOML if registered
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestErrorHandling:
     """Test error handling in registry."""
     
@@ -241,7 +241,7 @@ class TestErrorHandling:
             fresh_registry.register(NotACodec)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestPriorityResolution:
     """Test priority-based conflict resolution."""
     
@@ -260,7 +260,7 @@ class TestPriorityResolution:
         assert codec is not None
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestCompoundExtensions:
     """Test compound extension support."""
     
@@ -272,7 +272,7 @@ class TestCompoundExtensions:
         assert codec is not None
 
 
-@pytest.mark.xsystem_unit  
+@pytest.mark.xwsystem_unit  
 class TestCodecCapabilities:
     """Test codec capabilities."""
     
@@ -284,7 +284,7 @@ class TestCodecCapabilities:
         assert len(bidirectional) >= 3  # JSON, YAML, XML
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestAllResultMethods:
     """Test methods that return all matches."""
     

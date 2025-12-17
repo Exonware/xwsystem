@@ -20,8 +20,8 @@ from exonware.xwsystem.caching.errors import (
 )
 
 
-@pytest.mark.xsystem_advance
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_advance
+@pytest.mark.xwsystem_security
 class TestCachingSecurityExcellence:
     """Security excellence tests for caching."""
     

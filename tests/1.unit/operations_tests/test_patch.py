@@ -28,7 +28,7 @@ from exonware.xwsystem.operations import (
 )
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestPatchOperationCore:
     """Core patch operation tests (RFC 6902)."""
     
@@ -104,7 +104,7 @@ class TestPatchOperationCore:
         assert len(result.errors) > 0
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestPatchMultipleOperations:
     """Tests for multiple patch operations."""
     
@@ -134,8 +134,8 @@ class TestPatchMultipleOperations:
         assert result.result["a"]["b"]["c"] == 2
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 class TestPatchSecurity:
     """Security tests for patch operations (Priority #1)."""
     
@@ -171,8 +171,8 @@ class TestPatchSecurity:
         assert not result.success
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_usability
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_usability
 class TestPatchUsability:
     """Usability tests for patch operations (Priority #2)."""
     
@@ -209,8 +209,8 @@ class TestPatchUsability:
         assert result.success
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_performance
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_performance
 class TestPatchPerformance:
     """Performance tests for patch operations (Priority #4)."""
     
@@ -233,8 +233,8 @@ class TestPatchPerformance:
         assert len(result.result) == 1000
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_extensibility
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_extensibility
 class TestPatchExtensibility:
     """Extensibility tests for patch operations (Priority #5)."""
     
@@ -268,7 +268,7 @@ class TestPatchExtensibility:
         assert result == {"custom": True}
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestPatchEdgeCases:
     """Edge case tests for patch operations."""
     

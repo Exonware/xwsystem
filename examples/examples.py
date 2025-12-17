@@ -2,7 +2,7 @@
 """
 xSystem Utilities - Practical Usage Examples
 
-This file demonstrates real-world usage patterns for the xsystem utilities.
+This file demonstrates real-world usage patterns for the xwsystem utilities.
 These examples show how to integrate multiple utilities for safe, robust operations.
 """
 
@@ -10,9 +10,9 @@ import json
 import time
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
-# Import xsystem utilities
+# Import xwsystem utilities
 from ..src.exonware.xwsystem.threading import ThreadSafeFactory
 from ..src.exonware.xwsystem.security import PathValidator, PathSecurityError
 from ..src.exonware.xwsystem.io import AtomicFileWriter
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 # Example 1: Secure Configuration Manager
 class SecureConfigManager:
     """
-    A configuration manager that uses xsystem utilities for security and reliability.
+    A configuration manager that uses xwsystem utilities for security and reliability.
     """
     
     def __init__(self, base_directory: str = "./configs"):
@@ -38,7 +38,7 @@ class SecureConfigManager:
         )
         self.circular_detector = CircularReferenceDetector()
         
-    def save_config(self, config_name: str, config_data: Dict[str, Any]) -> bool:
+    def save_config(self, config_name: str, config_data: dict[str, Any]) -> bool:
         """Save configuration data safely."""
         try:
             # Validate configuration data structure
@@ -70,7 +70,7 @@ class SecureConfigManager:
             logger.error(f"Failed to save config '{config_name}': {e}")
             return False
     
-    def load_config(self, config_name: str) -> Dict[str, Any]:
+    def load_config(self, config_name: str) -> dict[str, Any]:
         """Load configuration data safely."""
         try:
             # Validate the file path
@@ -154,7 +154,7 @@ class DataProcessingSystem:
 # Example 3: Comprehensive Data Manager
 class SafeDataManager:
     """
-    A comprehensive data manager that combines all xsystem utilities
+    A comprehensive data manager that combines all xwsystem utilities
     for maximum safety and functionality.
     """
     
@@ -182,7 +182,7 @@ class SafeDataManager:
         
         self.factory.register("json", MockJsonHandler, extensions=["json"])
     
-    def safe_data_operation(self, file_path: str, data: Dict[str, Any], operation: str = "save"):
+    def safe_data_operation(self, file_path: str, data: dict[str, Any], operation: str = "save"):
         """
         Perform safe data operations with comprehensive validation.
         """
@@ -244,15 +244,15 @@ class SafeDataManager:
             logger.error(f"Failed to create workspace: {e}")
             return None
     
-    def get_system_stats(self) -> Dict[str, Any]:
+    def get_system_stats(self) -> dict[str, Any]:
         """Get comprehensive system statistics."""
         return self.factory.get_operation_stats()
 
 
 # Example 4: Real-world Usage Demonstration
-def demonstrate_xsystem_utilities():
+def demonstrate_xwsystem_utilities():
     """
-    Demonstrate real-world usage of xsystem utilities.
+    Demonstrate real-world usage of xwsystem utilities.
     """
     logger.info("=== xSystem Utilities Demonstration ===")
     
@@ -311,7 +311,7 @@ def demonstrate_xsystem_utilities():
     # Safe data operations
     test_data = {
         "project": "xComBot",
-        "modules": ["xdata", "xsystem", "xbot"],
+        "modules": ["xdata", "xwsystem", "xbot"],
         "metadata": {
             "created": "2024-12-01",
             "version": "2.0.0"
@@ -340,7 +340,7 @@ def demonstrate_xsystem_utilities():
 # Example 5: Error Handling Patterns
 def demonstrate_error_handling():
     """
-    Demonstrate proper error handling patterns with xsystem utilities.
+    Demonstrate proper error handling patterns with xwsystem utilities.
     """
     logger.info("\n=== Error Handling Demonstration ===")
     
@@ -394,8 +394,8 @@ def demonstrate_error_handling():
 
 if __name__ == "__main__":
     # Run demonstrations
-    demonstrate_xsystem_utilities()
+    demonstrate_xwsystem_utilities()
     demonstrate_error_handling()
     
-    print("\n🎉 All xsystem utility examples completed successfully!")
-    print("📚 For more details, see: src/exonware/xsystem/README.md") 
+    print("\n🎉 All xwsystem utility examples completed successfully!")
+    print("📚 For more details, see: src/exonware/xwsystem/README.md") 

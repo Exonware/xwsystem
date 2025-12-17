@@ -10,7 +10,7 @@ health monitoring, and recommendations without being tied to specific implementa
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 04, 2025
 """
 
@@ -23,7 +23,7 @@ from typing import Any, Optional, Union
 from ..config.performance_modes import PerformanceMode
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.monitoring.performance_manager_generic")
+logger = get_logger("xwsystem.monitoring.performance_manager_generic")
 
 
 @dataclass

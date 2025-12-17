@@ -40,15 +40,15 @@ def main():
     # Determine which tests to run
     if "--security" in args:
         print("   Priority #1: Security Excellence")
-        marker = "xsystem_security and xsystem_caching"
+        marker = "xwsystem_security and xwsystem_caching"
         category = "Security"
     elif "--performance" in args:
         print("   Priority #4: Performance Excellence")
-        marker = "xsystem_performance and xsystem_caching"
+        marker = "xwsystem_performance and xwsystem_caching"
         category = "Performance"
     else:
         print("   All Priorities")
-        marker = "xsystem_advance and xsystem_caching"
+        marker = "xwsystem_advance and xwsystem_caching"
         category = "All"
 
     # Run tests

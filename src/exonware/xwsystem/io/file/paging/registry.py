@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 30-Oct-2025
 
 Paging strategy registry - LIKE CodecRegistry!
@@ -18,7 +18,7 @@ Priority 4 (Performance): Fast strategy lookup
 Priority 5 (Extensibility): Easy to add new strategies
 """
 
-from typing import Optional, Type
+from typing import Optional
 from ...contracts import IPagingStrategy
 from ...defs import PagingMode
 
@@ -46,10 +46,10 @@ class PagingStrategyRegistry:
     
     def __init__(self):
         """Initialize registry."""
-        self._strategies: dict[str, Type[IPagingStrategy]] = {}
+        self._strategies: dict[str, type[IPagingStrategy]] = {}
         self._instances: dict[str, IPagingStrategy] = {}
     
-    def register(self, strategy_class: Type[IPagingStrategy]) -> None:
+    def register(self, strategy_class: type[IPagingStrategy]) -> None:
         """
         Register a paging strategy.
         

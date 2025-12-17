@@ -4,14 +4,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: October 30, 2025
 
 Base classes, registry, adapters, and helper functions for codec system.
 """
 
 from __future__ import annotations
-from typing import Optional, Any, Type, IO, Union
+from typing import Optional, Any, IO, Union
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -120,12 +120,12 @@ class CodecRegistry:
     """
     
     def __init__(self) -> None:
-        self._by_media_type: dict[MediaKey, Type[ICodec]] = {}
-        self._by_extension: dict[str, Type[ICodec]] = {}
-        self._by_id: dict[str, Type[ICodec]] = {}
+        self._by_media_type: dict[MediaKey, type[ICodec]] = {}
+        self._by_extension: dict[str, type[ICodec]] = {}
+        self._by_id: dict[str, type[ICodec]] = {}
         self._instances: dict[str, ICodec] = {}  # Cached instances
     
-    def register(self, codec_class: Type[ICodec]) -> None:
+    def register(self, codec_class: type[ICodec]) -> None:
         """
         Register a codec class.
         

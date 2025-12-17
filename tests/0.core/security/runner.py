@@ -15,7 +15,7 @@ Generation Date: January 02, 2025
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class SecurityCoreTester:
@@ -24,7 +24,7 @@ class SecurityCoreTester:
     def __init__(self):
         self.test_data_dir = Path(__file__).parent / "data"
         self.test_data_dir.mkdir(exist_ok=True)
-        self.results: Dict[str, bool] = {}
+        self.results: dict[str, bool] = {}
         
     def test_secure_hash(self) -> bool:
         """Test secure hashing functionality."""

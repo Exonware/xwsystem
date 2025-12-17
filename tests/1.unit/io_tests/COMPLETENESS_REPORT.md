@@ -164,7 +164,7 @@ TOTAL: 118 tests
 - ✅ Proper directory organization
 
 ### ✅ Markers
-- ✅ All tests use `@pytest.mark.xsystem_unit`
+- ✅ All tests use `@pytest.mark.xwsystem_unit`
 - ✅ Clear test class grouping: `Test<ComponentName>`
 - ✅ Descriptive test names: `test_<action>_<expected>`
 

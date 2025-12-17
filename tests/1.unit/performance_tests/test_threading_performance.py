@@ -17,8 +17,8 @@ if src_path not in sys.path:
     sys.path.insert(0, src_path)
 
 try:
-from exonware.xwsystem.threading.safe_factory import ThreadSafeFactory
-from exonware.xwsystem.threading.locks import EnhancedRLock
+    from exonware.xwsystem.threading.safe_factory import ThreadSafeFactory
+    from exonware.xwsystem.threading.locks import EnhancedRLock
 except ImportError as e:
     pytest.skip(f"Threading utilities import failed: {e}", allow_module_level=True)
 

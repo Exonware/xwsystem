@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Human-friendly datetime formatting and parsing utilities.
@@ -14,7 +14,7 @@ from typing import Optional, Union
 
 from exonware.xwsystem.config.logging_setup import get_logger
 
-logger = get_logger("xsystem.utils.dt.humanize")
+logger = get_logger("xwsystem.utils.dt.humanize")
 
 
 def humanize_timedelta(td: timedelta, precision: int = 2, max_units: int = 2) -> str:

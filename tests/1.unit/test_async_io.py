@@ -14,7 +14,7 @@ import tempfile
 import pytest
 from pathlib import Path
 
-from src.exonware.xwsystem.io.async_operations import (
+from exonware.xwsystem.io.stream.async_operations import (
     AsyncAtomicFileWriter,
     async_atomic_write,
     async_safe_write_text,
@@ -23,7 +23,7 @@ from src.exonware.xwsystem.io.async_operations import (
     async_safe_read_bytes,
     async_safe_read_with_fallback,
 )
-from src.exonware.xwsystem.io.atomic_file import FileOperationError
+from exonware.xwsystem.io.common.atomic import FileOperationError
 
 
 class TestAsyncAtomicFileWriter:

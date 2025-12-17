@@ -23,8 +23,8 @@ from exonware.xwsystem.caching.secure_cache import SecureLRUCache
 from exonware.xwsystem.caching.decorators import xwcached  # New XW-prefixed decorator
 
 
-@pytest.mark.xsystem_core
-@pytest.mark.xsystem_caching
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_caching
 class TestCachingCore:
     """Core caching tests - 20% for 80% value."""
     
@@ -116,7 +116,7 @@ class TestCachingCore:
         assert result2 == 10
         assert call_count[0] == 1  # Not called again
     
-    @pytest.mark.xsystem_security
+    @pytest.mark.xwsystem_security
     def test_secure_cache_validates_input(self):
         """Test secure cache validates input."""
         cache = SecureLRUCache(capacity=10)
@@ -125,7 +125,7 @@ class TestCachingCore:
         cache.put('valid_key', 'valid_value')
         assert cache.get('valid_key') == 'valid_value'
     
-    @pytest.mark.xsystem_performance
+    @pytest.mark.xwsystem_performance
     def test_optimized_lfu_performance(self):
         """Test optimized LFU has O(1) performance."""
         cache = OptimizedLFUCache(capacity=1000)
@@ -172,8 +172,8 @@ class TestCachingCore:
         assert stats['size'] == 1
 
 
-@pytest.mark.xsystem_core
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_core
+@pytest.mark.xwsystem_security
 class TestCachingSecurityCore:
     """Core security tests for caching."""
     

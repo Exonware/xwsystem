@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 IPC module contracts - interfaces and enums for inter-process communication.
@@ -124,7 +124,7 @@ class IProcessManager(ABC):
     """Interface for process management."""
     
     @abstractmethod
-    def create_process(self, target: Callable, args: tuple = (), kwargs: Optional[Dict] = None) -> Process:
+    def create_process(self, target: Callable, args: tuple = (), kwargs: Optional[dict] = None) -> Process:
         """Create new process."""
         pass
     

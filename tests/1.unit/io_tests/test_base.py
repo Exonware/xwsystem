@@ -33,7 +33,7 @@ from exonware.xwsystem.io.contracts import (
 )
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestAbstractFileBase:
     """Test AFile abstract base class."""
     
@@ -51,7 +51,7 @@ class TestAbstractFileBase:
             AFile("/tmp/test.txt")
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestAbstractFolderBase:
     """Test AFolder abstract base class."""
     
@@ -69,7 +69,7 @@ class TestAbstractFolderBase:
             AFolder("/tmp/testdir")
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestAbstractStreamBase:
     """Test AStream abstract base class."""
     
@@ -82,7 +82,7 @@ class TestAbstractStreamBase:
         assert issubclass(AStream, IStream)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestAbstractOperationsBase:
     """Test operation abstract base classes."""
     
@@ -102,7 +102,7 @@ class TestAbstractOperationsBase:
         assert issubclass(ATemporaryOperations, ITemporaryOperations)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestIAXWPattern:
     """Test I→A→XW pattern implementation."""
     

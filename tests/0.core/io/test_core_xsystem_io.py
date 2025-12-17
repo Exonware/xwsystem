@@ -19,15 +19,6 @@ from pathlib import Path
 
 import pytest
 
-# Windows UTF-8 setup
-if sys.platform == "win32":
-    try:
-        import io
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
-    except Exception:
-        pass
-
 # Import xwsystem.io classes
 from exonware.xwsystem.io.common import (
     AtomicFileWriter,
@@ -357,7 +348,8 @@ class TestFileDataSource:
     def test_file_data_source_basic(self, tmp_path):
         """Test basic FileDataSource operations."""
         test_file = tmp_path / "source_test.txt"
-        source = FileDataSource(test_file)
+        # Use text mode ('r') instead of default binary mode ('rb')
+        source = FileDataSource(test_file, mode='r', encoding='utf-8')
         
         # Write
         source.write("Source content")
@@ -416,10 +408,11 @@ class TestPagedFileSource:
         test_file = tmp_path / "paged_source.bin"
         test_file.write_bytes(b"0123456789" * 10)
         
-        source = PagedFileSource(test_file, strategy="byte", page_size=10)
+        # PagedFileSource auto-detects strategy based on mode ('rb' = BytePagingStrategy)
+        source = PagedFileSource(test_file, mode='rb')
         
-        # Read first page
-        page = source.read_page(0)
+        # Read first page with page_size parameter
+        page = source.read_page(0, page_size=10)
         assert len(page) == 10
 
 

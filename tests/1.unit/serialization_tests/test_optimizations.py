@@ -15,9 +15,7 @@ import os
 from pathlib import Path
 
 # Import optimized serializers
-from exonware.xwsystem.serialization.xml import XmlSerializer
-from exonware.xwsystem.serialization.json import JsonSerializer
-from exonware.xwsystem.serialization.bson import BsonSerializer
+from exonware.xwsystem.io.serialization import XmlSerializer, JsonSerializer, BsonSerializer
 
 
 class TestOptimizationFeatures:

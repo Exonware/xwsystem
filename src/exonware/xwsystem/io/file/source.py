@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 30-Oct-2025
 
 File-based data source implementation.
@@ -66,12 +66,14 @@ class FileDataSource(IDataSource[Union[bytes, str]]):
         self._validate_path = validate_path
         
         if validate_path:
-            # Use PathManager for validation if available
+            # Use PathValidator for validation if available
             try:
-                from ..common.path_manager import PathManager
-                pm = PathManager()
-                if not pm.is_safe_path(self._path):
-                    raise ValueError(f"Unsafe path: {self._path}")
+                from ...security.path_validator import PathValidator
+                # Don't check existence during initialization - file may be created later
+                pv = PathValidator(check_existence=False)
+                # For write modes, allow creating the file (path doesn't exist yet)
+                for_writing = mode and ('w' in mode or 'a' in mode or '+' in mode)
+                pv.validate_path(str(self._path), for_writing=for_writing, create_dirs=True)
             except ImportError:
                 pass
     
@@ -131,10 +133,19 @@ class FileDataSource(IDataSource[Union[bytes, str]]):
             if atomic:
                 # Use AtomicFileWriter from common
                 from ..common.atomic import AtomicFileWriter
-                with AtomicFileWriter(self._path, backup=backup) as writer:
+                # Determine mode based on data type and stored mode
+                if isinstance(data, bytes):
+                    # Binary mode
+                    atomic_mode = 'wb'
+                    encoding = None
+                else:
+                    # Text mode
+                    atomic_mode = 'w'
+                    encoding = options.get('encoding', self._encoding or 'utf-8')
+                
+                with AtomicFileWriter(self._path, mode=atomic_mode, encoding=encoding, backup=backup) as writer:
                     if isinstance(data, str):
-                        encoding = options.get('encoding', self._encoding or 'utf-8')
-                        writer.write(data.encode(encoding))
+                        writer.write(data)
                     else:
                         writer.write(data)
             else:

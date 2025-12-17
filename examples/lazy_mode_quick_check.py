@@ -18,7 +18,7 @@ WHY:
 from __future__ import annotations
 
 import json
-from typing import Any, Dict
+from typing import Any
 
 import sys
 
@@ -38,7 +38,7 @@ if sys.platform == "win32":
 PACKAGE_NAME = "xwsystem"
 
 
-def run_lazy_mode_demo(package_name: str = PACKAGE_NAME) -> Dict[str, Any]:
+def run_lazy_mode_demo(package_name: str = PACKAGE_NAME) -> dict[str, Any]:
     """
     Enable lazy installation temporarily and report status.
 

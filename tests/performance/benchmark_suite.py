@@ -15,7 +15,7 @@ import asyncio
 import time
 import statistics
 import multiprocessing as mp
-from typing import Dict, List, Any, Callable
+from typing import Any, Callable
 from dataclasses import dataclass
 import json
 import sys
@@ -80,7 +80,7 @@ class PerformanceBenchmark:
         """
         self.iterations = iterations
         self.warmup_iterations = warmup_iterations
-        self.results: List[BenchmarkResult] = []
+        self.results: list[BenchmarkResult] = []
     
     def run_benchmark(self, name: str, func: Callable, *args, **kwargs) -> BenchmarkResult:
         """
@@ -481,7 +481,7 @@ def benchmark_process_pool():
     return benchmark.results
 
 
-def generate_report(all_results: List[BenchmarkResult]) -> str:
+def generate_report(all_results: list[BenchmarkResult]) -> str:
     """Generate comprehensive benchmark report."""
     report = []
     report.append("=" * 80)

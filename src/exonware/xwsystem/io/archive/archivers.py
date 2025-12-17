@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 30-Oct-2025
 
 Archive codecs - In-memory archive processors.
@@ -117,7 +117,7 @@ class ZipArchiver(AArchiver):
             
             with zipfile.ZipFile(zip_buffer, 'w', compression=compression) as zf:
                 if isinstance(value, dict):
-                    # Dict: keys are filenames, values are contents
+                    # dict: keys are filenames, values are contents
                     for filename, content in value.items():
                         if isinstance(content, str):
                             zf.writestr(filename, content)

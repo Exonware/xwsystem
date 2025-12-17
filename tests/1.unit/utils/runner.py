@@ -26,7 +26,7 @@ def main() -> int:
         layer_name="1.unit",
         description="Utils lazy mode regression tests",
         test_dir=test_dir,
-        markers=["xsystem_unit"],
+        markers=["xwsystem_unit"],
     )
     return runner.run()
 

@@ -11,7 +11,7 @@
 
 **Command:** `python tests/1.unit/operations_tests/runner.py`
 
-**Markers:** `xsystem_unit`
+**Markers:** `xwsystem_unit`
 
 **Options:**
 - Verbose output (`-v`)

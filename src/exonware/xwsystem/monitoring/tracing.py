@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 05, 2025
 
 Distributed Tracing Integration for Enterprise Observability
@@ -172,7 +172,7 @@ class OpenTelemetryTracer(ATracingProvider):
 class JaegerTracer(ATracingProvider):
     """Jaeger-specific tracing provider (simplified implementation)."""
     
-    def __init__(self, service_name: str = "xsystem", agent_host: str = "localhost", agent_port: int = 6831):
+    def __init__(self, service_name: str = "xwsystem", agent_host: str = "localhost", agent_port: int = 6831):
         """Initialize Jaeger tracer."""
         self.service_name = service_name
         self.agent_host = agent_host

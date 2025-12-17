@@ -23,7 +23,16 @@ from pathlib import Path
 src_path = Path(__file__).parent / 'src'
 sys.path.insert(0, str(src_path))
 
-from exonware.xwsystem.serialization import XWSerialization, dumps, loads, save_file, load_file
+from exonware.xwsystem.io.serialization import XWSerializer
+from exonware.xwsystem.io.serialization.serializer import (
+    dumps,
+    loads,
+    save_file,
+    load_file
+)
+
+# Use XWSerializer directly (no alias needed)
+XWSerialization = XWSerializer
 
 def test_basic_detection():
     """Test basic format detection and transformation."""

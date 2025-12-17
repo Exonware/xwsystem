@@ -17,7 +17,7 @@ import sys
 import threading
 import asyncio
 from pathlib import Path
-from typing import Dict, Any, List, Callable
+from typing import Any, Callable
 from dataclasses import dataclass, asdict
 import statistics
 
@@ -51,7 +51,7 @@ class CacheBenchmark:
     
     def __init__(self, num_operations: int = 10000):
         self.num_operations = num_operations
-        self.results: List[BenchmarkResult] = []
+        self.results: list[BenchmarkResult] = []
     
     def benchmark_operation(self, name: str, operation: Callable, iterations: int = None) -> BenchmarkResult:
         """
@@ -392,7 +392,7 @@ class CacheBenchmark:
         
         print("=" * 80)
     
-    def get_results_dict(self) -> Dict[str, Any]:
+    def get_results_dict(self) -> dict[str, Any]:
         """Get results as dictionary."""
         return {
             'timestamp': time.time(),

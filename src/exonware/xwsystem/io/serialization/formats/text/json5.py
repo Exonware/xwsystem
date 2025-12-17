@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 02-Nov-2025
 
 JSON5 Serialization - Extended JSON with Comments and Trailing Commas
@@ -29,12 +29,11 @@ from pathlib import Path
 # Lazy import for json5 - the lazy hook will automatically handle ImportError
 import json5
 
-from ...base import ASerialization
-from ...contracts import ISerialization
+from .json import JsonSerializer
 from ....errors import SerializationError
 
 
-class Json5Serializer(ASerialization):
+class Json5Serializer(JsonSerializer):
     """
     JSON5 serializer with comment support.
     
@@ -58,7 +57,10 @@ class Json5Serializer(ASerialization):
         Priority #1: Security - Prevent DoS via excessive nesting
         Priority #4: Performance - Prevent hangs on large data
         """
-        # JSON5 parser has known performance issues, use stricter limits
+        # JSON5 parser has known performance issues, use stricter limits.
+        # We still rely on the JsonSerializer base for all generic JSON
+        # behaviour (path operations, queries, etc.), only overriding the
+        # concrete encode/decode layer.
         super().__init__(max_depth=max_depth, max_size_mb=max_size_mb)
         if json5 is None:
             raise ImportError("json5 library required. Install with: pip install json5")

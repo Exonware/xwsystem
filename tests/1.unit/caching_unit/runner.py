@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-#exonware/xwsystem/tests/1.unit/caching/runner.py
+#exonware/xwsystem/tests/1.unit/caching_unit/runner.py
 
 Unit test runner for caching module - Component-Level Tests.
 
@@ -11,7 +11,7 @@ Version: 0.0.1.388
 Generation Date: 01-Nov-2025
 
 Usage:
-    python tests/1.unit/caching/runner.py
+    python tests/1.unit/caching_unit/runner.py
 """
 
 import sys
@@ -36,7 +36,7 @@ def main():
         "--tb=short",
         "-x",
         str(Path(__file__).parent),
-        "-m", "xsystem_unit and xsystem_caching"
+        "-m", "xwsystem_unit and xwsystem_caching"
     ])
 
     # Status output
@@ -61,9 +61,9 @@ def main():
 
 ## Test Execution
 
-**Command:** `python tests/1.unit/caching/runner.py`
+**Command:** `python tests/1.unit/caching_unit/runner.py`
 
-**Markers:** `xsystem_unit and xsystem_caching`
+**Markers:** `xwsystem_unit and xwsystem_caching`
 
 **Options:**
 - Verbose output (`-v`)

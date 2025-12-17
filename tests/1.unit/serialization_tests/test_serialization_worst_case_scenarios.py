@@ -25,11 +25,8 @@ import io
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src'))
 
-from exonware.xwsystem.serialization.json import JsonSerializer
-from exonware.xwsystem.serialization.xml import XmlSerializer
-from exonware.xwsystem.serialization.toml import TomlSerializer
-from exonware.xwsystem.serialization.yaml import YamlSerializer
-from exonware.xwsystem.serialization.errors import SerializationError, FormatDetectionError, ValidationError, XmlError
+from exonware.xwsystem.io.serialization import JsonSerializer, XmlSerializer, TomlSerializer, YamlSerializer
+from exonware.xwsystem.io.serialization.errors import SerializationError, FormatDetectionError, ValidationError, XmlError
 
 
 class TestSerializationWorstCaseScenarios:
@@ -306,7 +303,7 @@ class TestSerializationWorstCaseScenarios:
     
     def test_deep_nesting_json(self):
         """Test deep nesting handling in JSON."""
-        from exonware.xwsystem.serialization.errors import JsonError
+        from exonware.xwsystem.io.serialization.errors import JsonError
         from exonware.xwsystem.validation.errors import ValidationError
         
         # Test with data that's within security limits (30 levels) - should succeed
@@ -326,7 +323,7 @@ class TestSerializationWorstCaseScenarios:
     
     def test_deep_nesting_xml(self):
         """Test deep nesting handling in XML."""
-        from exonware.xwsystem.serialization.errors import XmlError
+        from exonware.xwsystem.io.serialization.errors import XmlError
         from exonware.xwsystem.validation.errors import ValidationError
         
         # Test with data that's within security limits (30 levels) - should succeed
@@ -345,7 +342,7 @@ class TestSerializationWorstCaseScenarios:
     
     def test_deep_nesting_toml(self):
         """Test deep nesting handling in TOML."""
-        from exonware.xwsystem.serialization.errors import SerializationError
+        from exonware.xwsystem.io.serialization.errors import SerializationError
         from exonware.xwsystem.validation.errors import ValidationError
         
         # Test with data that's within security limits (30 levels) - should succeed
@@ -364,7 +361,7 @@ class TestSerializationWorstCaseScenarios:
     
     def test_deep_nesting_yaml(self):
         """Test deep nesting handling in YAML."""
-        from exonware.xwsystem.serialization.errors import SerializationError
+        from exonware.xwsystem.io.serialization.errors import SerializationError
         from exonware.xwsystem.validation.errors import ValidationError
         
         # Test with data that's within security limits (30 levels) - should succeed
@@ -530,7 +527,7 @@ class TestSerializationWorstCaseScenarios:
     
     def test_path_traversal_security(self):
         """Test path traversal security in file operations."""
-        from exonware.xwsystem.serialization.xw_serialization import XWSerialization
+        from exonware.xwsystem.io.serialization.serializer import XWSerializer as XWSerialization
         
         malicious_paths = [
             '../../../etc/passwd',
@@ -615,7 +612,7 @@ class TestSerializationWorstCaseScenarios:
     
     def test_nonexistent_file_handling(self):
         """Test nonexistent file handling."""
-        from exonware.xwsystem.serialization.xw_serialization import XWSerialization
+        from exonware.xwsystem.io.serialization.serializer import XWSerializer as XWSerialization
         
         nonexistent_files = [
             '/nonexistent/file.json',

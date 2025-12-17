@@ -172,7 +172,7 @@ def from_file(self, path) → XWIO
 **Test Organization:**
 - ✅ 4-layer hierarchy (0.core → 1.unit → 2.integration → 3.advance)
 - ✅ Mirror structure (tests mirror source)
-- ✅ Proper markers (`@pytest.mark.xsystem_unit`)
+- ✅ Proper markers (`@pytest.mark.xwsystem_unit`)
 - ✅ Clear naming conventions
 
 **Quality Requirements:**

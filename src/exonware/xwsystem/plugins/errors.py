@@ -1,15 +1,15 @@
-#exonware/xsystem/plugins/errors.py
+#exonware/xwsystem/plugins/errors.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Plugin-specific error classes for XSystem plugin system.
 """
 
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
 
 class PluginError(Exception):
@@ -84,7 +84,7 @@ class PluginVersionError(PluginLoadError):
 class PluginRegistrationError(PluginError):
     """Error when plugin registration fails."""
     
-    def __init__(self, message: str, plugin_name: str, plugin_class: Optional[Type] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, plugin_class: Optional[type] = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.plugin_class = plugin_class
 

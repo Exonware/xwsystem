@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Pydantic-style declarative validation with type hints and automatic coercion.
@@ -12,13 +12,13 @@ import inspect
 import json
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional, Type, Union, get_type_hints, get_origin, get_args
+from typing import Any, Optional, Union, get_type_hints, get_origin, get_args
 from datetime import datetime, date
 from pathlib import Path
 
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.validation.declarative")
+logger = get_logger("xwsystem.validation.declarative")
 
 
 class ValidationError(Exception):
@@ -203,7 +203,7 @@ class XModel(metaclass=ModelMeta):
         
         return validated
     
-    def _validate_field(self, field_name: str, value: Any, field_type: Type, field_config: Field) -> Any:
+    def _validate_field(self, field_name: str, value: Any, field_type: type, field_config: Field) -> Any:
         """Validate and coerce a single field."""
         if value is None:
             if self._is_optional(field_type):
@@ -223,7 +223,7 @@ class XModel(metaclass=ModelMeta):
         return coerced_value
     
     @classmethod
-    def _is_optional(cls, field_type: Type) -> bool:
+    def _is_optional(cls, field_type: type) -> bool:
         """Check if field type is Optional."""
         origin = get_origin(field_type)
         if origin is Union:
@@ -232,7 +232,7 @@ class XModel(metaclass=ModelMeta):
         return False
     
     @classmethod
-    def _get_actual_type(cls, field_type: Type) -> Type:
+    def _get_actual_type(cls, field_type: type) -> type:
         """Get actual type from Optional/Union types."""
         origin = get_origin(field_type)
         if origin is Union:
@@ -246,7 +246,7 @@ class XModel(metaclass=ModelMeta):
                 return non_none_args[0] if non_none_args else field_type
         return field_type
     
-    def _coerce_type(self, value: Any, target_type: Type, field_name: str) -> Any:
+    def _coerce_type(self, value: Any, target_type: type, field_name: str) -> Any:
         """Coerce value to target type."""
         if isinstance(value, target_type):
             return value
@@ -316,7 +316,7 @@ class XModel(metaclass=ModelMeta):
             else:
                 raise ValidationError(f"Cannot convert {type(value).__name__} to list")
         
-        # Dict coercion
+        # dict coercion
         elif target_type == dict or (hasattr(target_type, '__origin__') and target_type.__origin__ is dict):
             if isinstance(value, dict):
                 return value
@@ -528,7 +528,7 @@ class XModel(metaclass=ModelMeta):
         return schema
     
     @classmethod
-    def _type_to_json_schema(cls, field_type: Type, field_config: Field) -> dict[str, Any]:
+    def _type_to_json_schema(cls, field_type: type, field_config: Field) -> dict[str, Any]:
         """Convert Python type to JSON Schema property."""
         # Handle Optional types
         if cls._is_optional(field_type):

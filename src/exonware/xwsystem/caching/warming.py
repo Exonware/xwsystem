@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Cache warming utilities for preloading data.
@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 import time
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.warming")
+logger = get_logger("xwsystem.caching.warming")
 
 
 class AWarmingStrategy(ABC):

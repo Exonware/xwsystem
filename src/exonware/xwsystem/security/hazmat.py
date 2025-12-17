@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Hazardous Materials (Hazmat) Layer - Low-level cryptographic primitives.
@@ -38,7 +38,7 @@ from cryptography.x509.oid import NameOID, ExtensionOID
 
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.security.hazmat")
+logger = get_logger("xwsystem.security.hazmat")
 
 
 class HazmatError(Exception):

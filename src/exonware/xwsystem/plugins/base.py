@@ -1,9 +1,9 @@
-#exonware/xsystem/plugins/base.py
+#exonware/xwsystem/plugins/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Plugin system base classes and management.
@@ -15,7 +15,7 @@ import threading
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional, Type, Union
+from typing import Any, Optional, Union
 
 from importlib.metadata import entry_points
 
@@ -24,7 +24,7 @@ from ..runtime.reflection import ReflectionUtils
 from .contracts import IPlugin, PluginState, PluginType, PluginPriority
 from .errors import PluginError
 
-logger = get_logger("xsystem.plugins.base")
+logger = get_logger("xwsystem.plugins.base")
 
 
 @dataclass
@@ -403,7 +403,7 @@ class APluginManager:
         except Exception as e:
             raise PluginError(f"Failed to load plugin from {file_path}: {e}") from e
 
-    def discover_entry_points(self, group: str = "xsystem.plugins") -> dict[str, dict[str, Any]]:
+    def discover_entry_points(self, group: str = "xwsystem.plugins") -> dict[str, dict[str, Any]]:
         """
         Discover plugins through entry points.
 

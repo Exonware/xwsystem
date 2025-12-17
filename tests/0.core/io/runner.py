@@ -16,7 +16,7 @@ import sys
 import tempfile
 import asyncio
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class IoCoreTester:
@@ -25,7 +25,7 @@ class IoCoreTester:
     def __init__(self):
         self.test_data_dir = Path(__file__).parent / "data"
         self.test_data_dir.mkdir(exist_ok=True)
-        self.results: Dict[str, bool] = {}
+        self.results: dict[str, bool] = {}
         
     def test_atomic_file_writer(self) -> bool:
         """Test atomic file writer functionality."""

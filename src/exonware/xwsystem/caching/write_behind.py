@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Write-behind (lazy write) cache implementation.
@@ -16,7 +16,7 @@ from typing import Any, Callable, Optional, Hashable
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.write_behind")
+logger = get_logger("xwsystem.caching.write_behind")
 
 
 class WriteBehindCache(LRUCache):

@@ -24,7 +24,7 @@ from exonware.xwsystem import (
     FormDataSerializer, MultipartSerializer,
     # Built-in Python modules (5 additional formats)
     ConfigParserSerializer, Sqlite3Serializer, DbmSerializer,
-    ShelveSerializer, PlistlibSerializer
+    ShelveSerializer, PlistSerializer
 )
 
 
@@ -605,7 +605,7 @@ class TestBuiltInPythonModules:
                 "config": {"debug": True, "timeout": 30}
             }
             
-            serializer = PlistlibSerializer()
+            serializer = PlistSerializer()
             
             # Test properties
             assert serializer.format_name == "Plistlib"

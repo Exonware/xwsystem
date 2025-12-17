@@ -23,7 +23,7 @@ from exonware.xwsystem.io import (
     Compression,
 )
 
-pytestmark = pytest.mark.xsystem_integration
+pytestmark = pytest.mark.xwsystem_integration
 
 
 # ============================================================================
@@ -545,7 +545,9 @@ class TestArchive:
         file1.write_text("Content 1" * 100)
 
         archive_path = temp_dir / "test.tar.gz"
-        archive.create([file1], archive_path, format="tar.gz")
+        # Let Archive auto-detect format from extension (.tar.gz)
+        # Or use format="tar" since tar.gz is handled by TarArchiver
+        archive.create([file1], archive_path)
 
         assert archive_path.exists()
 

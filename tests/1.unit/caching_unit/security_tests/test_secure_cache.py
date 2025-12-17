@@ -1,5 +1,5 @@
 """
-#exonware/xwsystem/tests/1.unit/caching/security_tests/test_secure_cache.py
+#exonware/xwsystem/tests/1.unit/caching_unit/security_tests/test_secure_cache.py
 
 Unit tests for secure cache implementations - Security Priority #1.
 
@@ -21,9 +21,9 @@ from exonware.xwsystem.caching.errors import (
 )
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
-@pytest.mark.xsystem_caching
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
+@pytest.mark.xwsystem_caching
 class TestSecureLRUCache:
     """Security tests for SecureLRUCache."""
     

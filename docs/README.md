@@ -45,7 +45,7 @@ xSystem is the **all-in-one Python library** that replaces 50+ dependencies with
 ### **📦 Module Structure**
 
 ```
-src/exonware/xsystem/
+src/exonware/xwsystem/
 +-- __init__.py                    # Main module exports (277 lines)
 +-- serialization/                # 24 serialization formats
 �   +-- json.py                   # JSON serialization
@@ -134,25 +134,25 @@ xSystem follows a structured 5-phase development approach designed to deliver en
 ### **Quick Start**
 ```bash
 # Get everything (recommended)
-pip install exonware-xsystem[all]
+pip install exonware-xwsystem[all]
 
 # Or minimal install
-pip install exonware-xsystem
+pip install exonware-xwsystem
 ```
 
 ### **Feature-Specific Installation**
 ```bash
 # Serialization formats
-pip install exonware-xsystem[yaml]      # YAML support
-pip install exonware-xsystem[toml]      # TOML support  
-pip install exonware-xsystem[xml]       # Secure XML
-pip install exonware-xsystem[bson]      # MongoDB BSON
-pip install exonware-xsystem[msgpack]   # MessagePack binary
-pip install exonware-xsystem[cbor]      # CBOR binary
+pip install exonware-xwsystem[yaml]      # YAML support
+pip install exonware-xwsystem[toml]      # TOML support  
+pip install exonware-xwsystem[xml]       # Secure XML
+pip install exonware-xwsystem[bson]      # MongoDB BSON
+pip install exonware-xwsystem[msgpack]   # MessagePack binary
+pip install exonware-xwsystem[cbor]      # CBOR binary
 
 # Additional features
-pip install exonware-xsystem[http]      # HTTP client
-pip install exonware-xsystem[crypto]    # Cryptography
+pip install exonware-xwsystem[http]      # HTTP client
+pip install exonware-xwsystem[crypto]    # Cryptography
 ```
 
 ---
@@ -781,7 +781,7 @@ Reusable design patterns for better code organization.
 ```python
 from exonware.xwsystem import GenericHandlerFactory
 
-# Create enhanced factory with all xsystem features
+# Create enhanced factory with all xwsystem features
 factory = GenericHandlerFactory(
     base_path="/safe/directory",
     enable_security=True,
@@ -1036,7 +1036,7 @@ def register_plugin():
 
 ## ⚙️ **Configuration**
 
-Flexible configuration system for all xsystem components.
+Flexible configuration system for all xwsystem components.
 
 ### **⚡ Performance Configuration**
 

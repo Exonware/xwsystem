@@ -24,8 +24,8 @@ from exonware.xwsystem.caching.errors import (
 )
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 class TestCacheKeyValidation:
     """Test cache key validation."""
     
@@ -67,8 +67,8 @@ class TestCacheKeyValidation:
         assert "str" in error_msg or "int" in error_msg  # Includes valid types
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 class TestCacheValueValidation:
     """Test cache value validation."""
     
@@ -98,7 +98,7 @@ class TestCacheValueValidation:
             validate_cache_value(value, max_size_mb=0.0001)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestKeySanitization:
     """Test key sanitization."""
     
@@ -122,7 +122,7 @@ class TestKeySanitization:
         assert result == "bytes_key"
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestTTLValidation:
     """Test TTL validation."""
     
@@ -149,7 +149,7 @@ class TestTTLValidation:
             validate_ttl(one_year * 10)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestCapacityValidation:
     """Test capacity validation."""
     

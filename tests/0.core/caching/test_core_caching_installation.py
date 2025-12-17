@@ -6,7 +6,7 @@ Core caching installation verification tests.
 import pytest
 
 
-@pytest.mark.xsystem_core
+@pytest.mark.xwsystem_core
 def test_caching_modules_import():
     """Verify caching submodules can be imported."""
     from exonware.xwsystem.caching.lru_cache import LRUCache  # noqa: F401
@@ -14,7 +14,7 @@ def test_caching_modules_import():
     from exonware.xwsystem.caching.ttl_cache import TTLCache  # noqa: F401
 
 
-@pytest.mark.xsystem_core
+@pytest.mark.xwsystem_core
 def test_lru_cache_basic_operations():
     """Ensure LRUCache basic put/get functionality works."""
     from exonware.xwsystem.caching.lru_cache import LRUCache
@@ -25,7 +25,7 @@ def test_lru_cache_basic_operations():
     assert cache.get("test_key") == "test_value"
 
 
-@pytest.mark.xsystem_core
+@pytest.mark.xwsystem_core
 def test_pytest_dependency_available():
     """Sanity check that pytest dependency is installed."""
     import pytest as imported_pytest  # noqa: F401

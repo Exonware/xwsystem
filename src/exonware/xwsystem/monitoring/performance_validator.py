@@ -14,7 +14,7 @@ from typing import Any, Callable, Optional
 
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.performance_validator")
+logger = get_logger("xwsystem.performance_validator")
 
 
 @dataclass

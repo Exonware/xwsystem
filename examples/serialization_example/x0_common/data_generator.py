@@ -10,10 +10,10 @@ Version: 0.0.1
 Generation Date: October 12, 2025
 """
 
-from typing import Dict, List, Any
+from typing import Any
 
 
-def generate_sample_data() -> Dict[str, Any]:
+def generate_sample_data() -> dict[str, Any]:
     """Generate sample data structure for testing"""
     return {
         'users': [
@@ -69,7 +69,7 @@ def generate_sample_data() -> Dict[str, Any]:
     }
 
 
-def generate_large_dataset(num_items: int = 10000) -> Dict[str, Any]:
+def generate_large_dataset(num_items: int = 10000) -> dict[str, Any]:
     """Generate large dataset for streaming/performance testing"""
     return {
         'users': [
@@ -90,7 +90,7 @@ def generate_large_dataset(num_items: int = 10000) -> Dict[str, Any]:
     }
 
 
-def generate_nested_data() -> Dict[str, Any]:
+def generate_nested_data() -> dict[str, Any]:
     """Generate deeply nested data for path access testing"""
     return {
         'company': {

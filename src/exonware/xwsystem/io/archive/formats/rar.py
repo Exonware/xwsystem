@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 1, 2025
 
 RAR5 archive format implementation - RANK #3 PROPRIETARY COMPRESSION.
@@ -24,8 +24,11 @@ from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 
-# Lazy import for rarfile - the lazy hook will automatically handle ImportError
-import rarfile
+# Lazy import for rarfile - optional dependency
+try:
+    import rarfile
+except ImportError:
+    rarfile = None  # type: ignore
 
 
 class RarArchiver(IArchiveFormat):

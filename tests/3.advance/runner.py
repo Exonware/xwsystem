@@ -49,7 +49,7 @@ def main():
             "--tb=short",
             "-x",
             str(advance_dir),
-            "-m", "xsystem_security",
+            "-m", "xwsystem_security",
             "-k", "caching"  # Only caching-related security tests
         ])
     
@@ -61,7 +61,7 @@ def main():
             "--tb=short",
             "-x",
             str(advance_dir),
-            "-m", "xsystem_performance",
+            "-m", "xwsystem_performance",
             "-k", "caching"
         ])
     
@@ -73,7 +73,7 @@ def main():
             "--tb=short",
             "-x",
             str(advance_dir),
-            "-m", "xsystem_extensibility",
+            "-m", "xwsystem_extensibility",
             "-k", "caching"
         ])
     
@@ -85,7 +85,7 @@ def main():
             "--tb=short",
             "-x",
             str(advance_dir),
-            "-m", "xsystem_advance",
+            "-m", "xwsystem_advance",
             "-k", "caching"
         ])
     
@@ -129,7 +129,7 @@ def main():
 
 **Category Tested:** {priorities_map.get(category, category)}
 
-**Marker:** `xsystem_{category if category != 'all' else 'advance'}` + caching filter
+**Marker:** `xwsystem_{category if category != 'all' else 'advance'}` + caching filter
 
 ---
 

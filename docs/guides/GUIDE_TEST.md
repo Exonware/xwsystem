@@ -3,7 +3,7 @@
 **Company:** eXonware.com
 **Author:** Eng. Muhammad AlShehri
 **Email:** connect@exonware.com
-**Version:** 0.0.1.410
+**Version:** 0.0.1.411
 **Generation Date:** 11-Oct-2025
 
 ---
@@ -183,7 +183,7 @@ python_functions = test_*
 ### Naming Conventions
 
 **Test Files:**
-- Core: `test_core_<feature>.py` (e.g., `test_core_xsystem_serialization.py`)
+- Core: `test_core_<feature>.py` (e.g., `test_core_xwsystem_serialization.py`)
 - Unit: `test_<module_name>.py` (e.g., `test_hash_map_strategy.py`)
 - Integration: `test_<scenario>.py` (e.g., `test_end_to_end.py`)
 
@@ -227,16 +227,16 @@ markers =
 **xwsystem:**
 ```ini
 markers =
- xsystem_core: Core functionality and integration tests
- xsystem_unit: Unit tests for individual components
- xsystem_integration: Integration tests across modules
- xsystem_advance: Advance quality tests (v1.0.0+)
- xsystem_security: Security excellence tests (Priority #1)
- xsystem_usability: Usability excellence tests (Priority #2)
- xsystem_maintainability: Maintainability excellence tests (Priority #3)
- xsystem_performance: Performance excellence tests (Priority #4)
- xsystem_extensibility: Extensibility excellence tests (Priority #5)
- xsystem_serialization: Serialization format tests
+ xwsystem_core: Core functionality and integration tests
+ xwsystem_unit: Unit tests for individual components
+ xwsystem_integration: Integration tests across modules
+ xwsystem_advance: Advance quality tests (v1.0.0+)
+ xwsystem_security: Security excellence tests (Priority #1)
+ xwsystem_usability: Usability excellence tests (Priority #2)
+ xwsystem_maintainability: Maintainability excellence tests (Priority #3)
+ xwsystem_performance: Performance excellence tests (Priority #4)
+ xwsystem_extensibility: Extensibility excellence tests (Priority #5)
+ xwsystem_serialization: Serialization format tests
 ```
 
 **xwnode:**
@@ -277,16 +277,16 @@ asyncio_mode = auto
 
 # Markers for test categorization (aligned with GUIDE_DEV.md priorities)
 markers =
- xsystem_core: Core functionality and integration tests
- xsystem_unit: Unit tests for individual components
- xsystem_integration: Integration tests across modules
- xsystem_advance: Advance quality tests (v1.0.0+)
- xsystem_security: Security excellence tests (Priority #1)
- xsystem_usability: Usability excellence tests (Priority #2)
- xsystem_maintainability: Maintainability excellence tests (Priority #3)
- xsystem_performance: Performance excellence tests (Priority #4)
- xsystem_extensibility: Extensibility excellence tests (Priority #5)
- xsystem_serialization: Serialization format tests
+ xwsystem_core: Core functionality and integration tests
+ xwsystem_unit: Unit tests for individual components
+ xwsystem_integration: Integration tests across modules
+ xwsystem_advance: Advance quality tests (v1.0.0+)
+ xwsystem_security: Security excellence tests (Priority #1)
+ xwsystem_usability: Usability excellence tests (Priority #2)
+ xwsystem_maintainability: Maintainability excellence tests (Priority #3)
+ xwsystem_performance: Performance excellence tests (Priority #4)
+ xwsystem_extensibility: Extensibility excellence tests (Priority #5)
+ xwsystem_serialization: Serialization format tests
 
 # Test output configuration
 # ⚠️ CRITICAL: Do NOT use --disable-warnings or --maxfail=10
@@ -339,10 +339,10 @@ addopts =
 pytest
 
 # Core tests only (fast, high-value)
-pytest -m xsystem_core -q
+pytest -m xwsystem_core -q
 
 # Security tests only (PRIORITY #1)
-pytest -m xsystem_security -vv
+pytest -m xwsystem_security -vv
 
 # Unit tests for specific module
 pytest tests/unit/serialization_tests/ -q
@@ -351,7 +351,7 @@ pytest tests/unit/serialization_tests/ -q
 pytest tests/integration/ -k "ingest and not slow"
 
 # Performance tests
-pytest -m xsystem_performance --benchmark-only
+pytest -m xwsystem_performance --benchmark-only
 
 # Exclude slow tests
 pytest -m "not slow"
@@ -1349,12 +1349,12 @@ def test_function()
 
 ```python
 # ? Good: Multiple relevant markers
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_security
 def test_password_validation_prevents_weak_passwords()
 
 # ? Good: Single clear marker
-@pytest.mark.xsystem_core
+@pytest.mark.xwsystem_core
 def test_basic_serialization_roundtrip()
 ```
 
@@ -1383,7 +1383,7 @@ def test_parse_invalid_json_raises_error():
 - **Profile when needed:** Use profiling tools for optimization
 
 ```python
-@pytest.mark.xsystem_performance
+@pytest.mark.xwsystem_performance
 def test_process_large_dataset_within_time_limit(large_dataset):
  start = time.time()
  result = process(large_dataset)
@@ -1399,7 +1399,7 @@ def test_process_large_dataset_within_time_limit(large_dataset):
 - **Test authorization:** Verify access controls work
 
 ```python
-@pytest.mark.xsystem_security
+@pytest.mark.xwsystem_security
 def test_sql_injection_protection():
  # Should not execute malicious SQL
  result = query_database("'; DROP TABLE users; --")

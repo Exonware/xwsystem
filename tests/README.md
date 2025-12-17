@@ -17,7 +17,7 @@ tests/
 │   ├── conftest.py
 │   └── runner.py
 │
-├── 1.unit/caching/              # Unit Tests (Component-level)
+├── 1.unit/caching_unit/          # Unit Tests (Component-level)
 │   ├── lru_cache_tests/
 │   │   └── test_lru_cache.py
 │   ├── security_tests/
@@ -45,7 +45,7 @@ tests/
 python tests/0.core/caching/runner.py
 
 # Run unit tests
-python tests/1.unit/caching/runner.py
+python tests/1.unit/caching_unit/runner.py
 
 # Run integration tests
 python tests/2.integration/caching/runner.py
@@ -58,16 +58,16 @@ python tests/3.advance/caching/runner.py
 
 ```bash
 # Run all caching tests
-pytest tests/ -m xsystem_caching -v
+pytest tests/ -m xwsystem_caching -v
 
 # Run core tests only
-pytest tests/0.core/caching/ -m xsystem_core -v
+pytest tests/0.core/caching/ -m xwsystem_core -v
 
 # Run security tests
-pytest -m "xsystem_security and xsystem_caching" -v
+pytest -m "xwsystem_security and xwsystem_caching" -v
 
 # Run performance tests
-pytest -m "xsystem_performance and xsystem_caching" -v
+pytest -m "xwsystem_performance and xwsystem_caching" -v
 ```
 
 ## Test Categories
@@ -76,25 +76,25 @@ pytest -m "xsystem_performance and xsystem_caching" -v
 - **Purpose:** 20% tests for 80% value
 - **Speed:** < 30 seconds total
 - **Focus:** Critical functionality, common use cases
-- **Markers:** `xsystem_core`, `xsystem_caching`
+- **Markers:** `xwsystem_core`, `xwsystem_caching`
 
 ### 🧩 Unit Tests (`1.unit/caching/`)
 - **Purpose:** Component-level validation
 - **Speed:** < 5 minutes total
 - **Focus:** Individual classes and methods
-- **Markers:** `xsystem_unit`, `xsystem_caching`
+- **Markers:** `xwsystem_unit`, `xwsystem_caching`
 
 ### 🔗 Integration Tests (`2.integration/caching/`)
 - **Purpose:** End-to-end scenarios
 - **Speed:** < 15 minutes total
 - **Focus:** Real-world workflows
-- **Markers:** `xsystem_integration`, `xsystem_caching`
+- **Markers:** `xwsystem_integration`, `xwsystem_caching`
 
 ### 🎓 Advance Tests (`3.advance/caching/`)
 - **Purpose:** Excellence validation (v1.0.0+)
 - **Speed:** < 30 minutes total
 - **Focus:** Security, Performance, Extensibility
-- **Markers:** `xsystem_advance`, `xsystem_security`, `xsystem_performance`
+- **Markers:** `xwsystem_advance`, `xwsystem_security`, `xwsystem_performance`
 
 ## Test Coverage
 
@@ -140,13 +140,13 @@ Testing Dependencies...
 All tests use pytest markers for categorization:
 
 ```ini
-xsystem_core           # Core functionality tests
-xsystem_unit           # Unit tests
-xsystem_integration    # Integration tests
-xsystem_advance        # Advance tests (v1.0.0+)
-xsystem_security       # Security excellence (Priority #1)
-xsystem_performance    # Performance excellence (Priority #4)
-xsystem_caching        # Caching module specific
+xwsystem_core           # Core functionality tests
+xwsystem_unit           # Unit tests
+xwsystem_integration    # Integration tests
+xwsystem_advance        # Advance tests (v1.0.0+)
+xwsystem_security       # Security excellence (Priority #1)
+xwsystem_performance    # Performance excellence (Priority #4)
+xwsystem_caching        # Caching module specific
 slow                   # Slow tests (> 1 second)
 ```
 
@@ -154,9 +154,9 @@ slow                   # Slow tests (> 1 second)
 
 ```bash
 # Run specific markers
-pytest -m xsystem_core
-pytest -m xsystem_security
-pytest -m "xsystem_unit and not slow"
+pytest -m xwsystem_core
+pytest -m xwsystem_security
+pytest -m "xwsystem_unit and not slow"
 
 # Stop on first failure
 pytest -x

@@ -10,7 +10,7 @@ import functools
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional, Type, Union
+from typing import Any, Callable, Optional, Union
 
 from .defs import CircuitState
 
@@ -25,7 +25,7 @@ class CircuitBreakerConfig:
 
     failure_threshold: int = 5
     recovery_timeout: float = 60.0  # seconds
-    expected_exception: Type[Exception] = Exception
+    expected_exception: type[Exception] = Exception
     monitor_interval: float = 10.0  # seconds
 
 

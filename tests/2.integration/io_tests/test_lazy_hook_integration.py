@@ -15,7 +15,7 @@ Tests verify end-to-end behavior:
 
 Following GUIDE_TEST.md standards:
 - Integration test layer (2.integration)
-- Proper markers (xsystem_integration)
+- Proper markers (xwsystem_integration)
 - Real-world scenarios
 - Root cause fixing: Tests verify actual behavior
 """
@@ -49,7 +49,7 @@ def clean_lazy_state() -> Iterator[None]:
             os.environ.pop('XWSYSTEM_LAZY_INSTALL', None)
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 def test_json_run_example_with_lazy_mode():
     """
     Test that json_run.py example works with lazy mode enabled.
@@ -84,7 +84,7 @@ def test_json_run_example_with_lazy_mode():
         assert is_import_hook_installed('xwsystem'), "Hook should be installed for lazy mode"
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 def test_hook_intercepts_io_serialization_imports():
     """
     Test that hook intercepts imports for io.serialization modules.
@@ -114,7 +114,7 @@ def test_hook_intercepts_io_serialization_imports():
             assert is_import_hook_installed('xwsystem'), "Hook should be active to handle ImportError"
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 def test_rehooking_works_after_package_load():
     """
     Test that re-hooking works when lazy is enabled after package load.

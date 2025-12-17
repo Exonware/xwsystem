@@ -7,7 +7,7 @@ components to reduce memory allocation overhead and improve performance.
 """
 
 import threading
-from typing import Any, Callable, Optional, Type
+from typing import Any, Callable, Optional
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 
@@ -36,13 +36,13 @@ class ObjectPool:
             enable_thread_safety: Whether to use thread-safe operations
             component_name: Name for logging purposes
         """
-        self._pools: dict[Type, list[Any]] = {}
+        self._pools: dict[type, list[Any]] = {}
         self._max_size = max_size
         self._lock = threading.RLock() if enable_thread_safety else None
         self._logger = get_logger(f"{component_name}.object_pool")
         self._stats = {"created": 0, "reused": 0, "released": 0, "discarded": 0}
 
-    def get[T](self, obj_type: Type[T], *args, **kwargs) -> T:
+    def get[T](self, obj_type: type[T], *args, **kwargs) -> T:
         """
         Get an object from the pool or create a new one if the pool is empty.
 
@@ -62,7 +62,7 @@ class ObjectPool:
         else:
             return self._get_from_pool(obj_type, pool, *args, **kwargs)
 
-    def _get_from_pool[T](self, obj_type: Type[T], pool: list[Any], *args, **kwargs) -> T:
+    def _get_from_pool[T](self, obj_type: type[T], pool: list[Any], *args, **kwargs) -> T:
         """Internal method to get object from pool."""
         if pool:
             obj = pool.pop()
@@ -100,7 +100,7 @@ class ObjectPool:
         else:
             self._release_to_pool(obj, obj_type)
 
-    def _release_to_pool(self, obj: Any, obj_type: Type) -> None:
+    def _release_to_pool(self, obj: Any, obj_type: type) -> None:
         """Internal method to release object to pool."""
         if obj_type not in self._pools:
             self._pools[obj_type] = []
@@ -115,7 +115,7 @@ class ObjectPool:
             self._stats["discarded"] += 1
             self._logger.debug(f"Discarded {obj_type.__name__} (pool full)")
 
-    def clear(self, obj_type: Optional[Type] = None) -> None:
+    def clear(self, obj_type: Optional[type] = None) -> None:
         """
         Clear objects from the pool.
 
@@ -128,7 +128,7 @@ class ObjectPool:
         else:
             self._clear_pool(obj_type)
 
-    def _clear_pool(self, obj_type: Optional[Type] = None) -> None:
+    def _clear_pool(self, obj_type: Optional[type] = None) -> None:
         """Internal method to clear pool."""
         if obj_type is None:
             # Clear all pools

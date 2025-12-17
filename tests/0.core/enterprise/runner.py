@@ -63,7 +63,7 @@ def main():
         test_dir = Path(__file__).parent
         
         # Direct execution of test file
-        test_file = test_dir / "test_core_xsystem_enterprise.py"
+        test_file = test_dir / "test_core_xwsystem_enterprise.py"
         
         # Execute the test module
         import runpy

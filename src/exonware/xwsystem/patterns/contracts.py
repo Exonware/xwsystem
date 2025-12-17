@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Pattern contracts and interfaces for XWSystem design patterns.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Type, Callable, Union
+from typing import Any, Optional, Callable, Union
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 
@@ -77,7 +77,7 @@ class IHandlerFactory[T](ABC):
         pass
     
     @abstractmethod
-    def register_handler(self, handler_type: str, handler_class: Type[T]) -> None:
+    def register_handler(self, handler_type: str, handler_class: type[T]) -> None:
         """Register a handler class."""
         pass
     
@@ -106,7 +106,7 @@ class IContextManager(ABC):
         pass
     
     @abstractmethod
-    def __exit__(self, exc_type: Optional[Type[BaseException]], 
+    def __exit__(self, exc_type: Optional[type[BaseException]], 
                 exc_val: Optional[BaseException], 
                 exc_tb: Optional[Any]) -> bool:
         """Exit the context."""
@@ -127,7 +127,7 @@ class IObjectPool[T](ABC):
     """Interface for object pools."""
     
     @abstractmethod
-    def get(self, obj_type: Type[T], *args, **kwargs) -> T:
+    def get(self, obj_type: type[T], *args, **kwargs) -> T:
         """Get an object from the pool."""
         pass
     
@@ -137,7 +137,7 @@ class IObjectPool[T](ABC):
         pass
     
     @abstractmethod
-    def clear(self, obj_type: Optional[Type[T]] = None) -> None:
+    def clear(self, obj_type: Optional[type[T]] = None) -> None:
         """Clear objects from the pool."""
         pass
     
@@ -147,7 +147,7 @@ class IObjectPool[T](ABC):
         pass
     
     @abstractmethod
-    def is_empty(self, obj_type: Type[T]) -> bool:
+    def is_empty(self, obj_type: type[T]) -> bool:
         """Check if pool is empty for a type."""
         pass
 
@@ -343,12 +343,12 @@ class IAdapter(ABC):
         pass
     
     @abstractmethod
-    def get_source_type(self) -> Type:
+    def get_source_type(self) -> type:
         """Get source type."""
         pass
     
     @abstractmethod
-    def get_target_type(self) -> Type:
+    def get_target_type(self) -> type:
         """Get target type."""
         pass
 

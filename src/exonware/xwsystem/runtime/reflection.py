@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Reflection utilities for dynamic code inspection and manipulation.
@@ -12,11 +12,11 @@ import importlib
 import inspect
 import sys
 from pathlib import Path
-from typing import Any, Callable, Optional, Type, Union
+from typing import Any, Callable, Optional, Union
 
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.runtime.reflection")
+logger = get_logger("xwsystem.runtime.reflection")
 
 
 class ReflectionUtils:
@@ -26,7 +26,7 @@ class ReflectionUtils:
     """
 
     @staticmethod
-    def get_class_info(cls: Type) -> dict[str, Any]:
+    def get_class_info(cls: type) -> dict[str, Any]:
         """
         Get comprehensive information about a class.
 
@@ -164,7 +164,7 @@ class ReflectionUtils:
             raise
 
     @staticmethod
-    def get_class_from_string(class_path: str) -> Type:
+    def get_class_from_string(class_path: str) -> type:
         """
         Get class from string path.
 
@@ -240,7 +240,7 @@ class ReflectionUtils:
         return func(*args, **kwargs)
 
     @staticmethod
-    def find_classes_in_module(module: Any, base_class: Optional[Type] = None) -> list[Type]:
+    def find_classes_in_module(module: Any, base_class: Optional[type] = None) -> list[type]:
         """
         Find all classes in a module, optionally filtered by base class.
 
@@ -278,7 +278,7 @@ class ReflectionUtils:
         return functions
 
     @staticmethod
-    def get_all_subclasses(cls: Type) -> list[Type]:
+    def get_all_subclasses(cls: type) -> list[type]:
         """
         Get all subclasses of a class recursively.
 
@@ -313,7 +313,7 @@ class ReflectionUtils:
             return False
 
     @staticmethod
-    def get_method_resolution_order(cls: Type) -> list[str]:
+    def get_method_resolution_order(cls: type) -> list[str]:
         """
         Get method resolution order for a class.
 

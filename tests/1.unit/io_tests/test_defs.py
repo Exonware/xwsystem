@@ -24,7 +24,7 @@ from exonware.xwsystem.io.defs import (
 )
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestFileEnums:
     """Test file-related enums."""
     
@@ -52,7 +52,7 @@ class TestFileEnums:
         assert issubclass(PathType, Enum)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestOperationEnums:
     """Test operation-related enums."""
     
@@ -70,7 +70,7 @@ class TestOperationEnums:
         assert issubclass(LockType, Enum)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestCodecEnums:
     """Test codec-related enums."""
     
@@ -79,7 +79,7 @@ class TestCodecEnums:
         assert issubclass(CodecCapability, Enum)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestArchiveEnums:
     """Test archive-related enums."""
     
@@ -101,7 +101,7 @@ class TestArchiveEnums:
         assert issubclass(CompressionLevel, Enum)
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestEnumValues:
     """Test that enums have consistent values."""
     

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Event system for caching module.
@@ -15,7 +15,7 @@ from typing import Callable, Any, Optional
 from enum import Enum
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.events")
+logger = get_logger("xwsystem.caching.events")
 
 
 class CacheEvent(Enum):

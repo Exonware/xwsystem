@@ -1,15 +1,15 @@
-#exonware/xsystem/patterns/errors.py
+#exonware/xwsystem/patterns/errors.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Pattern-specific error classes for XSystem design patterns.
 """
 
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
 
 class PatternError(Exception):
@@ -56,7 +56,7 @@ class HandlerNotFoundError(HandlerError):
 class HandlerRegistrationError(HandlerError):
     """Error when handler registration fails."""
     
-    def __init__(self, message: str, handler_type: str, handler_class: Optional[Type] = None, **kwargs):
+    def __init__(self, message: str, handler_type: str, handler_class: Optional[type] = None, **kwargs):
         super().__init__(message, handler_type=handler_type, **kwargs)
         self.handler_class = handler_class
 
@@ -89,7 +89,7 @@ class FactoryCreationError(FactoryError):
 class FactoryRegistrationError(FactoryError):
     """Error when factory registration fails."""
     
-    def __init__(self, message: str, factory_type: str, product_class: Optional[Type] = None, **kwargs):
+    def __init__(self, message: str, factory_type: str, product_class: Optional[type] = None, **kwargs):
         super().__init__(message, factory_type=factory_type, **kwargs)
         self.product_class = product_class
 

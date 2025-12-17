@@ -13,7 +13,7 @@ import pytest
 from exonware.xwsystem.io.codec.contracts import ICodec, ICodecMetadata
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestCodecInterfaces:
     """Test codec interface definitions."""
     

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: October 26, 2025
 
 Generic registry pattern for dynamic registration and discovery.
@@ -12,7 +12,7 @@ Generic registry pattern for dynamic registration and discovery.
 
 import threading
 import time
-from typing import Any, Optional, Type, Callable
+from typing import Any, Optional, Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from abc import ABC, abstractmethod
@@ -81,7 +81,7 @@ class GenericRegistry[T](IRegistry[T]):
     def __init__(
         self,
         name: str = "generic",
-        item_type: Optional[Type] = None,
+        item_type: Optional[type] = None,
         allow_overwrite: bool = False,
         auto_discovery: bool = False
     ):

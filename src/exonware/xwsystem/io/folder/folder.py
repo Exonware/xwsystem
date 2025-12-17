@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 XWFolder - Concrete implementation of folder operations.
@@ -65,7 +65,7 @@ class XWFolder(AFolder):
     def create(self, parents: bool = True, exist_ok: bool = True) -> bool:
         """Create directory with validation."""
         if self.validate_paths:
-            self._path_validator.validate_path(self.dir_path)
+            self._path_validator.validate_path(self.dir_path, for_writing=True, create_dirs=parents)
         
         with performance_monitor("directory_create"):
             try:

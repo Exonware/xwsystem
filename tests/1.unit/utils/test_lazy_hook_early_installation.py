@@ -18,7 +18,7 @@ Tests verify that:
 
 Following GUIDE_TEST.md standards:
 - Hierarchical test structure (1.unit layer)
-- Proper markers (xsystem_unit, xsystem_integration)
+- Proper markers (xwsystem_unit, xwsystem_integration)
 - Root cause fixing: Tests verify actual behavior
 - NO rigged tests, NO pass to hide errors
 - Descriptive test names: test_<action>_<expected_result>
@@ -77,7 +77,7 @@ def clean_lazy_state() -> Iterator[None]:
             pass
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_lazy_hook_not_installed_by_default():
     """
     Hook should not be installed just because xwlazy is present.
@@ -91,7 +91,7 @@ def test_lazy_hook_not_installed_by_default():
         assert not is_import_hook_installed('xwsystem'), "Hook must remain disabled until explicitly enabled"
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_env_var_triggers_hook_installation():
     """
     Test that hook is installed when XWSYSTEM_LAZY_INSTALL env var is set.
@@ -113,7 +113,7 @@ def test_env_var_triggers_hook_installation():
         assert is_import_hook_installed('xwsystem'), "Hook should be installed when env var set"
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_no_hook_when_lazy_is_off():
     """
     Test that hook is NOT installed when lazy is off.
@@ -131,7 +131,7 @@ def test_no_hook_when_lazy_is_off():
         assert not is_import_hook_installed('xwsystem'), "Hook should NOT be installed when lazy is off"
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_rehooking_when_conf_lazy_install_set_to_true():
     """
     Test that hook is installed when conf.lazy_install = True is set.
@@ -153,7 +153,7 @@ def test_rehooking_when_conf_lazy_install_set_to_true():
         assert is_import_hook_installed('xwsystem'), "Hook should be installed after conf.lazy_install = True"
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_hook_path_fix_for_io_serialization():
     """
     Test that hook intercepts imports for io.serialization modules.
@@ -184,7 +184,7 @@ def test_hook_path_fix_for_io_serialization():
         # This is tested indirectly - if hook is installed, it should handle the path
 
 
-@pytest.mark.xsystem_integration
+@pytest.mark.xwsystem_integration
 def test_auto_install_on_importerror():
     """
     Test that missing packages are auto-installed on ImportError.
@@ -209,7 +209,7 @@ def test_auto_install_on_importerror():
         assert is_lazy_install_enabled('xwsystem'), "Lazy install should be enabled"
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_dx_status_check_methods():
     """
     Test DX status check methods in conf module.
@@ -241,7 +241,7 @@ def test_dx_status_check_methods():
         assert conf.is_lazy_active() is True, "is_lazy_active should return True"
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 def test_bootstrap_fails_gracefully():
     """
     Test that bootstrap fails gracefully if hook installation fails.

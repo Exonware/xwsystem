@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 01-Nov-2025
 
 Memory-bounded cache implementations.
@@ -17,7 +17,7 @@ from .lfu_optimized import OptimizedLFUCache
 from .utils import estimate_object_size, format_bytes
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.caching.memory_bounded")
+logger = get_logger("xwsystem.caching.memory_bounded")
 
 
 class MemoryBoundedLRUCache(LRUCache):

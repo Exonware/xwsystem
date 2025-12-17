@@ -2,14 +2,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Runtime module contracts - interfaces and enums for runtime environment functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Type, Callable
+from typing import Any, Optional, Union, Callable
 import sys
 
 # Import enums from types module
@@ -112,7 +112,7 @@ class IReflectionUtils(ABC):
     """Interface for reflection utilities."""
     
     @abstractmethod
-    def get_class_from_string(self, class_path: str) -> Type:
+    def get_class_from_string(self, class_path: str) -> type:
         """Get class from string path."""
         pass
     
@@ -122,17 +122,17 @@ class IReflectionUtils(ABC):
         pass
     
     @abstractmethod
-    def find_classes_in_module(self, module: Any, base_class: Type) -> list[Type]:
+    def find_classes_in_module(self, module: Any, base_class: type) -> list[type]:
         """Find classes in module."""
         pass
     
     @abstractmethod
-    def get_class_hierarchy(self, cls: Type) -> list[Type]:
+    def get_class_hierarchy(self, cls: type) -> list[type]:
         """Get class hierarchy."""
         pass
     
     @abstractmethod
-    def get_class_attributes(self, cls: Type) -> dict[str, Any]:
+    def get_class_attributes(self, cls: type) -> dict[str, Any]:
         """Get class attributes."""
         pass
 

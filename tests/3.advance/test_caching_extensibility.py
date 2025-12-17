@@ -23,8 +23,8 @@ from exonware.xwsystem.caching.events import CacheEvent
 from exonware.xwsystem.caching.decorators import cached
 
 
-@pytest.mark.xsystem_advance
-@pytest.mark.xsystem_extensibility
+@pytest.mark.xwsystem_advance
+@pytest.mark.xwsystem_extensibility
 class TestCachingExtensibilityExcellence:
     """Extensibility excellence tests for caching."""
     

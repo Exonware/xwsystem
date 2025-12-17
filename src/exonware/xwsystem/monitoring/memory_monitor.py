@@ -18,7 +18,7 @@ import psutil
 
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.memory_monitor")
+logger = get_logger("xwsystem.memory_monitor")
 
 
 @dataclass

@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 LFU (Least Frequently Used) Cache implementation with thread-safety and async support.
@@ -16,7 +16,7 @@ from typing import Any, Optional, Hashable
 from ..config.logging_setup import get_logger
 from .base import ACache
 
-logger = get_logger("xsystem.caching.lfu_cache")
+logger = get_logger("xwsystem.caching.lfu_cache")
 
 
 class LFUCache(ACache):

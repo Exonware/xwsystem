@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 XWFile - Concrete implementation of file operations.
@@ -72,11 +72,12 @@ class XWFile(AFile):
     def open(self, mode: FileMode = FileMode.READ) -> None:
         """Open file with validation and monitoring."""
         if self.validate_paths:
-            self._path_validator.validate_path(self.file_path)
+            for_writing = mode in [FileMode.WRITE, FileMode.APPEND, FileMode.WRITE_READ, FileMode.BINARY_WRITE, FileMode.BINARY_APPEND, FileMode.BINARY_WRITE_READ]
+            self._path_validator.validate_path(self.file_path, for_writing=for_writing, create_dirs=self.auto_create_dirs)
         
         with performance_monitor("file_open"):
             # Ensure parent directory exists
-            if self.auto_create_dirs and mode in [FileMode.WRITE, FileMode.APPEND, FileMode.WRITE_PLUS]:
+            if self.auto_create_dirs and mode in [FileMode.WRITE, FileMode.APPEND, FileMode.WRITE_READ]:
                 self.file_path.parent.mkdir(parents=True, exist_ok=True)
             
             # Open file
@@ -110,7 +111,7 @@ class XWFile(AFile):
     def save(self, data: Any, **kwargs) -> bool:
         """Save data to file with atomic operations."""
         if self.validate_paths:
-            self._path_validator.validate_path(self.file_path)
+            self._path_validator.validate_path(self.file_path, for_writing=True, create_dirs=True)
         
         if self.validate_data:
             self._data_validator.validate_data(data)
@@ -119,9 +120,10 @@ class XWFile(AFile):
             try:
                 if self.use_atomic_operations:
                     # Use atomic file writer
-                    with AtomicFileWriter(self.file_path, backup=self.auto_backup) as writer:
+                    mode = 'wb' if isinstance(data, bytes) else 'w'
+                    with AtomicFileWriter(self.file_path, mode=mode, backup=self.auto_backup) as writer:
                         if isinstance(data, str):
-                            writer.write(data.encode('utf-8'))
+                            writer.write(data)
                         else:
                             writer.write(data)
                 else:

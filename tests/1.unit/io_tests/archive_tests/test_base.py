@@ -19,7 +19,7 @@ from exonware.xwsystem.io.archive.base import (
 )
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestArchiveAbstractBases:
     """Test archive abstract base classes."""
     

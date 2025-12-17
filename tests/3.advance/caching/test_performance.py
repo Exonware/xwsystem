@@ -18,9 +18,9 @@ from exonware.xwsystem.caching.lru_cache import LRUCache
 from exonware.xwsystem.caching.lfu_optimized import OptimizedLFUCache
 
 
-@pytest.mark.xsystem_advance
-@pytest.mark.xsystem_performance
-@pytest.mark.xsystem_caching
+@pytest.mark.xwsystem_advance
+@pytest.mark.xwsystem_performance
+@pytest.mark.xwsystem_caching
 class TestCachingPerformanceExcellence:
     """Performance excellence validation - Priority #4."""
     

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: 30-Oct-2025
 
 Local filesystem implementation.
@@ -144,4 +144,12 @@ class LocalFileSystem(IFileSystem):
         p = self._resolve_path(path)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_bytes(content)
+    
+    def read(self, path: str) -> bytes:
+        """Read file contents."""
+        return self.read_bytes(path)
+    
+    def write(self, path: str, content: bytes) -> None:
+        """Write file contents."""
+        self.write_bytes(path, content)
 

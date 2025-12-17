@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 1, 2025
 
 WIM (Windows Imaging) format - RANK #9 SYSTEM IMAGES.
@@ -24,8 +24,11 @@ from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 
-# Lazy import for wimlib - the lazy hook will automatically handle ImportError
-import wimlib
+# Lazy import for wimlib - optional dependency
+try:
+    import wimlib
+except ImportError:
+    wimlib = None  # type: ignore
 
 
 class WimArchiver(IArchiveFormat):

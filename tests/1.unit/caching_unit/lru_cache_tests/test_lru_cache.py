@@ -1,5 +1,5 @@
 """
-#exonware/xwsystem/tests/1.unit/caching/lru_cache_tests/test_lru_cache.py
+#exonware/xwsystem/tests/1.unit/caching_unit/lru_cache_tests/test_lru_cache.py
 
 Unit tests for LRU cache implementation.
 
@@ -18,8 +18,8 @@ import threading
 from exonware.xwsystem.caching.lru_cache import LRUCache, AsyncLRUCache
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_caching
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_caching
 class TestLRUCache:
     """Unit tests for LRUCache."""
     
@@ -104,8 +104,8 @@ class TestLRUCache:
             assert cache.get(key) == value
 
 
-@pytest.mark.xsystem_unit
-@pytest.mark.xsystem_caching
+@pytest.mark.xwsystem_unit
+@pytest.mark.xwsystem_caching
 class TestAsyncLRUCache:
     """Unit tests for AsyncLRUCache."""
     

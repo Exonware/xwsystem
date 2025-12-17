@@ -10,38 +10,28 @@ Email: connect@exonware.com
 """
 
 import pytest
-from exonware.xwsystem.io.serialization.formats.text.json import XWJsonSerializer
+from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
 from exonware.xwsystem.io.serialization.base import ASerialization
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestJsonSerializer:
-    """Test XWJsonSerializer implementation."""
+    """Test JsonSerializer implementation."""
     
     def test_json_serializer_can_be_instantiated(self):
-        """Test that XWJsonSerializer can be created."""
-        serializer = XWJsonSerializer()
+        """Test that JsonSerializer can be created."""
+        serializer = JsonSerializer()
         assert serializer is not None
     
     def test_json_serializer_extends_aserialization(self):
-        """Test XWJsonSerializer extends ASerialization."""
-        assert issubclass(XWJsonSerializer, ASerialization)
+        """Test JsonSerializer extends ASerialization."""
+        assert issubclass(JsonSerializer, ASerialization)
     
     def test_json_serializer_has_encode_decode(self):
-        """Test XWJsonSerializer has codec methods."""
-        serializer = XWJsonSerializer()
+        """Test JsonSerializer has codec methods."""
+        serializer = JsonSerializer()
         assert hasattr(serializer, 'encode')
         assert hasattr(serializer, 'decode')
         assert callable(serializer.encode)
         assert callable(serializer.decode)
-
-
-@pytest.mark.xsystem_unit
-class TestJsonSerializerBackwardCompatibility:
-    """Test JSON serializer backward compatibility."""
-    
-    def test_jsonserializer_alias_exists(self):
-        """Test JsonSerializer alias exists for backward compatibility."""
-        from exonware.xwsystem.io.serialization import JsonSerializer
-        assert JsonSerializer is XWJsonSerializer
 

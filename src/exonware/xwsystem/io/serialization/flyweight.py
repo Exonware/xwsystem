@@ -1,9 +1,9 @@
-#exonware\xsystem\serialization\flyweight.py
+#exonware\xwsystem\serialization\flyweight.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 05, 2025
 
 Flyweight Pattern Implementation for Serializers
@@ -14,7 +14,7 @@ configuration, which is especially important for high-throughput applications.
 """
 
 import threading
-from typing import Any, Hashable, Optional, Type, Union
+from typing import Any, Hashable, Optional, Union
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from weakref import WeakValueDictionary
@@ -22,7 +22,7 @@ from weakref import WeakValueDictionary
 from ...config.logging_setup import get_logger
 from .contracts import ISerialization
 
-logger = get_logger("xsystem.serialization.flyweight")
+logger = get_logger("xwsystem.serialization.flyweight")
 
 
 class SerializerFlyweight:
@@ -46,7 +46,7 @@ class SerializerFlyweight:
     
     def get_serializer[T: ISerialization](
         self, 
-        serializer_class: Type[T],
+        serializer_class: type[T],
         **config: Any
     ) -> T:
         """
@@ -85,7 +85,7 @@ class SerializerFlyweight:
                 logger.error(f"Failed to create {serializer_class.__name__} instance: {e}")
                 raise
     
-    def _create_cache_key[T: ISerialization](self, serializer_class: Type[T], config: dict[str, Any]) -> str:
+    def _create_cache_key[T: ISerialization](self, serializer_class: type[T], config: dict[str, Any]) -> str:
         """
         Create a hashable cache key from class and configuration.
         
@@ -172,7 +172,7 @@ class SerializerFlyweight:
 _serializer_flyweight = SerializerFlyweight()
 
 
-def get_serializer[T: ISerialization](serializer_class: Type[T], **config: Any) -> T:
+def get_serializer[T: ISerialization](serializer_class: type[T], **config: Any) -> T:
     """
     Get a serializer instance using the flyweight pattern.
     
@@ -187,7 +187,7 @@ def get_serializer[T: ISerialization](serializer_class: Type[T], **config: Any) 
         Shared serializer instance
         
     Example:
-        >>> from xsystem.serialization import JsonSerializer
+        >>> from xwsystem.serialization import JsonSerializer
         >>> # These will return the same instance
         >>> json1 = get_serializer(JsonSerializer, validate_input=True)
         >>> json2 = get_serializer(JsonSerializer, validate_input=True)
@@ -248,7 +248,7 @@ class SerializerPool:
         self._counter = 0
         self._lock = threading.RLock()
     
-    def get_serializer[T: ISerialization](self, serializer_class: Type[T], **config: Any) -> T:
+    def get_serializer[T: ISerialization](self, serializer_class: type[T], **config: Any) -> T:
         """Get serializer from pool with size-limited caching."""
         cache_key = self._create_cache_key(serializer_class, config)
         
@@ -302,7 +302,7 @@ class SerializerPool:
         
         logger.debug(f"Evicted serializer instance: {lru_key[:32]}...")
     
-    def _create_cache_key[T: ISerialization](self, serializer_class: Type[T], config: dict[str, Any]) -> str:
+    def _create_cache_key[T: ISerialization](self, serializer_class: type[T], config: dict[str, Any]) -> str:
         """Create cache key (same as flyweight implementation)."""
         return _serializer_flyweight._create_cache_key(serializer_class, config)
     

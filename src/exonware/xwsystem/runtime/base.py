@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Runtime module base classes - abstract classes for runtime functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Type, Callable
+from typing import Any, Optional, Union, Callable
 from .contracts import RuntimeMode, PlatformType, PythonVersion, EnvironmentType
 
 
@@ -252,10 +252,10 @@ class AReflectionBase(ABC):
     def __init__(self):
         """Initialize reflection base."""
         self._module_cache: dict[str, Any] = {}
-        self._class_cache: dict[str, Type] = {}
+        self._class_cache: dict[str, type] = {}
     
     @abstractmethod
-    def get_class(self, class_name: str, module_name: Optional[str] = None) -> Optional[Type]:
+    def get_class(self, class_name: str, module_name: Optional[str] = None) -> Optional[type]:
         """Get class by name."""
         pass
     
@@ -295,12 +295,12 @@ class AReflectionBase(ABC):
         pass
     
     @abstractmethod
-    def get_class_hierarchy(self, cls: Type) -> list[Type]:
+    def get_class_hierarchy(self, cls: type) -> list[type]:
         """Get class hierarchy."""
         pass
     
     @abstractmethod
-    def is_subclass(self, cls: Type, parent_cls: Type) -> bool:
+    def is_subclass(self, cls: type, parent_cls: type) -> bool:
         """Check if class is subclass of parent."""
         pass
     

@@ -41,7 +41,7 @@ def main():
         "--tb=short",
         "-x",  # Stop on first failure (GUIDELINES_TEST.md)
         str(Path(__file__).parent),
-        "-m", "xsystem_unit"
+        "-m", "xwsystem_unit"
     ])
     
     # Save Markdown output
@@ -61,7 +61,7 @@ def main():
 
 **Command:** `python tests/1.unit/codec_tests/runner.py`
 
-**Markers:** `xsystem_unit`
+**Markers:** `xwsystem_unit`
 
 **Options:**
 - Verbose output (`-v`)

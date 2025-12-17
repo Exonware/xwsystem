@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: November 2, 2025
 
 YAML serialization - Human-readable data serialization format.
@@ -13,7 +13,7 @@ Following I→A pattern:
 - Concrete: YamlSerializer
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, Iterator
 from pathlib import Path
 
 from ...base import ASerialization
@@ -87,6 +87,10 @@ class YamlSerializer(ASerialization):
     @property
     def supports_streaming(self) -> bool:
         return True  # YAML supports multiple documents
+    
+    @property
+    def supports_incremental_streaming(self) -> bool:
+        return True  # YAML supports multi-document streaming
     
     @property
     def capabilities(self) -> CodecCapability:
@@ -178,4 +182,50 @@ class YamlSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             )
+    
+    # ========================================================================
+    # INCREMENTAL STREAMING
+    # ========================================================================
+    
+    def incremental_load(
+        self,
+        file_path: Union[str, Path],
+        **options: Any,
+    ) -> Iterator[Any]:
+        """
+        Stream YAML documents one at a time (supports multi-document YAML).
+        
+        Uses PyYAML's safe_load_all() for true streaming without loading
+        entire file into memory.
+        
+        Args:
+            file_path: Path to the YAML file
+            **options: YAML options (Loader, etc.)
+            
+        Yields:
+            Each document from the YAML file one at a time
+            
+        Raises:
+            FileNotFoundError: If file doesn't exist
+            SerializationError: If parsing fails
+        """
+        path = Path(file_path)
+        if not path.exists():
+            raise FileNotFoundError(f"File not found: {path}")
+        
+        opts = options or {}
+        loader = opts.get('Loader', yaml.SafeLoader)
+        
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                # Use safe_load_all for multi-document streaming
+                for document in yaml.safe_load_all(f):
+                    if document is not None:  # Skip empty documents
+                        yield document
+        except (yaml.YAMLError, UnicodeDecodeError) as e:
+            raise SerializationError(
+                f"Failed to incrementally load YAML: {e}",
+                format_name=self.format_name,
+                original_error=e
+            ) from e
 

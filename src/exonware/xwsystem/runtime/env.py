@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Environment management utilities for runtime configuration and detection.
@@ -16,7 +16,7 @@ from typing import Any, Optional, Union
 
 from ..config.logging_setup import get_logger
 
-logger = get_logger("xsystem.runtime.env")
+logger = get_logger("xwsystem.runtime.env")
 
 
 class EnvironmentManager:

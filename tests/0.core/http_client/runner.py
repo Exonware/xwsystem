@@ -14,14 +14,14 @@ Generation Date: January 02, 2025
 
 import sys
 import asyncio
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class HttpCoreTester:
     """Core tester for HTTP functionality."""
     
     def __init__(self):
-        self.results: Dict[str, bool] = {}
+        self.results: dict[str, bool] = {}
         
     def test_http_client_basic(self) -> bool:
         """Test basic HTTP client functionality."""

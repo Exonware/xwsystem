@@ -15,7 +15,7 @@ from exonware.xwsystem.io.serialization.contracts import ISerialization
 from exonware.xwsystem.io.codec.contracts import ICodec
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestSerializationInterface:
     """Test ISerialization interface definition."""
     

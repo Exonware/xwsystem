@@ -26,7 +26,7 @@ from exonware.xwsystem.io.defs import (
 )
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestIOInterfaces:
     """Test that all IO interfaces are properly defined as ABCs."""
     
@@ -67,7 +67,7 @@ class TestIOInterfaces:
         assert hasattr(IArchiveFile, '__abstractmethods__')
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestIOEnums:
     """Test that all IO enums are properly defined."""
     
@@ -103,7 +103,7 @@ class TestIOEnums:
         assert CompressionLevel is not None
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestInterfaceDesign:
     """Test interface design follows eXonware patterns."""
     

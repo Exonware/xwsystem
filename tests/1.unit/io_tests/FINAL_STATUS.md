@@ -134,7 +134,7 @@ tests/
 1. **4-Layer Hierarchy**: `0.core → 1.unit → 2.integration → 3.advance` ✅
 2. **Mirror Structure**: Tests mirror `src/exonware/xwsystem/io/` ✅
 3. **Proper Naming**: `test_<module>.py` pattern ✅
-4. **Test Markers**: `@pytest.mark.xsystem_unit` ✅
+4. **Test Markers**: `@pytest.mark.xwsystem_unit` ✅
 5. **Documentation**: README, reports, docstrings ✅
 6. **Runners**: Layer runner with runner_out.md ✅
 

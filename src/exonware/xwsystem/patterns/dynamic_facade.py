@@ -1,5 +1,5 @@
 import re
-from typing import Any, Callable, Type
+from typing import Any, Callable
 
 
 class _FormatProxy:
@@ -10,7 +10,7 @@ class _FormatProxy:
     the creation of a fluent API like `xData.json.load(...)`.
     """
 
-    def __init__(self, handler_class: Type, parent_facade_instance: "DynamicFacade"):
+    def __init__(self, handler_class: type, parent_facade_instance: "DynamicFacade"):
         self._handler_class = handler_class
         self._parent = parent_facade_instance
 
@@ -64,7 +64,7 @@ class DynamicFacade:
     """
 
     def __init__(
-        self, handler_base_class: Type, handler_discovery_func: Callable[[], list[Type]]
+        self, handler_base_class: type, handler_discovery_func: Callable[[], list[type]]
     ):
         """
         Initializes the DynamicFacade.
@@ -78,8 +78,8 @@ class DynamicFacade:
         self._attach_proxies()
 
     def _discover_handlers(
-        self, discovery_func: Callable[[], list[Type]]
-    ) -> dict[str, Type]:
+        self, discovery_func: Callable[[], list[type]]
+    ) -> dict[str, type]:
         """
         Discovers handler classes and maps them to format names.
         """
@@ -92,7 +92,7 @@ class DynamicFacade:
                     handler_map[format_name] = handler
         return handler_map
 
-    def _get_format_name(self, handler_class: Type) -> str:
+    def _get_format_name(self, handler_class: type) -> str:
         """
         Derives a format name (e.g., 'json') from a handler class name
         (e.g., 'JSONDataHandler').
@@ -113,7 +113,7 @@ class DynamicFacade:
             setattr(self, format_name, proxy_instance)
 
     def _load_with_handler(
-        self, source: Any, handler_class: Type, **kwargs: Any
+        self, source: Any, handler_class: type, **kwargs: Any
     ) -> Any:
         """
         Placeholder for the actual data loading logic.
@@ -129,7 +129,7 @@ class DynamicFacade:
         )
 
     def _save_with_handler(
-        self, data_container: Any, file_path: str, handler_class: Type, **kwargs: Any
+        self, data_container: Any, file_path: str, handler_class: type, **kwargs: Any
     ) -> None:
         """
         Placeholder for the actual data saving logic.

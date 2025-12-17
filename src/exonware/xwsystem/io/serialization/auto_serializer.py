@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 Automatic serializer that detects format and delegates to appropriate serializer.
 """
 
 from pathlib import Path
-from typing import Any, Optional, Type, Union
+from typing import Any, Optional, Union
 
 from .format_detector import FormatDetector, detect_format
 from .contracts import ISerialization
@@ -39,7 +39,7 @@ class AutoSerializer:
         self._serializer_cache: dict[str, ISerialization] = {}
         self._default_format = default_format
     
-    def _get_serializer_class(self, format_name: str) -> Type[ISerialization]:
+    def _get_serializer_class(self, format_name: str) -> type[ISerialization]:
         """
         Get serializer class for format name.
         
@@ -52,36 +52,45 @@ class AutoSerializer:
         Raises:
             ImportError: If format not available
         """
-        # Dynamic import to avoid circular dependencies
+        # Dynamic import to avoid circular dependencies.
+        # Root cause fix: import concrete serializers from the canonical
+        # xwsystem.io.serialization.formats packages instead of a parallel
+        # exonware.xwsystem.serialization namespace (which should not exist).
         module_map = {
-            'JSON': ('json', 'JsonSerializer'),
-            'YAML': ('yaml', 'YamlSerializer'),
-            'TOML': ('toml', 'TomlSerializer'),
-            'XML': ('xml', 'XmlSerializer'),
-            'CSV': ('csv', 'CsvSerializer'),
-            'ConfigParser': ('configparser', 'ConfigParserSerializer'),
-            'FormData': ('formdata', 'FormDataSerializer'),
-            'Multipart': ('multipart', 'MultipartSerializer'),
-            
-            # Binary formats
-            'BSON': ('bson', 'BsonSerializer'),
-            'MessagePack': ('msgpack', 'MsgPackSerializer'),
-            'CBOR': ('cbor', 'CborSerializer'),
-            'Pickle': ('pickle', 'PickleSerializer'),
-            'Marshal': ('marshal', 'MarshalSerializer'),
-            'SQLite3': ('sqlite3', 'Sqlite3Serializer'),
-            'DBM': ('dbm', 'DbmSerializer'),
-            'Shelve': ('shelve', 'ShelveSerializer'),
-            'Plistlib': ('plistlib', 'PlistSerializer'),
-            
-            # Schema-based formats
-            'Avro': ('avro', 'AvroSerializer'),
-            'Protobuf': ('protobuf', 'ProtobufSerializer'),
-            'Thrift': ('thrift', 'ThriftSerializer'),
-            'Parquet': ('parquet', 'ParquetSerializer'),
-            'ORC': ('orc', 'OrcSerializer'),
-            'CapnProto': ('capnproto', 'CapnProtoSerializer'),
-            'FlatBuffers': ('flatbuffers', 'FlatBuffersSerializer'),
+            # Text formats
+            'JSON': ('io.serialization.formats.text.json', 'JsonSerializer'),
+            'JSONL': ('io.serialization.formats.text.jsonlines', 'JsonLinesSerializer'),
+            'NDJSON': ('io.serialization.formats.text.jsonlines', 'JsonLinesSerializer'),
+            'YAML': ('io.serialization.formats.text.yaml', 'YamlSerializer'),
+            'TOML': ('io.serialization.formats.text.toml', 'TomlSerializer'),
+            'XML': ('io.serialization.formats.text.xml', 'XmlSerializer'),
+            'CSV': ('io.serialization.formats.text.csv', 'CsvSerializer'),
+            'ConfigParser': ('io.serialization.formats.text.configparser', 'ConfigParserSerializer'),
+            'FormData': ('io.serialization.formats.text.formdata', 'FormDataSerializer'),
+            'Multipart': ('io.serialization.formats.text.multipart', 'MultipartSerializer'),
+
+            # Binary / database formats
+            'BSON': ('io.serialization.formats.binary.bson', 'BsonSerializer'),
+            'MessagePack': ('io.serialization.formats.binary.msgpack', 'MsgPackSerializer'),
+            'CBOR': ('io.serialization.formats.binary.cbor', 'CborSerializer'),
+            'Pickle': ('io.serialization.formats.binary.pickle', 'PickleSerializer'),
+            'Marshal': ('io.serialization.formats.binary.marshal', 'MarshalSerializer'),
+            'SQLite3': ('io.serialization.formats.database.sqlite3', 'Sqlite3Serializer'),
+            'DBM': ('io.serialization.formats.database.dbm', 'DbmSerializer'),
+            'Shelve': ('io.serialization.formats.database.shelve', 'ShelveSerializer'),
+            'Plistlib': ('io.serialization.formats.binary.plistlib', 'PlistSerializer'),
+
+            # Schema-based / advanced formats (placeholders for future modules)
+            # These entries intentionally point to non-existent modules today.
+            # The lazy installation system will handle installing/adding them
+            # when the corresponding format implementations are introduced.
+            'Avro': ('io.serialization.formats.schema.avro', 'AvroSerializer'),
+            'Protobuf': ('io.serialization.formats.schema.protobuf', 'ProtobufSerializer'),
+            'Thrift': ('io.serialization.formats.schema.thrift', 'ThriftSerializer'),
+            'Parquet': ('io.serialization.formats.scientific.parquet', 'ParquetSerializer'),
+            'ORC': ('io.serialization.formats.scientific.orc', 'OrcSerializer'),
+            'CapnProto': ('io.serialization.formats.schema.capnproto', 'CapnProtoSerializer'),
+            'FlatBuffers': ('io.serialization.formats.schema.flatbuffers', 'FlatBuffersSerializer'),
         }
         
         if format_name not in module_map:
@@ -90,9 +99,9 @@ class AutoSerializer:
         module_name, class_name = module_map[format_name]
         
         try:
-            # Import from current package
-            module = __import__(f'exonware.xwsystem.serialization.{module_name}', 
-                              fromlist=[class_name])
+            # Import from canonical xwsystem.io serialization path
+            module = __import__(f'exonware.xwsystem.{module_name}',
+                                fromlist=[class_name])
             return getattr(module, class_name)
         except (ImportError, AttributeError) as e:
             # Lazy installation system will handle missing dependencies
@@ -119,7 +128,8 @@ class AutoSerializer:
         self, 
         data: Any, 
         file_path: Optional[Union[str, Path]] = None,
-        format_hint: Optional[str] = None
+        format_hint: Optional[str] = None,
+        **opts
     ) -> Union[str, bytes]:
         """
         Auto-detect format and serialize data.
@@ -128,6 +138,7 @@ class AutoSerializer:
             data: Data to serialize
             file_path: Optional file path for format detection
             format_hint: Optional format hint to use
+            **opts: Additional serializer-specific options (pretty, indent, etc.)
             
         Returns:
             Serialized data
@@ -145,7 +156,7 @@ class AutoSerializer:
                 logger.debug(f"Using default format: {format_name}")
         
         serializer = self._get_serializer(format_name)
-        return serializer.dumps(data)
+        return serializer.dumps(data, **opts)
     
     def detect_and_deserialize(
         self, 
@@ -362,7 +373,8 @@ _global_auto_serializer = AutoSerializer()
 def auto_serialize(
     data: Any, 
     file_path: Optional[Union[str, Path]] = None,
-    format_hint: Optional[str] = None
+    format_hint: Optional[str] = None,
+    **opts
 ) -> Union[str, bytes]:
     """
     Convenience function for auto-serialization.
@@ -371,11 +383,12 @@ def auto_serialize(
         data: Data to serialize
         file_path: Optional file path for format detection
         format_hint: Optional format hint
+        **opts: Additional serializer options
         
     Returns:
         Serialized data
     """
-    return _global_auto_serializer.detect_and_serialize(data, file_path, format_hint)
+    return _global_auto_serializer.detect_and_serialize(data, file_path, format_hint, **opts)
 
 def auto_deserialize(
     data: Union[str, bytes], 

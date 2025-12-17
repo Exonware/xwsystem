@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.410
+Version: 0.0.1.411
 Generation Date: September 04, 2025
 
 HTTP client with retry mechanisms, connection pooling, and error handling.
@@ -24,7 +24,7 @@ from ..config.logging_setup import get_logger
 from ..monitoring.error_recovery import retry_with_backoff
 from .errors import HttpError
 
-logger = get_logger("xsystem.http_client.client")
+logger = get_logger("xwsystem.http_client.client")
 
 
 @dataclass

@@ -13,14 +13,14 @@ Generation Date: January 02, 2025
 """
 
 import sys
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class ValidationCoreTester:
     """Core tester for validation functionality."""
     
     def __init__(self):
-        self.results: Dict[str, bool] = {}
+        self.results: dict[str, bool] = {}
         
     def test_data_validator(self) -> bool:
         """Test data validator functionality."""

@@ -13,7 +13,7 @@ import pytest
 from exonware.xwsystem.io.serialization.registry import SerializationRegistry, get_serialization_registry
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestSerializationRegistry:
     """Test SerializationRegistry functionality."""
     
@@ -44,7 +44,7 @@ class TestSerializationRegistry:
         assert hasattr(registry, 'list_mime_types')
 
 
-@pytest.mark.xsystem_unit
+@pytest.mark.xwsystem_unit
 class TestSerializationRegistryIntegration:
     """Test SerializationRegistry integration with UniversalCodecRegistry."""
     
