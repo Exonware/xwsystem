@@ -1,4 +1,4 @@
-﻿# Architecture Guide
+# Architecture Guide
 
 **Company:** eXonware.com  
 **Author:** Eng. Muhammad AlShehri  
@@ -16,7 +16,7 @@ Define the architecture playbook for eXonware libraries, backend services, and f
 
 ## Scope
 
-- Applies to all codebases within the eXonware ecosystem (`xwsystem`, `xwnode`, `xwdata`, `xwschema`, `xaction`, `xentity`, application libraries, backend APIs, front-end apps).  
+- Applies to all codebases within the eXonware ecosystem (`xwsystem`, `xwnode`, `xwdata`, `xwschema`, `xwaction`, `xentity`, application libraries, backend APIs, front-end apps).  
 - Covers multi-language strategy (Python today, Rust/Go/TypeScript facades tomorrow).  
 - Interfaces with `GUIDE_DEV.md` (implementation standards), `GUIDE_MASTER.md` (shared constraints), and `REF_ARCH.md` (product-specific details).
 
@@ -77,7 +77,7 @@ Define the architecture playbook for eXonware libraries, backend services, and f
 |--------------------------|-----------------------------------------------|-----------------------------------------------|
 | **Foundation (xwsystem)**| Serialization, codecs, security, validation, caching, threading, HTTP | Modules under `io/`, `codec/`, `security/`, etc. |
 | **Graph/Data (xwnode, xwdata)** | Graph structures, data conversion, schema mapping | Custom node/edge strategies, data pipelines |
-| **Schema & Action (xwschema, xaction)** | Schema enforcement, executable actions, workflow orchestration | Validation engines, automation frameworks |
+| **Schema & Action (xwschema, xwaction)** | Schema enforcement, executable actions, workflow orchestration | Validation engines, automation frameworks |
 | **Domain Entities (xentity)** | Entity management across schema + actions | Entity lifecycles, caching strategies |
 | **Applications (xauth, xstorage, xbase, frontends)** | Product surfaces, APIs, UI | Microservices, UI components, orchestration |
 

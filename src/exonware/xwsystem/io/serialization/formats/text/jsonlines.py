@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.411
+Version: 0.1.0.1
 Generation Date: 02-Nov-2025
 
 JSON Lines (JSONL/NDJSON) Serialization - Newline-Delimited JSON
@@ -27,8 +27,14 @@ from pathlib import Path
 import json
 
 from .json import JsonSerializer
+from ...parsers.registry import get_parser
+from ...parsers.base import IJsonParser
 from ....errors import SerializationError
 from ....common.atomic import AtomicFileWriter
+from exonware.xwsystem.config.logging_setup import get_logger
+from exonware.xwsystem.config.performance import get_performance_config
+
+logger = get_logger(__name__)
 
 
 class JsonLinesSerializer(JsonSerializer):
@@ -40,9 +46,16 @@ class JsonLinesSerializer(JsonSerializer):
     Concrete: JsonLinesSerializer
     """
     
-    def __init__(self):
-        """Initialize JSON Lines serializer."""
-        super().__init__()
+    def __init__(self, parser_name: Optional[str] = None):
+        """
+        Initialize JSON Lines serializer with optional parser selection.
+        
+        Args:
+            parser_name: Parser name ("standard", "orjson", or None for auto-detect)
+        """
+        super().__init__(parser_name=parser_name)
+        # Get parser instance for direct use in line-by-line operations
+        self._parser: IJsonParser = get_parser(parser_name)
     
     @property
     def codec_id(self) -> str:
@@ -117,7 +130,12 @@ class JsonLinesSerializer(JsonSerializer):
 
         lines: list[str] = []
         for item in data:
-            lines.append(json.dumps(item, ensure_ascii=ensure_ascii))
+            # Use pluggable parser
+            result = self._parser.dumps(item, ensure_ascii=ensure_ascii)
+            # Convert bytes to str if needed
+            if isinstance(result, bytes):
+                result = result.decode("utf-8")
+            lines.append(result)
 
         return "\n".join(lines)
 
@@ -142,7 +160,8 @@ class JsonLinesSerializer(JsonSerializer):
         for line in lines:
             line = line.strip()
             if line:  # Skip empty lines
-                results.append(json.loads(line))
+                # Use pluggable parser
+                results.append(self._parser.loads(line))
 
         return results
 
@@ -174,7 +193,8 @@ class JsonLinesSerializer(JsonSerializer):
                 line = line.strip()
                 if not line:
                     continue
-                record = json.loads(line)
+                # Use pluggable parser
+                record = self._parser.loads(line)
                 if match(record):
                     return self._apply_projection(record, projection)
 
@@ -195,11 +215,63 @@ class JsonLinesSerializer(JsonSerializer):
         Implementation uses a temp file + AtomicFileWriter pattern to ensure
         atomicity when atomic=True. Records are processed line-by-line and only
         the matching records are materialized and updated.
+        
+        Supports append-only log optimization for large files (use_append_log=True).
         """
         path = Path(file_path)
         if not path.exists():
             raise FileNotFoundError(f"File not found: {path}")
 
+        # Check if append-only log should be used
+        perf_config = get_performance_config()
+        use_append_log = options.get("use_append_log", None)
+        if use_append_log is None:
+            if not perf_config.enable_append_log:
+                use_append_log = False
+            else:
+                # Auto-detect: use for files above threshold
+                file_size_mb = path.stat().st_size / (1024 * 1024)
+                use_append_log = file_size_mb > perf_config.append_log_threshold_mb
+
+        # Try append-only log if enabled
+        if use_append_log:
+            try:
+                from .append_only_log import AppendOnlyLog
+                log = AppendOnlyLog(path)
+                
+                # For append-only log, we need to find matching records first
+                # and apply updates, then append to log
+                # This is a simplified version - full implementation would
+                # integrate with index for O(1) lookups
+                updated = 0
+                with path.open("r", encoding="utf-8") as src:
+                    for line in src:
+                        raw = line.rstrip("\n")
+                        if not raw.strip():
+                            continue
+                        
+                        try:
+                            record = self._parser.loads(raw)
+                            if match(record):
+                                # Apply updater
+                                updated_record = updater(record)
+                                
+                                # Extract type and id for log entry
+                                type_name = record.get("@type") or record.get("type") or "Record"
+                                id_value = str(record.get("id", ""))
+                                
+                                # Append to log
+                                log.update_record(type_name, id_value, lambda x: updated_record)
+                                updated += 1
+                        except Exception:
+                            continue
+                
+                return updated
+            except Exception as e:
+                # Fall back to full rewrite if append-only log fails
+                logger.debug(f"Append-only log failed, falling back to full rewrite: {e}")
+
+        # Original full-rewrite implementation
         updated = 0
         backup = options.get("backup", True)
         ensure_ascii = options.get("ensure_ascii", False)
@@ -213,16 +285,21 @@ class JsonLinesSerializer(JsonSerializer):
                             raw = line.rstrip("\n")
                             if not raw.strip():
                                 # Preserve structural empty lines
-                                writer.write(b"\n")
+                                writer.write("\n")
                                 continue
 
-                            record = json.loads(raw)
+                            # Use pluggable parser
+                            record = self._parser.loads(raw)
                             if match(record):
                                 record = updater(record)
                                 updated += 1
 
-                            out_line = json.dumps(record, ensure_ascii=ensure_ascii) + "\n"
-                            writer.write(out_line.encode("utf-8"))
+                            # Use pluggable parser for serialization
+                            result = self._parser.dumps(record, ensure_ascii=ensure_ascii)
+                            if isinstance(result, bytes):
+                                result = result.decode("utf-8")
+                            out_line = result + "\n"
+                            writer.write(out_line)
             else:
                 # Non-atomic fallback: read + rewrite line-by-line
                 new_lines: list[str] = []
@@ -233,12 +310,17 @@ class JsonLinesSerializer(JsonSerializer):
                             new_lines.append("\n")
                             continue
 
-                        record = json.loads(raw)
+                        # Use pluggable parser
+                        record = self._parser.loads(raw)
                         if match(record):
                             record = updater(record)
                             updated += 1
 
-                        new_lines.append(json.dumps(record, ensure_ascii=ensure_ascii) + "\n")
+                        # Use pluggable parser for serialization
+                        result = self._parser.dumps(record, ensure_ascii=ensure_ascii)
+                        if isinstance(result, bytes):
+                            result = result.decode("utf-8")
+                        new_lines.append(result + "\n")
 
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text("".join(new_lines), encoding="utf-8")
@@ -288,7 +370,8 @@ class JsonLinesSerializer(JsonSerializer):
                     break
 
                 if current_index >= start_index:
-                    results.append(json.loads(line))
+                    # Use pluggable parser
+                    results.append(self._parser.loads(line))
 
                 current_index += 1
 
@@ -318,7 +401,8 @@ class JsonLinesSerializer(JsonSerializer):
                 if not line:
                     continue
 
-                record = json.loads(line)
+                # Use pluggable parser
+                record = self._parser.loads(line)
                 if isinstance(record, dict) and record.get(id_field) == id_value:
                     return record
 

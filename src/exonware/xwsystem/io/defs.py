@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.411
+Version: 0.1.0.1
 Generation Date: 30-Oct-2025
 
 IO module definitions - ALL enums and types in ONE place.

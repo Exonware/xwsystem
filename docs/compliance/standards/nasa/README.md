@@ -1,7 +1,7 @@
-﻿# NASA Standards Compliance
+# NASA Standards Compliance
 
 **Scope:** Software safety, engineering, assurance, and risk management for aerospace-grade systems.  
-**Applicability:** All core libraries (xwsystem, xwnode, xwdata, xschema, xaction, xentity) and any backend service targeting Mars Standard v2+.  
+**Applicability:** All core libraries (xwsystem, xwnode, xwdata, xschema, xwaction, xentity) and any backend service targeting Mars Standard v2+.  
 **Priority:** High (required for v2 draft, full compliance by v4).  
 **Last status review:** 08-Nov-2025 00:00 UTC � ? Not compliant (structure only; no evidence recorded).
 

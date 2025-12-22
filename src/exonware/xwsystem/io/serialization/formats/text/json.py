@@ -2,7 +2,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.411
+Version: 0.1.0.1
 Generation Date: November 2, 2025
 
 JSON serialization - Universal, human-readable data interchange format.
@@ -18,6 +18,8 @@ from typing import Any, Optional, Union
 from pathlib import Path
 
 from ...base import ASerialization
+from ...parsers.registry import get_parser
+from ...parsers.base import IJsonParser
 from ....contracts import EncodeOptions, DecodeOptions
 from ....defs import CodecCapability
 from ....errors import SerializationError
@@ -31,7 +33,8 @@ class JsonSerializer(ASerialization):
     A: ASerialization (abstract base)
     Concrete: JsonSerializer
     
-    Uses Python's built-in `json` library for reliable JSON handling.
+    Uses pluggable JSON parser (auto-detects best available: orjson > stdlib).
+    Falls back to Python's built-in `json` library if optimized parsers unavailable.
     
     Examples:
         >>> serializer = JsonSerializer()
@@ -50,6 +53,16 @@ class JsonSerializer(ASerialization):
         >>> # Load from file
         >>> user = serializer.load_file("user.json")
     """
+    
+    def __init__(self, parser_name: Optional[str] = None):
+        """
+        Initialize JSON serializer with optional parser selection.
+        
+        Args:
+            parser_name: Parser name ("standard", "orjson", or None for auto-detect)
+        """
+        super().__init__()
+        self._parser: IJsonParser = get_parser(parser_name)
     
     # ========================================================================
     # CODEC METADATA
@@ -128,7 +141,7 @@ class JsonSerializer(ASerialization):
         """
         Encode data to JSON string.
         
-        Uses Python's built-in json.dumps().
+        Uses pluggable JSON parser (orjson if available, else stdlib).
         
         Args:
             value: Data to serialize
@@ -151,8 +164,8 @@ class JsonSerializer(ASerialization):
             sort_keys = opts.get('sort_keys', False)
             ensure_ascii = opts.get('ensure_ascii', False)
             
-            # Encode to JSON string
-            json_str = json.dumps(
+            # Use pluggable parser
+            result = self._parser.dumps(
                 value,
                 indent=indent,
                 sort_keys=sort_keys,
@@ -161,7 +174,12 @@ class JsonSerializer(ASerialization):
                 cls=opts.get('cls', None)
             )
             
-            return json_str
+            # Convert bytes to str if needed (for compatibility)
+            if isinstance(result, bytes):
+                # For orjson, decode to string for compatibility
+                return result.decode("utf-8")
+            
+            return result
             
         except (TypeError, ValueError, OverflowError) as e:
             raise SerializationError(
@@ -174,7 +192,7 @@ class JsonSerializer(ASerialization):
         """
         Decode JSON string to data.
         
-        Uses Python's built-in json.loads().
+        Uses pluggable JSON parser (orjson if available, else stdlib).
         
         Args:
             repr: JSON string (bytes or str)
@@ -187,21 +205,26 @@ class JsonSerializer(ASerialization):
             SerializationError: If decoding fails
         """
         try:
-            # Convert bytes to str if needed
-            if isinstance(repr, bytes):
-                repr = repr.decode('utf-8')
-            
             opts = options or {}
             
-            # Decode from JSON string
-            data = json.loads(
-                repr,
-                object_hook=opts.get('object_hook', None),
-                parse_float=opts.get('parse_float', None),
-                parse_int=opts.get('parse_int', None),
-                parse_constant=opts.get('parse_constant', None),
-                cls=opts.get('cls', None)
-            )
+            # Use pluggable parser (handles bytes/str conversion internally)
+            data = self._parser.loads(repr)
+            
+            # Note: Advanced options (object_hook, parse_float, etc.) are not
+            # supported by orjson. If these are needed, fall back to standard parser.
+            # For now, we prioritize performance over feature completeness.
+            if opts.get('object_hook') or opts.get('parse_float') or opts.get('parse_int'):
+                # Fallback to stdlib for advanced options
+                if isinstance(repr, bytes):
+                    repr = repr.decode('utf-8')
+                return json.loads(
+                    repr,
+                    object_hook=opts.get('object_hook', None),
+                    parse_float=opts.get('parse_float', None),
+                    parse_int=opts.get('parse_int', None),
+                    parse_constant=opts.get('parse_constant', None),
+                    cls=opts.get('cls', None)
+                )
             
             return data
             

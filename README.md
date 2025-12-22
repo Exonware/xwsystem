@@ -7,8 +7,8 @@
 **Company:** eXonware.com  
 **Author:** Eng. Muhammad AlShehri  
 **Email:** connect@exonware.com  
-**Version:** 0.0.1.411
-**Updated:** 17-Dec-2025
+**Version:** 0.1.0.1
+**Updated:** 22-Dec-2025
 
 ## 🎯 **The Python Revolution Starts Here**
 

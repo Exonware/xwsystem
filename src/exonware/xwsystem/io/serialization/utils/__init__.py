@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.0.1.411
+Version: 0.1.0.1
 Generation Date: November 9, 2025
 
 Serialization utilities module.

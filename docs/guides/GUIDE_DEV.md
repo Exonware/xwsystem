@@ -1,9 +1,9 @@
-﻿# eXonware Development Guide
+# eXonware Development Guide
 
 **Company:** eXonware.com
 **Author:** Eng. Muhammad AlShehri
 **Email:** connect@exonware.com
-**Version:** 0.0.1.411
+**Version:** 0.1.0.1
 **Generation Date:** 07-Sep-2025
 
 ## 📋 AI-Friendly Document
@@ -573,7 +573,7 @@ import scikit-learn
 ### Naming Conventions
 - **File naming**: snake_case (e.g., `data_handler.py`, `schema_validator.py`)
 - **Class naming**: CapWord (e.g., `DataHandler`, `SchemaValidator`)
-- **Library naming**: lowercase (e.g., `xwsystem`, `xnode`, `xdata`, `xschema`, `xaction`, `xentity`)
+- **Library naming**: lowercase (e.g., `xwsystem`, `xnode`, `xdata`, `xschema`, `xwaction`, `xentity`)
 - **Interface files**: **MANDATORY: Always use `contracts.py` - NEVER use `protocols.py`** (e.g., `contracts.py` for all enums and interfaces)
 - **Interfaces**: `IClass` (e.g., `INode`, `IEdge`, `IDataHandler`)
 - **Abstract classes**: `AClass` (e.g., `ANode`, `AEdge`, `ABaseHandler`) - **MANDATORY: All abstract classes in base.py files MUST start with 'A' and extend interface class: AClass(IClass)**
@@ -589,7 +589,7 @@ import scikit-learn
 ### Design Patterns
 
 #### **Structural Patterns**
-- **Facade pattern** - Mandatory outside xwsystem library for all future libs (xnode, xdata, xschema, xaction, xentity). **Note: xwsystem is an exception** - it does not require a facade pattern as it serves as the foundation library
+- **Facade pattern** - Mandatory outside xwsystem library for all future libs (xnode, xdata, xschema, xwaction, xentity). **Note: xwsystem is an exception** - it does not require a facade pattern as it serves as the foundation library
 - **Adapter pattern** - For integrating incompatible interfaces and legacy systems
 - **Decorator pattern** - For adding functionality to objects without altering their structure
 - **Composite pattern** - For treating individual objects and compositions uniformly
@@ -776,7 +776,7 @@ The eXonware ecosystem follows a structured 5-phase development approach with st
 
 #### **Version 0.x: Complete Ecosystem Development**
 - **Why Version 0 stays 0**: First number remains 0 until ready
-- **Complete ecosystem requirement**: All libraries (xwsystem, xnode, xdata, xschema, xaction, xentity) must be fully developed
+- **Complete ecosystem requirement**: All libraries (xwsystem, xnode, xdata, xschema, xwaction, xentity) must be fully developed
 - **Backend and frontend completion**: All backend systems and frontend applications must be implemented
 - **Real-world validation**: At least 3 full-fledged applications must be completed
 - **Design pattern perfection**: Extensive usage refines software patterns and architecture
@@ -943,8 +943,8 @@ All dependencies pre-installed
 - **xnode** (core-lib & facade-lib) - Node structures, edge types, xQuery support, lazy initialization
 - **xwdata** (core-lib & facade-lib) - Uses xnode, 50+ formats, anything-to-anything conversion
 - **xwschema** (core-lib & facade-lib) - Mix of xdata + OpenAPI, schema validation, format conversion
-- **xaction** (core-lib & facade-lib) - Function decoration, security, async, scheduling, automation
-- **xentity** (core-lib & facade-lib) - Combines xschema + xaction + xdata in unified object
+- **xwaction** (core-lib & facade-lib) - Function decoration, security, async, scheduling, automation
+- **xentity** (core-lib & facade-lib) - Combines xschema + xwaction + xdata in unified object
 
 ### Application Layer Libraries
 - **xauth** (lib, backend API, frontend app) - Extends xentity, implements best practices
@@ -953,7 +953,7 @@ All dependencies pre-installed
 - **xui** (frontend components lib) - TypeScript UI components
 
 ### Library Relationships
-- **xnode** ? **xdata** ? **xschema** ? **xaction** ? **xentity**
+- **xnode** ? **xdata** ? **xschema** ? **xwaction** ? **xentity**
 - **xentity** ? **xauth**, **xstorage**, **xbase**
 - **xui** (independent frontend components)
 
@@ -978,7 +978,7 @@ All dependencies pre-installed
 ## Project Categories & Standards
 
 ### Core Libraries (lib=core-lib & facade-lib)
-- **xnode, xdata, xschema, xaction, xentity**
+- **xnode, xdata, xschema, xwaction, xentity**
 - Must implement both core functionality and facade pattern
 - **Core-lib**: Low-level implementation with full functionality (currently Python, future Rust)
 - **Facade-lib**: Simplified API wrapping core-lib complexity (Python/Rust/TS/Go)
@@ -1447,7 +1447,7 @@ Migrate existing code to follow DEV_GUIDELINES.md standards:
 ```
 Plan version progression for the eXonware ecosystem:
 - Follow versioning philosophy (0.x until complete ecosystem)
-- Ensure all libraries (xwsystem, xnode, xdata, xschema, xaction, xentity) are complete
+- Ensure all libraries (xwsystem, xnode, xdata, xschema, xwaction, xentity) are complete
 - Validate 3+ full applications requirement
 - Plan transition to Version 1.x (ready)
 - Maintain exact version preservation rules
@@ -1498,7 +1498,7 @@ CORE REQUIREMENTS:
 - Create unified interface to complex subsystems
 - Hide implementation complexity
 - Ensure maintainability and consistency
-- Apply to all future libraries (xnode, xschema, xaction, xentity)
+- Apply to all future libraries (xnode, xschema, xwaction, xentity)
 
 DESIGN PATTERNS INTEGRATION:
 - Combine facade with strategy pattern for algorithm selection
@@ -1570,7 +1570,7 @@ Integrate xnode with xdata following DEV_GUIDELINES.md:
 **Ecosystem Development:**
 ```
 Develop complete eXonware ecosystem following DEV_GUIDELINES.md:
-- Complete all libraries (xwsystem, xnode, xdata, xschema, xaction, xentity)
+- Complete all libraries (xwsystem, xnode, xdata, xschema, xwaction, xentity)
 - Implement backend systems using ecosystem
 - Create frontend applications
 - Develop 3+ full-fledged applications
@@ -1707,9 +1707,9 @@ PRIORITIES FOCUS:
 5. Extensibility - Easy to add new schema types and handlers
 ```
 
-**xaction Implementation:**
+**xwaction Implementation:**
 ```
-Implement xaction library with Enterprise Action Framework following DEV_GUIDELINES.md:
+Implement xwaction library with Enterprise Action Framework following DEV_GUIDELINES.md:
 
 CORE REQUIREMENTS:
 - Advanced function decoration and management
@@ -1759,7 +1759,7 @@ PRIORITIES FOCUS:
 Implement xentity library with Advanced Entity Management following DEV_GUIDELINES.md:
 
 CORE REQUIREMENTS:
-- Unified object combining xschema + xaction + xdata
+- Unified object combining xschema + xwaction + xdata
 - Immutable Facade with thread-safe immutable-style API
 - Performance Caching with thread-safe LRU cache and hit/miss tracking
 - Lazy Loading with optimized entity loading and access patterns
@@ -1808,7 +1808,7 @@ PRIORITIES FOCUS:
 - **Simplified API** - Provides a unified interface to complex subsystems, reducing cognitive load for developers
 - **Abstraction layer** - Hides implementation complexity while exposing essential functionality
 - **Maintainability** - Changes to internal implementation don't affect client code
-- **Consistency** - Ensures uniform API across all eXonware libraries (xnode, xdata, xschema, xaction, xentity)
+- **Consistency** - Ensures uniform API across all eXonware libraries (xnode, xdata, xschema, xwaction, xentity)
 - **Exception: xwsystem** - xwsystem is the foundation library and does not require a facade pattern as it serves as the base for other libraries
 
 ### xnode Library (core-lib & facade-lib)
@@ -1854,11 +1854,11 @@ PRIORITIES FOCUS:
 - **Performance Optimization**: Ultra-fast implementation with backward compatibility
 - **Input/output schemas**: Define detailed input and output schemas with unlimited property details
 - **Constraint focus rationale**: Python's type system already handles basic constraints, focus on advanced validation
-- **xAction integration**: Enables declarative validation with imperative actions for complex scenarios
+- **XWAction integration**: Enables declarative validation with imperative actions for complex scenarios
 - **Core-Facade separation**: Core-lib (Rust future) handles schema validation, facade provides simplified API
 - **Multi-language facades**: Python/Rust/TS/Go facades wrapping shared Rust core
 
-### xaction Library (core-lib & facade-lib)
+### xwaction Library (core-lib & facade-lib)
 - **Function decoration**: Advanced function decoration and management capabilities
 - **Deep specifications**: Comprehensive function specifications for security, async, scheduling, automation
 - **Security integration**: Built-in security for functions with comprehensive validation
@@ -1869,7 +1869,7 @@ PRIORITIES FOCUS:
 - **Multi-language facades**: Python/Rust/TS/Go facades wrapping shared Rust core
 
 ### xentity Library (core-lib & facade-lib) - Advanced Entity Management
-- **Unified object**: Combines xschema + xaction + xdata in a single, powerful object
+- **Unified object**: Combines xschema + xwaction + xdata in a single, powerful object
 - **Immutable Facade**: Thread-safe immutable-style API with performance optimizations
 - **Performance Caching**: Thread-safe LRU cache with hit/miss tracking and metrics
 - **Lazy Loading**: Optimized entity loading and access patterns for memory efficiency
