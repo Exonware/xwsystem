@@ -10,7 +10,7 @@ works across all exonware packages (xwsystem, xwnode, xwdata, etc.).
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.3
+Version: 0.1.0.4
 Generation Date: 11-Nov-2025
 """
 

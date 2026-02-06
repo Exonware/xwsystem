@@ -7,7 +7,7 @@ This module provides configuration management for various xwsystem features.
 Author: Eng. Muhammad AlShehri
 Company: eXonware.com
 Email: connect@exonware.com
-Version: 0.1.0.3
+Version: 0.1.0.4
 Generated: 2025-01-27
 """
 

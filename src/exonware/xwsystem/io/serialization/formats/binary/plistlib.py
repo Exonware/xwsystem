@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.3
+Version: 0.1.0.4
 Generation Date: November 2, 2025
 
 Plist serialization - Apple property list format.

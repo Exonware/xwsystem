@@ -6,7 +6,7 @@ Package-level configuration entry points for xwsystem.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.3
+Version: 0.1.0.4
 Last Updated: 29-Jan-2026
 
 This module exists to satisfy the canonical structure in GUIDE_31_DEV.md:

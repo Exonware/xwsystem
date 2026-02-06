@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.3
+Version: 0.1.0.4
 Generation Date: October 26, 2025
 
 Generic registry pattern for dynamic registration and discovery.
