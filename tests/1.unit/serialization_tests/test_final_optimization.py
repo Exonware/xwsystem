@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/serialization_tests/test_final_optimization.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
@@ -50,24 +51,24 @@ def test_optimized_serializers():
         try:
             print(f"\n🔄 Testing {name}...")
             
-            # Import serializer
-            module_obj = __import__(f"exonware.xwsystem.serialization.{module}", fromlist=[class_name])
-            serializer_class = getattr(module_obj, class_name)
+            # Import serializer from correct module
+            from exonware.xwsystem.io.serialization import (
+                JsonSerializer, XmlSerializer, YamlSerializer, TomlSerializer,
+                CsvSerializer, BsonSerializer, MsgPackSerializer, CborSerializer,
+                PickleSerializer, MarshalSerializer, Sqlite3Serializer, DbmSerializer, ShelveSerializer
+            )
+            serializer_class = {
+                "JSON": JsonSerializer, "XML": XmlSerializer, "YAML": YamlSerializer, "TOML": TomlSerializer,
+                "CSV": CsvSerializer, "BSON": BsonSerializer, "MessagePack": MsgPackSerializer,
+                "CBOR": CborSerializer, "Pickle": PickleSerializer, "Marshal": MarshalSerializer,
+                "SQLite3": Sqlite3Serializer, "DBM": DbmSerializer, "Shelve": ShelveSerializer
+            }.get(name)
+            if serializer_class is None:
+                raise ImportError(f"Serializer {name} not found in import map")
             
-            # Create serializer with test-friendly settings
-            if name in ["Pickle", "Shelve"]:
-                serializer = serializer_class(
-                    validate_paths=False,  # Allow test paths
-                    validate_input=False,  # Skip security validation for tests
-                    max_depth=10,
-                    allow_unsafe=True
-                )
-            else:
-                serializer = serializer_class(
-                    validate_paths=False,  # Allow test paths
-                    validate_input=False,  # Skip security validation for tests
-                    max_depth=10
-                )
+            # Create serializer (ASerialization accepts max_depth and max_size_mb only)
+            # Note: Shelve security warnings are expected - they inform users about security risks
+            serializer = serializer_class(max_depth=10)
             
             # Verify properties
             assert serializer.format_name == name, f"{name} format name mismatch"

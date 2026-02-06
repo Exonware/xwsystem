@@ -110,5 +110,3 @@ def test_config_package_lazy_install_enabled_respects_install_hook_flag() -> Non
         assert LazyInstallConfig.is_enabled(PACKAGE_NAME) is True
         assert LazyInstallConfig.get_mode(PACKAGE_NAME) == "interactive"
         assert is_import_hook_installed(PACKAGE_NAME) == hook_before
-
-

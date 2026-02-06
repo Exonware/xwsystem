@@ -1,4 +1,4 @@
-#exonware/xwsystem/tests/core/config/runner.py
+#exonware/xwsystem/tests/0.core/config/runner.py
 """
 Config Core Test Runner
 

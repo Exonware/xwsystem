@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/utils/dt/humanize.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Human-friendly datetime formatting and parsing utilities.
@@ -10,7 +11,7 @@ Human-friendly datetime formatting and parsing utilities.
 
 import re
 from datetime import datetime, timedelta
-from typing import Optional, Union
+from typing import Optional
 
 from exonware.xwsystem.config.logging_setup import get_logger
 
@@ -85,7 +86,7 @@ def humanize_timedelta(td: timedelta, precision: int = 2, max_units: int = 2) ->
     return f"{'-' if negative else ''}{result}"
 
 
-def humanize_timestamp(timestamp: Union[datetime, float], 
+def humanize_timestamp(timestamp: datetime | float, 
                       reference: Optional[datetime] = None,
                       precision: int = 2) -> str:
     """
@@ -133,7 +134,7 @@ def humanize_timestamp(timestamp: Union[datetime, float],
     return f"{prefix}{human_diff}{suffix}"
 
 
-def time_ago(timestamp: Union[datetime, float], precision: int = 2) -> str:
+def time_ago(timestamp: datetime | float, precision: int = 2) -> str:
     """
     Get time ago string from timestamp.
     
@@ -147,7 +148,7 @@ def time_ago(timestamp: Union[datetime, float], precision: int = 2) -> str:
     return humanize_timestamp(timestamp, precision=precision)
 
 
-def time_until(timestamp: Union[datetime, float], precision: int = 2) -> str:
+def time_until(timestamp: datetime | float, precision: int = 2) -> str:
     """
     Get time until string from timestamp.
     
@@ -180,7 +181,7 @@ def format_relative_time(dt: datetime, relative_to: Optional[datetime] = None, p
     return humanize_timestamp(dt, reference=relative_to, precision=precision)
 
 
-def duration_to_human(seconds: Union[int, float], 
+def duration_to_human(seconds: int | float, 
                      precision: int = 2, 
                      max_units: int = 2) -> str:
     """
@@ -316,7 +317,7 @@ def smart_time_format(dt: datetime, reference: Optional[datetime] = None) -> str
     return dt.strftime("%b %d, %Y")
 
 
-def approximate_duration(seconds: Union[int, float]) -> str:
+def approximate_duration(seconds: int | float) -> str:
     """
     Get approximate duration in natural language.
     
@@ -409,7 +410,7 @@ class DateTimeHumanizer:
         """Convert datetime to human-readable string."""
         return smart_time_format(dt, relative_to)
     
-    def humanize_date(self, date_obj: Union[datetime, str], relative_to: Optional[datetime] = None) -> str:
+    def humanize_date(self, date_obj: datetime | str, relative_to: Optional[datetime] = None) -> str:
         """Convert date to human-readable string."""
         if isinstance(date_obj, datetime):
             return smart_time_format(date_obj, relative_to)
@@ -421,7 +422,7 @@ class DateTimeHumanizer:
                 return date_obj
         return str(date_obj)
     
-    def humanize_time(self, time_obj: Union[datetime, str], relative_to: Optional[datetime] = None) -> str:
+    def humanize_time(self, time_obj: datetime | str, relative_to: Optional[datetime] = None) -> str:
         """Convert time to human-readable string."""
         if isinstance(time_obj, datetime):
             return smart_time_format(time_obj, relative_to)

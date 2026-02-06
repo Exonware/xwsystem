@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/defs.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 IO module definitions - ALL enums and types in ONE place.
@@ -117,7 +118,7 @@ class PagingMode(Enum):
     LINE = "line"                # Page by line counts
     RECORD = "record"            # Page by record boundaries
     SMART = "smart"              # Adaptive paging
-    AUTO = "auto"                # Auto-detect best strategy
+    AUTO = "auto"                # Auto-detect strategy
 
 
 # From file
@@ -221,7 +222,7 @@ class CompressionLevel(Enum):
     """Compression level presets."""
     FAST = 1                # Fastest compression
     BALANCED = 6            # Balance speed/size
-    BEST = 9                # Best compression
+    BEST = 9                # Maximum compression
 
 
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/performance/benchmark_suite.py
 """
 xSystem Performance Benchmark Suite
 ===================================
@@ -102,7 +103,7 @@ class PerformanceBenchmark:
             try:
                 func(*args, **kwargs)
             except Exception:
-                pass
+                continue
         
         # Measure baseline memory and CPU
         initial_memory = self._get_memory_usage()
@@ -183,7 +184,7 @@ class PerformanceBenchmark:
             try:
                 await func(*args, **kwargs)
             except Exception:
-                pass
+                continue
         
         # Measure baseline
         initial_memory = self._get_memory_usage()
@@ -312,8 +313,8 @@ def benchmark_serialization():
         benchmark.run_benchmark("MsgPack Serialize", msgpack_serializer.serialize, test_data)
         msgpack_serialized = msgpack_serializer.serialize(test_data)
         benchmark.run_benchmark("MsgPack Deserialize", msgpack_serializer.deserialize, msgpack_serialized)
-    except Exception:
-        print("  ⚠️  MsgPack serializer not available")
+    except Exception as e:
+        print(f"  ⚠️  MsgPack serializer not available: {e}")
     
     return benchmark.results
 
@@ -336,8 +337,8 @@ async def benchmark_async_io():
     # Cleanup
     try:
         os.remove(test_file)
-    except:
-        pass
+    except OSError:
+        pass  # ignore cleanup errors (e.g. file already removed)
     
     return benchmark.results
 

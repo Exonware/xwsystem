@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/formdata.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 FormData serialization - URL-encoded form data.
@@ -14,7 +15,7 @@ Following I→A pattern:
 """
 
 from urllib.parse import urlencode, parse_qs
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -89,7 +90,7 @@ class FormDataSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using urllib.parse)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to form-data string.
         
@@ -129,7 +130,7 @@ class FormDataSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode form-data string to data.
         
@@ -172,4 +173,3 @@ class FormDataSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             )
-

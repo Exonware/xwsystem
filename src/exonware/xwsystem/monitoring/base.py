@@ -1,16 +1,19 @@
+#exonware/xwsystem/src/exonware/xwsystem/monitoring/base.py
 #exonware/xwsystem/monitoring/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Monitoring module base classes - abstract classes for monitoring functionality.
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Callable, TYPE_CHECKING
+from typing import Any, Optional, Callable, TYPE_CHECKING
 from .defs import MetricType, AlertLevel, HealthStatus, SpanKind
 
 if TYPE_CHECKING:
@@ -320,24 +323,24 @@ class ATracingProvider(ABC):
     def start_span(
         self, 
         name: str, 
-        kind: 'SpanKind' = None,
-        parent: Optional['SpanContext'] = None,
+        kind: SpanKind = None,
+        parent: Optional[SpanContext] = None,
         attributes: Optional[dict[str, Any]] = None
-    ) -> 'SpanContext':
+    ) -> SpanContext:
         """Start a new span."""
         pass
     
     @abstractmethod
-    def finish_span(self, span: 'SpanContext', status: str = "OK", error: Optional[Exception] = None) -> None:
+    def finish_span(self, span: SpanContext, status: str = "OK", error: Optional[Exception] = None) -> None:
         """Finish a span."""
         pass
     
     @abstractmethod
-    def add_span_attribute(self, span: 'SpanContext', key: str, value: Any) -> None:
+    def add_span_attribute(self, span: SpanContext, key: str, value: Any) -> None:
         """Add attribute to span."""
         pass
     
     @abstractmethod
-    def add_span_event(self, span: 'SpanContext', name: str, attributes: Optional[dict[str, Any]] = None) -> None:
+    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[dict[str, Any]] = None) -> None:
         """Add event to span."""
         pass

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
 SquashFS filesystem format - RANK #10 EMBEDDED SYSTEMS.
@@ -152,4 +152,3 @@ class SquashfsArchiver(IArchiveFormat):
     def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
         """SquashFS doesn't support append (read-only FS)."""
         raise ArchiveError("SquashFS is read-only. Recreate the filesystem to add files.")
-

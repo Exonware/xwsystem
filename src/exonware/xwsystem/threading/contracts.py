@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/threading/contracts.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Threading protocol interfaces for XWSystem.
 """
 
-from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Iterator, Callable, Coroutine, Awaitable
+from typing import Any, Optional, Iterator, Callable, Coroutine, Awaitable, Protocol, runtime_checkable
 import threading
 import asyncio
 
@@ -28,14 +28,14 @@ from .defs import (
 # LOCK INTERFACES
 # ============================================================================
 
-class ILockable(ABC):
+@runtime_checkable
+class ILockable(Protocol):
     """
     Interface for lockable objects.
     
     Enforces consistent locking behavior across XWSystem.
     """
     
-    @abstractmethod
     def acquire_lock(self, blocking: bool = True, timeout: Optional[float] = None) -> bool:
         """
         Acquire lock.
@@ -47,16 +47,14 @@ class ILockable(ABC):
         Returns:
             True if lock acquired
         """
-        pass
+        ...
     
-    @abstractmethod
     def release_lock(self) -> None:
         """
         Release lock.
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_locked(self) -> bool:
         """
         Check if object is locked.
@@ -64,9 +62,8 @@ class ILockable(ABC):
         Returns:
             True if locked
         """
-        pass
+        ...
     
-    @abstractmethod
     def try_lock(self, timeout: Optional[float] = None) -> bool:
         """
         Try to acquire lock without blocking.
@@ -77,9 +74,8 @@ class ILockable(ABC):
         Returns:
             True if lock acquired
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_lock_type(self) -> LockType:
         """
         Get lock type.
@@ -87,9 +83,8 @@ class ILockable(ABC):
         Returns:
             Lock type
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_lock_owner(self) -> Optional[str]:
         """
         Get lock owner thread ID.
@@ -97,9 +92,8 @@ class ILockable(ABC):
         Returns:
             Thread ID of lock owner or None
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_lock_count(self) -> int:
         """
         Get lock acquisition count.
@@ -107,21 +101,21 @@ class ILockable(ABC):
         Returns:
             Number of times lock has been acquired
         """
-        pass
+        ...
 
 
 # ============================================================================
 # ASYNC INTERFACES
 # ============================================================================
 
-class IAsync(ABC):
+@runtime_checkable
+class IAsync(Protocol):
     """
     Interface for async operations.
     
     Enforces consistent async behavior across XWSystem.
     """
     
-    @abstractmethod
     async def async_method(self, *args, **kwargs) -> Any:
         """
         Execute method asynchronously.
@@ -133,9 +127,8 @@ class IAsync(ABC):
         Returns:
             Method result
         """
-        pass
+        ...
     
-    @abstractmethod
     def await_result(self, coroutine: Coroutine) -> Any:
         """
         Await coroutine result.
@@ -146,9 +139,8 @@ class IAsync(ABC):
         Returns:
             Coroutine result
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_async(self) -> bool:
         """
         Check if object supports async operations.
@@ -156,9 +148,8 @@ class IAsync(ABC):
         Returns:
             True if async supported
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_future(self) -> asyncio.Future:
         """
         Get future for async operation.
@@ -166,9 +157,8 @@ class IAsync(ABC):
         Returns:
             Future object
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_async_state(self) -> AsyncState:
         """
         Get async operation state.
@@ -176,9 +166,8 @@ class IAsync(ABC):
         Returns:
             Current async state
         """
-        pass
+        ...
     
-    @abstractmethod
     def cancel_async(self) -> bool:
         """
         Cancel async operation.
@@ -186,9 +175,8 @@ class IAsync(ABC):
         Returns:
             True if cancelled
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_async_completed(self) -> bool:
         """
         Check if async operation is completed.
@@ -196,9 +184,8 @@ class IAsync(ABC):
         Returns:
             True if completed
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_async_result(self) -> Any:
         """
         Get async operation result.
@@ -206,21 +193,21 @@ class IAsync(ABC):
         Returns:
             Async operation result
         """
-        pass
+        ...
 
 
 # ============================================================================
 # THREAD SAFETY INTERFACES
 # ============================================================================
 
-class IThreadSafe(ABC):
+@runtime_checkable
+class IThreadSafe(Protocol):
     """
     Interface for thread-safe objects.
     
     Enforces consistent thread safety across XWSystem.
     """
     
-    @abstractmethod
     def thread_safe_method(self, *args, **kwargs) -> Any:
         """
         Execute method in thread-safe manner.
@@ -232,9 +219,8 @@ class IThreadSafe(ABC):
         Returns:
             Method result
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_thread_id(self) -> int:
         """
         Get current thread ID.
@@ -242,9 +228,8 @@ class IThreadSafe(ABC):
         Returns:
             Thread ID
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_thread_safe(self) -> bool:
         """
         Check if object is thread-safe.
@@ -252,9 +237,8 @@ class IThreadSafe(ABC):
         Returns:
             True if thread-safe
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_thread_count(self) -> int:
         """
         Get number of active threads.
@@ -262,9 +246,8 @@ class IThreadSafe(ABC):
         Returns:
             Number of active threads
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_thread_info(self) -> dict[str, Any]:
         """
         Get thread information.
@@ -272,9 +255,8 @@ class IThreadSafe(ABC):
         Returns:
             Thread information dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def wait_for_threads(self, timeout: Optional[float] = None) -> bool:
         """
         Wait for all threads to complete.
@@ -285,35 +267,33 @@ class IThreadSafe(ABC):
         Returns:
             True if all threads completed
         """
-        pass
+        ...
     
-    @abstractmethod
     def interrupt_threads(self) -> None:
         """
         Interrupt all threads.
         """
-        pass
+        ...
     
-    @abstractmethod
     def join_threads(self) -> None:
         """
         Join all threads.
         """
-        pass
+        ...
 
 
 # ============================================================================
 # THREAD POOL INTERFACES
 # ============================================================================
 
-class IThreadPool(ABC):
+@runtime_checkable
+class IThreadPool(Protocol):
     """
     Interface for thread pool management.
     
     Enforces consistent thread pool behavior across XWSystem.
     """
     
-    @abstractmethod
     def submit_task(self, func: Callable, *args, **kwargs) -> Any:
         """
         Submit task to thread pool.
@@ -326,9 +306,8 @@ class IThreadPool(ABC):
         Returns:
             Task result or future
         """
-        pass
+        ...
     
-    @abstractmethod
     def submit_async_task(self, func: Callable, *args, **kwargs) -> asyncio.Future:
         """
         Submit async task to thread pool.
@@ -341,9 +320,8 @@ class IThreadPool(ABC):
         Returns:
             Future object
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_pool_size(self) -> int:
         """
         Get thread pool size.
@@ -351,9 +329,8 @@ class IThreadPool(ABC):
         Returns:
             Number of threads in pool
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_pool_size(self, size: int) -> None:
         """
         Set thread pool size.
@@ -361,9 +338,8 @@ class IThreadPool(ABC):
         Args:
             size: New pool size
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_active_count(self) -> int:
         """
         Get number of active threads.
@@ -371,9 +347,8 @@ class IThreadPool(ABC):
         Returns:
             Number of active threads
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_queue_size(self) -> int:
         """
         Get task queue size.
@@ -381,9 +356,8 @@ class IThreadPool(ABC):
         Returns:
             Number of queued tasks
         """
-        pass
+        ...
     
-    @abstractmethod
     def shutdown(self, wait: bool = True) -> None:
         """
         Shutdown thread pool.
@@ -391,9 +365,8 @@ class IThreadPool(ABC):
         Args:
             wait: Whether to wait for tasks to complete
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_shutdown(self) -> bool:
         """
         Check if thread pool is shutdown.
@@ -401,21 +374,21 @@ class IThreadPool(ABC):
         Returns:
             True if shutdown
         """
-        pass
+        ...
 
 
 # ============================================================================
 # CONCURRENCY CONTROL INTERFACES
 # ============================================================================
 
-class IConcurrencyControl(ABC):
+@runtime_checkable
+class IConcurrencyControl(Protocol):
     """
     Interface for concurrency control.
     
     Enforces consistent concurrency control across XWSystem.
     """
     
-    @abstractmethod
     def acquire_resource(self, resource_id: str, timeout: Optional[float] = None) -> bool:
         """
         Acquire resource for exclusive access.
@@ -427,9 +400,8 @@ class IConcurrencyControl(ABC):
         Returns:
             True if resource acquired
         """
-        pass
+        ...
     
-    @abstractmethod
     def release_resource(self, resource_id: str) -> None:
         """
         Release resource.
@@ -437,9 +409,8 @@ class IConcurrencyControl(ABC):
         Args:
             resource_id: Resource identifier
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_resource_available(self, resource_id: str) -> bool:
         """
         Check if resource is available.
@@ -450,9 +421,8 @@ class IConcurrencyControl(ABC):
         Returns:
             True if available
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_resource_owner(self, resource_id: str) -> Optional[str]:
         """
         Get resource owner.
@@ -463,9 +433,8 @@ class IConcurrencyControl(ABC):
         Returns:
             Owner thread ID or None
         """
-        pass
+        ...
     
-    @abstractmethod
     def wait_for_resource(self, resource_id: str, timeout: Optional[float] = None) -> bool:
         """
         Wait for resource to become available.
@@ -477,9 +446,8 @@ class IConcurrencyControl(ABC):
         Returns:
             True if resource became available
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_concurrency_mode(self) -> ConcurrencyMode:
         """
         Get concurrency mode.
@@ -487,9 +455,8 @@ class IConcurrencyControl(ABC):
         Returns:
             Current concurrency mode
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_concurrency_mode(self, mode: ConcurrencyMode) -> None:
         """
         Set concurrency mode.
@@ -497,21 +464,21 @@ class IConcurrencyControl(ABC):
         Args:
             mode: Concurrency mode to set
         """
-        pass
+        ...
 
 
 # ============================================================================
 # SYNCHRONIZATION INTERFACES
 # ============================================================================
 
-class ISynchronization(ABC):
+@runtime_checkable
+class ISynchronization(Protocol):
     """
     Interface for synchronization primitives.
     
     Enforces consistent synchronization across XWSystem.
     """
     
-    @abstractmethod
     def wait(self, timeout: Optional[float] = None) -> bool:
         """
         Wait for condition.
@@ -522,37 +489,32 @@ class ISynchronization(ABC):
         Returns:
             True if condition met
         """
-        pass
+        ...
     
-    @abstractmethod
     def notify(self) -> None:
         """
         Notify waiting threads.
         """
-        pass
+        ...
     
-    @abstractmethod
     def notify_all(self) -> None:
         """
         Notify all waiting threads.
         """
-        pass
+        ...
     
-    @abstractmethod
     def signal(self) -> None:
         """
         Signal condition.
         """
-        pass
+        ...
     
-    @abstractmethod
     def reset(self) -> None:
         """
         Reset synchronization primitive.
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_set(self) -> bool:
         """
         Check if condition is set.
@@ -560,9 +522,8 @@ class ISynchronization(ABC):
         Returns:
             True if set
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_waiting_count(self) -> int:
         """
         Get number of waiting threads.
@@ -570,21 +531,21 @@ class ISynchronization(ABC):
         Returns:
             Number of waiting threads
         """
-        pass
+        ...
 
 
 # ============================================================================
 # DEADLOCK DETECTION INTERFACES
 # ============================================================================
 
-class IDeadlockDetection(ABC):
+@runtime_checkable
+class IDeadlockDetection(Protocol):
     """
     Interface for deadlock detection.
     
     Enforces consistent deadlock detection across XWSystem.
     """
     
-    @abstractmethod
     def detect_deadlock(self) -> list[dict[str, Any]]:
         """
         Detect deadlocks.
@@ -592,9 +553,8 @@ class IDeadlockDetection(ABC):
         Returns:
             List of deadlock information
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_deadlocked(self) -> bool:
         """
         Check if system is deadlocked.
@@ -602,9 +562,8 @@ class IDeadlockDetection(ABC):
         Returns:
             True if deadlocked
         """
-        pass
+        ...
     
-    @abstractmethod
     def resolve_deadlock(self, deadlock_info: dict[str, Any]) -> bool:
         """
         Resolve deadlock.
@@ -615,9 +574,8 @@ class IDeadlockDetection(ABC):
         Returns:
             True if resolved
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_lock_graph(self) -> dict[str, list[str]]:
         """
         Get lock dependency graph.
@@ -625,9 +583,8 @@ class IDeadlockDetection(ABC):
         Returns:
             Lock dependency graph
         """
-        pass
+        ...
     
-    @abstractmethod
     def add_lock_dependency(self, resource1: str, resource2: str) -> None:
         """
         Add lock dependency.
@@ -636,9 +593,8 @@ class IDeadlockDetection(ABC):
             resource1: First resource
             resource2: Second resource
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_lock_dependency(self, resource1: str, resource2: str) -> None:
         """
         Remove lock dependency.
@@ -647,9 +603,8 @@ class IDeadlockDetection(ABC):
             resource1: First resource
             resource2: Second resource
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_deadlock_prevention_mode(self) -> bool:
         """
         Get deadlock prevention mode.
@@ -657,9 +612,8 @@ class IDeadlockDetection(ABC):
         Returns:
             True if prevention enabled
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_deadlock_prevention_mode(self, enabled: bool) -> None:
         """
         Set deadlock prevention mode.
@@ -667,21 +621,21 @@ class IDeadlockDetection(ABC):
         Args:
             enabled: Whether to enable prevention
         """
-        pass
+        ...
 
 
 # ============================================================================
 # THREAD MONITORING INTERFACES
 # ============================================================================
 
-class IThreadMonitor(ABC):
+@runtime_checkable
+class IThreadMonitor(Protocol):
     """
     Interface for thread monitoring.
     
     Enforces consistent thread monitoring across XWSystem.
     """
     
-    @abstractmethod
     def get_thread_stats(self) -> dict[str, Any]:
         """
         Get thread statistics.
@@ -689,9 +643,8 @@ class IThreadMonitor(ABC):
         Returns:
             Thread statistics dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_thread_list(self) -> list[dict[str, Any]]:
         """
         Get list of all threads.
@@ -699,9 +652,8 @@ class IThreadMonitor(ABC):
         Returns:
             List of thread information
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_thread_by_id(self, thread_id: int) -> Optional[dict[str, Any]]:
         """
         Get thread by ID.
@@ -712,9 +664,8 @@ class IThreadMonitor(ABC):
         Returns:
             Thread information or None
         """
-        pass
+        ...
     
-    @abstractmethod
     def monitor_thread_performance(self, thread_id: int) -> dict[str, Any]:
         """
         Monitor thread performance.
@@ -725,9 +676,8 @@ class IThreadMonitor(ABC):
         Returns:
             Performance metrics
         """
-        pass
+        ...
     
-    @abstractmethod
     def detect_thread_leaks(self) -> list[int]:
         """
         Detect thread leaks.
@@ -735,9 +685,8 @@ class IThreadMonitor(ABC):
         Returns:
             List of leaked thread IDs
         """
-        pass
+        ...
     
-    @abstractmethod
     def cleanup_thread_leaks(self, thread_ids: list[int]) -> int:
         """
         Cleanup thread leaks.
@@ -748,9 +697,8 @@ class IThreadMonitor(ABC):
         Returns:
             Number of threads cleaned up
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_thread_priority(self, thread_id: int) -> ThreadPriority:
         """
         Get thread priority.
@@ -761,9 +709,8 @@ class IThreadMonitor(ABC):
         Returns:
             Thread priority
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_thread_priority(self, thread_id: int, priority: ThreadPriority) -> bool:
         """
         Set thread priority.
@@ -775,31 +722,30 @@ class IThreadMonitor(ABC):
         Returns:
             True if set successfully
         """
-        pass
+        ...
 
 
 # ============================================================================
 # ASYNC CONTEXT MANAGER INTERFACES
 # ============================================================================
 
-class IAsyncContextManager(ABC):
+@runtime_checkable
+class IAsyncContextManager(Protocol):
     """
     Interface for async context managers.
     
     Enforces consistent async context management across XWSystem.
     """
     
-    @abstractmethod
-    async def __aenter__(self) -> 'IAsyncContextManager':
+    async def __aenter__(self) -> IAsyncContextManager:
         """
         Async context manager entry.
         
         Returns:
             Self
         """
-        pass
+        ...
     
-    @abstractmethod
     async def __aexit__(self, exc_type: type, exc_val: Exception, exc_tb: Any) -> bool:
         """
         Async context manager exit.
@@ -812,9 +758,8 @@ class IAsyncContextManager(ABC):
         Returns:
             True if exception handled
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_async_context_active(self) -> bool:
         """
         Check if async context is active.
@@ -822,9 +767,8 @@ class IAsyncContextManager(ABC):
         Returns:
             True if active
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_async_context_info(self) -> dict[str, Any]:
         """
         Get async context information.
@@ -832,4 +776,4 @@ class IAsyncContextManager(ABC):
         Returns:
             Context information dictionary
         """
-        pass
+        ...

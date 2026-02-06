@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/shared_tests/runner.py
 """
 Unit test runner for shared module.
 
@@ -12,11 +13,6 @@ from pathlib import Path
 
 def main():
     """Run shared module unit tests."""
-    # Add src to Python path
-    src_path = Path(__file__).parent.parent.parent.parent / "src"
-    sys.path.insert(0, str(src_path))
-    
-    # Get test directory
     test_dir = Path(__file__).parent
     
     # Run unit tests
@@ -33,4 +29,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

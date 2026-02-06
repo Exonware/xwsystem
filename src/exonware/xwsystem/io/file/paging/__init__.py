@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Modular paging system with strategy pattern.
@@ -42,4 +42,3 @@ __all__ = [
     "get_paging_strategy",
     "auto_detect_paging_strategy",
 ]
-

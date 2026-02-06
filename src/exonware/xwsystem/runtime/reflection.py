@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/runtime/reflection.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Reflection utilities for dynamic code inspection and manipulation.
@@ -12,7 +13,7 @@ import importlib
 import inspect
 import sys
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional
 
 from ..config.logging_setup import get_logger
 

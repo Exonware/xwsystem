@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/serialization_tests/test_bson_debug.py
 """
 Debug BSON serializer issue
 """
@@ -20,12 +21,8 @@ def debug_bson():
     try:
         from exonware.xwsystem.io.serialization import BsonSerializer
         
-        # Create serializer with minimal validation
-        serializer = BsonSerializer(
-            validate_paths=False,
-            validate_input=False,
-            max_depth=10
-        )
+        # Create serializer (ASerialization accepts max_depth and max_size_mb only)
+        serializer = BsonSerializer(max_depth=10)
         
         test_data = {"test": "bson", "number": 42}
         

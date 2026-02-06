@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/two_tier_cache.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 26, 2025
 
 Two-tier cache implementation combining memory and disk caching.
@@ -54,8 +55,10 @@ class TwoTierCache(ICache):
         self.namespace = namespace
         
         # Initialize tiers
-        # Root cause fixed: LRUCache uses 'capacity' parameter, not 'maxsize'
-        self.memory_cache = LRUCache(capacity=memory_size)
+        # Use flexible create_cache() to allow configuration via environment/settings
+        # Defaults to FunctoolsLRUCache (fastest Python cache)
+        from .factory import create_cache
+        self.memory_cache = create_cache(capacity=memory_size, namespace=namespace, name=f"{namespace}-TwoTier-Memory")
         self.disk_cache = DiskCache(
             namespace=namespace,
             cache_dir=disk_cache_dir,

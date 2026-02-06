@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/operations/test_core_xsystem_operations.py
 # -*- coding: utf-8 -*-
 """
 Core tests for operations module.
@@ -230,4 +231,3 @@ class TestOperationsRoundtrip:
         # Result should match modified (or be close)
         assert patch_result.result["b"] == modified["b"]
         assert "c" in patch_result.result
-

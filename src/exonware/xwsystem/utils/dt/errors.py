@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/utils/dt/errors.py
 #exonware/xwsystem/datetime/errors.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 DateTime module errors - exception classes for date/time functionality.
@@ -69,7 +70,3 @@ class DateTimeUnderflowError(DateTimeError):
     """Raised when datetime value underflows."""
     pass
 
-
-# Aliases for backward compatibility
-FormatError = DateTimeFormatError
-ParseError = DateTimeParseError

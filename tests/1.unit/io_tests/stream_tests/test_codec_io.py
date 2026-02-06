@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/stream_tests/test_codec_io.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for CodecIO.
@@ -85,4 +86,3 @@ class TestCodecIO:
             assert codec_io.exists() is True
         except ImportError:
             pytest.skip("JSON serializer not available")
-

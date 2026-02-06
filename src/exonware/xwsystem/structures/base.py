@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/structures/base.py
 #exonware/xwsystem/structures/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Structures module base classes - abstract classes for data structure functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Iterator
+from typing import Any, Optional, Iterator
 from .contracts import StructureType, TraversalType, ValidationLevel
 
 

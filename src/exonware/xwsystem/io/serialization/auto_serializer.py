@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/auto_serializer.py
 #exonware\xwsystem\serialization\auto_serializer.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Automatic serializer that detects format and delegates to appropriate serializer.
 """
 
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from .format_detector import FormatDetector, detect_format
 from .contracts import ISerialization
@@ -43,8 +44,11 @@ class AutoSerializer:
         """
         Get serializer class for format name.
         
+        First checks UniversalCodecRegistry for auto-registered formats (like XWJSON),
+        then falls back to hardcoded module_map for xwsystem formats.
+        
         Args:
-            format_name: Format name (e.g., 'JSON', 'YAML')
+            format_name: Format name (e.g., 'JSON', 'YAML', 'XWJSON')
             
         Returns:
             Serializer class
@@ -52,10 +56,40 @@ class AutoSerializer:
         Raises:
             ImportError: If format not available
         """
+        # First, try UniversalCodecRegistry for auto-registered formats
+        # All auto-registering formats (xwjson, xwformats, xwsyntax, etc.) register themselves
+        # when their modules are imported, so we just check the registry - no special cases needed
+        try:
+            from ..codec.registry import get_registry
+            registry = get_registry()
+            # Try format name as-is, then lowercase, then uppercase, then aliases
+            codec = (registry.get_by_id(format_name) or 
+                    registry.get_by_id(format_name.lower()) or 
+                    registry.get_by_id(format_name.upper()) or
+                    registry.get_by_alias(format_name) or
+                    registry.get_by_alias(format_name.lower()) or
+                    registry.get_by_alias(format_name.upper()))
+            if codec:
+                # Check if codec implements ISerialization (has dumps/loads)
+                # Codec adapters (ICodec only) have encode/decode but NOT dumps/loads
+                if hasattr(codec, 'dumps') and hasattr(codec, 'loads'):
+                    # This is a full ISerialization implementation
+                    logger.debug(f"Found ISerialization codec in registry for format: {format_name}")
+                    return type(codec)
+                else:
+                    # This is only ICodec (codec adapter), skip it
+                    logger.debug(f"Skipping codec adapter (ICodec only) for format: {format_name}, needs ISerialization")
+                    pass
+        except Exception as e:
+            # Registry not available or format not found, continue to hardcoded map
+            logger.debug(f"Registry lookup failed for {format_name}: {e}")
+            pass
+        
+        # Fallback to hardcoded module_map for xwsystem formats
         # Dynamic import to avoid circular dependencies.
         # Root cause fix: import concrete serializers from the canonical
         # xwsystem.io.serialization.formats packages instead of a parallel
-        # exonware.xwsystem.serialization namespace (which should not exist).
+        # exonware.xwsystem.serialization namespace (not expected to exist).
         module_map = {
             # Text formats
             'JSON': ('io.serialization.formats.text.json', 'JsonSerializer'),
@@ -111,6 +145,8 @@ class AutoSerializer:
         """
         Get cached serializer instance for format.
         
+        First checks UniversalCodecRegistry for instances, then creates from class.
+        
         Args:
             format_name: Format name
             
@@ -118,6 +154,36 @@ class AutoSerializer:
             Serializer instance
         """
         if format_name not in self._serializer_cache:
+            # First try to get instance from registry (for auto-registered formats)
+            try:
+                from ..codec.registry import get_registry
+                registry = get_registry()
+                # Try format name as-is, then lowercase, then uppercase, then aliases
+                codec = (registry.get_by_id(format_name) or 
+                        registry.get_by_id(format_name.lower()) or 
+                        registry.get_by_id(format_name.upper()) or
+                        registry.get_by_alias(format_name) or
+                        registry.get_by_alias(format_name.lower()) or
+                        registry.get_by_alias(format_name.upper()))
+                # Check if codec has ISerialization interface (dumps/loads methods)
+                # Codec adapters (ICodec only) have encode/decode but NOT dumps/loads
+                # We need ISerialization (which extends ICodec) with dumps/loads
+                if codec and hasattr(codec, 'dumps') and hasattr(codec, 'loads'):
+                    # This is a full ISerialization implementation
+                    self._serializer_cache[format_name] = codec
+                    logger.debug(f"Using registry serializer (ISerialization) for format: {format_name}")
+                    return codec
+                elif codec and hasattr(codec, 'encode') and not hasattr(codec, 'dumps'):
+                    # This is only ICodec (codec adapter), not ISerialization
+                    # Skip it - we need a serializer with dumps/loads for detect_and_serialize
+                    logger.debug(f"Skipping codec adapter (ICodec only) for format: {format_name}, needs ISerialization")
+                    pass
+            except (ImportError, AttributeError, TypeError) as e:
+                # Registry not available or codec not compatible, create from class
+                logger.debug(f"Registry lookup failed for {format_name}: {e}")
+                pass
+            
+            # Fallback: create instance from class
             serializer_class = self._get_serializer_class(format_name)
             self._serializer_cache[format_name] = serializer_class()
             logger.debug(f"Created serializer for format: {format_name}")
@@ -127,10 +193,10 @@ class AutoSerializer:
     def detect_and_serialize(
         self, 
         data: Any, 
-        file_path: Optional[Union[str, Path]] = None,
+        file_path: Optional[str | Path] = None,
         format_hint: Optional[str] = None,
         **opts
-    ) -> Union[str, bytes]:
+    ) -> str | bytes:
         """
         Auto-detect format and serialize data.
         
@@ -139,6 +205,8 @@ class AutoSerializer:
             file_path: Optional file path for format detection
             format_hint: Optional format hint to use
             **opts: Additional serializer-specific options (pretty, indent, etc.)
+                   Universal options (sorted, pretty, compact, canonical) are automatically
+                   mapped to format-specific options.
             
         Returns:
             Serialized data
@@ -155,13 +223,34 @@ class AutoSerializer:
                 format_name = self._default_format
                 logger.debug(f"Using default format: {format_name}")
         
+        # Map universal options to format-specific options
+        try:
+            from .universal_options import map_universal_options
+            # Check if any universal options are present
+            universal_option_names = {'pretty', 'compact', 'sorted', 'canonical', 'indent', 
+                                    'ensure_ascii', 'allow_nan', 'strip_whitespace', 
+                                    'preserve_quotes', 'declaration', 'encoding', 
+                                    'line_separator', 'item_separator'}
+            has_universal_options = any(key in universal_option_names for key in opts.keys())
+            
+            if has_universal_options:
+                # Map universal options to format-specific options
+                format_specific_opts = map_universal_options(format_name, **opts)
+                # Merge with any remaining non-universal options
+                remaining_opts = {k: v for k, v in opts.items() if k not in universal_option_names}
+                format_specific_opts.update(remaining_opts)
+                opts = format_specific_opts
+        except ImportError:
+            # Universal options module not available, use opts as-is
+            logger.debug("Universal options module not available, using options as-is")
+        
         serializer = self._get_serializer(format_name)
         return serializer.dumps(data, **opts)
     
     def detect_and_deserialize(
         self, 
-        data: Union[str, bytes], 
-        file_path: Optional[Union[str, Path]] = None,
+        data: str | bytes, 
+        file_path: Optional[str | Path] = None,
         format_hint: Optional[str] = None
     ) -> Any:
         """
@@ -197,7 +286,7 @@ class AutoSerializer:
     def auto_save_file(
         self, 
         data: Any, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         format_hint: Optional[str] = None
     ) -> None:
         """
@@ -222,9 +311,46 @@ class AutoSerializer:
         serializer.save_file(data, file_path)
         logger.info(f"Saved data to {file_path} using {format_name} format")
     
+    def save_file(
+        self, 
+        data: Any, 
+        file_path: str | Path, 
+        format_hint: Optional[str] = None,
+        **opts
+    ) -> None:
+        """
+        Auto-detect format and save to file (alias for auto_save_file).
+        
+        Args:
+            data: Data to save
+            file_path: File path (format detected from extension)
+            format_hint: Optional format hint to override detection
+            **opts: Additional options (passed to serializer)
+        """
+        self.auto_save_file(data, file_path, format_hint)
+    
+    def load_file(
+        self, 
+        file_path: str | Path, 
+        format_hint: Optional[str] = None,
+        **opts
+    ) -> Any:
+        """
+        Auto-detect format and load from file (alias for auto_load_file).
+        
+        Args:
+            file_path: File path to load
+            format_hint: Optional format hint to override detection
+            **opts: Additional options (passed to serializer)
+            
+        Returns:
+            Loaded data
+        """
+        return self.auto_load_file(file_path, format_hint)
+    
     def auto_load_file(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         format_hint: Optional[str] = None
     ) -> Any:
         """
@@ -280,7 +406,7 @@ class AutoSerializer:
     async def auto_save_file_async(
         self, 
         data: Any, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         format_hint: Optional[str] = None
     ) -> None:
         """
@@ -306,7 +432,7 @@ class AutoSerializer:
     
     async def auto_load_file_async(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         format_hint: Optional[str] = None
     ) -> Any:
         """
@@ -342,8 +468,8 @@ class AutoSerializer:
     
     def get_format_suggestions(
         self, 
-        data: Union[str, bytes], 
-        file_path: Optional[Union[str, Path]] = None
+        data: str | bytes, 
+        file_path: Optional[str | Path] = None
     ) -> list[tuple[str, float]]:
         """
         Get format suggestions for given data.
@@ -372,10 +498,10 @@ _global_auto_serializer = AutoSerializer()
 
 def auto_serialize(
     data: Any, 
-    file_path: Optional[Union[str, Path]] = None,
+    file_path: Optional[str | Path] = None,
     format_hint: Optional[str] = None,
     **opts
-) -> Union[str, bytes]:
+) -> str | bytes:
     """
     Convenience function for auto-serialization.
     
@@ -391,8 +517,8 @@ def auto_serialize(
     return _global_auto_serializer.detect_and_serialize(data, file_path, format_hint, **opts)
 
 def auto_deserialize(
-    data: Union[str, bytes], 
-    file_path: Optional[Union[str, Path]] = None,
+    data: str | bytes, 
+    file_path: Optional[str | Path] = None,
     format_hint: Optional[str] = None
 ) -> Any:
     """
@@ -410,7 +536,7 @@ def auto_deserialize(
 
 def auto_save_file(
     data: Any, 
-    file_path: Union[str, Path], 
+    file_path: str | Path, 
     format_hint: Optional[str] = None
 ) -> None:
     """
@@ -424,7 +550,7 @@ def auto_save_file(
     return _global_auto_serializer.auto_save_file(data, file_path, format_hint)
 
 def auto_load_file(
-    file_path: Union[str, Path], 
+    file_path: str | Path, 
     format_hint: Optional[str] = None
 ) -> Any:
     """

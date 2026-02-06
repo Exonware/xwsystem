@@ -140,4 +140,3 @@ class TestMultipleFormats:
                 assert loaded['DEFAULT']['active'] == 'True'
         else:
             assert loaded == test_data
-

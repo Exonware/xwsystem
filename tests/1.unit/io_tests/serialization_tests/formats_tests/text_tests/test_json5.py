@@ -94,7 +94,7 @@ class TestJSON5Serializer:
     
     def test_encode_with_indent_option(self):
         """Test encoding with custom indent."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         data = {"name": "Alice"}
         
         result = serializer.encode(data, options={"indent": 4})
@@ -103,13 +103,12 @@ class TestJSON5Serializer:
     
     def test_mime_types(self):
         """Test JSON5 MIME types are correct."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         assert "application/json5" in serializer.media_types
         assert "application/json" in serializer.media_types
     
     def test_file_extensions(self):
         """Test JSON5 file extensions are correct."""
-        serializer = XWJson5Serializer()
+        serializer = Json5Serializer()
         assert ".json5" in serializer.file_extensions
         assert ".json" in serializer.file_extensions
-

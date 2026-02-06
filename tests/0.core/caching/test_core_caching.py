@@ -194,4 +194,3 @@ class TestCachingSecurityCore:
         
         # None is a valid value to cache
         assert cache.get('key1', 'default') == 'default'  # Returns default when not found
-

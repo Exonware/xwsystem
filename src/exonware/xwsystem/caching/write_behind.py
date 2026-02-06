@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/write_behind.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Write-behind (lazy write) cache implementation.
-Performance Priority #4 - Delayed persistence for better write performance.
+Performance Priority #4 - Delayed persistence for write performance.
 """
 
 import threading
@@ -206,14 +207,22 @@ class WriteBehindCache(LRUCache):
         return stats
     
     def __del__(self):
-        """Cleanup on deletion."""
+        """
+        Cleanup on deletion.
+        
+        Note: Errors during cleanup are logged but not raised to prevent
+        issues during garbage collection. This follows GUIDE_TEST.md principles
+        by handling errors explicitly rather than silently ignoring them.
+        """
         try:
             self.stop_flusher(flush_remaining=True)
-        except:
-            pass
+        except Exception as e:
+            # Log error but don't raise during __del__ to avoid issues during GC
+            # This is an acceptable exception to GUIDE_TEST.md as __del__ has
+            # special constraints and we're explicitly logging the error
+            logger.warning(f"Error during WriteBehindCache cleanup: {e}", exc_info=True)
 
 
 __all__ = [
     'WriteBehindCache',
 ]
-

@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/security/crypto.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Cryptographic utilities for secure data handling and protection.
@@ -13,7 +14,7 @@ import hmac
 import secrets
 import time
 from base64 import b64decode, b64encode
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes, serialization
@@ -31,7 +32,7 @@ class SecureHash:
     """Secure hashing utilities."""
     
     @staticmethod
-    def sha256(data: Union[str, bytes]) -> str:
+    def sha256(data: str | bytes) -> str:
         """
         Compute SHA-256 hash.
 
@@ -46,7 +47,7 @@ class SecureHash:
         return hashlib.sha256(data).hexdigest()
 
     @staticmethod
-    def sha512(data: Union[str, bytes]) -> str:
+    def sha512(data: str | bytes) -> str:
         """
         Compute SHA-512 hash.
 
@@ -61,7 +62,7 @@ class SecureHash:
         return hashlib.sha512(data).hexdigest()
 
     @staticmethod
-    def blake2b(data: Union[str, bytes], key: Optional[bytes] = None) -> str:
+    def blake2b(data: str | bytes, key: Optional[bytes] = None) -> str:
         """
         Compute BLAKE2b hash.
 
@@ -80,7 +81,7 @@ class SecureHash:
             return hashlib.blake2b(data, key=key).hexdigest()
 
     @staticmethod
-    def hmac_sha256(data: Union[str, bytes], key: Union[str, bytes]) -> str:
+    def hmac_sha256(data: str | bytes, key: str | bytes) -> str:
         """
         Compute HMAC-SHA256.
 
@@ -98,7 +99,7 @@ class SecureHash:
         return hmac.new(key, data, hashlib.sha256).hexdigest()
 
     @staticmethod
-    def verify_hmac(data: Union[str, bytes], key: Union[str, bytes], expected_hmac: str) -> bool:
+    def verify_hmac(data: str | bytes, key: str | bytes, expected_hmac: str) -> bool:
         """
         Verify HMAC-SHA256.
 
@@ -231,7 +232,7 @@ class SymmetricEncryption:
         key = b64encode(kdf.derive(password.encode('utf-8')))
         return key, salt
 
-    def encrypt(self, data: Union[str, bytes]) -> bytes:
+    def encrypt(self, data: str | bytes) -> bytes:
         """
         Encrypt data.
 
@@ -337,7 +338,7 @@ class AsymmetricEncryption:
         instance = cls(private_pem, public_pem)
         return instance, private_pem, public_pem
 
-    def encrypt(self, data: Union[str, bytes]) -> bytes:
+    def encrypt(self, data: str | bytes) -> bytes:
         """
         Encrypt data with public key.
 
@@ -384,7 +385,7 @@ class AsymmetricEncryption:
             )
         )
 
-    def sign(self, data: Union[str, bytes]) -> bytes:
+    def sign(self, data: str | bytes) -> bytes:
         """
         Sign data with private key.
 
@@ -409,7 +410,7 @@ class AsymmetricEncryption:
             hashes.SHA256()
         )
 
-    def verify(self, data: Union[str, bytes], signature: bytes) -> bool:
+    def verify(self, data: str | bytes, signature: bytes) -> bool:
         """
         Verify signature with public key.
 
@@ -627,7 +628,7 @@ def _hash_password_pbkdf2(password: str) -> str:
     
     # Generate random salt
     salt = secrets.token_bytes(32)
-    iterations = 100000  # OWASP recommended minimum
+    iterations = 100000  # OWASP minimum
     
     # Derive key using PBKDF2
     kdf = PBKDF2HMAC(
@@ -781,7 +782,7 @@ class AsyncSymmetricEncryption:
         """Get the encryption key."""
         return self._encryption.key
     
-    async def encrypt(self, data: Union[str, bytes]) -> bytes:
+    async def encrypt(self, data: str | bytes) -> bytes:
         """Encrypt data (async)."""
         import asyncio
         return await asyncio.to_thread(self._encryption.encrypt, data)
@@ -819,7 +820,7 @@ class AsyncAsymmetricEncryption:
         async_encryption = cls(private_pem, public_pem)
         return async_encryption, private_pem, public_pem
     
-    async def encrypt(self, data: Union[str, bytes]) -> bytes:
+    async def encrypt(self, data: str | bytes) -> bytes:
         """Encrypt data with public key (async)."""
         import asyncio
         return await asyncio.to_thread(self._encryption.encrypt, data)
@@ -829,12 +830,12 @@ class AsyncAsymmetricEncryption:
         import asyncio
         return await asyncio.to_thread(self._encryption.decrypt, encrypted_data)
     
-    async def sign(self, data: Union[str, bytes]) -> bytes:
+    async def sign(self, data: str | bytes) -> bytes:
         """Sign data with private key (async)."""
         import asyncio
         return await asyncio.to_thread(self._encryption.sign, data)
     
-    async def verify(self, data: Union[str, bytes], signature: bytes) -> bool:
+    async def verify(self, data: str | bytes, signature: bytes) -> bool:
         """Verify signature with public key (async)."""
         import asyncio
         return await asyncio.to_thread(self._encryption.verify, data, signature)

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 TAR archive format implementation.
@@ -16,6 +16,7 @@ Priority 4 (Performance): Efficient TAR operations
 Priority 5 (Extensibility): Registered via registry
 """
 
+import sys
 import tarfile
 from pathlib import Path
 from typing import Optional
@@ -80,10 +81,12 @@ class TarArchiver(IArchiveFormat):
         with tarfile.open(archive, 'r:*') as tf:
             if members:
                 for member in members:
-                    tf.extract(member, output_dir)
+                    tf.extract(member, output_dir, filter='data')
                     extracted.append(output_dir / member)
             else:
-                tf.extractall(output_dir)
+                # Use data filter for Python 3.14+ compatibility (prevents deprecation warning)
+                # data_filter allows all files but validates paths for security
+                tf.extractall(output_dir, filter='data')
                 extracted = [output_dir / member.name for member in tf.getmembers()]
         
         return extracted
@@ -94,13 +97,55 @@ class TarArchiver(IArchiveFormat):
             return [member.name for member in tf.getmembers()]
     
     def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
-        """Add file to TAR archive."""
+        """Add file to TAR archive (supports compressed archives)."""
         arcname = arcname or file.name
         
-        # Only support append to uncompressed TAR
+        # Uncompressed TAR - direct append
         if archive.suffix == '.tar':
             with tarfile.open(archive, 'a') as tf:
                 tf.add(file, arcname=arcname)
         else:
-            raise NotImplementedError("Adding to compressed TAR archives not supported")
-
+            # Compressed TAR - decompress, append, recompress
+            import tempfile
+            import shutil
+            
+            # Determine compression type
+            suffix = "".join(archive.suffixes).lower()
+            compression = None
+            if '.gz' in suffix or '.tgz' in suffix:
+                compression = 'gz'
+            elif '.bz2' in suffix or '.tbz' in suffix:
+                compression = 'bz2'
+            elif '.xz' in suffix or '.txz' in suffix:
+                compression = 'xz'
+            
+            if compression is None:
+                raise ValueError(f"Unsupported compression format: {suffix}")
+            
+            # Create temporary uncompressed TAR
+            with tempfile.NamedTemporaryFile(suffix='.tar', delete=False) as tmp_tar:
+                tmp_tar_path = Path(tmp_tar.name)
+            
+            try:
+                # Extract existing archive to temporary TAR
+                if archive.exists():
+                    with tarfile.open(archive, 'r:*') as source_tf:
+                        with tarfile.open(tmp_tar_path, 'w') as tmp_tf:
+                            for member in source_tf.getmembers():
+                                tmp_tf.addfile(member, source_tf.extractfile(member))
+                
+                # Add new file to temporary TAR
+                with tarfile.open(tmp_tar_path, 'a') as tmp_tf:
+                    tmp_tf.add(file, arcname=arcname)
+                
+                # Recompress to original archive
+                mode_map = {'gz': 'w:gz', 'bz2': 'w:bz2', 'xz': 'w:xz'}
+                with tarfile.open(tmp_tar_path, 'r') as tmp_tf:
+                    with tarfile.open(archive, mode_map[compression]) as compressed_tf:
+                        for member in tmp_tf.getmembers():
+                            compressed_tf.addfile(member, tmp_tf.extractfile(member))
+            
+            finally:
+                # Clean up temporary file
+                if tmp_tar_path.exists():
+                    tmp_tar_path.unlink()

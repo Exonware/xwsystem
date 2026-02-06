@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/toml.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 TOML serialization - Configuration file format.
@@ -14,7 +15,7 @@ Following I→A pattern:
 """
 
 import sys
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -158,7 +159,7 @@ class TomlSerializer(ASerialization):
             # Primitive values - return as-is (None will be filtered out by caller)
             return data
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to TOML string.
         
@@ -195,7 +196,7 @@ class TomlSerializer(ASerialization):
             
             # Root cause fixed: Remove None values before encoding (TOML doesn't support None).
             # Solution: Recursively remove None values to ensure TOML compatibility.
-            # Priority #2: Usability - All data structures should be serializable.
+            # Priority #2: Usability - All data structures are serializable.
             cleaned_value = self._remove_none_values(value)
             
             # Encode to TOML string
@@ -213,7 +214,7 @@ class TomlSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode TOML string to data.
         
@@ -252,4 +253,5 @@ class TomlSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             )
-
+    
+    # Note: File operations (save_file, load_file) are inherited from ASerialization base class

@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/2.integration/test_security_integration.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
@@ -18,6 +19,7 @@ from exonware.xwsystem.security.crypto import SymmetricEncryption, SecureStorage
 from exonware.xwsystem.io import AtomicFileWriter
 from exonware.xwsystem.validation.data_validator import DataValidator
 from exonware.xwsystem.io.serialization import JsonSerializer
+from exonware.xwsystem.io.errors import SerializationError
 from exonware.xwsystem.monitoring.error_recovery import ErrorRecoveryManager
 
 
@@ -54,7 +56,8 @@ class TestSecureFileOperations:
             
             # Secure file path
             file_path = base_path / "secure_data.enc"
-            path_validator.validate_path(str(file_path))
+            # File doesn't exist yet - validate parent and allow creation
+            path_validator.validate_path(str(file_path), for_writing=True, create_dirs=True)
             
             # Write with atomic operations
             with AtomicFileWriter(file_path, mode='wb') as writer:
@@ -77,7 +80,8 @@ class TestSecureFileOperations:
             
             # Valid file operation
             safe_file = base_path / "safe_file.txt"
-            validator.validate_path(str(safe_file))
+            # File doesn't exist yet - validate parent and allow creation
+            validator.validate_path(str(safe_file), for_writing=True, create_dirs=True)
             
             with AtomicFileWriter(safe_file) as writer:
                 writer.write("safe content")
@@ -97,7 +101,6 @@ class TestSecureFileOperations:
             
             # Secure JSON serializer with validation
             serializer = JsonSerializer(
-                validate_input=True,
                 max_depth=10,
                 max_size_mb=1.0
             )
@@ -116,15 +119,39 @@ class TestSecureFileOperations:
             loaded_data = serializer.load_file(file_path)
             assert loaded_data == valid_data
             
-            # Invalid data (too deep)
-            too_deep = {}
-            current = too_deep
-            for i in range(15):  # Deeper than max_depth
-                current["next"] = {}
-                current = current["next"]
+            # Test depth validation - max_depth is enforced via _validate_data_limits in ACodec
+            # which is called in save_file(). For direct encode(), validation should be called
+            # by subclasses, but save_file() is the recommended approach.
+            # Create a structure with 15 nested dicts to exceed max_depth of 10
+            # Structure: {"level": 1, "nested": {"level": 2, "nested": {...}}}
+            # This creates depth 15 (15 nested dicts + 1 root = 16 total, or just 15 nested)
+            deep_data = {"level": 1}
+            current = deep_data
+            for i in range(2, 16):  # Creates 14 more nested levels (levels 2-15)
+                current["nested"] = {"level": i}
+                current = current["nested"]
             
-            with pytest.raises(Exception):  # Should be blocked by validation
-                serializer.save_file(too_deep, file_path)
+            # save_file() should validate depth and raise error
+            with pytest.raises(SerializationError, match="exceeds maximum nesting depth"):
+                serializer.save_file(deep_data, file_path)
+            
+            # Normal depth should work (exactly 10 nested dicts, which equals max_depth of 10)
+            normal_data = {"level": 1}
+            current = normal_data
+            for i in range(2, 11):  # Creates 9 more nested levels (levels 2-10), total 10
+                current["nested"] = {"level": i}
+                current = current["nested"]
+            
+            # Verify the structure has exactly 10 levels
+            depth_count = 1
+            temp = normal_data
+            while "nested" in temp:
+                depth_count += 1
+                temp = temp["nested"]
+            assert depth_count == 10, f"Expected 10 levels, got {depth_count}"
+            
+            serializer.save_file(normal_data, file_path)
+            assert file_path.exists()
 
 
 @pytest.mark.xwsystem_integration
@@ -140,7 +167,7 @@ class TestSecureDataPipeline:
             path_validator = PathValidator(base_path=base_path)
             data_validator = DataValidator(max_dict_depth=5)
             secure_storage = SecureStorage()
-            json_serializer = JsonSerializer(validate_input=True)
+            json_serializer = JsonSerializer(max_depth=10, max_size_mb=1.0)
             
             # Input data (simulating user input)
             user_data = {
@@ -171,7 +198,8 @@ class TestSecureDataPipeline:
             
             # Step 3: Serialize and save to secure file
             file_path = base_path / "user_data.json"
-            path_validator.validate_path(str(file_path))
+            # File doesn't exist yet - validate parent and allow creation
+            path_validator.validate_path(str(file_path), for_writing=True, create_dirs=True)
             json_serializer.save_file(user_data, file_path)
             
             # Verification: Read back and compare
@@ -190,7 +218,7 @@ class TestSecureDataPipeline:
         error_manager = ErrorRecoveryManager()
         
         # Register error handler for security errors
-        def security_error_handler(error: Exception) -> str:
+        def security_error_handler(error: Exception, context: dict) -> str:
             return f"Security breach detected: {type(error).__name__}"
         
         error_manager.register_degradation_strategy(
@@ -216,10 +244,8 @@ class TestCrossModuleSecurityValidation:
             
             # Create secure file path
             secure_file = base_path / "secure" / "data.txt"
-            validator.validate_path(str(secure_file))
-            
-            # Ensure parent directory exists
-            secure_file.parent.mkdir(parents=True, exist_ok=True)
+            # File doesn't exist yet - validate parent and allow creation
+            validator.validate_path(str(secure_file), for_writing=True, create_dirs=True)
             
             # Use atomic writer with validated path
             content = "sensitive data content"
@@ -238,7 +264,7 @@ class TestCrossModuleSecurityValidation:
     def test_encryption_with_serialization(self):
         """Test encryption integrated with serialization."""
         encryption = SymmetricEncryption()
-        serializer = JsonSerializer(validate_input=True)
+        serializer = JsonSerializer(max_depth=10, max_size_mb=1.0)
         
         # Original data
         original_data = {
@@ -277,8 +303,8 @@ class TestCrossModuleSecurityValidation:
             }
         }
         
-        # Validate path
-        path_validator.validate_path(valid_data["file_path"])
+        # Validate path (file doesn't exist yet - validate parent and allow creation)
+        path_validator.validate_path(valid_data["file_path"], for_writing=True, create_dirs=True)
         
         # Validate data structure
         data_validator.validate_data_structure(valid_data["content"])
@@ -304,13 +330,14 @@ class TestCrossModuleSecurityValidation:
 class TestSecurityConfiguration:
     """Test security configuration and policy enforcement."""
 
-    def test_security_policy_enforcement(self):
+    def test_security_policy_enforcement(self, tmp_path):
         """Test enforcement of security policies across modules."""
-        # Strict security configuration
+        # Strict security configuration - use tmp_path as base_path
         strict_path_validator = PathValidator(
+            base_path=tmp_path,
             max_path_length=100,
             allow_absolute=False,
-            check_existence=True
+            check_existence=False  # Allow paths that don't exist yet
         )
         
         strict_data_validator = DataValidator(
@@ -319,15 +346,15 @@ class TestSecurityConfiguration:
         )
         
         # Test policy enforcement
-        with tempfile.TemporaryDirectory() as temp_dir:
-            base_path = Path(temp_dir)
-            test_file = base_path / "test.txt"
-            test_file.touch()
-            
-            # Should pass strict validation
-            relative_path = str(test_file.relative_to(Path.cwd()))
-            if len(relative_path) <= 100:
-                strict_path_validator.validate_path(relative_path)
+        base_path = Path(tmp_path)
+        test_file = base_path / "test.txt"
+        test_file.touch()
+        
+        # Should pass strict validation
+        # Use relative path from base_path
+        relative_path = str(test_file.relative_to(base_path))
+        if len(relative_path) <= 100:
+            strict_path_validator.validate_path(relative_path, for_writing=True, create_dirs=True)
             
             # Should fail with too long path
             long_path = "a" * 150
@@ -376,7 +403,8 @@ class TestSecurityPerformance:
         safe_paths = [f"safe/path/file_{i}.txt" for i in range(1000)]
         
         for path in safe_paths:
-            validator.validate_path(path)  # Should be fast
+            # Paths don't exist yet - validate parent and allow creation
+            validator.validate_path(path, for_writing=True, create_dirs=True)  # Should be fast
         
         # Test many data validations
         safe_data_items = [

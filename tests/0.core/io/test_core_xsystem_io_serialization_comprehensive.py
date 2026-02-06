@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/io/test_core_xsystem_io_serialization_comprehensive.py
 # -*- coding: utf-8 -*-
 """
 Core tests for comprehensive serialization operations.
@@ -124,11 +125,15 @@ class TestAutoSerializer:
             test_file = tmp_path / "auto_test.json"
             test_data = {"key": "value"}
             
-            # Save with auto-detection
+            # Save with auto-detection (uses extension to detect JSON format)
             auto_ser.save_file(test_data, test_file)
             
             # Verify file exists
             assert test_file.exists()
+            
+            # Verify it can load back
+            loaded_data = auto_ser.load_file(test_file)
+            assert loaded_data == test_data
         except Exception as e:
             pytest.skip(f"AutoSerializer not fully available: {e}")
 
@@ -474,15 +479,27 @@ class TestFlyweightPattern:
     def test_get_serializer_flyweight(self):
         """Test getting serializer via flyweight pattern."""
         try:
-            # Get serializer multiple times - should return same instance
-            ser1 = get_serializer("json")
-            ser2 = get_serializer("json")
+            from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
+            # Test with serializer class
+            ser1 = get_serializer(JsonSerializer)
+            ser2 = get_serializer(JsonSerializer)
             
             if ser1 is not None and ser2 is not None:
-                # Should be same instance (flyweight)
+                # Should be same instance (flyweight) when config is same
                 assert ser1 is ser2
-        except Exception:
-            pytest.skip("Flyweight pattern not available")
+            
+            # Test with string format name
+            ser3 = get_serializer("json")
+            ser4 = get_serializer("json")
+            
+            if ser3 is not None and ser4 is not None:
+                # Should be same instance (flyweight) when format name is same
+                assert ser3 is ser4
+                # Should also be same instance as class-based calls (if config matches)
+                if ser1 is not None:
+                    assert ser1 is ser3
+        except Exception as e:
+            pytest.skip(f"Flyweight pattern not available: {e}")
     
     def test_flyweight_stats(self):
         """Test flyweight statistics."""
@@ -491,4 +508,3 @@ class TestFlyweightPattern:
             assert stats is not None
         except Exception:
             pytest.skip("Flyweight stats not available")
-

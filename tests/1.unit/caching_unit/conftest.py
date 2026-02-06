@@ -29,4 +29,3 @@ def mock_logger(monkeypatch):
             logs.append(('error', msg))
     
     return MockLogger(), logs
-

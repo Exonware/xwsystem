@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/caching/ttl_cache.py
 """
 TTL (Time To Live) Cache Implementation
 ======================================
@@ -7,14 +8,14 @@ Production-grade TTL caching for XSystem.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generated: 2025-01-27
 """
 
 import asyncio
 import time
 import threading
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from dataclasses import dataclass
 import logging
 from .base import ACache
@@ -196,7 +197,7 @@ class TTLCache(ACache):
     def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
         """
         Set value in cache (abstract method implementation).
-        Delegates to put() for backward compatibility.
+        Delegates to put().
         
         Args:
             key: Key to store

@@ -1,4 +1,12 @@
 {
-  "generated_at": "2025-11-08T12:31:14Z",
-  "plans": []
+  "schema_version": 1,
+  "plans": [
+    {
+      "plan": "xwsystem/docs/logs/plans/PLAN_20251109_1500_ASYNC_PROCESS_FABRIC.md",
+      "requirements": [],
+      "components": [],
+      "evidence": [],
+      "notes": ""
+    }
+  ]
 }

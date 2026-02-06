@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/serializer.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 XWSerializer - Unified intelligent serializer with I/O integration and auto-serialization.
@@ -11,7 +12,7 @@ XWSerializer - Unified intelligent serializer with I/O integration and auto-seri
 import os
 import time
 from pathlib import Path
-from typing import Any, Optional, Union, Callable
+from typing import Any, Optional, Callable
 
 from .base import ASerialization
 from .contracts import ISerialization
@@ -48,15 +49,19 @@ class XWSerializer(ASerialization):
     This replaces both XWSerialization and the old XWSerializer concept.
     """
     
-    def __init__(self, confidence_threshold: float = 0.7, **config):
+    def __init__(self, format: Optional[str] = None, confidence_threshold: float = 0.7, **config):
         """
         Initialize unified XWSerializer.
         
         Args:
+            format: Optional format name ("json", "yaml", etc.) - auto-detected if None
             confidence_threshold: Minimum confidence for format detection
             **config: Configuration options for serialization and I/O
         """
         super().__init__()
+        
+        # Store format for later use
+        self._requested_format = format.lower() if format else None
         
         # Initialize format detection (from XWSerialization)
         self._detector = FormatDetector(confidence_threshold)
@@ -64,9 +69,20 @@ class XWSerializer(ASerialization):
         self._detected_format: Optional[str] = None
         self._confidence_threshold = confidence_threshold
         
+        # If format specified, create specialized serializer immediately
+        if self._requested_format:
+            try:
+                from .flyweight import create_serializer
+                self._specialized_serializer = create_serializer(self._requested_format)
+                self._detected_format = self._requested_format
+            except Exception as e:
+                logger.warning(f"Could not create serializer for format '{format}': {e}")
+        
         # Initialize I/O components (from XWSerializer)
-        self._file_manager = XWFileManager(**config)
-        self._unified_io = XWUnifiedIO(**config)
+        # Use XWIO facade - file_manager and unified_io features are optional
+        self._io = XWIO(**config) if config.get('use_io', True) else None
+        self._file_manager = None  # Optional - not implemented yet
+        self._unified_io = None  # Optional - not implemented yet
         
         # Initialize xwsystem utilities
         self._path_validator = PathValidator()
@@ -75,8 +91,8 @@ class XWSerializer(ASerialization):
         # Configuration
         self.auto_serialize = config.get('auto_serialize', True)
         self.auto_detect_format = config.get('auto_detect_format', True)
-        self.use_file_manager = config.get('use_file_manager', True)
-        self.use_unified_io = config.get('use_unified_io', True)
+        self.use_file_manager = config.get('use_file_manager', False)  # Disabled - not implemented
+        self.use_unified_io = config.get('use_unified_io', False)  # Disabled - not implemented
         self.enable_backups = config.get('enable_backups', True)
         self.use_atomic_operations = config.get('use_atomic_operations', True)
         self.validate_paths = config.get('validate_paths', True)
@@ -147,8 +163,8 @@ class XWSerializer(ASerialization):
     def _transform_to_specialized(
         self, 
         format_name: str, 
-        file_path: Optional[Union[str, Path]] = None,
-        content: Optional[Union[str, bytes]] = None,
+        file_path: Optional[str | Path] = None,
+        content: Optional[str | bytes] = None,
         data: Optional[bytes] = None
     ) -> None:
         """Transform this instance into a specialized serializer."""
@@ -181,8 +197,8 @@ class XWSerializer(ASerialization):
     def _detect_and_transform(
         self, 
         data: Optional[Any] = None,
-        file_path: Optional[Union[str, Path]] = None,
-        content: Optional[Union[str, bytes]] = None,
+        file_path: Optional[str | Path] = None,
+        content: Optional[str | bytes] = None,
         binary_data: Optional[bytes] = None,
         format_hint: Optional[str] = None
     ) -> None:
@@ -210,7 +226,7 @@ class XWSerializer(ASerialization):
                     elif isinstance(data, str):
                         format_name = 'JSON'  # Assume JSON string
                     elif isinstance(data, bytes):
-                        format_name = 'MessagePack'  # Good binary default
+                        format_name = 'MessagePack'  # Binary format default
                     else:
                         format_name = 'JSON'  # Safe default
                 else:
@@ -232,7 +248,7 @@ class XWSerializer(ASerialization):
     # AUTO-SERIALIZATION METHODS (Enhanced)
     # ============================================================================
     
-    def auto_serialize(self, data: Any, file_path: Union[str, Path], 
+    def auto_serialize(self, data: Any, file_path: str | Path, 
                       format_hint: Optional[str] = None) -> bool:
         """Automatically serialize data to file with format detection."""
         if not self.auto_serialize:
@@ -264,22 +280,27 @@ class XWSerializer(ASerialization):
                     logger.debug(f"Auto-serialized to {target_path} as {format_hint}")
                     return True
                 else:
-                    # Use file manager for other formats
-                    if self.use_file_manager:
-                        self._file_manager.save(data, target_path)
-                        logger.debug(f"Auto-saved to {target_path} using file manager")
+                    # Use XWIO for other formats
+                    if self._io:
+                        self._io.save_file(data, target_path)
+                        logger.debug(f"Auto-saved to {target_path} using XWIO")
                         return True
                     else:
-                        # Fallback to direct file write
-                        self._unified_io.save(data, target_path)
-                        logger.debug(f"Auto-saved to {target_path} using unified I/O")
+                        # Fallback to specialized serializer
+                        specialized = self._ensure_specialized(
+                            data=data,
+                            file_path=target_path,
+                            format_hint=format_hint
+                        )
+                        specialized.save_file(data, target_path)
+                        logger.debug(f"Auto-saved to {target_path} using specialized serializer")
                         return True
                         
             except Exception as e:
                 logger.error(f"Auto-serialization failed for {target_path}: {e}")
                 return False
     
-    def auto_deserialize(self, file_path: Union[str, Path], 
+    def auto_deserialize(self, file_path: str | Path, 
                         format_hint: Optional[str] = None) -> Any:
         """Automatically deserialize data from file with format detection."""
         if not self.auto_serialize:
@@ -310,15 +331,19 @@ class XWSerializer(ASerialization):
                     logger.debug(f"Auto-deserialized from {target_path} as {format_hint}")
                     return data
                 else:
-                    # Use file manager for other formats
-                    if self.use_file_manager:
-                        data = self._file_manager.load(target_path)
-                        logger.debug(f"Auto-loaded from {target_path} using file manager")
+                    # Use XWIO for other formats
+                    if self._io:
+                        data = self._io.load_file(target_path)
+                        logger.debug(f"Auto-loaded from {target_path} using XWIO")
                         return data
                     else:
-                        # Fallback to direct file read
-                        data = self._unified_io.load(target_path)
-                        logger.debug(f"Auto-loaded from {target_path} using unified I/O")
+                        # Fallback to specialized serializer
+                        specialized = self._ensure_specialized(
+                            file_path=target_path,
+                            format_hint=format_hint
+                        )
+                        data = specialized.load_file(target_path)
+                        logger.debug(f"Auto-loaded from {target_path} using specialized serializer")
                         return data
                         
             except Exception as e:
@@ -360,11 +385,28 @@ class XWSerializer(ASerialization):
         return format_mappings.get(ext)
     
     # ============================================================================
+    # ABSTRACT METHOD IMPLEMENTATIONS (encode/decode)
+    # ============================================================================
+    
+    def encode(self, value: Any, *, options: Optional[Any] = None) -> bytes | str:
+        """Encode data - delegates to specialized serializer."""
+        specialized = self._ensure_specialized(data=value)
+        return specialized.encode(value, options=options)
+    
+    def decode(self, repr: bytes | str, *, options: Optional[Any] = None) -> Any:
+        """Decode data - delegates to specialized serializer."""
+        specialized = self._ensure_specialized(
+            content=repr if isinstance(repr, str) else None,
+            binary_data=repr if isinstance(repr, bytes) else None
+        )
+        return specialized.decode(repr, options=options)
+    
+    # ============================================================================
     # CORE SERIALIZATION METHODS (Unified)
     # ============================================================================
     
-    def dumps(self, data: Any, file_path: Optional[Union[str, Path]] = None, 
-              format_hint: Optional[str] = None) -> Union[str, bytes]:
+    def dumps(self, data: Any, file_path: Optional[str | Path] = None, 
+              format_hint: Optional[str] = None) -> str | bytes:
         """Unified serialize with I/O integration."""
         if file_path and self.auto_serialize:
             # Use auto-serialization for file operations
@@ -379,7 +421,7 @@ class XWSerializer(ASerialization):
         )
         return specialized.dumps(data)
     
-    def loads(self, data: Union[str, bytes], format_hint: Optional[str] = None) -> Any:
+    def loads(self, data: str | bytes, format_hint: Optional[str] = None) -> Any:
         """Unified deserialize with I/O integration."""
         specialized = self._ensure_specialized(
             content=data,
@@ -388,7 +430,7 @@ class XWSerializer(ASerialization):
         )
         return specialized.loads(data)
     
-    def save_file(self, data: Any, file_path: Union[str, Path], 
+    def save_file(self, data: Any, file_path: str | Path, 
                   format_hint: Optional[str] = None) -> None:
         """Enhanced save file with backup and atomic operations."""
         target_path = Path(file_path)
@@ -401,13 +443,17 @@ class XWSerializer(ASerialization):
         
         with performance_monitor("save_file"):
             try:
-                # Create backup if enabled
-                if self.enable_backups and target_path.exists():
-                    backup_path = self._file_manager.create_backup(
-                        target_path, target_path.parent / '.backups'
-                    )
-                    if backup_path:
+                # Create backup if enabled (using XWIO if available)
+                if self.enable_backups and target_path.exists() and self._io:
+                    try:
+                        backup_dir = target_path.parent / '.backups'
+                        backup_dir.mkdir(exist_ok=True)
+                        backup_path = backup_dir / f"{target_path.name}.backup"
+                        import shutil
+                        shutil.copy2(target_path, backup_path)
                         logger.debug(f"Created backup: {backup_path}")
+                    except Exception as e:
+                        logger.warning(f"Backup creation failed: {e}")
                 
                 # Use auto-serialization if enabled
                 if self.auto_serialize:
@@ -426,7 +472,7 @@ class XWSerializer(ASerialization):
                 logger.error(f"Save file failed for {target_path}: {e}")
                 raise SerializationError(f"Save file failed: {e}")
     
-    def load_file(self, file_path: Union[str, Path], 
+    def load_file(self, file_path: str | Path, 
                   format_hint: Optional[str] = None) -> Any:
         """Enhanced load file with validation and monitoring."""
         target_path = Path(file_path)
@@ -453,6 +499,24 @@ class XWSerializer(ASerialization):
             except Exception as e:
                 logger.error(f"Load file failed for {target_path}: {e}")
                 raise SerializationError(f"Load file failed: {e}")
+    
+    # ============================================================================
+    # ABSTRACT PROPERTY IMPLEMENTATIONS
+    # ============================================================================
+    
+    @property
+    def codec_id(self) -> str:
+        """Codec identifier - delegates to specialized serializer."""
+        if self._specialized_serializer is None:
+            return "auto-detect"
+        return self._specialized_serializer.codec_id
+    
+    @property
+    def media_types(self) -> list[str]:
+        """Supported MIME types - delegates to specialized serializer."""
+        if self._specialized_serializer is None:
+            return ["application/octet-stream"]  # Generic until detection
+        return self._specialized_serializer.media_types
     
     # ============================================================================
     # PROPERTY DELEGATION (from XWSerialization)
@@ -497,27 +561,43 @@ class XWSerializer(ASerialization):
     # FILE MANAGER INTEGRATION
     # ============================================================================
     
-    def process_file(self, file_path: Union[str, Path], operation: str = 'info') -> dict[str, Any]:
-        """Process file using file manager."""
-        return self._file_manager.process_file(file_path, operation)
+    def process_file(self, file_path: str | Path, operation: str = 'info') -> dict[str, Any]:
+        """Process file using XWIO."""
+        if self._io:
+            return self._io.get_file_info(file_path)
+        return {"path": str(file_path), "operation": operation}
     
-    def get_file_info(self, file_path: Union[str, Path]) -> dict[str, Any]:
+    def get_file_info(self, file_path: str | Path) -> dict[str, Any]:
         """Get comprehensive file information."""
-        return self._file_manager.get_file_info(file_path)
+        if self._io:
+            return self._io.get_file_info(file_path)
+        path = Path(file_path)
+        return {
+            "path": str(path),
+            "exists": path.exists(),
+            "size": path.stat().st_size if path.exists() else 0,
+        }
     
-    def detect_file_type(self, file_path: Union[str, Path]) -> str:
-        """Detect file type."""
-        return self._file_manager.detect_file_type(file_path)
+    def detect_file_type(self, file_path: str | Path) -> str:
+        """Detect file type from extension."""
+        path = Path(file_path)
+        return path.suffix.lower() or "unknown"
     
-    def is_safe_to_process(self, file_path: Union[str, Path]) -> bool:
+    def is_safe_to_process(self, file_path: str | Path) -> bool:
         """Check if file is safe to process."""
-        return self._file_manager.is_safe_to_process(file_path)
+        if self.validate_paths:
+            try:
+                self._path_validator.validate_path(file_path)
+                return True
+            except Exception:
+                return False
+        return True
     
     # ============================================================================
     # UNIFIED I/O INTEGRATION
     # ============================================================================
     
-    def atomic_save(self, data: Any, file_path: Union[str, Path], 
+    def atomic_save(self, data: Any, file_path: str | Path, 
                    backup: bool = True) -> OperationResult:
         """Atomically save data with backup."""
         target_path = Path(file_path)
@@ -538,13 +618,21 @@ class XWSerializer(ASerialization):
                 else:
                     data_bytes = str(data).encode('utf-8')
                 
-                return self._unified_io.atomic_write(target_path, data_bytes, backup)
+                # Use XWIO atomic write or specialized serializer
+                if self._io:
+                    from ..common.atomic import safe_write_bytes
+                    safe_write_bytes(target_path, data_bytes)
+                    return OperationResult.SUCCESS
+                else:
+                    # Fallback to direct write
+                    target_path.write_bytes(data_bytes)
+                    return OperationResult.SUCCESS
                 
             except Exception as e:
                 logger.error(f"Atomic save failed for {target_path}: {e}")
                 return OperationResult.FAILED
     
-    def atomic_load(self, file_path: Union[str, Path]) -> Any:
+    def atomic_load(self, file_path: str | Path) -> Any:
         """Atomically load data."""
         target_path = Path(file_path)
         
@@ -556,8 +644,11 @@ class XWSerializer(ASerialization):
         
         with performance_monitor("atomic_load"):
             try:
-                # Load data
-                data = self._unified_io.load(target_path)
+                # Load data using XWIO or direct read
+                if self._io:
+                    data = self._io.read_file(target_path)
+                else:
+                    data = target_path.read_bytes()
                 
                 # Try to deserialize if it's a supported format
                 if self.auto_serialize:
@@ -581,7 +672,7 @@ class XWSerializer(ASerialization):
     
     def atomic_update_path(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         path: str, 
         value: Any, 
         **options
@@ -628,7 +719,7 @@ class XWSerializer(ASerialization):
     
     def atomic_read_path(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         path: str, 
         **options
     ) -> Any:
@@ -681,7 +772,7 @@ class XWSerializer(ASerialization):
     
     def query(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         query_expr: str, 
         **options
     ) -> Any:
@@ -733,7 +824,7 @@ class XWSerializer(ASerialization):
     
     def merge(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         updates: dict[str, Any], 
         **options
     ) -> None:
@@ -782,7 +873,7 @@ class XWSerializer(ASerialization):
 
     def stream_read_record(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         match: callable,
         projection: Optional[list[Any]] = None,
         **options: Any,
@@ -823,7 +914,7 @@ class XWSerializer(ASerialization):
 
     def stream_update_record(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         match: callable,
         updater: callable,
         *,
@@ -868,7 +959,7 @@ class XWSerializer(ASerialization):
 
     def get_record_page(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         page_number: int,
         page_size: int,
         **options: Any,
@@ -909,7 +1000,7 @@ class XWSerializer(ASerialization):
 
     def get_record_by_id(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         id_value: Any,
         *,
         id_field: str = "id",
@@ -952,7 +1043,7 @@ class XWSerializer(ASerialization):
     # BATCH OPERATIONS
     # ============================================================================
     
-    def batch_save(self, data_dict: dict[Union[str, Path], Any], 
+    def batch_save(self, data_dict: dict[str | Path, Any], 
                    format_hint: Optional[str] = None) -> dict[str, bool]:
         """Save multiple files in batch."""
         results = {}
@@ -968,7 +1059,7 @@ class XWSerializer(ASerialization):
         
         return results
     
-    def batch_load(self, file_paths: list[Union[str, Path]], 
+    def batch_load(self, file_paths: list[str | Path], 
                    format_hint: Optional[str] = None) -> dict[str, Any]:
         """Load multiple files in batch."""
         results = {}
@@ -1004,19 +1095,17 @@ class XWSerializer(ASerialization):
             'auto_serialize_extensions': self.auto_serialize_extensions,
             'detected_format': self._detected_format,
             'is_transformed': self.is_transformed(),
-            'file_manager_info': self._file_manager.get_manager_info(),
-            'unified_io_info': self._unified_io.get_info()
+            'file_manager_info': None,  # Not implemented
+            'unified_io_info': {'io_available': self._io is not None}
         }
     
     def cleanup_all_resources(self) -> int:
         """Cleanup all resources."""
         cleaned_count = 0
         
-        # Cleanup file manager resources
-        cleaned_count += self._file_manager.cleanup_all_resources()
-        
-        # Cleanup unified I/O resources
-        cleaned_count += self._unified_io.cleanup_all_resources()
+        # Cleanup is handled by specialized serializer if needed
+        if self._specialized_serializer and hasattr(self._specialized_serializer, 'cleanup_all_resources'):
+            cleaned_count += self._specialized_serializer.cleanup_all_resources()
         
         logger.debug(f"XWSerializer cleaned up {cleaned_count} resources")
         return cleaned_count
@@ -1139,34 +1228,34 @@ def _get_global_serializer() -> XWSerializer:
     return _global_xw_serializer
 
 # Static functions - clean API without prefixes
-def auto_serialize(data: Any, file_path: Union[str, Path], format_hint: Optional[str] = None) -> bool:
+def auto_serialize(data: Any, file_path: str | Path, format_hint: Optional[str] = None) -> bool:
     """Auto-serialize data to file with format detection."""
     return _get_global_serializer().auto_serialize(data, file_path, format_hint)
 
-def auto_deserialize(file_path: Union[str, Path], format_hint: Optional[str] = None) -> Any:
+def auto_deserialize(file_path: str | Path, format_hint: Optional[str] = None) -> Any:
     """Auto-deserialize data from file with format detection."""
     return _get_global_serializer().auto_deserialize(file_path, format_hint)
 
-def atomic_save(data: Any, file_path: Union[str, Path], backup: bool = True) -> OperationResult:
+def atomic_save(data: Any, file_path: str | Path, backup: bool = True) -> OperationResult:
     """Atomically save data with backup."""
     return _get_global_serializer().atomic_save(data, file_path, backup)
 
-def atomic_load(file_path: Union[str, Path]) -> Any:
+def atomic_load(file_path: str | Path) -> Any:
     """Atomically load data."""
     return _get_global_serializer().atomic_load(file_path)
 
-def dumps(data: Any, file_path: Optional[Union[str, Path]] = None, format_hint: Optional[str] = None) -> Union[str, bytes]:
+def dumps(data: Any, file_path: Optional[str | Path] = None, format_hint: Optional[str] = None) -> str | bytes:
     """Smart serialization function that auto-detects format."""
     return _get_global_serializer().dumps(data, file_path, format_hint)
 
-def loads(data: Union[str, bytes], format_hint: Optional[str] = None) -> Any:
+def loads(data: str | bytes, format_hint: Optional[str] = None) -> Any:
     """Smart deserialization function that auto-detects format."""
     return _get_global_serializer().loads(data, format_hint)
 
-def save_file(data: Any, file_path: Union[str, Path], format_hint: Optional[str] = None) -> None:
+def save_file(data: Any, file_path: str | Path, format_hint: Optional[str] = None) -> None:
     """Smart file saving that auto-detects format from extension."""
     return _get_global_serializer().save_file(data, file_path, format_hint)
 
-def load_file(file_path: Union[str, Path], format_hint: Optional[str] = None) -> Any:
+def load_file(file_path: str | Path, format_hint: Optional[str] = None) -> Any:
     """Smart file loading that auto-detects format from extension and content."""
     return _get_global_serializer().load_file(file_path, format_hint)

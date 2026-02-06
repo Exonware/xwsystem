@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/archive_tests/test_archive_format_metadata.py
 """
 Unit tests for archive format metadata and discovery.
 """
@@ -110,4 +111,3 @@ def test_archiver_metadata(archiver_cls, expected_id, expected_exts):
     assert archiver.format_id == expected_id
     for ext in expected_exts:
         assert ext in archiver.file_extensions
-

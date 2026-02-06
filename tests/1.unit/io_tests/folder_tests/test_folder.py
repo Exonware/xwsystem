@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/folder_tests/test_folder.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for XWFolder class.
@@ -131,4 +132,3 @@ class TestXWFolder:
         
         (folder_path / "file.txt").write_text("content")
         assert folder.is_empty() is False
-

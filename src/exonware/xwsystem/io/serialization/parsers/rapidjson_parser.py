@@ -1,18 +1,21 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/rapidjson_parser.py
 """python-rapidjson parser - Tier 1 (C++ rapidjson)."""
 
-from typing import Any, Union
+from typing import Any
+import importlib.util
 
-try:
+_rapidjson_spec = importlib.util.find_spec('rapidjson')
+if _rapidjson_spec is not None:
     import rapidjson
     RAPIDJSON_AVAILABLE = True
-except ImportError:
+else:
     RAPIDJSON_AVAILABLE = False
     rapidjson = None
 
-from .base import IJsonParser
+from .base import AJsonParser
 
 
-class RapidjsonParser(IJsonParser):
+class RapidjsonParser(AJsonParser):
     """python-rapidjson parser - Tier 1 (C++ rapidjson)."""
     
     @property
@@ -27,13 +30,13 @@ class RapidjsonParser(IJsonParser):
     def is_available(self) -> bool:
         return RAPIDJSON_AVAILABLE
     
-    def loads(self, s: Union[str, bytes]) -> Any:
+    def loads(self, s: str | bytes) -> Any:
         """Parse JSON using rapidjson.loads()."""
         if isinstance(s, bytes):
             s = s.decode("utf-8")
         return rapidjson.loads(s)
     
-    def dumps(self, obj: Any, **kwargs) -> Union[str, bytes]:
+    def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using rapidjson.dumps()."""
         # rapidjson supports most stdlib kwargs
         result = rapidjson.dumps(

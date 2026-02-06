@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/monitoring/performance_manager_generic.py
 #exonware/xwsystem/monitoring/performance_manager_generic.py
 """
 Generic Performance Management for XSystem (Moved from performance/ module)
@@ -10,7 +11,7 @@ health monitoring, and recommendations without being tied to specific implementa
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 04, 2025
 """
 
@@ -18,7 +19,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from ..config.performance_modes import PerformanceMode
 from ..config.logging_setup import get_logger
@@ -106,19 +107,19 @@ class GenericPerformanceManager:
         """Get the current performance mode (local or global)."""
         if hasattr(self, "_local_mode") and self._local_mode is not None:
             return self._local_mode
-        # This should be overridden by subclasses to get global mode
+        # Override in subclasses to get global mode
         return PerformanceMode.FAST  # Default fallback
 
     def get_effective_config(self) -> Optional[Any]:
         """Get effective config (local or global)."""
         if hasattr(self, "_local_config") and self._local_config is not None:
             return self._local_config
-        # This should be overridden by subclasses to get global config
+        # Override in subclasses to get global config
         return None
 
     def _create_local_config(self, mode: PerformanceMode) -> Any:
         """Create local configuration for the given mode."""
-        # This should be overridden by subclasses
+        # Override in subclasses
         return {"performance_mode": mode}
 
     def get_mode_history(self) -> list[dict[str, Any]]:
@@ -262,7 +263,7 @@ class GenericPerformanceManager:
             ]:
                 self.set_performance_mode(PerformanceMode.ADAPTIVE)
         elif memory_percent < 30 and cache_hit_rate > 0.8:
-            # Good conditions - can use fast mode
+            # Conditions allow fast mode
             if current_mode != PerformanceMode.FAST:
                 self.set_performance_mode(PerformanceMode.FAST)
 
@@ -466,4 +467,3 @@ class GenericPerformanceManager:
     def _apply_manual_overrides(self, config_overrides: dict[str, Any]) -> None:
         """Apply manual configuration overrides. Override in subclasses."""
         pass
-

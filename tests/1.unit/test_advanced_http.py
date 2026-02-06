@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/test_advanced_http.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
@@ -13,7 +14,7 @@ import json
 import pytest
 from unittest.mock import Mock, AsyncMock
 
-from src.exonware.xwsystem.http_client.advanced_client import (
+from exonware.xwsystem.http_client.advanced_client import (
     AdvancedHttpClient,
     AdvancedHttpConfig,
     Http2Config,
@@ -21,7 +22,7 @@ from src.exonware.xwsystem.http_client.advanced_client import (
     MockTransport,
     MockResponse,
 )
-from src.exonware.xwsystem.http_client.client import HttpError
+from exonware.xwsystem.http_client.client import HttpError
 
 
 class TestMockTransport:

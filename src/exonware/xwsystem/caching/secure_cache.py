@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/secure_cache.py
 #exonware/xwsystem/caching/secure_cache.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Secure cache implementations with validation, integrity checks, and rate limiting.
@@ -70,20 +71,44 @@ class SecureLRUCache(LRUCache):
         self.max_value_size_mb = max_value_size_mb
         
         # Security components
+        # Only create rate limiter if explicitly enabled
+        # This ensures rate limiting is truly disabled when enable_rate_limit=False
         if self.enable_rate_limit:
             self.rate_limiter = RateLimiter(max_ops_per_second=max_ops_per_second)
+        else:
+            # Explicitly ensure rate_limiter doesn't exist when disabled
+            # This prevents any accidental access
+            if hasattr(self, 'rate_limiter'):
+                delattr(self, 'rate_limiter')
         
         # Track integrity violations
         self._integrity_violations = 0
     
     def _check_rate_limit(self) -> None:
-        """Check rate limit if enabled."""
-        if self.enable_rate_limit:
-            try:
-                self.rate_limiter.acquire()
-            except CacheRateLimitError:
-                # Re-raise with additional context
-                raise
+        """
+        Check rate limit if enabled.
+        
+        Raises:
+            CacheRateLimitError: If rate limit is exceeded
+            
+        Note:
+            This method follows GUIDE_TEST.md by explicitly raising
+            errors rather than silently ignoring them. Rate limiting
+            is a security feature (Priority #1) and violations are
+            reported.
+        """
+        # Triple-check: only check rate limit if explicitly enabled
+        # and rate limiter exists (defensive programming)
+        # This ensures rate limiting is truly disabled when enable_rate_limit=False
+        if not self.enable_rate_limit:
+            return  # Early return if rate limiting is disabled
+        
+        if not hasattr(self, 'rate_limiter'):
+            return  # Early return if rate limiter doesn't exist
+        
+        # Rate limiter will raise CacheRateLimitError if limit exceeded
+        # We let it propagate to caller for proper error handling
+        self.rate_limiter.acquire()
     
     def put(self, key: Hashable, value: Any) -> None:
         """
@@ -97,8 +122,10 @@ class SecureLRUCache(LRUCache):
             CacheValidationError: If validation fails
             CacheRateLimitError: If rate limit exceeded
         """
-        # Rate limiting
-        self._check_rate_limit()
+        # Rate limiting - only check if explicitly enabled
+        # This ensures rate limiting is truly disabled when enable_rate_limit=False
+        if self.enable_rate_limit:
+            self._check_rate_limit()
         
         # Validate key
         validate_cache_key(key, max_size=self.max_key_size)
@@ -132,27 +159,54 @@ class SecureLRUCache(LRUCache):
         Raises:
             CacheIntegrityError: If integrity check fails
         """
-        # Rate limiting
-        self._check_rate_limit()
+        # Rate limiting - only check if explicitly enabled
+        # This ensures rate limiting is truly disabled when enable_rate_limit=False
+        if self.enable_rate_limit:
+            self._check_rate_limit()
         
-        # Get from parent
-        result = super().get(key, default)
-        
-        if result is default:
-            return default
+        # Check if key exists in cache first to handle None values correctly
+        # The parent's get() method treats None as "not found", so we need to
+        # check existence directly to distinguish between "key not found" and "value is None"
+        with self._lock:
+            if key not in self._cache:
+                return default
+            
+            # Key exists - get the node to access the value
+            node = self._cache[key]
+            
+            # Check TTL if enabled
+            if self.ttl and time.time() - node.access_time > self.ttl:
+                self._remove_node(node)
+                del self._cache[key]
+                return default
+            
+            # Move to head (most recently used) - use parent's method
+            self._move_to_head(node)
+            node.access_time = time.time()
+            self._hits += 1
+            
+            # Get the actual value from the node
+            result = node.value
         
         # Verify integrity if enabled
-        if self.enable_integrity and isinstance(result, CacheEntry):
-            try:
-                verify_entry_integrity(result)
-                result.access_count += 1
-                return result.value
-            except CacheIntegrityError as e:
-                # Log violation and remove corrupted entry
-                self._integrity_violations += 1
-                self.delete(key)
-                raise e
+        if self.enable_integrity:
+            # If result is a CacheEntry, verify and extract value
+            if isinstance(result, CacheEntry):
+                try:
+                    verify_entry_integrity(result)
+                    result.access_count += 1
+                    return result.value
+                except CacheIntegrityError as e:
+                    # Log violation and remove corrupted entry
+                    self._integrity_violations += 1
+                    self.delete(key)
+                    raise e
+            else:
+                # If integrity is enabled but result is not a CacheEntry,
+                # this might be a legacy entry or corruption - return as-is
+                return result
         
+        # Integrity disabled - return value directly (including None)
         return result
     
     def get_security_stats(self) -> dict:
@@ -297,4 +351,3 @@ __all__ = [
     'SecureLFUCache',
     'SecureTTLCache',
 ]
-

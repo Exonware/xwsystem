@@ -1,18 +1,21 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/ujson_parser.py
 """ujson parser - Tier 1 (C-based, fast)."""
 
-from typing import Any, Union
+from typing import Any
+import importlib.util
 
-try:
+_ujson_spec = importlib.util.find_spec('ujson')
+if _ujson_spec is not None:
     import ujson
     UJSON_AVAILABLE = True
-except ImportError:
+else:
     UJSON_AVAILABLE = False
     ujson = None
 
-from .base import IJsonParser
+from .base import AJsonParser
 
 
-class UjsonParser(IJsonParser):
+class UjsonParser(AJsonParser):
     """ujson parser - Tier 1 (C-based, fast)."""
     
     @property
@@ -27,13 +30,13 @@ class UjsonParser(IJsonParser):
     def is_available(self) -> bool:
         return UJSON_AVAILABLE
     
-    def loads(self, s: Union[str, bytes]) -> Any:
+    def loads(self, s: str | bytes) -> Any:
         """Parse JSON using ujson.loads()."""
         if isinstance(s, bytes):
             s = s.decode("utf-8")
         return ujson.loads(s)
     
-    def dumps(self, obj: Any, **kwargs) -> Union[str, bytes]:
+    def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using ujson.dumps()."""
         # ujson supports most stdlib kwargs
         result = ujson.dumps(

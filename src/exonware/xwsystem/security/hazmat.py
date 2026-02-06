@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/security/hazmat.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Hazardous Materials (Hazmat) Layer - Low-level cryptographic primitives.
@@ -20,8 +21,10 @@ Features:
 - Low-level cryptographic operations
 """
 
+from __future__ import annotations
+
 import os
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, ec, ed25519, x25519, padding
@@ -510,7 +513,7 @@ class X509Certificate:
     Provides parsing, validation, and creation of X.509 certificates.
     """
     
-    def __init__(self, cert_data: Union[bytes, str]):
+    def __init__(self, cert_data: bytes | str):
         """
         Initialize with certificate data.
         
@@ -576,7 +579,7 @@ class X509Certificate:
         """Get signature algorithm name."""
         return self._cert.signature_algorithm_oid._name
     
-    def verify_signature(self, ca_cert: 'X509Certificate') -> bool:
+    def verify_signature(self, ca_cert: X509Certificate) -> bool:
         """
         Verify certificate signature against CA certificate.
         
@@ -618,17 +621,17 @@ class X509Certificate:
         return self._cert.public_bytes(serialization.Encoding.DER)
     
     @staticmethod
-    def load_pem(pem_data: Union[bytes, str]) -> 'X509Certificate':
+    def load_pem(pem_data: bytes | str) -> X509Certificate:
         """Load certificate from PEM data."""
         return X509Certificate(pem_data)
     
     @staticmethod
-    def load_der(der_data: bytes) -> 'X509Certificate':
+    def load_der(der_data: bytes) -> X509Certificate:
         """Load certificate from DER data."""
         return X509Certificate(der_data)
     
     @staticmethod
-    def load_from_file(file_path: str) -> 'X509Certificate':
+    def load_from_file(file_path: str) -> X509Certificate:
         """Load certificate from file."""
         with open(file_path, 'rb') as f:
             return X509Certificate(f.read())
@@ -712,5 +715,5 @@ def secure_random(length: int) -> bytes:
 
 def is_cryptography_available() -> bool:
     """Check if cryptography library is available."""
-    # Lazy installation system ensures cryptography is always available
+    # Lazy installation system provides cryptography when available
     return True

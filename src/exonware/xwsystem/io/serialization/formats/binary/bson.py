@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/binary/bson.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 BSON serialization - Binary JSON format (MongoDB).
@@ -14,7 +15,7 @@ Following I→A pattern:
 """
 
 from importlib import import_module
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -102,7 +103,7 @@ class BsonSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using bson library)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to BSON bytes.
         
@@ -135,7 +136,7 @@ class BsonSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode BSON bytes to data.
         
@@ -146,7 +147,7 @@ class BsonSerializer(ASerialization):
             options: BSON options
         
         Returns:
-            Decoded dict
+            Decoded dict or list (if originally a list, unwrapped from {"data": [...]})
         
         Raises:
             SerializationError: If decoding fails
@@ -159,6 +160,13 @@ class BsonSerializer(ASerialization):
             # Decode from BSON bytes
             data = self._bson.decode(repr)
             
+            # BSON only supports dicts, so lists are wrapped as {"data": [...]}
+            # Unwrap if we detect this pattern to restore original list structure
+            if isinstance(data, dict) and len(data) == 1 and "data" in data:
+                value = data["data"]
+                if isinstance(value, list):
+                    return value
+            
             return data
             
         except Exception as e:
@@ -167,4 +175,5 @@ class BsonSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             )
-
+    
+    # Note: File operations (save_file, load_file) are inherited from ASerialization base class

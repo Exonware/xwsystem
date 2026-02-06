@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/append_only_log.py
 """Append-only log for fast atomic updates in JSONL files.
 
 This module provides an append-only log system that can be used by
@@ -12,11 +13,8 @@ import time
 from pathlib import Path
 from typing import Any, Callable
 
-try:
-    from exonware.xwsystem.io.serialization.parsers.registry import get_best_available_parser
-    _parser = get_best_available_parser()
-except ImportError:
-    import json as _parser
+from exonware.xwsystem.io.serialization.parsers.registry import get_best_available_parser
+_parser = get_best_available_parser()
 
 
 class AppendOnlyLog:
@@ -147,7 +145,7 @@ class AppendOnlyLog:
                 except Exception:
                     pass
         
-        # Not in log, return None (caller should read from main file)
+        # Not in log, return None (caller reads from main file)
         return None
     
     def _compact_background(self):
@@ -197,5 +195,5 @@ def atomic_update_with_append_log(
             # Fall through to full rewrite
             pass
     
-    # Fall back to full rewrite (caller should handle this)
+    # Fall back to full rewrite (caller handles this)
     return 0

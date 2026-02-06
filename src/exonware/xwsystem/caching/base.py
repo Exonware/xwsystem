@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/caching/base.py
 #exonware/xwsystem/caching/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Caching module base classes - abstract classes for caching functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Hashable
+from typing import Any, Optional, Hashable
 from .defs import CachePolicy
 
 
@@ -25,7 +26,8 @@ class ACache(ABC):
             capacity: Maximum cache size
             ttl: Time to live in seconds
         """
-        self.capacity = capacity
+        # Ensure capacity is always int (handle case where it might be string from config)
+        self.capacity = int(capacity) if not isinstance(capacity, int) else capacity
         self.ttl = ttl
         self._cache: dict[str, Any] = {}
         self._access_times: dict[str, float] = {}
@@ -185,13 +187,29 @@ class ACache(ABC):
             More efficient than individual puts for batch operations.
         """
         count = 0
+        errors = []
         for key, value in items.items():
             try:
                 self.put(key, value)
                 count += 1
-            except Exception:
-                # Continue with other items even if one fails
-                pass
+            except Exception as e:
+                # Log error but continue with other items for batch resilience
+                # This follows GUIDE_TEST.md by handling errors explicitly
+                # rather than silently ignoring them
+                errors.append((key, str(e)))
+        
+        # Log any errors that occurred during batch operation
+        if errors:
+            # Import here to avoid circular dependencies
+            from ..config.logging_setup import get_logger
+            logger = get_logger("xwsystem.caching.base")
+            
+            logger.warning(
+                f"put_many: {len(errors)} items failed out of {len(items)}. "
+                f"Successfully cached {count} items. "
+                f"Errors: {errors[:5]}"  # Show first 5 errors
+            )
+        
         return count
     
     def delete_many(self, keys: list[Hashable]) -> int:

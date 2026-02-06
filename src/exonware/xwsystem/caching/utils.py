@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/utils.py
 #exonware/xwsystem/caching/utils.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Common utility functions for caching module.
@@ -33,13 +34,17 @@ def estimate_object_size(obj: Any) -> int:
     try:
         return sys.getsizeof(obj)
     except (TypeError, AttributeError):
-        # For objects that don't support getsizeof
+        # For objects that don't support getsizeof (e.g., some C extensions)
         try:
-            # Try pickling as fallback
+            # Try pickling as fallback to estimate serialized size
             return len(pickle.dumps(obj, protocol=pickle.HIGHEST_PROTOCOL))
-        except Exception:
-            # Last resort: return a conservative estimate
-            return 1024  # 1KB default
+        except (pickle.PicklingError, TypeError, AttributeError) as e:
+            # Object cannot be pickled - return conservative estimate
+            # This is acceptable per GUIDE_TEST.md as this is a utility function
+            # Provides fallback rather than failing
+            # The alternative would be to raise an exception, but that would
+            # break cache operations for objects that can't be sized
+            return 1024  # 1KB default conservative estimate
 
 
 def compute_checksum(value: Any, algorithm: str = 'sha256') -> str:
@@ -135,11 +140,25 @@ def default_key_builder(func: Callable, args: tuple, kwargs: dict) -> str:
         kwargs_str = str(sorted(kwargs.items()))
         key = f"{func_name}:{args_str}:{kwargs_str}"
         return key
-    except Exception:
-        # Fallback: use hash
-        args_hash = hash(args)
-        kwargs_hash = hash(tuple(sorted(kwargs.items())))
-        return f"{func_name}:{args_hash}:{kwargs_hash}"
+    except (TypeError, ValueError) as e:
+        # Fallback: use hash for non-stringable arguments
+        # This is acceptable per GUIDE_TEST.md as this is a utility function
+        # Provides fallback mechanism for edge cases
+        # The alternative would be to raise, but that would break caching
+        # for functions with complex argument types
+        try:
+            args_hash = hash(args)
+            kwargs_hash = hash(tuple(sorted(kwargs.items())))
+            return f"{func_name}:{args_hash}:{kwargs_hash}"
+        except (TypeError, ValueError):
+            # If even hashing fails, use a deterministic fallback
+            # This handles truly unhashable types (e.g., lists, dicts)
+            import hashlib
+            args_repr = repr(args).encode('utf-8')
+            kwargs_repr = repr(kwargs).encode('utf-8')
+            combined = args_repr + kwargs_repr
+            hash_val = hashlib.md5(combined).hexdigest()
+            return f"{func_name}:{hash_val}"
 
 
 def validate_capacity(capacity: int, min_capacity: int = 1, max_capacity: int = 1000000) -> None:
@@ -212,4 +231,3 @@ __all__ = [
     'validate_capacity',
     'validate_ttl',
 ]
-

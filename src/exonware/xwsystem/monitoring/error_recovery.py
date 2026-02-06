@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/monitoring/error_recovery.py
 """
 Error Recovery and Resilience Mechanisms for XWSystem Library.
 
@@ -10,7 +11,7 @@ import functools
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional
 
 from .defs import CircuitState
 
@@ -241,6 +242,18 @@ class ErrorRecoveryManager:
 
         return None
 
+    def register_degradation_strategy(self, error_type: str, strategy: Callable) -> None:
+        """
+        Register a degradation strategy for a specific error type.
+        
+        Args:
+            error_type: Error type identifier (e.g., "security_errors", "memory")
+            strategy: Callable that handles the error (error, context) -> Any
+        """
+        with self._lock:
+            self.degradation_strategies[error_type] = strategy
+            logger.info(f"📋 Registered degradation strategy for: {error_type}")
+    
     def add_circuit_breaker(self, name: str, config: CircuitBreakerConfig) -> None:
         """Add a circuit breaker."""
         with self._lock:
@@ -307,7 +320,7 @@ class ErrorRecoveryManager:
                 # Calculate next delay
                 delay = min(delay * backoff_factor, max_delay)
 
-        # This should never be reached
+        # Unreachable code path
         raise last_exception
 
     async def async_retry_with_backoff(
@@ -344,7 +357,7 @@ class ErrorRecoveryManager:
                 await asyncio.sleep(delay)
                 delay = min(delay * backoff_factor, max_delay)
 
-        # This should never be reached
+        # Unreachable code path
         raise last_exception
 
     def graceful_degradation(

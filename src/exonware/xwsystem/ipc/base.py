@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/ipc/base.py
 #exonware/xwsystem/ipc/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 IPC module base classes - abstract classes for inter-process communication functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from .contracts import MessageType, QueueType, ProcessState, SharedMemoryType
 
 
@@ -116,12 +117,12 @@ class APipeBase(ABC):
         pass
     
     @abstractmethod
-    def write(self, data: Union[str, bytes]) -> int:
+    def write(self, data: str | bytes) -> int:
         """Write data to pipe."""
         pass
     
     @abstractmethod
-    def read(self, size: Optional[int] = None) -> Union[str, bytes]:
+    def read(self, size: Optional[int] = None) -> str | bytes:
         """Read data from pipe."""
         pass
     
@@ -331,7 +332,7 @@ class AProcessPoolBase(ABC):
 
 class BaseIPC:
     """
-    Base IPC class for backward compatibility.
+    Base IPC class.
     
     Provides a simple interface for IPC operations.
     """

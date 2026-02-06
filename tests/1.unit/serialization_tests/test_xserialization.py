@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/serialization_tests/test_xserialization.py
 """
 Test script for XWSerialization - Self-transforming intelligent serializer.
 

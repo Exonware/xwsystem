@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 ZIP archive format implementation.
@@ -86,4 +86,3 @@ class ZipArchiver(IArchiveFormat):
         arcname = arcname or file.name
         with zipfile.ZipFile(archive, 'a') as zf:
             zf.write(file, arcname=arcname)
-

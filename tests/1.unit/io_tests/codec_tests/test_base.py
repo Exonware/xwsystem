@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/codec_tests/test_base.py
 """
 Unit tests for io.codec.base module
 
@@ -48,4 +49,3 @@ class TestACodecConvenienceMethods:
         # ACodec should provide encode_to_file, decode_from_file, etc.
         # These are tested through concrete implementations
         assert True  # Placeholder - test via concrete codecs
-

@@ -1,13 +1,14 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/hybrid_parser.py
 """Hybrid parser: msgspec for reading, orjson for writing (direct, no try/catch)."""
 
-from typing import Any, Union
+from typing import Any
 import msgspec  # Direct import for reading
 import orjson  # Direct import for writing
 
-from .base import IJsonParser
+from .base import AJsonParser
 
 
-class HybridParser(IJsonParser):
+class HybridParser(AJsonParser):
     """
     Hybrid parser - fastest combination:
     - msgspec for reading (1.36x faster than orjson)
@@ -28,20 +29,20 @@ class HybridParser(IJsonParser):
     def is_available(self) -> bool:
         return True  # Assumes both msgspec and orjson are available
     
-    def loads(self, s: Union[str, bytes]) -> Any:
+    def loads(self, s: str | bytes) -> Any:
         """Parse JSON using msgspec.json.decode() - fastest for reading."""
         if isinstance(s, str):
             s = s.encode("utf-8")
         # msgspec.json.decode accepts bytes directly
         return msgspec.json.decode(s)
     
-    def dumps(self, obj: Any, **kwargs) -> Union[str, bytes]:
+    def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using orjson.dumps() - fastest for writing."""
         option = 0
         
         # orjson options
         if not kwargs.get("ensure_ascii", True):
-            # orjson always outputs UTF-8, so ensure_ascii=False is default
+            # orjson outputs UTF-8, so ensure_ascii=False is default
             pass
         
         # Handle indent (orjson doesn't support indent directly)

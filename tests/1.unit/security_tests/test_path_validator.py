@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/security_tests/test_path_validator.py
 """
 Test suite for xSystem PathValidator security functionality.
 Tests path validation, security checks, and injection detection.
@@ -25,15 +26,15 @@ except ImportError as e:
 class TestPathValidatorBasic:
     """Test suite for basic PathValidator functionality."""
     
-    def test_path_validator_creation(self, temp_dir):
+    def test_path_validator_creation(self, tmp_path):
         """Test creating PathValidator instance."""
-        validator = PathValidator(base_path=temp_dir)
+        validator = PathValidator(base_path=tmp_path)
         assert validator is not None
-        assert validator.base_path == temp_dir
+        assert validator.base_path == Path(tmp_path).resolve()
     
-    def test_safe_path_validation(self, temp_dir, safe_paths):
+    def test_safe_path_validation(self, tmp_path, safe_paths):
         """Test validation of safe paths."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         for safe_path in safe_paths:
             try:
@@ -42,9 +43,9 @@ class TestPathValidatorBasic:
             except (PathSecurityError, PermissionError, FileNotFoundError):
                 pytest.fail(f"Safe path rejected: {safe_path}")
     
-    def test_malicious_path_rejection(self, temp_dir, malicious_paths):
+    def test_malicious_path_rejection(self, tmp_path, malicious_paths):
         """Test rejection of malicious paths."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         for malicious_path in malicious_paths:
             with pytest.raises((PathSecurityError, ValueError)):
@@ -94,9 +95,9 @@ class TestPathValidatorFilenames:
 class TestPathValidatorTraversal:
     """Test suite for directory traversal detection."""
     
-    def test_simple_traversal_detection(self, temp_dir):
+    def test_simple_traversal_detection(self, tmp_path):
         """Test detection of simple directory traversal."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         traversal_attempts = [
             "../file.txt",
@@ -110,9 +111,9 @@ class TestPathValidatorTraversal:
             with pytest.raises((PathSecurityError, ValueError)):
                 validator.validate_path(attempt)
     
-    def test_complex_traversal_detection(self, temp_dir):
+    def test_complex_traversal_detection(self, tmp_path):
         """Test detection of complex directory traversal."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         complex_attempts = [
             "valid_folder/../../../etc/passwd",
@@ -126,9 +127,9 @@ class TestPathValidatorTraversal:
             with pytest.raises((PathSecurityError, ValueError)):
                 validator.validate_path(attempt)
     
-    def test_windows_traversal_detection(self, temp_dir):
+    def test_windows_traversal_detection(self, tmp_path):
         """Test detection of Windows-style directory traversal."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         windows_attempts = [
             "..\\file.txt",
@@ -146,9 +147,9 @@ class TestPathValidatorTraversal:
 class TestPathValidatorInjection:
     """Test suite for injection attack detection."""
     
-    def test_null_byte_injection(self, temp_dir):
+    def test_null_byte_injection(self, tmp_path):
         """Test detection of null byte injection."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         null_byte_attempts = [
             "file.txt\x00.jpg",
@@ -161,9 +162,9 @@ class TestPathValidatorInjection:
             with pytest.raises(PathSecurityError):
                 validator.validate_path(attempt)
     
-    def test_command_injection(self, temp_dir):
+    def test_command_injection(self, tmp_path):
         """Test detection of command injection attempts."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         command_attempts = [
             "file.txt; rm -rf /",
@@ -178,9 +179,9 @@ class TestPathValidatorInjection:
             with pytest.raises(PathSecurityError):
                 validator.validate_path(attempt)
     
-    def test_dangerous_pattern_detection(self, temp_dir):
+    def test_dangerous_pattern_detection(self, tmp_path):
         """Test detection of dangerous patterns."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         dangerous_attempts = [
             "file~backup.txt",
@@ -199,9 +200,9 @@ class TestPathValidatorInjection:
 class TestPathValidatorEdgeCases:
     """Test suite for PathValidator edge cases."""
     
-    def test_empty_path(self, temp_dir):
+    def test_empty_path(self, tmp_path):
         """Test handling of empty paths."""
-        validator = PathValidator(base_path=temp_dir)
+        validator = PathValidator(base_path=tmp_path)
         
         empty_cases = ["", None]
         
@@ -209,18 +210,18 @@ class TestPathValidatorEdgeCases:
             with pytest.raises(PathSecurityError):
                 validator.validate_path(empty_case)
     
-    def test_very_long_path(self, temp_dir):
+    def test_very_long_path(self, tmp_path):
         """Test handling of very long paths."""
-        validator = PathValidator(base_path=temp_dir, max_path_length=100)
+        validator = PathValidator(base_path=tmp_path, max_path_length=100)
         
         # Create path longer than limit
         long_path = "a" * 150 + ".txt"
         with pytest.raises(PathSecurityError):
             validator.validate_path(long_path)
     
-    def test_unicode_paths(self, temp_dir):
+    def test_unicode_paths(self, tmp_path):
         """Test handling of unicode paths."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         unicode_paths = [
             "файл.txt",  # Cyrillic
@@ -236,10 +237,10 @@ class TestPathValidatorEdgeCases:
                 # Unicode handling varies by system - either should work or fail gracefully
                 pass
     
-    def test_absolute_path_handling(self, temp_dir):
+    def test_absolute_path_handling(self, tmp_path):
         """Test handling of absolute paths."""
         # Disallow absolute paths
-        validator = PathValidator(base_path=temp_dir, allow_absolute=False, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, allow_absolute=False, check_existence=False)
         
         absolute_paths = [
             "/etc/passwd",
@@ -326,9 +327,9 @@ class TestPathValidatorSystemPaths:
 class TestPathValidatorIntegration:
     """Integration tests for real-world scenarios."""
     
-    def test_file_upload_scenario(self, temp_dir):
+    def test_file_upload_scenario(self, tmp_path):
         """Test realistic file upload validation scenario."""
-        validator = PathValidator(base_path=temp_dir, check_existence=False)
+        validator = PathValidator(base_path=tmp_path, check_existence=False)
         
         # Safe uploads
         safe_uploads = [
@@ -357,10 +358,10 @@ class TestPathValidatorIntegration:
             with pytest.raises((PathSecurityError, ValueError)):
                 validator.validate_path(upload)
     
-    def test_config_file_access(self, temp_dir):
+    def test_config_file_access(self, tmp_path):
         """Test config file access validation."""
         # Create test config directory
-        config_dir = temp_dir / "config"
+        config_dir = tmp_path / "config"
         config_dir.mkdir()
         
         validator = PathValidator(base_path=config_dir, check_existence=False)

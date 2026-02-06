@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/common/path_manager.py
 """
 Universal path and URI management utilities for xwsystem.
 
@@ -311,7 +312,7 @@ class PathManager:
             if len(primary_found) >= 2:
                 return current_path.relative_to(parent)
 
-            # If we find a primary indicator plus secondary indicators, that's good
+            # If we find a primary indicator plus secondary indicators
             if len(primary_found) >= 1 and len(secondary_found) >= 1:
                 return current_path.relative_to(parent)
 

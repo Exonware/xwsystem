@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/utils/base.py
 #exonware/xwsystem/utils/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Utils module base classes - abstract classes for utility functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Callable
+from typing import Any, Optional, Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -93,92 +94,92 @@ class APathUtilsBase(ABC):
         self._normalized_paths: dict[str, str] = {}
     
     @abstractmethod
-    def normalize_path(self, path: Union[str, Path]) -> Path:
+    def normalize_path(self, path: str | Path) -> Path:
         """Normalize file path."""
         pass
     
     @abstractmethod
-    def resolve_path(self, path: Union[str, Path]) -> Path:
+    def resolve_path(self, path: str | Path) -> Path:
         """Resolve file path."""
         pass
     
     @abstractmethod
-    def absolute_path(self, path: Union[str, Path]) -> Path:
+    def absolute_path(self, path: str | Path) -> Path:
         """Get absolute path."""
         pass
     
     @abstractmethod
-    def relative_path(self, path: Union[str, Path], start: Optional[Union[str, Path]] = None) -> Path:
+    def relative_path(self, path: str | Path, start: Optional[str | Path] = None) -> Path:
         """Get relative path."""
         pass
     
     @abstractmethod
-    def join_paths(self, *paths: Union[str, Path]) -> Path:
+    def join_paths(self, *paths: str | Path) -> Path:
         """Join multiple paths."""
         pass
     
     @abstractmethod
-    def split_path(self, path: Union[str, Path]) -> tuple[Path, str]:
+    def split_path(self, path: str | Path) -> tuple[Path, str]:
         """Split path into directory and filename."""
         pass
     
     @abstractmethod
-    def get_extension(self, path: Union[str, Path]) -> str:
+    def get_extension(self, path: str | Path) -> str:
         """Get file extension."""
         pass
     
     @abstractmethod
-    def get_stem(self, path: Union[str, Path]) -> str:
+    def get_stem(self, path: str | Path) -> str:
         """Get file stem."""
         pass
     
     @abstractmethod
-    def get_name(self, path: Union[str, Path]) -> str:
+    def get_name(self, path: str | Path) -> str:
         """Get file/directory name."""
         pass
     
     @abstractmethod
-    def get_parent(self, path: Union[str, Path]) -> Path:
+    def get_parent(self, path: str | Path) -> Path:
         """Get parent directory."""
         pass
     
     @abstractmethod
-    def is_absolute(self, path: Union[str, Path]) -> bool:
+    def is_absolute(self, path: str | Path) -> bool:
         """Check if path is absolute."""
         pass
     
     @abstractmethod
-    def is_relative(self, path: Union[str, Path]) -> bool:
+    def is_relative(self, path: str | Path) -> bool:
         """Check if path is relative."""
         pass
     
     @abstractmethod
-    def exists(self, path: Union[str, Path]) -> bool:
+    def exists(self, path: str | Path) -> bool:
         """Check if path exists."""
         pass
     
     @abstractmethod
-    def is_file(self, path: Union[str, Path]) -> bool:
+    def is_file(self, path: str | Path) -> bool:
         """Check if path is file."""
         pass
     
     @abstractmethod
-    def is_directory(self, path: Union[str, Path]) -> bool:
+    def is_directory(self, path: str | Path) -> bool:
         """Check if path is directory."""
         pass
     
     @abstractmethod
-    def get_size(self, path: Union[str, Path]) -> int:
+    def get_size(self, path: str | Path) -> int:
         """Get path size."""
         pass
     
     @abstractmethod
-    def get_modified_time(self, path: Union[str, Path]) -> float:
+    def get_modified_time(self, path: str | Path) -> float:
         """Get path modification time."""
         pass
     
     @abstractmethod
-    def sanitize_path(self, path: Union[str, Path]) -> str:
+    def sanitize_path(self, path: str | Path) -> str:
         """Sanitize path for security."""
         pass
 
@@ -269,7 +270,7 @@ class AConfigManagerBase(ABC):
         pass
     
     @abstractmethod
-    def save_config(self, config_name: str, file_path: Union[str, Path]) -> None:
+    def save_config(self, config_name: str, file_path: str | Path) -> None:
         """Save configuration to file."""
         pass
     

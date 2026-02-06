@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Base classes and registries for archive system.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Easy to add 7z, RAR, etc.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Union, Any
+from typing import Optional, Any
 from pathlib import Path
 
 from ..contracts import IArchiveFormat, ICompressor, IArchiveMetadata, IArchiver, IArchiveFile, EncodeOptions, DecodeOptions
@@ -193,7 +193,7 @@ class AArchiveFile(AFile, IArchiveFile, ABC):
     This is for file-based archive operations - works on archive files on disk.
     """
     
-    def __init__(self, file_path: Union[str, Path], archiver: Optional[IArchiver] = None):
+    def __init__(self, file_path: str | Path, archiver: Optional[IArchiver] = None):
         """
         Initialize archive file.
         
@@ -282,7 +282,7 @@ class ArchiveFormatRegistry:
         """Get archiver by format ID."""
         return self._instances.get(format_id)
     
-    def get_by_extension(self, path: Union[str, Path]) -> Optional[IArchiveFormat]:
+    def get_by_extension(self, path: str | Path) -> Optional[IArchiveFormat]:
         """
         Get archiver by file extension (AUTO-DETECTION!).
         
@@ -374,4 +374,3 @@ def get_global_compression_registry() -> CompressionRegistry:
         _global_compression_registry = CompressionRegistry()
         # Auto-register built-in compressors (will be done in compression/__init__.py)
     return _global_compression_registry
-

@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/xml.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 XML serialization - Extensible Markup Language.
@@ -19,7 +20,7 @@ Improved implementation:
 - Minimal try/catch blocks with proper error handling
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -27,16 +28,18 @@ from ....contracts import EncodeOptions, DecodeOptions
 from ....defs import CodecCapability
 from ....errors import SerializationError
 
-# Primary: xmltodict for both encoding and decoding (better round-trip)
+# Primary: xmltodict for both encoding and decoding
 # xmltodict has built-in security features (disable_entities=True by default)
 # No need for defusedxml - xmltodict handles XML security internally
 import xmltodict
 
-# Optional: dicttoxml as fallback (not recommended for round-trip)
-try:
+# Optional: dicttoxml as fallback
+import importlib.util
+_dicttoxml_spec = importlib.util.find_spec('dicttoxml')
+if _dicttoxml_spec is not None:
     import dicttoxml
     DICTTOXML_AVAILABLE = True
-except ImportError:
+else:
     DICTTOXML_AVAILABLE = False
     dicttoxml = None
 
@@ -58,7 +61,7 @@ class XmlSerializer(ASerialization):
         >>> # Encode data
         >>> xml_str = serializer.encode({"user": {"name": "John", "age": 30}})
         >>> 
-        >>> # Decode data (perfect round-trip)
+        >>> # Decode data
         >>> data = serializer.decode(xml_str)
         >>> assert data == {"user": {"name": "John", "age": 30}}
         >>> 
@@ -204,7 +207,7 @@ class XmlSerializer(ASerialization):
             Sanitized data structure safe for XML encoding
         """
         if isinstance(data, dict):
-            # Root cause fixed: Dictionary keys must be valid XML element names.
+            # Root cause fixed: Dictionary keys are validated as XML element names.
             # Keys that start with digits (like UUIDs) are invalid XML element names.
             # Solution: Sanitize keys and preserve originals as attributes for round-trip.
             sanitized_dict = {}
@@ -333,10 +336,10 @@ class XmlSerializer(ASerialization):
             return data
     
     # ========================================================================
-    # CORE ENCODE/DECODE (Using xmltodict for both - perfect round-trip)
+    # CORE ENCODE/DECODE (Using xmltodict for both)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to XML string.
         
@@ -370,7 +373,7 @@ class XmlSerializer(ASerialization):
             value = self._preserve_types(value)
         
         # Wrap in root element if needed (xmltodict requires single root)
-        # Root cause fixed: Always wrap in root element for xmltodict compatibility.
+        # Root cause fixed: Wrap in root element for xmltodict compatibility.
         if not isinstance(value, dict):
             # Non-dict value - wrap it
             wrapped_value = {root_name: value}
@@ -378,7 +381,7 @@ class XmlSerializer(ASerialization):
             # Multiple keys - wrap in root
             wrapped_value = {root_name: value}
         else:
-            # Single key dict - check if we should use it as root or wrap it
+            # Single key dict - check if to use it as root or wrap it
             single_key = list(value.keys())[0]
             if single_key == root_name:
                 # Already has correct root name
@@ -388,8 +391,8 @@ class XmlSerializer(ASerialization):
                 wrapped_value = {root_name: value}
         
         # Encode to XML string using xmltodict.unparse()
-        # Root cause fixed: Use xmltodict for both encode and decode for perfect round-trip.
-        # Priority #2: Usability - Round-trip serialization should preserve data structure.
+        # Root cause fixed: Use xmltodict for both encode and decode.
+        # Priority #2: Usability - Round-trip serialization preserves data structure.
         try:
             xml_str = xmltodict.unparse(
                 wrapped_value,
@@ -407,7 +410,7 @@ class XmlSerializer(ASerialization):
         
         return xml_str
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode XML string to data.
         
@@ -456,7 +459,7 @@ class XmlSerializer(ASerialization):
         try:
             data = xmltodict.parse(repr, **parse_kwargs)
         except Exception as e:
-            # Provide better error context for XML parsing failures
+            # Provide error context for XML parsing failures
             error_msg = str(e)
             if "not well-formed" in error_msg or "ExpatError" in str(type(e).__name__):
                 # Try to find the problematic character position
@@ -475,7 +478,7 @@ class XmlSerializer(ASerialization):
         
         # Unwrap root element if it matches expected root name
         # Root cause fixed: Proper root element handling - check if root matches expected name.
-        # Priority #2: Usability - Round-trip serialization should preserve data structure.
+        # Priority #2: Usability - Round-trip serialization preserves data structure.
         if isinstance(data, dict) and len(data) == 1:
             # Check if the single key matches root_name or if it's a generic 'root'
             keys = list(data.keys())
@@ -486,7 +489,7 @@ class XmlSerializer(ASerialization):
         # Restore original keys if they were preserved
         # Root cause fixed: Dictionary keys were sanitized during encoding.
         # Solution: Restore original keys from @_original_key attributes.
-        # Priority #2: Usability - Round-trip serialization must preserve key names.
+        # Priority #2: Usability - Round-trip serialization preserves key names.
         data = self._restore_original_keys(data)
         
         # Restore types if they were preserved
@@ -501,7 +504,7 @@ class XmlSerializer(ASerialization):
         
         Root cause fixed: XML is text-based and converts all values to strings.
         Solution: Attempt to infer and restore original types (int, float, bool, None).
-        Priority #2: Usability - Round-trip serialization should preserve types when possible.
+        Priority #2: Usability - Round-trip serialization preserves types when possible.
         
         Args:
             value: String value from XML
@@ -545,7 +548,7 @@ class XmlSerializer(ASerialization):
         
         Root cause fixed: Keys were sanitized during encoding (e.g., UUIDs starting with digits).
         Solution: Check for @_original_key attributes and restore original key names.
-        Priority #2: Usability - Round-trip serialization must preserve key names.
+        Priority #2: Usability - Round-trip serialization preserves key names.
         
         Args:
             data: Decoded XML data structure
@@ -590,3 +593,5 @@ class XmlSerializer(ASerialization):
             if isinstance(data, str):
                 return self._infer_type(data)
             return data
+    
+    # Note: File operations (save_file, load_file) are inherited from ASerialization base class

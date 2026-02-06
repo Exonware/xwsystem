@@ -1,14 +1,15 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/base.py
 """Base JSON parser interface."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Union
+from typing import Any
 
 
-class IJsonParser(ABC):
-    """Abstract JSON parser interface for pluggable implementations."""
+class AJsonParser(ABC):
+    """Abstract JSON parser base class for pluggable implementations."""
     
     @abstractmethod
-    def loads(self, s: Union[str, bytes]) -> Any:
+    def loads(self, s: str | bytes) -> Any:
         """
         Parse JSON string/bytes to Python object.
         
@@ -21,7 +22,7 @@ class IJsonParser(ABC):
         pass
     
     @abstractmethod
-    def dumps(self, obj: Any, **kwargs) -> Union[str, bytes]:
+    def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """
         Serialize Python object to JSON.
         

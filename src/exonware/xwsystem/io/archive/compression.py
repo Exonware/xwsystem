@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Compression operations for gzip, bz2, and lzma.
@@ -184,4 +184,3 @@ class Compression(ICompression):
         output.write_bytes(decompressed)
         
         return output
-

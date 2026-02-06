@@ -145,4 +145,3 @@ def test_rehooking_works_after_package_load():
         # Verify status check works
         status = conf.lazy_install_status()
         assert status['active'] is True, "Status should show lazy mode is active"
-

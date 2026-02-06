@@ -1,22 +1,25 @@
+#exonware/xwsystem/src/exonware/xwsystem/http_client/advanced_client.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Advanced HTTP client with HTTP/2, streaming, pluggable transports, and modern features.
 """
+
+from __future__ import annotations
 
 import asyncio
 import os
 import ssl
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import Any, AsyncIterator, Optional, Union
+from typing import Any, AsyncIterator, Optional
 from urllib.parse import urljoin
 
-from .contracts import Transport
+from .contracts import ITransport as Transport
 
 # Prevent httpx from importing rich (Python 3.8+ only, no legacy deps)
 os.environ.setdefault("HTTPX_NO_RICH", "1")
@@ -200,7 +203,7 @@ class AdvancedHttpClient:
             self._client = httpx.Client(**client_kwargs)
             self._async_client = httpx.AsyncClient(**client_kwargs)
 
-    async def __aenter__(self) -> 'AdvancedHttpClient':
+    async def __aenter__(self) -> AdvancedHttpClient:
         """Async context manager entry."""
         return self
 
@@ -208,7 +211,7 @@ class AdvancedHttpClient:
         """Async context manager exit."""
         await self.aclose()
 
-    def __enter__(self) -> 'AdvancedHttpClient':
+    def __enter__(self) -> AdvancedHttpClient:
         """Sync context manager entry."""
         return self
 

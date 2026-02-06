@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
 WIM (Windows Imaging) format - RANK #9 SYSTEM IMAGES.
@@ -24,10 +24,17 @@ from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 
-# Lazy import for wimlib - optional dependency
+# Optional dependency: wimlib
+import importlib.util
 try:
-    import wimlib
-except ImportError:
+    _wimlib_spec = importlib.util.find_spec('wimlib')
+    if _wimlib_spec is not None and _wimlib_spec.loader is not None:
+        import wimlib
+    else:
+        wimlib = None  # type: ignore
+except (ValueError, AttributeError, ImportError):
+    # Handle case where find_spec raises ValueError (e.g., module.__spec__ is None)
+    # or other import-related errors
     wimlib = None  # type: ignore
 
 
@@ -132,4 +139,3 @@ class WimArchiver(IArchiveFormat):
             wim.write()
         except Exception as e:
             raise ArchiveError(f"Failed to add image to WIM: {e}")
-

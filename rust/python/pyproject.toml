@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "exonware-rust-xwsystem-python"
+version = "0.1.0"
+description = "Python namespace package for exonware.rust.xwsystem"
+requires-python = ">=3.8"
+
+[tool.setuptools]
+packages = ["exonware.rust", "exonware.rust.xwsystem", "exonware.rust.xwsystem.caching"]
+
+[tool.setuptools.package-data]
+"*" = ["*.py"]
+

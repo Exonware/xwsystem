@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/utils/dt/formatting.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 DateTime formatting utilities for XSystem.
@@ -135,3 +136,88 @@ def format_relative(dt: datetime) -> str:
         return f"{minutes} minutes ago"
     else:
         return "just now"
+
+
+def get_datetime() -> str:
+    """
+    Get current datetime as formatted string.
+    
+    Returns:
+        Current datetime in "YYYY-MM-DD HH:MM:SS" format
+    
+    Examples:
+        >>> dt_str = get_datetime()
+        >>> len(dt_str) == 19
+        True
+    """
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+def get_date() -> str:
+    """
+    Get current date as formatted string.
+    
+    Returns:
+        Current date in "YYYY-MM-DD" format
+    
+    Examples:
+        >>> date_str = get_date()
+        >>> len(date_str) == 10
+        True
+    """
+    return datetime.now().strftime("%Y-%m-%d")
+
+
+def get_date_from_to_month(year_month: str) -> tuple[str, str]:
+    """
+    Get start and end dates for a month.
+    
+    Args:
+        year_month: Format "YYYY-MM"
+    
+    Returns:
+        Tuple of (start_date, end_date) in "YYYY-MM-DD" format
+    
+    Examples:
+        >>> start, end = get_date_from_to_month("2025-01")
+        >>> start
+        '2025-01-01'
+        >>> end
+        '2025-01-31'
+    """
+    import calendar
+    
+    year, month = map(int, year_month.split('-'))
+    
+    # Start of the month is day 1
+    start_of_month = f"{year}-{month:02d}-01"
+    
+    # Get the last day of the month
+    _, last_day = calendar.monthrange(year, month)
+    end_of_month = f"{year}-{month:02d}-{last_day:02d}"
+    
+    return start_of_month, end_of_month
+
+
+def calculate_duration_days(date_from: datetime, date_to: datetime) -> float:
+    """
+    Calculate duration between two dates in days.
+    
+    Args:
+        date_from: Start date
+        date_to: End date
+    
+    Returns:
+        Duration in days (rounded to 2 decimal places)
+    
+    Examples:
+        >>> from datetime import datetime, timedelta
+        >>> start = datetime(2025, 1, 1)
+        >>> end = datetime(2025, 1, 5)
+        >>> calculate_duration_days(end, start)
+        4.0
+    """
+    delta = date_from - date_to
+    seconds = delta.total_seconds()
+    days = seconds / 86400  # 60 * 60 * 24
+    return round(days, 2)

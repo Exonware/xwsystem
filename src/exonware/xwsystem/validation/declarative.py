@@ -1,12 +1,15 @@
+#exonware/xwsystem/src/exonware/xwsystem/validation/declarative.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Pydantic-style declarative validation with type hints and automatic coercion.
 """
+
+from __future__ import annotations
 
 import inspect
 import json
@@ -58,10 +61,10 @@ class Field:
     description: Optional[str] = None
     
     # Validation constraints
-    gt: Optional[Union[int, float]] = None  # Greater than
-    ge: Optional[Union[int, float]] = None  # Greater than or equal
-    lt: Optional[Union[int, float]] = None  # Less than
-    le: Optional[Union[int, float]] = None  # Less than or equal
+    gt: Optional[int | float] = None  # Greater than
+    ge: Optional[int | float] = None  # Greater than or equal
+    lt: Optional[int | float] = None  # Less than
+    le: Optional[int | float] = None  # Less than or equal
     min_length: Optional[int] = None
     max_length: Optional[int] = None
     pattern: Optional[str] = None
@@ -73,7 +76,7 @@ class Field:
     to_upper: bool = False
     
     # Advanced constraints
-    multiple_of: Optional[Union[int, float]] = None
+    multiple_of: Optional[int | float] = None
     allow_inf_nan: bool = True
     
     # Metadata
@@ -442,12 +445,12 @@ class XModel(metaclass=ModelMeta):
             raise ValidationError(f"Value must be one of: {field_config.enum}")
     
     @classmethod
-    def model_validate(cls, data: dict[str, Any]) -> 'XModel':
+    def model_validate(cls, data: dict[str, Any]) -> XModel:
         """Create and validate model from dictionary data."""
         return cls(**data)
     
     @classmethod
-    def model_validate_json(cls, json_data: str) -> 'XModel':
+    def model_validate_json(cls, json_data: str) -> XModel:
         """Create and validate model from JSON string."""
         data = json.loads(json_data)
         return cls.model_validate(data)

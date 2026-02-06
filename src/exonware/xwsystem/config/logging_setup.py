@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/config/logging_setup.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 05, 2025
 
 Logging configuration setup for XSystem.
@@ -41,7 +42,7 @@ def setup_logging(
         return
 
     # Try to check XSystem config if available
-    # Import is explicit - internal package import should always be available
+    # Import is explicit - internal package import
     from .logging import logging_config
 
     if not logging_config.enabled:

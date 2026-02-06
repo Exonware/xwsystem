@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/caching/test_core_xsystem_caching.py
 """
 XSystem Caching Core Tests
 
@@ -56,11 +57,10 @@ def test_lru_cache():
         assert cache.get("key4") == "value4"
         
         print("[PASS] LRU cache tests passed")
-        return True
         
     except Exception as e:
         print(f"[FAIL] LRU cache tests failed: {e}")
-        return False
+        raise  # Re-raise exception so pytest can handle it
 
 
 def test_lfu_cache():
@@ -113,11 +113,10 @@ def test_lfu_cache():
         assert cache.get("key4") == "value4"
         
         print("[PASS] LFU cache tests passed")
-        return True
         
     except Exception as e:
         print(f"[FAIL] LFU cache tests failed: {e}")
-        return False
+        raise  # Re-raise exception so pytest can handle it
 
 
 def test_ttl_cache():
@@ -155,11 +154,10 @@ def test_ttl_cache():
         assert cache.get("key1") is None
         
         print("[PASS] TTL cache tests passed")
-        return True
         
     except Exception as e:
         print(f"[FAIL] TTL cache tests failed: {e}")
-        return False
+        raise  # Re-raise exception so pytest can handle it
 
 
 def test_cache_statistics():
@@ -202,11 +200,10 @@ def test_cache_statistics():
         assert hit_rate == 2/3
         
         print("[PASS] Cache statistics tests passed")
-        return True
         
     except Exception as e:
         print(f"[FAIL] Cache statistics tests failed: {e}")
-        return False
+        raise  # Re-raise exception so pytest can handle it
 
 
 def test_thread_safe_cache():
@@ -253,11 +250,10 @@ def test_thread_safe_cache():
             thread.join()
         
         print("[PASS] Thread-safe cache tests passed")
-        return True
         
     except Exception as e:
         print(f"[FAIL] Thread-safe cache tests failed: {e}")
-        return False
+        raise  # Re-raise exception so pytest can handle it
 
 
 def test_cache_eviction_policies():
@@ -295,11 +291,10 @@ def test_cache_eviction_policies():
         assert cache.get("key4") == "value4"
         
         print("[PASS] Cache eviction policies tests passed")
-        return True
         
     except Exception as e:
         print(f"[FAIL] Cache eviction policies tests failed: {e}")
-        return False
+        raise  # Re-raise exception so pytest can handle it
 
 
 def main():

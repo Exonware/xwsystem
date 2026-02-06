@@ -1,6 +1,14 @@
+#exonware/xwsystem/tests/1.unit/threading_tests/conftest.py
 """
 Pytest configuration for xSystem threading tests.
+
+Company: eXonware.com
+Author: Eng. Muhammad AlShehri
+Email: connect@exonware.com
+Version: 0.0.1
 """
+
+from __future__ import annotations
 
 import pytest
 import sys
@@ -9,7 +17,13 @@ import threading as std_threading
 from pathlib import Path
 
 # Path setup - navigate to project root then to src
-src_path = str(Path(__file__).parent.parent.parent.parent.parent.parent / "src")
+# From tests/1.unit/threading_tests/conftest.py:
+# - parent = threading_tests/
+# - parent.parent = 1.unit/
+# - parent.parent.parent = tests/
+# - parent.parent.parent.parent = xwsystem/
+# - parent.parent.parent.parent / "src" = xwsystem/src/
+src_path = str(Path(__file__).parent.parent.parent.parent / "src")
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
 

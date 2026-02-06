@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/shared/test_core_xsystem_shared.py
 # -*- coding: utf-8 -*-
 """
 Core tests for shared module.
@@ -137,4 +138,3 @@ class TestSharedIntegration:
             raise CoreError("Test")
         except CoreError as e:
             assert "Test" in str(e)
-

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/stats.py
 #exonware/xwsystem/caching/stats.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Statistics formatting utilities for caching module.
@@ -184,4 +185,3 @@ __all__ = [
     'format_cache_stats_table',
     'get_stats_summary',
 ]
-

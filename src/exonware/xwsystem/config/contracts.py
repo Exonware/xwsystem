@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/config/contracts.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Configuration protocol interfaces for XWSystem.
 """
 
-from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Iterator, Callable, Protocol
-from typing_extensions import runtime_checkable
+from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
 from pathlib import Path
 import os
 
@@ -32,14 +31,14 @@ from .defs import (
 # CONFIGURATION INTERFACES
 # ============================================================================
 
-class IConfigurable(ABC):
+@runtime_checkable
+class IConfigurable(Protocol):
     """
     Interface for configurable objects.
     
     Enforces consistent configuration behavior across XWSystem.
     """
     
-    @abstractmethod
     def configure(self, **options: Any) -> None:
         """
         Configure object with options.
@@ -47,9 +46,8 @@ class IConfigurable(ABC):
         Args:
             **options: Configuration options
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_config(self) -> dict[str, Any]:
         """
         Get current configuration.
@@ -57,16 +55,14 @@ class IConfigurable(ABC):
         Returns:
             Current configuration dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def reset_config(self) -> None:
         """
         Reset configuration to defaults.
         """
-        pass
+        ...
     
-    @abstractmethod
     def update_config(self, key: str, value: Any) -> None:
         """
         Update single configuration value.
@@ -75,9 +71,8 @@ class IConfigurable(ABC):
             key: Configuration key
             value: Configuration value
         """
-        pass
+        ...
     
-    @abstractmethod
     def has_config(self, key: str) -> bool:
         """
         Check if configuration key exists.
@@ -88,9 +83,8 @@ class IConfigurable(ABC):
         Returns:
             True if key exists
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_config(self, key: str) -> bool:
         """
         Remove configuration key.
@@ -101,9 +95,8 @@ class IConfigurable(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
     def merge_config(self, config: dict[str, Any], priority: ConfigPriority = ConfigPriority.NORMAL) -> None:
         """
         Merge configuration with existing.
@@ -112,21 +105,21 @@ class IConfigurable(ABC):
             config: Configuration to merge
             priority: Merge priority
         """
-        pass
+        ...
 
 
 # ============================================================================
 # SETTINGS INTERFACES
 # ============================================================================
 
-class ISettings(ABC):
+@runtime_checkable
+class ISettings(Protocol):
     """
     Interface for settings management.
     
     Enforces consistent settings behavior across XWSystem.
     """
     
-    @abstractmethod
     def get_setting(self, key: str, default: Any = None) -> Any:
         """
         Get setting value.
@@ -138,9 +131,8 @@ class ISettings(ABC):
         Returns:
             Setting value
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_setting(self, key: str, value: Any) -> None:
         """
         Set setting value.
@@ -149,9 +141,8 @@ class ISettings(ABC):
             key: Setting key
             value: Setting value
         """
-        pass
+        ...
     
-    @abstractmethod
     def has_setting(self, key: str) -> bool:
         """
         Check if setting exists.
@@ -162,9 +153,8 @@ class ISettings(ABC):
         Returns:
             True if setting exists
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_setting(self, key: str) -> bool:
         """
         Remove setting.
@@ -175,9 +165,8 @@ class ISettings(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_all_settings(self) -> dict[str, Any]:
         """
         Get all settings.
@@ -185,27 +174,24 @@ class ISettings(ABC):
         Returns:
             Dictionary of all settings
         """
-        pass
+        ...
     
-    @abstractmethod
     def clear_settings(self) -> None:
         """
         Clear all settings.
         """
-        pass
+        ...
     
-    @abstractmethod
-    def load_settings(self, source: Union[str, Path, dict[str, Any]]) -> None:
+    def load_settings(self, source: str | Path | dict[str, Any]) -> None:
         """
         Load settings from source.
         
         Args:
             source: Settings source (file path, dict, etc.)
         """
-        pass
+        ...
     
-    @abstractmethod
-    def save_settings(self, destination: Union[str, Path]) -> bool:
+    def save_settings(self, destination: str | Path) -> bool:
         """
         Save settings to destination.
         
@@ -215,21 +201,21 @@ class ISettings(ABC):
         Returns:
             True if saved successfully
         """
-        pass
+        ...
 
 
 # ============================================================================
 # ENVIRONMENT INTERFACES
 # ============================================================================
 
-class IEnvironment(ABC):
+@runtime_checkable
+class IEnvironment(Protocol):
     """
     Interface for environment variable management.
     
     Enforces consistent environment behavior across XWSystem.
     """
     
-    @abstractmethod
     def get_env(self, key: str, default: Any = None) -> Any:
         """
         Get environment variable.
@@ -241,9 +227,8 @@ class IEnvironment(ABC):
         Returns:
             Environment variable value
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_env(self, key: str, value: Any) -> None:
         """
         Set environment variable.
@@ -252,9 +237,8 @@ class IEnvironment(ABC):
             key: Environment variable key
             value: Environment variable value
         """
-        pass
+        ...
     
-    @abstractmethod
     def has_env(self, key: str) -> bool:
         """
         Check if environment variable exists.
@@ -265,9 +249,8 @@ class IEnvironment(ABC):
         Returns:
             True if exists
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_env(self, key: str) -> bool:
         """
         Remove environment variable.
@@ -278,20 +261,18 @@ class IEnvironment(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
-    def load_env(self, file_path: Union[str, Path]) -> None:
+    def load_env(self, file_path: str | Path) -> None:
         """
         Load environment variables from file.
         
         Args:
             file_path: Environment file path
         """
-        pass
+        ...
     
-    @abstractmethod
-    def save_env(self, file_path: Union[str, Path]) -> bool:
+    def save_env(self, file_path: str | Path) -> bool:
         """
         Save environment variables to file.
         
@@ -301,9 +282,8 @@ class IEnvironment(ABC):
         Returns:
             True if saved successfully
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_all_env(self) -> dict[str, str]:
         """
         Get all environment variables.
@@ -311,28 +291,27 @@ class IEnvironment(ABC):
         Returns:
             Dictionary of environment variables
         """
-        pass
+        ...
     
-    @abstractmethod
     def clear_env(self) -> None:
         """
         Clear all environment variables.
         """
-        pass
+        ...
 
 
 # ============================================================================
 # CONFIGURATION VALIDATION INTERFACES
 # ============================================================================
 
-class IConfigValidator(ABC):
+@runtime_checkable
+class IConfigValidator(Protocol):
     """
     Interface for configuration validation.
     
     Enforces consistent configuration validation across XWSystem.
     """
     
-    @abstractmethod
     def validate_config(self, config: dict[str, Any]) -> bool:
         """
         Validate configuration.
@@ -343,9 +322,8 @@ class IConfigValidator(ABC):
         Returns:
             True if valid
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_validation_errors(self, config: dict[str, Any]) -> list[str]:
         """
         Get configuration validation errors.
@@ -356,9 +334,8 @@ class IConfigValidator(ABC):
         Returns:
             List of validation error messages
         """
-        pass
+        ...
     
-    @abstractmethod
     def add_validation_rule(self, key: str, rule: Callable[[Any], bool], message: str = "") -> None:
         """
         Add validation rule for configuration key.
@@ -368,9 +345,8 @@ class IConfigValidator(ABC):
             rule: Validation function
             message: Error message if validation fails
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_validation_rule(self, key: str) -> bool:
         """
         Remove validation rule for configuration key.
@@ -381,9 +357,8 @@ class IConfigValidator(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_validation_level(self, level: ValidationLevel) -> None:
         """
         Set validation level.
@@ -391,9 +366,8 @@ class IConfigValidator(ABC):
         Args:
             level: Validation level
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_validation_level(self) -> ValidationLevel:
         """
         Get current validation level.
@@ -401,21 +375,21 @@ class IConfigValidator(ABC):
         Returns:
             Current validation level
         """
-        pass
+        ...
 
 
 # ============================================================================
 # CONFIGURATION SOURCE INTERFACES
 # ============================================================================
 
-class IConfigSource(ABC):
+@runtime_checkable
+class IConfigSource(Protocol):
     """
     Interface for configuration sources.
     
     Enforces consistent configuration source behavior across XWSystem.
     """
     
-    @abstractmethod
     def load_config(self) -> dict[str, Any]:
         """
         Load configuration from source.
@@ -423,9 +397,8 @@ class IConfigSource(ABC):
         Returns:
             Configuration dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def save_config(self, config: dict[str, Any]) -> bool:
         """
         Save configuration to source.
@@ -436,9 +409,8 @@ class IConfigSource(ABC):
         Returns:
             True if saved successfully
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_source_type(self) -> ConfigSource:
         """
         Get configuration source type.
@@ -446,9 +418,8 @@ class IConfigSource(ABC):
         Returns:
             Source type
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_source_info(self) -> dict[str, Any]:
         """
         Get source information.
@@ -456,9 +427,8 @@ class IConfigSource(ABC):
         Returns:
             Source information dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_available(self) -> bool:
         """
         Check if source is available.
@@ -466,9 +436,8 @@ class IConfigSource(ABC):
         Returns:
             True if available
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_priority(self) -> ConfigPriority:
         """
         Get source priority.
@@ -476,21 +445,21 @@ class IConfigSource(ABC):
         Returns:
             Source priority
         """
-        pass
+        ...
 
 
 # ============================================================================
 # CONFIGURATION MANAGER INTERFACES
 # ============================================================================
 
-class IConfigManager(ABC):
+@runtime_checkable
+class IConfigManager(Protocol):
     """
     Interface for configuration management.
     
     Enforces consistent configuration management across XWSystem.
     """
     
-    @abstractmethod
     def add_source(self, source: IConfigSource) -> None:
         """
         Add configuration source.
@@ -498,9 +467,8 @@ class IConfigManager(ABC):
         Args:
             source: Configuration source to add
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_source(self, source_type: ConfigSource) -> bool:
         """
         Remove configuration source.
@@ -511,9 +479,8 @@ class IConfigManager(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
     def load_all_configs(self) -> dict[str, Any]:
         """
         Load configuration from all sources.
@@ -521,9 +488,8 @@ class IConfigManager(ABC):
         Returns:
             Merged configuration dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def save_all_configs(self, config: dict[str, Any]) -> bool:
         """
         Save configuration to all sources.
@@ -534,9 +500,8 @@ class IConfigManager(ABC):
         Returns:
             True if saved to all sources
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_config_value(self, key: str, default: Any = None) -> Any:
         """
         Get configuration value from all sources.
@@ -548,9 +513,8 @@ class IConfigManager(ABC):
         Returns:
             Configuration value
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_config_value(self, key: str, value: Any) -> None:
         """
         Set configuration value in all sources.
@@ -559,16 +523,14 @@ class IConfigManager(ABC):
             key: Configuration key
             value: Configuration value
         """
-        pass
+        ...
     
-    @abstractmethod
     def reload_config(self) -> None:
         """
         Reload configuration from all sources.
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_sources(self) -> list[IConfigSource]:
         """
         Get all configuration sources.
@@ -576,35 +538,33 @@ class IConfigManager(ABC):
         Returns:
             List of configuration sources
         """
-        pass
+        ...
 
 
 # ============================================================================
 # CONFIGURATION WATCHER INTERFACES
 # ============================================================================
 
-class IConfigWatcher(ABC):
+@runtime_checkable
+class IConfigWatcher(Protocol):
     """
     Interface for configuration change watching.
     
     Enforces consistent configuration watching across XWSystem.
     """
     
-    @abstractmethod
     def start_watching(self) -> None:
         """
         Start watching for configuration changes.
         """
-        pass
+        ...
     
-    @abstractmethod
     def stop_watching(self) -> None:
         """
         Stop watching for configuration changes.
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_watching(self) -> bool:
         """
         Check if currently watching.
@@ -612,9 +572,8 @@ class IConfigWatcher(ABC):
         Returns:
             True if watching
         """
-        pass
+        ...
     
-    @abstractmethod
     def add_change_callback(self, callback: Callable[[str, Any, Any], None]) -> None:
         """
         Add callback for configuration changes.
@@ -622,9 +581,8 @@ class IConfigWatcher(ABC):
         Args:
             callback: Function to call on changes (key, old_value, new_value)
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_change_callback(self, callback: Callable[[str, Any, Any], None]) -> bool:
         """
         Remove change callback.
@@ -635,9 +593,8 @@ class IConfigWatcher(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_watched_keys(self) -> list[str]:
         """
         Get list of watched configuration keys.
@@ -645,9 +602,8 @@ class IConfigWatcher(ABC):
         Returns:
             List of watched keys
         """
-        pass
+        ...
     
-    @abstractmethod
     def watch_key(self, key: str) -> None:
         """
         Start watching specific configuration key.
@@ -655,9 +611,8 @@ class IConfigWatcher(ABC):
         Args:
             key: Configuration key to watch
         """
-        pass
+        ...
     
-    @abstractmethod
     def unwatch_key(self, key: str) -> None:
         """
         Stop watching specific configuration key.
@@ -665,21 +620,21 @@ class IConfigWatcher(ABC):
         Args:
             key: Configuration key to stop watching
         """
-        pass
+        ...
 
 
 # ============================================================================
 # CONFIGURATION TEMPLATE INTERFACES
 # ============================================================================
 
-class IConfigTemplate(ABC):
+@runtime_checkable
+class IConfigTemplate(Protocol):
     """
     Interface for configuration templates.
     
     Enforces consistent configuration templating across XWSystem.
     """
     
-    @abstractmethod
     def create_template(self, config: dict[str, Any]) -> str:
         """
         Create configuration template.
@@ -690,9 +645,8 @@ class IConfigTemplate(ABC):
         Returns:
             Template string
         """
-        pass
+        ...
     
-    @abstractmethod
     def apply_template(self, template: str, values: dict[str, Any]) -> dict[str, Any]:
         """
         Apply template with values.
@@ -704,9 +658,8 @@ class IConfigTemplate(ABC):
         Returns:
             Configuration dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def validate_template(self, template: str) -> bool:
         """
         Validate template syntax.
@@ -717,9 +670,8 @@ class IConfigTemplate(ABC):
         Returns:
             True if valid
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_template_variables(self, template: str) -> list[str]:
         """
         Get template variables.
@@ -730,10 +682,9 @@ class IConfigTemplate(ABC):
         Returns:
             List of variable names
         """
-        pass
+        ...
     
-    @abstractmethod
-    def save_template(self, template: str, path: Union[str, Path]) -> bool:
+    def save_template(self, template: str, path: str | Path) -> bool:
         """
         Save template to file.
         
@@ -744,10 +695,9 @@ class IConfigTemplate(ABC):
         Returns:
             True if saved successfully
         """
-        pass
+        ...
     
-    @abstractmethod
-    def load_template(self, path: Union[str, Path]) -> str:
+    def load_template(self, path: str | Path) -> str:
         """
         Load template from file.
         
@@ -757,21 +707,21 @@ class IConfigTemplate(ABC):
         Returns:
             Template string
         """
-        pass
+        ...
 
 
 # ============================================================================
 # CONFIGURATION SECRET INTERFACES
 # ============================================================================
 
-class IConfigSecrets(ABC):
+@runtime_checkable
+class IConfigSecrets(Protocol):
     """
     Interface for configuration secrets management.
     
     Enforces consistent secrets handling across XWSystem.
     """
     
-    @abstractmethod
     def encrypt_secret(self, value: str) -> str:
         """
         Encrypt secret value.
@@ -782,9 +732,8 @@ class IConfigSecrets(ABC):
         Returns:
             Encrypted secret
         """
-        pass
+        ...
     
-    @abstractmethod
     def decrypt_secret(self, encrypted_value: str) -> str:
         """
         Decrypt secret value.
@@ -795,9 +744,8 @@ class IConfigSecrets(ABC):
         Returns:
             Decrypted secret
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_secret(self, key: str) -> bool:
         """
         Check if configuration key is secret.
@@ -808,9 +756,8 @@ class IConfigSecrets(ABC):
         Returns:
             True if secret
         """
-        pass
+        ...
     
-    @abstractmethod
     def mark_as_secret(self, key: str) -> None:
         """
         Mark configuration key as secret.
@@ -818,9 +765,8 @@ class IConfigSecrets(ABC):
         Args:
             key: Configuration key to mark
         """
-        pass
+        ...
     
-    @abstractmethod
     def unmark_as_secret(self, key: str) -> None:
         """
         Unmark configuration key as secret.
@@ -828,9 +774,8 @@ class IConfigSecrets(ABC):
         Args:
             key: Configuration key to unmark
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_secret_keys(self) -> list[str]:
         """
         Get list of secret configuration keys.
@@ -838,9 +783,8 @@ class IConfigSecrets(ABC):
         Returns:
             List of secret keys
         """
-        pass
+        ...
     
-    @abstractmethod
     def sanitize_config(self, config: dict[str, Any]) -> dict[str, Any]:
         """
         Sanitize configuration by hiding secrets.
@@ -851,7 +795,7 @@ class IConfigSecrets(ABC):
         Returns:
             Sanitized configuration
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -859,8 +803,8 @@ class IConfigSecrets(ABC):
 # ============================================================================
 
 @runtime_checkable
-class Configurable(Protocol):
-    """Protocol for objects that support configuration."""
+class IConfigurableSimple(Protocol):
+    """Protocol for objects that support configuration (simpler interface than IConfigurable)."""
     
     def configure(self, **config: Any) -> None:
         """Configure object with parameters."""
@@ -871,7 +815,3 @@ class Configurable(Protocol):
         ...
 
 
-# Aliases for backward compatibility
-IConfig = IConfigurable
-IPerformanceConfig = IConfigurable
-ILoggingConfig = IConfigurable

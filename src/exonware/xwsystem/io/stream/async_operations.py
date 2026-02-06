@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/stream/async_operations.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Asynchronous I/O operations for non-blocking file handling.
@@ -10,12 +11,13 @@ Asynchronous I/O operations for non-blocking file handling.
 
 import asyncio
 import os
+import platform
 import shutil
 import tempfile
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, AsyncContextManager, BinaryIO, Optional, TextIO, Union
+from typing import Any, AsyncContextManager, BinaryIO, Optional, TextIO
 
 # Import aiofiles - lazy installation system will handle it if missing
 import aiofiles
@@ -38,11 +40,11 @@ class AsyncAtomicFileWriter:
 
     def __init__(
         self,
-        target_path: Union[str, Path],
+        target_path: str | Path,
         mode: str = "w",
         encoding: Optional[str] = "utf-8",
         backup: bool = False,
-        temp_dir: Optional[Union[str, Path]] = None,
+        temp_dir: Optional[str | Path] = None,
     ):
         """
         Initialize async atomic file writer.
@@ -130,6 +132,51 @@ class AsyncAtomicFileWriter:
             await self._cleanup()
             raise FileOperationError(f"Failed to start async atomic write: {e}") from e
 
+    async def write(self, data: bytes | str) -> int:
+        """
+        Write data to the temporary file.
+        
+        Automatically handles conversion between bytes and str based on file mode:
+        - Text mode ("w", "w+", etc.): Accepts str or bytes (bytes are decoded with encoding)
+        - Binary mode ("wb", "wb+", etc.): Accepts bytes only
+        
+        Args:
+            data: Data to write (bytes or str)
+            
+        Returns:
+            Number of bytes/characters written
+            
+        Raises:
+            FileOperationError: If write operation not started or write fails
+        """
+        if not self._started:
+            raise FileOperationError("Async atomic write operation not started. Call start() first.")
+        
+        if not self.file_handle:
+            raise FileOperationError("File handle not available")
+        
+        try:
+            is_binary_mode = "b" in self.mode
+            
+            if is_binary_mode:
+                # Binary mode: must write bytes
+                if isinstance(data, str):
+                    # Convert string to bytes using the encoding if available
+                    encoding = self.encoding or "utf-8"
+                    data = data.encode(encoding)
+                await self.file_handle.write(data)
+                return len(data)
+            else:
+                # Text mode: write string
+                if isinstance(data, bytes):
+                    # Decode bytes to string using the encoding
+                    encoding = self.encoding or "utf-8"
+                    data = data.decode(encoding)
+                await self.file_handle.write(data)
+                return len(data)
+        except Exception as e:
+            raise FileOperationError(f"Failed to write data: {e}") from e
+
     async def commit(self) -> None:
         """
         Commit the async atomic write operation.
@@ -161,8 +208,8 @@ class AsyncAtomicFileWriter:
                 logger.warning(f"Temporary file is empty: {self.temp_path}")
 
             # Atomic move to target location
-            # On Windows, need to remove target first if it exists
-            if os.name == "nt" and await aiofiles.os.path.exists(self.target_path):
+            # On Windows, need to remove target first if it exists (Windows filesystem limitation)
+            if platform.system() == 'Windows' and await aiofiles.os.path.exists(self.target_path):
                 await aiofiles.os.remove(self.target_path)
 
             # Perform the atomic move (using sync operation as aiofiles doesn't have move)
@@ -268,11 +315,11 @@ class AsyncAtomicFileWriter:
 
 @asynccontextmanager
 async def async_atomic_write(
-    target_path: Union[str, Path],
+    target_path: str | Path,
     mode: str = "w",
     encoding: Optional[str] = "utf-8",
     backup: bool = True,
-    temp_dir: Optional[Union[str, Path]] = None,
+    temp_dir: Optional[str | Path] = None,
 ) -> AsyncContextManager[Any]:
     """
     Async context manager for atomic file writing.
@@ -304,7 +351,7 @@ async def async_atomic_write(
 
 
 async def async_safe_write_text(
-    target_path: Union[str, Path],
+    target_path: str | Path,
     content: str,
     encoding: str = "utf-8",
     backup: bool = True,
@@ -323,7 +370,7 @@ async def async_safe_write_text(
 
 
 async def async_safe_write_bytes(
-    target_path: Union[str, Path], content: bytes, backup: bool = True
+    target_path: str | Path, content: bytes, backup: bool = True
 ) -> None:
     """
     Safely write binary content to a file atomically (async).
@@ -338,7 +385,7 @@ async def async_safe_write_bytes(
 
 
 async def async_safe_read_text(
-    file_path: Union[str, Path], encoding: str = "utf-8", max_size_mb: float = 100.0
+    file_path: str | Path, encoding: str = "utf-8", max_size_mb: float = 100.0
 ) -> str:
     """
     Safely read text content from a file with size validation (async).
@@ -391,7 +438,7 @@ async def async_safe_read_text(
         raise FileOperationError(f"IOError reading file '{file_path}': {e}") from e
 
 
-async def async_safe_read_bytes(file_path: Union[str, Path], max_size_mb: float = 100.0) -> bytes:
+async def async_safe_read_bytes(file_path: str | Path, max_size_mb: float = 100.0) -> bytes:
     """
     Safely read binary content from a file with size validation (async).
 
@@ -439,7 +486,7 @@ async def async_safe_read_bytes(file_path: Union[str, Path], max_size_mb: float 
 
 
 async def async_safe_read_with_fallback(
-    file_path: Union[str, Path],
+    file_path: str | Path,
     preferred_encoding: str = "utf-8",
     fallback_encodings: Optional[list[str]] = None,
     max_size_mb: float = 100.0,
@@ -462,7 +509,7 @@ async def async_safe_read_with_fallback(
     if fallback_encodings is None:
         fallback_encodings = ["latin1", "cp1252", "iso-8859-1"]
 
-    # Try preferred encoding first
+    # Try encoding first
     try:
         return await async_safe_read_text(file_path, preferred_encoding, max_size_mb)
     except FileOperationError as e:

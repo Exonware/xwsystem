@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/binary/msgpack.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 MessagePack serialization - Efficient binary serialization.
@@ -13,7 +14,7 @@ Following I→A pattern:
 - Concrete: MsgPackSerializer
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -109,7 +110,7 @@ class MsgPackSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using msgpack library)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to MessagePack bytes.
         
@@ -145,7 +146,7 @@ class MsgPackSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode MessagePack bytes to data.
         
@@ -184,4 +185,3 @@ class MsgPackSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             )
-

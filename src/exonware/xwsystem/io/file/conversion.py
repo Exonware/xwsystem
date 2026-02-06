@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
 File Format Conversion - Convert between compatible formats.
@@ -22,7 +22,7 @@ Priority 5 (Extensibility): Works with any registered codec
 """
 
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from ..codec.base import get_global_registry
 from ..contracts import ICodec
@@ -241,4 +241,3 @@ def convert_file(
         >>> convert_file(Path("data.json"), Path("data.yaml"))
     """
     _converter.convert_file(source_path, target_path, source_format, target_format, **options)
-

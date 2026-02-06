@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/test_ipc.py
 """
 Test IPC (Inter-Process Communication) functionality.
 """
@@ -9,7 +10,7 @@ import time
 import multiprocessing as mp
 from unittest.mock import Mock, patch
 
-from src.exonware.xwsystem import (
+from exonware.xwsystem.ipc import (
     ProcessManager,
     ProcessInfo,
     SharedMemoryManager,
@@ -20,8 +21,8 @@ from src.exonware.xwsystem import (
     AsyncProcessPool,
     Pipe,
     AsyncPipe,
+    AsyncProcessFabric,
 )
-from src.exonware.xwsystem.ipc import AsyncProcessFabric
 
 
 def _fabric_identity(value):

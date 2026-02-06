@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/utils/dt/timezone_utils.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Timezone utilities - Placeholder.
@@ -99,26 +100,3 @@ class TimezoneUtils:
         return datetime.now()
 
 
-def convert_timezone(dt, tz):
-    """Convert timezone - backward compatibility."""
-    return TimezoneUtils.convert_timezone(dt, tz)
-    
-def get_timezone_info(tz):
-    """Get timezone info - backward compatibility."""
-    return TimezoneUtils.get_timezone_info(tz)
-    
-def list_timezones():
-    """List timezones - backward compatibility."""
-    return TimezoneUtils.list_timezones()
-    
-def get_local_timezone():
-    """Get local timezone - backward compatibility."""
-    return TimezoneUtils.get_local_timezone()
-    
-def utc_now():
-    """Get UTC now - backward compatibility."""
-    return TimezoneUtils.utc_now()
-    
-def local_now():
-    """Get local now - backward compatibility."""
-    return TimezoneUtils.local_now()

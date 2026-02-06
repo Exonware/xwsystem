@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/shared_tests/test_contracts.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for shared contracts/interfaces.
@@ -72,4 +73,3 @@ class TestIStringable:
     def test_istringable_exists(self):
         """Test IStringable interface exists."""
         assert IStringable is not None
-

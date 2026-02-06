@@ -1,0 +1,43 @@
+name: xwsystem Compliance
+
+on:
+  pull_request:
+    paths:
+      - "xwsystem/**"
+      - "tools/ci/python_scripts/**"
+  push:
+    branches: ["main"]
+    paths:
+      - "xwsystem/**"
+      - "tools/ci/python_scripts/**"
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r xwsystem/requirements.txt
+
+      - name: Compliance checks (structure/docs/traceability/headers)
+        run: |
+          python xwsystem/tests/_tools/compliance_check.py
+
+      - name: Format & type checks
+        run: |
+          black --check xwsystem/src xwsystem/tests
+          isort --check-only xwsystem/src xwsystem/tests
+          mypy xwsystem/src
+
+      - name: Test suite
+        run: |
+          python -m pytest xwsystem/tests
+

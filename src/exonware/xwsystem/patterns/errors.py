@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/patterns/errors.py
 #exonware/xwsystem/patterns/errors.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Pattern-specific error classes for XSystem design patterns.
@@ -638,6 +639,3 @@ class AggregateInvariantError(AggregateError):
     def __init__(self, message: str, aggregate_type: str, aggregate_id: str, **kwargs):
         super().__init__(message, aggregate_type=aggregate_type, aggregate_id=aggregate_id, **kwargs)
 
-
-# Aliases for backward compatibility
-PoolError = ObjectPoolError

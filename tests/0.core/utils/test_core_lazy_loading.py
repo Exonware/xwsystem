@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/utils/test_core_lazy_loading.py
 """
 Core tests for lazy-loading infrastructure.
 """
@@ -78,4 +79,3 @@ def test_json_serializer_roundtrip():
     result = serializer.loads(json_str)
 
     assert result == payload
-

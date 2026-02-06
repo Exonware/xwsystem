@@ -1,14 +1,15 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/codec/contracts.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Codec module contracts - interfaces for codec operations.
 """
 
-from typing import Protocol, Optional, runtime_checkable
+from typing import Protocol, Optional, runtime_checkable, Any
 from pathlib import Path
 
 from ..contracts import EncodeOptions, DecodeOptions, CodecCapability
@@ -211,3 +212,59 @@ class ICodecMetadata(Protocol):
         """
         ...
 
+
+@runtime_checkable
+class IFormatConfig(Protocol):
+    """
+    Interface for format configuration.
+    
+    This interface represents configuration for codec/format selection
+    and is used across xwsystem for format-aware operations. It provides
+    a standardized way to specify and validate codec/format configurations
+    with integration to the codec registry.
+    
+    Originally defined in xwstorage, moved to xwsystem.io.codec as it
+    is a general-purpose codec configuration abstraction.
+    """
+    
+    @property
+    def format_type(self) -> str:
+        """
+        Get the format type identifier (codec_id).
+        
+        Returns:
+            Format type identifier (e.g., "json", "yaml", "xml")
+        """
+        ...
+    
+    @property
+    def codec_id(self) -> str:
+        """
+        Get the codec identifier from xwsystem codec registry.
+        
+        This should match a codec_id in the UniversalCodecRegistry.
+        
+        Returns:
+            Codec identifier (typically same as format_type)
+        """
+        ...
+    
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert configuration to dictionary.
+        
+        Returns:
+            Dictionary representation of the format configuration
+        """
+        ...
+    
+    def validate(self) -> bool:
+        """
+        Validate format configuration.
+        
+        Checks if the codec_id is available in the xwsystem codec registry.
+        
+        Returns:
+            True if format is valid and available in codec registry
+        """
+        ...

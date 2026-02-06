@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 05, 2025
 
 Top-level xwsystem import alias for convenience.
@@ -24,7 +24,7 @@ alias import technique. This is an EXCEPTION to the explicit imports rule becaus
 2. The wildcard import is the standard Python pattern for creating import aliases
 3. It provides the same functionality as the main module without code duplication
 4. All actual functionality is defined in the main exonware.xwsystem module
-5. This approach is commonly used in Python libraries for backward compatibility
+5. This approach is commonly used in Python libraries for convenience
 
 The wildcard import here is intentional and follows Python best practices for alias modules.
 """
@@ -36,4 +36,3 @@ from exonware.xwsystem import *
 
 # Import version from centralized location
 from exonware.xwsystem.version import __version__
-

@@ -92,4 +92,3 @@ class TestCachingPerformanceExcellence:
         
         # Should achieve > 10,000 ops/second
         assert ops_per_second > 10000
-

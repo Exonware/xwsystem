@@ -1,3 +1,4 @@
+#exonware/xwsystem/examples/serialization_example/x0_common/data_generator.py
 """
 Data Generator for Serialization Examples
 
@@ -119,4 +120,3 @@ def generate_nested_data() -> dict[str, Any]:
             }
         }
     }
-

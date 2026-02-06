@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/ipc/shared_memory.py
 """
 Shared Memory Utilities
 =======================
@@ -11,18 +12,24 @@ Generation Date: September 05, 2025
 """
 
 import os
+import platform
 import sys
 import mmap
 import struct
 import pickle
 import threading
-from typing import Any, Optional, Union
+from typing import Any, Optional
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from contextlib import contextmanager
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Global registry for shared memory segments (cross-platform)
+# Used to enable attachment to existing segments on both Windows and Unix
+_shared_memory_registry: dict[str, dict] = {}
+_registry_lock = threading.RLock()
 
 
 class SharedData[T]:
@@ -60,7 +67,7 @@ class SharedData[T]:
     def _create_segment(self):
         """Create a new shared memory segment."""
         try:
-            if sys.platform == 'win32':
+            if platform.system() == 'Windows':
                 # Windows: Use memory-mapped files
                 self._file_handle = mmap.mmap(-1, self.size, tagname=self.name)
                 self._mmap = self._file_handle
@@ -82,6 +89,15 @@ class SharedData[T]:
             
             # Initialize with empty data marker
             self._write_header(0, 0)  # length=0, checksum=0
+            
+            # Register segment in global registry for cross-platform attachment
+            with _registry_lock:
+                _shared_memory_registry[self.name] = {
+                    'size': self.size,
+                    'file_path': getattr(self._file_handle, 'name', None) if hasattr(self._file_handle, 'name') else None,
+                    'platform': platform.system()
+                }
+            
             logger.info(f"Created shared memory segment '{self.name}' ({self.size} bytes)")
             
         except Exception as e:
@@ -91,15 +107,48 @@ class SharedData[T]:
     def _attach_segment(self):
         """Attach to an existing shared memory segment."""
         try:
-            if sys.platform == 'win32':
+            # Check registry first (cross-platform approach)
+            with _registry_lock:
+                if self.name not in _shared_memory_registry:
+                    raise ValueError(f"Shared memory segment '{self.name}' not found in registry")
+                
+                segment_info = _shared_memory_registry[self.name]
+                registered_size = segment_info['size']
+                file_path = segment_info.get('file_path')
+                
+                # Use registered size if available
+                if registered_size:
+                    self.size = registered_size
+            
+            if platform.system() == 'Windows':
+                # Windows: Use memory-mapped files with tag
                 self._file_handle = mmap.mmap(-1, self.size, tagname=self.name)
                 self._mmap = self._file_handle
             else:
-                # This is simplified - in production, you'd need a registry
-                # of shared memory segments or use POSIX shared memory
-                raise NotImplementedError("Attaching to existing segments not implemented on Unix")
+                # Unix: Use same approach as Windows - temp file with registry
+                # This ensures exact same capabilities on both platforms
+                import tempfile
+                if file_path and os.path.exists(file_path):
+                    # Use existing file from registry
+                    self._file_handle = open(file_path, 'r+b')
+                else:
+                    # Fallback: create new temp file with same name pattern
+                    # This matches Windows behavior for cross-platform parity
+                    self._file_handle = tempfile.NamedTemporaryFile(
+                        prefix=f"xwsystem_shared_{self.name}_",
+                        delete=False
+                    )
+                    # Ensure file is correct size
+                    self._file_handle.write(b'\x00' * self.size)
+                    self._file_handle.flush()
+                
+                self._mmap = mmap.mmap(
+                    self._file_handle.fileno(),
+                    self.size,
+                    access=mmap.ACCESS_WRITE
+                )
             
-            logger.info(f"Attached to shared memory segment '{self.name}'")
+            logger.info(f"Attached to shared memory segment '{self.name}' ({self.size} bytes)")
             
         except Exception as e:
             logger.error(f"Failed to attach to shared memory segment '{self.name}': {e}")
@@ -215,6 +264,10 @@ class SharedData[T]:
                 if self._file_handle and hasattr(self._file_handle, 'close'):
                     self._file_handle.close()
                     self._file_handle = None
+                
+                # Unregister from global registry
+                with _registry_lock:
+                    _shared_memory_registry.pop(self.name, None)
                 
                 logger.debug(f"Closed shared memory '{self.name}'")
                 
@@ -351,7 +404,7 @@ def shared_data(name: str, size: int = 1024 * 1024):
 
 class SharedMemory:
     """
-    Simple shared memory interface for backward compatibility.
+    Simple shared memory interface.
     
     Provides a simplified interface to shared memory functionality.
     """
@@ -404,7 +457,7 @@ class SharedMemory:
         Detach from the shared memory segment.
         
         Args:
-            handle: Optional handle to detach (for backward compatibility)
+            handle: Optional handle to detach
         
         Returns:
             True if successful
@@ -433,7 +486,7 @@ class SharedMemory:
         Destroy the shared memory segment (alias for close method).
         
         Args:
-            name: Optional name parameter (for backward compatibility)
+            name: Optional name parameter
         
         Returns:
             True if successful
@@ -443,6 +496,6 @@ class SharedMemory:
 
 def is_shared_memory_available() -> bool:
     """Check if shared memory functionality is available."""
-    # mmap is a built-in Python module, always available
+    # mmap is a built-in Python module
     import mmap
     return True

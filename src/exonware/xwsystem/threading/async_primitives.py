@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/threading/async_primitives.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Async-aware concurrency primitives and synchronization utilities.
@@ -13,7 +14,7 @@ import logging
 import time
 import weakref
 from contextlib import asynccontextmanager
-from typing import Any, AsyncContextManager, Optional, Union
+from typing import Any, AsyncContextManager, Optional
 from collections import defaultdict
 
 from ..config.logging_setup import get_logger
@@ -288,7 +289,7 @@ class AsyncQueue:
             logger.warning(f"Queue {self.name} put timeout after {timeout}s")
             return False
 
-    async def get(self, timeout: Optional[float] = None) -> Union[Any, None]:
+    async def get(self, timeout: Optional[float] = None) -> Any | None:
         """
         Get item from queue with optional timeout.
         
@@ -332,7 +333,7 @@ class AsyncQueue:
             logger.warning(f"Queue {self.name} is full, put_nowait failed")
             return False
 
-    def get_nowait(self) -> Union[Any, None]:
+    def get_nowait(self) -> Any | None:
         """
         Get item from queue without waiting.
         
@@ -475,7 +476,7 @@ class AsyncResourcePool:
         
         logger.debug(f"Resource pool {self.name} initialized with {self._total_resources} resources")
 
-    async def acquire(self, timeout: Optional[float] = None) -> Union[Any, None]:
+    async def acquire(self, timeout: Optional[float] = None) -> Any | None:
         """
         Acquire a resource from the pool.
         

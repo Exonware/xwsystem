@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/patterns/__init__.py
 """
 XSystem Patterns Package
 

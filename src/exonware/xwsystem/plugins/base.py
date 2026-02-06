@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/plugins/base.py
 #exonware/xwsystem/plugins/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Plugin system base classes and management.
@@ -15,7 +16,7 @@ import threading
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from importlib.metadata import entry_points
 
@@ -357,7 +358,7 @@ class APluginManager:
         except Exception as e:
             raise PluginError(f"Failed to load plugin {module_path}.{class_name}: {e}") from e
 
-    def load_plugin_from_file(self, file_path: Union[str, Path], class_name: str, config: Optional[dict[str, Any]] = None) -> APlugin:
+    def load_plugin_from_file(self, file_path: str | Path, class_name: str, config: Optional[dict[str, Any]] = None) -> APlugin:
         """
         Load plugin from Python file.
 
@@ -439,7 +440,7 @@ class APluginManager:
             
         return discovered
 
-    def discover_directory(self, directory: Union[str, Path], pattern: str = "*.py") -> dict[str, dict[str, Any]]:
+    def discover_directory(self, directory: str | Path, pattern: str = "*.py") -> dict[str, dict[str, Any]]:
         """
         Discover plugins in a directory.
 
@@ -603,7 +604,7 @@ def get_plugin_manager() -> APluginManager:
 
 
 class BasePlugin(APlugin):
-    """Base plugin class for backward compatibility."""
+    """Base plugin class."""
     
     def __init__(self, config: Optional[dict[str, Any]] = None):
         """Initialize base plugin."""

@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/codec_registry_simple_test.py
 """
 Simple test script to verify Universal Codec Registry works.
 This bypasses the cramjam/fastavro import issue.
@@ -120,4 +121,3 @@ print("  ✓ Sub-millisecond lookup times")
 print("  ✓ Metadata and statistics")
 print("\n⚠️  Note: XWIO integration tests blocked by cramjam/fastavro issue")
 print("   This is a third-party dependency problem, NOT a registry issue.")
-

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/examples/demo_xserialization.py
 """
 Demo script for XWSerialization functionality.
 This demonstrates the self-transforming serializer concept.

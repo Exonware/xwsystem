@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/validation/type_safety.py
 """
 Generic type safety validation.
 
@@ -20,7 +21,7 @@ class SafeTypeValidator:
     # Allowed types for untrusted data
     SAFE_TYPES = (str, int, float, bool, list, dict, type(None))
 
-    # Types that are always safe to cache
+    # Types that are safe to cache
     IMMUTABLE_TYPES = (str, int, float, bool, tuple, frozenset, type(None))
 
     @classmethod

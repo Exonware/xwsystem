@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/file_tests/test_paging_registry.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for PagingStrategyRegistry.
@@ -73,4 +74,3 @@ class TestPagingStrategyRegistry:
         strategy = registry.auto_detect(mode='r')
         assert strategy is not None
         assert strategy.strategy_id == "line"
-

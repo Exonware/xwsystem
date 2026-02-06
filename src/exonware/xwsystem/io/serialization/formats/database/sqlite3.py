@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/database/sqlite3.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 SQLite3 serialization - Embedded database storage.
@@ -15,7 +16,7 @@ Following I→A pattern:
 
 import json
 import sqlite3
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -63,11 +64,11 @@ class Sqlite3Serializer(ASerialization):
     def aliases(self) -> list[str]:
         return ["sqlite3", "sqlite", "db"]
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """SQLite3 encode requires file path - use save_file() instead."""
         raise NotImplementedError("SQLite3 requires file-based operations - use save_file()")
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """SQLite3 decode requires file path - use load_file() instead."""
         raise NotImplementedError("SQLite3 requires file-based operations - use load_file()")
 
@@ -75,7 +76,7 @@ class Sqlite3Serializer(ASerialization):
     # FILE-BASED OPERATIONS (override ASerialization defaults)
     # ---------------------------------------------------------------------
 
-    def save_file(self, data: Any, file_path: Union[str, Path], **options: Any) -> None:
+    def save_file(self, data: Any, file_path: str | Path, **options: Any) -> None:
         """
         Save Python data into a SQLite3 database file.
 
@@ -119,7 +120,7 @@ class Sqlite3Serializer(ASerialization):
                 original_error=e,
             ) from e
 
-    def load_file(self, file_path: Union[str, Path], **options: Any) -> Any:
+    def load_file(self, file_path: str | Path, **options: Any) -> Any:
         """
         Load Python data from a SQLite3 database file.
 
@@ -153,4 +154,3 @@ class Sqlite3Serializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e,
             ) from e
-

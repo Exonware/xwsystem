@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/runtime/base.py
 #exonware/xwsystem/runtime/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Runtime module base classes - abstract classes for runtime functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Callable
+from typing import Any, Optional, Callable
 from .contracts import RuntimeMode, PlatformType, PythonVersion, EnvironmentType
 
 
@@ -370,7 +371,7 @@ class ARuntimeManagerBase(ABC):
 
 
 class BaseRuntime(ARuntimeBase):
-    """Base runtime implementation for backward compatibility."""
+    """Base runtime implementation."""
     
     def __init__(self, mode: RuntimeMode = RuntimeMode.NORMAL):
         """Initialize base runtime."""

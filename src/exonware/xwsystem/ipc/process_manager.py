@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/ipc/process_manager.py
 """
 Process Management Utilities
 ============================
@@ -11,12 +12,13 @@ Generation Date: September 05, 2025
 """
 
 import os
+import platform
 import sys
 import time
 import signal
 import subprocess
 import multiprocessing as mp
-from typing import Optional, Callable, Any, Union
+from typing import Optional, Callable, Any
 from dataclasses import dataclass
 from threading import Lock, Event
 import logging
@@ -74,7 +76,7 @@ class ProcessManager:
     
     def start_process(self, 
                      name: str, 
-                     command: Union[str, list[str]], 
+                     command: str | list[str], 
                      cwd: Optional[str] = None,
                      env: Optional[dict[str, str]] = None,
                      shell: bool = False) -> bool:
@@ -115,7 +117,7 @@ class ProcessManager:
                     shell=shell,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-                    preexec_fn=None if sys.platform == 'win32' else os.setsid
+                    preexec_fn=None if platform.system() == 'Windows' else os.setsid
                 )
                 
                 # Store process info
@@ -162,7 +164,7 @@ class ProcessManager:
                     return True
                 
                 # Try graceful shutdown first
-                if sys.platform != 'win32':
+                if platform.system() != 'Windows':
                     os.killpg(os.getpgid(process.pid), signal.SIGTERM)
                 else:
                     process.terminate()
@@ -178,7 +180,7 @@ class ProcessManager:
                 except subprocess.TimeoutExpired:
                     # Force kill if graceful shutdown failed
                     logger.warning(f"Process '{name}' did not stop gracefully, force killing")
-                    if sys.platform != 'win32':
+                    if platform.system() != 'Windows':
                         os.killpg(os.getpgid(process.pid), signal.SIGKILL)
                     else:
                         process.kill()

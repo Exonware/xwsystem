@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Archive FILES - File persistence for archives.
@@ -26,7 +26,7 @@ Priority 5 (Extensibility): Easy to add new formats
 import zipfile
 import tarfile
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from ..archive.base import AArchiveFile
 from ..contracts import IArchiveFile, IArchiver
@@ -63,7 +63,7 @@ class ZipFile(AArchiveFile):
         >>> files = zip_file.list_contents()
     """
     
-    def __init__(self, path: Union[str, Path]):
+    def __init__(self, path: str | Path):
         """Initialize zip archive file."""
         super().__init__(path, archiver=ZipArchiver())
         self._archiver = ZipArchiver()  # Composition!
@@ -150,7 +150,7 @@ class TarFile(AArchiveFile):
     Supports compression: gzip, bz2, xz
     """
     
-    def __init__(self, path: Union[str, Path], compression: str = ''):
+    def __init__(self, path: str | Path, compression: str = ''):
         """
         Initialize tar archive file.
         
@@ -215,6 +215,3 @@ class TarFile(AArchiveFile):
     def get_archiver(self) -> IArchiver:
         """Get the underlying archiver codec."""
         return self._archiver
-
-
-

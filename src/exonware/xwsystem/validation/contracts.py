@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/validation/contracts.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Validation protocol interfaces for XWSystem.
 """
 
-from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Iterator, Callable, Protocol
-from typing_extensions import runtime_checkable
+from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
 
 # Import enums from types module
 from .defs import (
@@ -25,14 +24,14 @@ from .defs import (
 # VALIDATION INTERFACES
 # ============================================================================
 
-class IValidatable(ABC):
+@runtime_checkable
+class IValidatable(Protocol):
     """
     Interface for objects that can be validated.
     
     Enforces consistent validation behavior across XWSystem.
     """
     
-    @abstractmethod
     def validate(self) -> bool:
         """
         Validate this object.
@@ -40,9 +39,8 @@ class IValidatable(ABC):
         Returns:
             True if valid
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_valid(self) -> bool:
         """
         Check if object is valid.
@@ -50,9 +48,8 @@ class IValidatable(ABC):
         Returns:
             True if valid
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_errors(self) -> list[str]:
         """
         Get validation errors.
@@ -60,16 +57,14 @@ class IValidatable(ABC):
         Returns:
             List of error messages
         """
-        pass
+        ...
     
-    @abstractmethod
     def clear_errors(self) -> None:
         """
         Clear validation errors.
         """
-        pass
+        ...
     
-    @abstractmethod
     def has_errors(self) -> bool:
         """
         Check if object has validation errors.
@@ -77,9 +72,8 @@ class IValidatable(ABC):
         Returns:
             True if has errors
         """
-        pass
+        ...
     
-    @abstractmethod
     def add_error(self, error: str) -> None:
         """
         Add validation error.
@@ -87,21 +81,21 @@ class IValidatable(ABC):
         Args:
             error: Error message
         """
-        pass
+        ...
 
 
 # ============================================================================
 # VALIDATION MANAGER INTERFACES
 # ============================================================================
 
-class IValidationManager(ABC):
+@runtime_checkable
+class IValidationManager(Protocol):
     """
     Interface for validation management.
     
     Enforces consistent validation management across XWSystem.
     """
     
-    @abstractmethod
     def add_validator(self, name: str, validator: Callable[[Any], bool]) -> None:
         """
         Add validator function.
@@ -110,9 +104,8 @@ class IValidationManager(ABC):
             name: Validator name
             validator: Validator function
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_validator(self, name: str) -> bool:
         """
         Remove validator.
@@ -123,9 +116,8 @@ class IValidationManager(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
     def validate_object(self, obj: Any, validators: list[str]) -> tuple[bool, list[str]]:
         """
         Validate object with specified validators.
@@ -137,9 +129,8 @@ class IValidationManager(ABC):
         Returns:
             Tuple of (is_valid, error_messages)
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_validators(self) -> list[str]:
         """
         Get list of available validators.
@@ -147,21 +138,22 @@ class IValidationManager(ABC):
         Returns:
             List of validator names
         """
-        pass
+        ...
 
 
 # ============================================================================
-# SCHEMA VALIDATION INTERFACES
+# SCHEMA VALIDATION INTERFACES (Schema Provider)
 # ============================================================================
 
-class ISchemaValidator(ABC):
+@runtime_checkable
+class ISchemaProvider(Protocol):
     """
-    Interface for schema validation.
+    Interface for schema validation (schema provider).
     
     Enforces consistent schema validation across XWSystem.
+    Implementations are discovered via entry point xwsystem.schema_validators.
     """
     
-    @abstractmethod
     def validate_schema(self, data: Any, schema: dict[str, Any]) -> tuple[bool, list[str]]:
         """
         Validate data against schema.
@@ -173,9 +165,8 @@ class ISchemaValidator(ABC):
         Returns:
             Tuple of (is_valid, error_messages)
         """
-        pass
+        ...
     
-    @abstractmethod
     def create_schema(self, data: Any) -> dict[str, Any]:
         """
         Create schema from data.
@@ -186,9 +177,8 @@ class ISchemaValidator(ABC):
         Returns:
             Schema definition
         """
-        pass
+        ...
     
-    @abstractmethod
     def validate_type(self, data: Any, expected_type: str) -> bool:
         """
         Validate data type.
@@ -200,9 +190,8 @@ class ISchemaValidator(ABC):
         Returns:
             True if type matches
         """
-        pass
+        ...
     
-    @abstractmethod
     def validate_range(self, data: Any, min_value: Any, max_value: Any) -> bool:
         """
         Validate data range.
@@ -215,9 +204,8 @@ class ISchemaValidator(ABC):
         Returns:
             True if in range
         """
-        pass
+        ...
     
-    @abstractmethod
     def validate_pattern(self, data: str, pattern: str) -> bool:
         """
         Validate string pattern.
@@ -229,7 +217,7 @@ class ISchemaValidator(ABC):
         Returns:
             True if pattern matches
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -237,8 +225,8 @@ class ISchemaValidator(ABC):
 # ============================================================================
 
 @runtime_checkable
-class Validatable(Protocol):
-    """Protocol for objects that support data validation."""
+class IValidatableSimple(Protocol):
+    """Protocol for objects that support data validation (simpler interface than IValidatable)."""
     
     def validate(self, data: Any, **kwargs: Any) -> bool:
         """Validate data against rules."""

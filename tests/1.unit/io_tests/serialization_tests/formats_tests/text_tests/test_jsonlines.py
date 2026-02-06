@@ -87,7 +87,7 @@ class TestJSONLinesSerializer:
     
     def test_decode_with_empty_lines(self):
         """Test decoding skips empty lines."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         jsonl_str = '{"name": "Alice"}\n\n{"name": "Bob"}\n'
         
         result = serializer.decode(jsonl_str)
@@ -97,20 +97,20 @@ class TestJSONLinesSerializer:
     
     def test_mime_types(self):
         """Test JSONL MIME types are correct."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         assert "application/x-ndjson" in serializer.media_types
         assert "application/jsonl" in serializer.media_types
     
     def test_file_extensions(self):
         """Test JSONL file extensions are correct."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         assert ".jsonl" in serializer.file_extensions
         assert ".ndjson" in serializer.file_extensions
         assert ".jsonlines" in serializer.file_extensions
     
     def test_streaming_friendly_format(self):
         """Test format is suitable for streaming (one object per line)."""
-        serializer = XWJsonLinesSerializer()
+        serializer = JsonLinesSerializer()
         data = [{"log": f"entry_{i}"} for i in range(100)]
         
         encoded = serializer.encode(data)
@@ -121,4 +121,3 @@ class TestJSONLinesSerializer:
         for line in lines:
             assert line.startswith('{"log"')
             assert line.endswith('}')
-

@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/config/logging.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Logging configuration for XSystem.
@@ -12,7 +13,6 @@ Provides simple logging control functions and configuration management.
 
 import logging
 import os
-from typing import Union
 
 from .defaults import LOGGING_ENABLED, LOGGING_LEVEL
 
@@ -39,13 +39,17 @@ class LoggingConfig:
 
     def set_level(self, level: str) -> None:
         """Set logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)."""
-        self._level = level.upper()
+        level_upper = level.upper()
+        # Validate level by trying to get it from logging module
+        # This will raise AttributeError for invalid levels
+        try:
+            logging_level = getattr(logging, level_upper)
+        except AttributeError:
+            raise AttributeError(f"Invalid logging level: {level}. Valid levels are: DEBUG, INFO, WARNING, ERROR, CRITICAL")
+        
+        self._level = level_upper
         if self._enabled:
-            try:
-                logging.getLogger().setLevel(getattr(logging, self._level))
-            except (AttributeError, TypeError):
-                # Handle cases where logging level comparison might fail
-                pass
+            logging.getLogger().setLevel(logging_level)
 
     @property
     def enabled(self) -> bool:

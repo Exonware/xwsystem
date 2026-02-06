@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
 Archive format implementations - COMPREHENSIVE 2025 SUPPORT.
@@ -33,7 +33,7 @@ Priority 4 (Performance): Efficient format handling
 Priority 5 (Extensibility): Easy to add more formats
 """
 
-# Standard formats (always available)
+# Standard formats (stdlib)
 from .zip import ZipArchiver
 from .tar import TarArchiver
 
@@ -132,4 +132,3 @@ __all__ = [
     "get_archiver_by_id",
     "register_archive_format",
 ]
-

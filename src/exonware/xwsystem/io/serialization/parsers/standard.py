@@ -1,12 +1,13 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/standard.py
 """Standard library JSON parser (baseline implementation)."""
 
 import json
-from typing import Any, Union
+from typing import Any
 
-from .base import IJsonParser
+from .base import AJsonParser
 
 
-class StandardJsonParser(IJsonParser):
+class StandardJsonParser(AJsonParser):
     """Standard library JSON parser - Tier 0 (baseline)."""
     
     @property
@@ -19,15 +20,15 @@ class StandardJsonParser(IJsonParser):
     
     @property
     def is_available(self) -> bool:
-        return True  # Always available (stdlib)
+        return True  # Available (stdlib)
     
-    def loads(self, s: Union[str, bytes]) -> Any:
+    def loads(self, s: str | bytes) -> Any:
         """Parse JSON using stdlib json.loads()."""
         if isinstance(s, bytes):
             s = s.decode("utf-8")
         return json.loads(s)
     
-    def dumps(self, obj: Any, **kwargs) -> Union[str, bytes]:
+    def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using stdlib json.dumps()."""
         ensure_ascii = kwargs.get("ensure_ascii", False)
         indent = kwargs.get("indent", None)

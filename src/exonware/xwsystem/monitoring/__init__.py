@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/monitoring/__init__.py
 """
 XSystem Monitoring Package
 
@@ -147,4 +148,10 @@ __all__ = [
     "GenericPerformanceManager",
     "PerformanceRecommendation",
     "HealthStatus",
+    
+    # Unified Facade
+    "XWMonitor",
 ]
+
+# Import unified facade
+from .facade import XWMonitor

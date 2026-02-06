@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/database/dbm.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 DBM serialization - Unix database manager.
@@ -15,7 +16,7 @@ Following I→A pattern:
 
 import json
 import dbm
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -63,11 +64,11 @@ class DbmSerializer(ASerialization):
     def aliases(self) -> list[str]:
         return ["dbm", "DBM"]
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """DBM encode requires file path - use save_file() instead."""
         raise NotImplementedError("DBM requires file-based operations - use save_file()")
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """DBM decode requires file path - use load_file() instead."""
         raise NotImplementedError("DBM requires file-based operations - use load_file()")
 
@@ -75,7 +76,7 @@ class DbmSerializer(ASerialization):
     # FILE-BASED OPERATIONS
     # ---------------------------------------------------------------------
 
-    def save_file(self, data: Any, file_path: Union[str, Path], **options: Any) -> None:
+    def save_file(self, data: Any, file_path: str | Path, **options: Any) -> None:
         """
         Save Python data into a DBM database file.
 
@@ -98,7 +99,7 @@ class DbmSerializer(ASerialization):
                 original_error=e,
             ) from e
 
-    def load_file(self, file_path: Union[str, Path], **options: Any) -> Any:
+    def load_file(self, file_path: str | Path, **options: Any) -> Any:
         """
         Load Python data from a DBM database file.
 
@@ -121,4 +122,3 @@ class DbmSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e,
             ) from e
-

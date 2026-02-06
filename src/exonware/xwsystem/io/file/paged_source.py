@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Paged file source with MODULAR paging system.
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Add new strategies without changing this class!
 """
 
 from pathlib import Path
-from typing import Union, Optional, Iterator
+from typing import Optional, Iterator
 
 from ..contracts import IPagedDataSource
 from .source import FileDataSource
@@ -29,7 +29,7 @@ from ..contracts import IPagingStrategy
 from .paging import auto_detect_paging_strategy
 
 
-class PagedFileSource(FileDataSource, IPagedDataSource[Union[bytes, str]]):
+class PagedFileSource(FileDataSource, IPagedDataSource[bytes | str]):
     """
     Paged file source with PLUGGABLE paging strategies!
     
@@ -50,7 +50,7 @@ class PagedFileSource(FileDataSource, IPagedDataSource[Union[bytes, str]]):
     
     def __init__(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         mode: str = 'rb',
         encoding: Optional[str] = None,
         validate_path: bool = True,
@@ -84,7 +84,7 @@ class PagedFileSource(FileDataSource, IPagedDataSource[Union[bytes, str]]):
             return -1
         return self._path.stat().st_size
     
-    def read_page(self, page: int, page_size: int, **options) -> Union[bytes, str]:
+    def read_page(self, page: int, page_size: int, **options) -> bytes | str:
         """
         Read specific page using the paging strategy.
         
@@ -99,7 +99,7 @@ class PagedFileSource(FileDataSource, IPagedDataSource[Union[bytes, str]]):
             **options
         )
     
-    def iter_pages(self, page_size: int, **options) -> Iterator[Union[bytes, str]]:
+    def iter_pages(self, page_size: int, **options) -> Iterator[bytes | str]:
         """
         Iterate over pages using the paging strategy.
         """
@@ -111,7 +111,7 @@ class PagedFileSource(FileDataSource, IPagedDataSource[Union[bytes, str]]):
             **options
         )
     
-    def read_chunk(self, offset: int, size: int, **options) -> Union[bytes, str]:
+    def read_chunk(self, offset: int, size: int, **options) -> bytes | str:
         """
         Read chunk by byte offset (always byte-based).
         
@@ -136,7 +136,7 @@ class PagedFileSource(FileDataSource, IPagedDataSource[Union[bytes, str]]):
         except Exception as e:
             raise IOError(f"Failed to read chunk from {self._path}: {e}")
     
-    def iter_chunks(self, chunk_size: int, **options) -> Iterator[Union[bytes, str]]:
+    def iter_chunks(self, chunk_size: int, **options) -> Iterator[bytes | str]:
         """
         Iterate over chunks by byte size.
         

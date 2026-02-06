@@ -82,4 +82,3 @@ class TestSecureLRUCache:
         assert 'enable_rate_limit' in stats
         assert 'max_key_size' in stats
         assert 'max_value_size_mb' in stats
-

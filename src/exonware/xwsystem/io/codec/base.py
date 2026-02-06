@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/io/codec/base.py
 # exonware/xwsystem/io/codec/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 30, 2025
 
 Base classes, registry, adapters, and helper functions for codec system.
 """
 
 from __future__ import annotations
-from typing import Optional, Any, IO, Union
+from typing import Optional, Any, IO
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -415,7 +416,9 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
                         self._get_data_depth(v, cache, visited, current_depth + 1) - current_depth - 1
                         for v in data.values()
                     ]
-                    max_relative_depth = max(child_depths) if child_depths else 1
+                    # Get max relative depth from children (how deep from this dict)
+                    # Add 1 for the dict itself
+                    max_relative_depth = max(child_depths) + 1 if child_depths else 1
                 else:
                     max_relative_depth = 1  # Empty dict still counts as one level
             
@@ -425,7 +428,9 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
                         self._get_data_depth(item, cache, visited, current_depth + 1) - current_depth - 1
                         for item in data
                     ]
-                    max_relative_depth = max(child_depths) if child_depths else 1
+                    # Get max relative depth from children (how deep from this list)
+                    # Add 1 for the list itself
+                    max_relative_depth = max(child_depths) + 1 if child_depths else 1
                 else:
                     max_relative_depth = 1  # Empty list still counts as one level
             
@@ -435,7 +440,9 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
                     self._get_data_depth(v, cache, visited, current_depth + 1) - current_depth - 1
                     for v in vars(data).values()
                 ]
-                max_relative_depth = max(child_depths) if child_depths else 0
+                # Get max relative depth from children (how deep from this object)
+                # Add 1 for the object itself
+                max_relative_depth = max(child_depths) + 1 if child_depths else 1
             
             # Cache the result (maximum relative depth from this object)
             cache[obj_id] = max_relative_depth
@@ -507,7 +514,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
         self, 
         data: Any, 
         operation: str = "encode",
-        file_path: Optional[Union[str, Path]] = None,
+        file_path: Optional[str | Path] = None,
         skip_size_check: bool = False
     ) -> None:
         """
@@ -536,7 +543,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
         self._depth_cache.clear()
         self._size_cache.clear()
         
-        # ALWAYS check depth - this prevents infinite recursion which is the real security issue
+        # Check depth - prevents infinite recursion which is the security issue
         depth = self._get_data_depth(data)
         if depth > self._max_depth:
             raise SerializationError(
@@ -558,7 +565,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
                 if path_obj.exists():
                     file_size_mb = path_obj.stat().st_size / (1024 * 1024)
                     # If file is > 1GB, assume it's meant to be large and skip size validation
-                    # Large files should use lazy loading/streaming features
+                    # Large files use lazy loading/streaming features
                     if file_size_mb > 1024:  # 1GB threshold
                         return  # Skip size check for large files
             except (OSError, ValueError):
@@ -576,7 +583,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
             )
     
     # ========================================================================
-    # CORE METHODS (Must implement in subclasses)
+    # CORE METHODS (Implement in subclasses)
     # ========================================================================
     
     @abstractmethod
@@ -590,7 +597,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
         pass
     
     # ========================================================================
-    # METADATA PROPERTIES (Must implement in subclasses)
+    # METADATA PROPERTIES (Implement in subclasses)
     # ========================================================================
     
     @property
@@ -689,8 +696,8 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
             if isinstance(self._get_repr_type_hint(), str):
                 # Text codec, decode bytes to str
                 repr = repr.decode('utf-8')
-        except:
-            # Fall back to text
+        except (OSError, UnicodeDecodeError, FileNotFoundError, PermissionError):
+            # Fall back to text - catch specific exceptions only
             repr = path.read_text(encoding='utf-8')
         
         return self.decode(repr, options=opts or None)
@@ -879,4 +886,3 @@ class SerializerToFormatter[T]:
         """Decode from string via bytes."""
         data = repr.encode(self._encoding, errors=self._errors)
         return self._serializer.decode(data, options=options)
-

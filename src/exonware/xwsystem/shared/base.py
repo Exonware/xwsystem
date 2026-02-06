@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/shared/base.py
 #exonware/xwsystem/shared/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Shared base classes (merged from the former core module).
@@ -11,8 +12,11 @@ Shared base classes (merged from the former core module).
 
 from abc import ABC, abstractmethod
 from typing import Any, Optional
+from datetime import datetime
+import uuid
 
-from .contracts import CoreMode, CorePriority, CoreState
+from .contracts import CoreMode, CorePriority, CoreState, IObject
+from .defs import DataType
 
 
 class ACoreBase(ABC):
@@ -307,3 +311,282 @@ class BaseCore(ACoreBase):
         # Basic implementation - can be overridden
         return True
 
+
+# ============================================================================
+# OBJECT BASE CLASSES
+# ============================================================================
+
+
+class AObject(IObject, ABC):
+    """
+    Abstract base class for all objects in the eXonware ecosystem.
+    
+    Provides common functionality for objects across xwauth, xwstorage, xwentity,
+    and other libraries. Extends IObject interface. All object types share:
+    - Identity (id, uid properties from IID)
+    - Timestamps (created_at, updated_at)
+    - Metadata (title, description)
+    - Native conversion (to_native, from_native from INative)
+    - Serialization (to_dict)
+    - Storage operations (save, load)
+    
+    Subclasses must implement:
+    - id property (returns object identifier)
+    - created_at property
+    - updated_at property
+    - to_dict() method (should include title and description)
+    - save() method (object-specific storage logic)
+    - load() method (object-specific loading logic)
+    """
+    
+    def __init__(self, object_id: Optional[str] = None):
+        """
+        Initialize abstract object.
+        
+        Args:
+            object_id: Optional object identifier (subclasses define their own id property)
+        """
+        # Timestamps are initialized by subclasses
+        # Set self._created_at and self._updated_at in __init__
+        # Title and description are optional and initialized by subclasses
+        pass
+    
+    @property
+    @abstractmethod
+    def id(self) -> str:
+        """Get the unique object identifier."""
+        pass
+    
+    @property
+    def uid(self) -> str:
+        """
+        Get the unique object GUID (universal identifier).
+        
+        This should be generated on object creation. XWObject provides
+        a default implementation that generates a UUID.
+        """
+        # Default implementation - subclasses can override
+        if not hasattr(self, '_uid'):
+            self._uid = str(uuid.uuid4())
+        return self._uid
+    
+    @property
+    @abstractmethod
+    def created_at(self) -> datetime:
+        """Get the creation timestamp."""
+        pass
+    
+    @property
+    @abstractmethod
+    def updated_at(self) -> datetime:
+        """Get the last update timestamp."""
+        pass
+    
+    @property
+    def title(self) -> Optional[str]:
+        """
+        Get the object title.
+        
+        Default implementation returns None. Subclasses should override
+        to provide title support, storing it in self._title.
+        """
+        return getattr(self, '_title', None)
+    
+    @property
+    def description(self) -> Optional[str]:
+        """
+        Get the object description.
+        
+        Default implementation returns None. Subclasses should override
+        to provide description support, storing it in self._description.
+        """
+        return getattr(self, '_description', None)
+    
+    @abstractmethod
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Export object as dictionary.
+        
+        Should include id, uid, created_at, updated_at, title, description,
+        and any object-specific data.
+        """
+        pass
+    
+    def to_native(self) -> Any:
+        """
+        Get object as native representation.
+        
+        Default implementation returns to_dict(). Subclasses can override
+        if they need a different native representation.
+        """
+        return self.to_dict()
+    
+    def from_native(self, data: dict[str, Any]) -> "IObject":
+        """
+        Create from native Python object.
+        
+        Default implementation raises NotImplementedError. Subclasses should
+        override to provide from_native support.
+        
+        Args:
+            data: Native Python object (typically a dict)
+            
+        Returns:
+            Self (for chaining) - returns IObject to match protocol
+        """
+        raise NotImplementedError("Subclasses must implement from_native method")
+    
+    def is_native_compatible(self, data: Any) -> bool:
+        """
+        Check if data is compatible with native conversion.
+        
+        Default implementation checks if data is a dict. Subclasses can override
+        for more specific validation.
+        """
+        return isinstance(data, dict)
+    
+    def get_native_type(self) -> DataType:
+        """
+        Get the native data type.
+        
+        Default implementation returns DataType.DICT since objects typically
+        serialize to dictionaries. Subclasses can override for custom types.
+        
+        Returns:
+            DataType enum value
+        """
+        return DataType.DICT
+    
+    @abstractmethod
+    def save(self, *args, **kwargs) -> None:
+        """
+        Save object to storage.
+        
+        Subclasses must implement this with object-specific storage logic.
+        This method can be decorated with @XWAction to enable action-based
+        execution, validation, and authorization.
+        """
+        pass
+    
+    @abstractmethod
+    def load(self, *args, **kwargs) -> None:
+        """
+        Load object from storage.
+        
+        Subclasses must implement this with object-specific loading logic.
+        This method can be decorated with @XWAction to enable action-based
+        execution, validation, and authorization.
+        """
+        pass
+    
+    def generate_id(self) -> str:
+        """
+        Generate a new ID.
+        
+        Default implementation generates a UUID. Subclasses can override
+        for custom ID generation logic.
+        
+        Returns:
+            New ID string
+        """
+        return str(uuid.uuid4())
+    
+    def validate_id(self, id_value: str) -> bool:
+        """
+        Validate an ID format.
+        
+        Default implementation checks if ID is a non-empty string.
+        Subclasses can override for custom validation logic.
+        
+        Args:
+            id_value: ID to validate
+            
+        Returns:
+            True if valid
+        """
+        return isinstance(id_value, str) and len(id_value) > 0
+    
+    def is_same_id(self, other: "IObject") -> bool:
+        """
+        Check if this object has the same ID as another.
+        
+        Args:
+            other: Another IObject instance
+            
+        Returns:
+            True if same ID
+        """
+        if not isinstance(other, IObject):
+            return False
+        return self.id == other.id
+    
+    def __getitem__(self, key: str) -> Any:
+        """
+        Get object property using dictionary-style access.
+        
+        Supports accessing properties like:
+        - obj["uid"] -> returns uid property
+        - obj["title"] -> returns title property
+        - obj["description"] -> returns description property
+        - obj["id"] -> returns id property (if implemented)
+        - obj["created_at"] -> returns created_at property (if implemented)
+        - obj["updated_at"] -> returns updated_at property (if implemented)
+        - obj["property_name"] -> returns any other attribute
+        
+        Args:
+            key: Property name to access
+            
+        Returns:
+            Property value
+            
+        Raises:
+            KeyError: If property doesn't exist
+            
+        Example:
+            >>> obj = MyObject()
+            >>> obj._title = "My Title"
+            >>> print(obj["title"])  # "My Title"
+            >>> print(obj["uid"])    # UUID string
+        """
+        # Try to get via property methods first
+        if key == "uid":
+            return self.uid
+        elif key == "title":
+            return self.title
+        elif key == "description":
+            return self.description
+        elif key == "id":
+            # Try to get id property (may be abstract in some cases)
+            try:
+                return self.id
+            except (AttributeError, NotImplementedError):
+                # Fall back to _id attribute if it exists
+                if hasattr(self, "_id"):
+                    return self._id
+                raise KeyError(f"Property 'id' not available")
+        elif key == "created_at":
+            # Try to get created_at property (may be abstract)
+            try:
+                return self.created_at
+            except (AttributeError, NotImplementedError):
+                # Fall back to _created_at attribute if it exists
+                if hasattr(self, "_created_at"):
+                    return self._created_at
+                raise KeyError(f"Property 'created_at' not available")
+        elif key == "updated_at":
+            # Try to get updated_at property (may be abstract)
+            try:
+                return self.updated_at
+            except (AttributeError, NotImplementedError):
+                # Fall back to _updated_at attribute if it exists
+                if hasattr(self, "_updated_at"):
+                    return self._updated_at
+                raise KeyError(f"Property 'updated_at' not available")
+        else:
+            # Try to get as attribute
+            if hasattr(self, key):
+                return getattr(self, key)
+            # Try with underscore prefix (private attributes)
+            if hasattr(self, f"_{key}"):
+                return getattr(self, f"_{key}")
+            raise KeyError(f"Property '{key}' not found")

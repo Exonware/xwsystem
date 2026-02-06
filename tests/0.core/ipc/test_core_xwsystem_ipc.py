@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/0.core/ipc/test_core_xwsystem_ipc.py
 #exonware/xwsystem/tests/core/ipc/test_core_xwsystem_ipc.py
 """
 XSystem IPC Core Tests
@@ -23,7 +24,7 @@ try:
     from exonware.xwsystem.ipc.process_pool import ProcessPool
     from exonware.xwsystem.ipc.shared_memory import SharedMemory
     from exonware.xwsystem.ipc.base import BaseIPC
-    from exonware.xwsystem.ipc.contracts import IMessageQueue, IPipeManager, IProcessManager, ISharedMemory
+    from exonware.xwsystem.ipc.contracts import IMessageQueue, IPipe, IProcessManager, ISharedMemory
     from exonware.xwsystem.ipc.errors import IPCError, MessageQueueError, PipeError, ProcessError, SharedMemoryError
 except ImportError as e:
     print(f"Import error: {e}")
@@ -64,7 +65,7 @@ except ImportError as e:
         def shutdown(self): pass
     
     class IMessageQueue: pass
-    class IPipeManager: pass
+    class IPipe: pass
     class IProcessManager: pass
     class ISharedMemory: pass
     

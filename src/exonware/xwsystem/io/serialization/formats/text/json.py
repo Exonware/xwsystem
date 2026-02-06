@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/json.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 JSON serialization - Universal, human-readable data interchange format.
@@ -14,12 +15,12 @@ Following I→A pattern:
 """
 
 import json
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
 from ...parsers.registry import get_parser
-from ...parsers.base import IJsonParser
+from ...parsers.base import AJsonParser
 from ....contracts import EncodeOptions, DecodeOptions
 from ....defs import CodecCapability
 from ....errors import SerializationError
@@ -54,15 +55,22 @@ class JsonSerializer(ASerialization):
         >>> user = serializer.load_file("user.json")
     """
     
-    def __init__(self, parser_name: Optional[str] = None):
+    def __init__(
+        self,
+        parser_name: Optional[str] = None,
+        max_depth: Optional[int] = None,
+        max_size_mb: Optional[float] = None,
+    ):
         """
         Initialize JSON serializer with optional parser selection.
         
         Args:
             parser_name: Parser name ("standard", "orjson", or None for auto-detect)
+            max_depth: Maximum nesting depth allowed (passed to ASerialization / ACodec)
+            max_size_mb: Maximum estimated data size in MB (passed to ASerialization / ACodec)
         """
-        super().__init__()
-        self._parser: IJsonParser = get_parser(parser_name)
+        super().__init__(max_depth=max_depth, max_size_mb=max_size_mb)
+        self._parser: AJsonParser = get_parser(parser_name)
     
     # ========================================================================
     # CODEC METADATA
@@ -137,7 +145,7 @@ class JsonSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using official json library)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to JSON string.
         
@@ -188,7 +196,7 @@ class JsonSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode JSON string to data.
         
@@ -241,7 +249,7 @@ class JsonSerializer(ASerialization):
     
     def atomic_update_path(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         path: str, 
         value: Any, 
         **options
@@ -282,7 +290,7 @@ class JsonSerializer(ASerialization):
             
             # Load entire file
             # For large files (10GB+), skip size validation to allow atomic operations
-            # Root cause: Large files should use atomic path operations without full validation
+            # Root cause: Large files use atomic path operations without full validation
             # Solution: Skip size check for atomic operations (depth check still performed)
             large_file_options = {**options, 'skip_size_check': True}
             data = self.load_file(file_path, **large_file_options)
@@ -297,12 +305,14 @@ class JsonSerializer(ASerialization):
             path_obj.parent.mkdir(parents=True, exist_ok=True)
             
             backup = options.get('backup', True)
-            with AtomicFileWriter(path_obj, backup=backup) as writer:
+            encoding = options.get('encoding', 'utf-8')
+            # JSON encode returns str, not bytes - write as text
+            with AtomicFileWriter(path_obj, mode='w', encoding=encoding, backup=backup) as writer:
                 if isinstance(repr_data, bytes):
-                    writer.write(repr_data)
+                    # If somehow we got bytes, decode first
+                    writer.write(repr_data.decode(encoding))
                 else:
-                    encoding = options.get('encoding', 'utf-8')
-                    writer.write(repr_data.encode(encoding))
+                    writer.write(repr_data)
                     
         except (FileNotFoundError, ValueError, KeyError, jsonpointer.JsonPointerException) as e:
             raise
@@ -315,7 +325,7 @@ class JsonSerializer(ASerialization):
     
     def atomic_read_path(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         path: str, 
         **options
     ) -> Any:
@@ -356,7 +366,7 @@ class JsonSerializer(ASerialization):
             
             # Load entire file
             # For large files (10GB+), skip size validation to allow atomic operations
-            # Root cause: Large files should use atomic path operations without full validation
+            # Root cause: Large files use atomic path operations without full validation
             # Solution: Skip size check for atomic operations (depth check still performed)
             large_file_options = {**options, 'skip_size_check': True}
             data = self.load_file(file_path, **large_file_options)
@@ -377,7 +387,7 @@ class JsonSerializer(ASerialization):
     
     def query(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         query_expr: str, 
         **options
     ) -> Any:
@@ -429,4 +439,3 @@ class JsonSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             ) from e
-

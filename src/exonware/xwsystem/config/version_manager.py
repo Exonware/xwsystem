@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/config/version_manager.py
 """
 Centralized version management for eXonware projects.
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/common_tests/test_path_manager.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for PathManager.
@@ -46,4 +47,3 @@ class TestPathManager:
         # Note: is_safe_path may not be available, test if it exists
         if hasattr(PathManager, 'is_safe_path'):
             assert PathManager.is_safe_path(safe_path) is True
-

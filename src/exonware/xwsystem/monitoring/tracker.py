@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/monitoring/tracker.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 26, 2025
 
 Operation tracker for monitoring operations with context management.

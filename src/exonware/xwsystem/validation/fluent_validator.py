@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/validation/fluent_validator.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 26, 2025
 
 Fluent validator with chainable API for data validation.
 """
 
-from typing import Any, Callable, Optional, Union
+from __future__ import annotations
+
+from typing import Any, Callable, Optional
 from .errors import ValidationError
 from ..config.logging_setup import get_logger
 
@@ -40,7 +43,7 @@ class FluentValidator:
         self.errors: list[str] = []
         self.rules: list[dict[str, Any]] = []
     
-    def require(self, field_name: str, message: Optional[str] = None) -> 'FluentValidator':
+    def require(self, field_name: str, message: Optional[str] = None) -> FluentValidator:
         """
         Require a field to be present and not None.
         
@@ -65,7 +68,7 @@ class FluentValidator:
         
         return self
     
-    def type_check(self, expected_type: type, message: Optional[str] = None) -> 'FluentValidator':
+    def type_check(self, expected_type: type, message: Optional[str] = None) -> FluentValidator:
         """
         Check if data is of expected type.
         
@@ -88,10 +91,10 @@ class FluentValidator:
     
     def range_check(
         self,
-        min_value: Optional[Union[int, float]] = None,
-        max_value: Optional[Union[int, float]] = None,
+        min_value: Optional[int | float] = None,
+        max_value: Optional[int | float] = None,
         message: Optional[str] = None
-    ) -> 'FluentValidator':
+    ) -> FluentValidator:
         """
         Check if numeric data is within range.
         
@@ -128,7 +131,7 @@ class FluentValidator:
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         message: Optional[str] = None
-    ) -> 'FluentValidator':
+    ) -> FluentValidator:
         """
         Check if data length is within range.
         
@@ -162,7 +165,7 @@ class FluentValidator:
         
         return self
     
-    def pattern_check(self, pattern: str, message: Optional[str] = None) -> 'FluentValidator':
+    def pattern_check(self, pattern: str, message: Optional[str] = None) -> FluentValidator:
         """
         Check if string data matches pattern (regex).
         
@@ -191,7 +194,7 @@ class FluentValidator:
         
         return self
     
-    def add_rule(self, validator_func: Callable[[Any], bool], message: Optional[str] = None) -> 'FluentValidator':
+    def add_rule(self, validator_func: Callable[[Any], bool], message: Optional[str] = None) -> FluentValidator:
         """
         Add custom validation rule.
         
@@ -216,7 +219,7 @@ class FluentValidator:
         """Check if data is valid (no errors)."""
         return len(self.errors) == 0
     
-    def validate(self) -> 'FluentValidator':
+    def validate(self) -> FluentValidator:
         """
         Validate data and raise ValidationError if invalid.
         
@@ -234,12 +237,12 @@ class FluentValidator:
         """Get list of validation errors."""
         return self.errors.copy()
     
-    def clear_errors(self) -> 'FluentValidator':
+    def clear_errors(self) -> FluentValidator:
         """Clear all validation errors."""
         self.errors.clear()
         return self
     
-    def set_data(self, data: Any) -> 'FluentValidator':
+    def set_data(self, data: Any) -> FluentValidator:
         """Set data to validate."""
         self.data = data
         return self
@@ -248,8 +251,8 @@ class FluentValidator:
         self,
         field_name: str,
         field_data: Any,
-        rules: list[Callable[['FluentValidator'], 'FluentValidator']]
-    ) -> 'FluentValidator':
+        rules: list[Callable[[FluentValidator], FluentValidator]]
+    ) -> FluentValidator:
         """
         Validate a specific field with rules.
         
@@ -280,8 +283,8 @@ class FluentValidator:
     
     def validate_dict_fields(
         self,
-        field_rules: dict[str, list[Callable[['FluentValidator'], 'FluentValidator']]]
-    ) -> 'FluentValidator':
+        field_rules: dict[str, list[Callable[[FluentValidator], FluentValidator]]]
+    ) -> FluentValidator:
         """
         Validate multiple fields in a dictionary.
         
@@ -342,7 +345,7 @@ def validate_string(data: str) -> FluentValidator:
     return FluentValidator(data)
 
 
-def validate_numeric(data: Union[int, float]) -> FluentValidator:
+def validate_numeric(data: int | float) -> FluentValidator:
     """
     Create a fluent validator for numeric data.
     
@@ -366,7 +369,7 @@ def is_type(expected_type: type) -> Callable[[FluentValidator], FluentValidator]
     return lambda v: v.type_check(expected_type)
 
 
-def is_in_range(min_val: Optional[Union[int, float]] = None, max_val: Optional[Union[int, float]] = None) -> Callable[[FluentValidator], FluentValidator]:
+def is_in_range(min_val: Optional[int | float] = None, max_val: Optional[int | float] = None) -> Callable[[FluentValidator], FluentValidator]:
     """Create a range check rule."""
     return lambda v: v.range_check(min_val, max_val)
 

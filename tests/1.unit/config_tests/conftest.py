@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/config_tests/conftest.py
 """
 Pytest configuration for xSystem config tests.
 """
@@ -9,7 +10,10 @@ import tempfile
 from pathlib import Path
 
 # Path setup - navigate to project root then to src
-src_path = str(Path(__file__).parent.parent.parent.parent.parent.parent / "src")
+# __file__ = tests/1.unit/config_tests/conftest.py
+# 4× .parent = xwsystem/ (project root)
+# Then / "src" = xwsystem/src
+src_path = str(Path(__file__).parent.parent.parent.parent / "src")
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
 

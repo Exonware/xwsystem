@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/integrity.py
 #exonware/xwsystem/caching/integrity.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Cache integrity verification - Security Priority #1.
@@ -55,12 +56,27 @@ class CacheEntry:
                     f"Cache may have been tampered with."
                 )
             return True
-        except Exception as e:
-            if isinstance(e, CacheIntegrityError):
-                raise
+        except CacheIntegrityError:
+            # Re-raise integrity errors as-is (already properly formatted)
+            raise
+        except (ValueError, TypeError, AttributeError) as e:
+            # Handle specific errors that can occur during checksum computation
+            # This follows GUIDE_TEST.md by handling specific exceptions
+            # rather than catching all exceptions
             raise CacheIntegrityError(
-                f"Integrity verification failed: {e}"
-            )
+                f"Integrity verification failed for key {self.key}: "
+                f"Cannot compute checksum - {type(e).__name__}: {e}. "
+                f"This may indicate corrupted cache data."
+            ) from e
+        except Exception as e:
+            # Catch-all for unexpected errors during integrity check
+            # This is acceptable per GUIDE_TEST.md as we're wrapping it
+            # in a proper CacheIntegrityError with context
+            raise CacheIntegrityError(
+                f"Unexpected error during integrity verification for key {self.key}: "
+                f"{type(e).__name__}: {e}. "
+                f"Cache integrity cannot be verified."
+            ) from e
 
 
 def create_secure_entry(
@@ -126,4 +142,3 @@ __all__ = [
     'verify_entry_integrity',
     'update_entry_checksum',
 ]
-

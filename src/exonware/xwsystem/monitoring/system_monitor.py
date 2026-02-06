@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/monitoring/system_monitor.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 System-wide monitoring and hardware introspection utilities.
@@ -12,7 +13,7 @@ import os
 import platform
 import time
 from dataclasses import dataclass
-from typing import Optional, Any, Union
+from typing import Optional, Any
 from pathlib import Path
 
 # Import psutil - lazy installation system will handle it if missing
@@ -142,7 +143,7 @@ class SystemMonitor:
     
     def is_available(self) -> bool:
         """Check if full system monitoring is available."""
-        # Lazy installation system ensures psutil is always available
+        # Lazy installation system provides psutil when available
         return True
     
     # =============================================================================
@@ -357,7 +358,7 @@ class SystemMonitor:
         
         return SystemInfo(**system_info)
     
-    def get_cpu_usage(self, interval: float = 1.0, per_cpu: bool = False) -> Union[float, list[float]]:
+    def get_cpu_usage(self, interval: float = 1.0, per_cpu: bool = False) -> float | list[float]:
         """
         Get CPU usage percentage.
         
@@ -696,5 +697,5 @@ def get_hardware_info() -> dict[str, Any]:
 
 def is_monitoring_available() -> bool:
     """Check if full system monitoring is available."""
-    # Lazy installation system ensures psutil is always available
+    # Lazy installation system provides psutil when available
     return True

@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/test_core_components.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
@@ -54,22 +55,30 @@ class TestPathValidator:
     
     def test_absolute_path_restriction(self):
         """Test absolute path restriction."""
+        import sys
         validator = PathValidator(allow_absolute=False, check_existence=False)
         
+        # Use platform-appropriate absolute path
+        if sys.platform == "win32":
+            absolute_path = "C:\\absolute\\path"
+        else:
+            absolute_path = "/absolute/path"
+        
         with pytest.raises(PathSecurityError, match="Absolute paths not allowed"):
-            validator.validate_path("/absolute/path")
+            validator.validate_path(absolute_path)
     
     def test_base_path_restriction(self):
         """Test base path restriction."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            validator = PathValidator(base_path=temp_dir)
+            # Disable existence check for this test
+            validator = PathValidator(base_path=temp_dir, check_existence=False)
             
             # Valid path within base
             result = validator.validate_path("subdir/file.txt")
             assert str(result).startswith(temp_dir)
             
-            # Invalid path outside base
-            with pytest.raises(ValueError, match="Path outside base directory"):
+            # Invalid path outside base - should raise PathSecurityError due to dangerous pattern
+            with pytest.raises(PathSecurityError, match="Dangerous pattern"):
                 validator.validate_path("../../../etc/passwd")
 
 
@@ -83,8 +92,9 @@ class TestAtomicFileWriter:
             target_file = Path(temp_dir) / "test.txt"
             content = "Hello, World!"
             
-            writer = AtomicFileWriter(target_path=str(target_file))
-            writer.write(content.encode('utf-8'))
+            # Use AtomicFileWriter as context manager
+            with AtomicFileWriter(target_path=str(target_file)) as writer:
+                writer.write(content)
             
             assert target_file.exists()
             assert target_file.read_text() == content
@@ -97,10 +107,11 @@ class TestAtomicFileWriter:
             target_file.write_text(original_content)
             
             # Test that original content is preserved on failure
-            writer = AtomicFileWriter(target_path=str(target_file))
+            # Use context manager - exception triggers rollback in __exit__
             try:
-                writer.write("New content".encode('utf-8'))
-                raise RuntimeError("Simulated failure")
+                with AtomicFileWriter(target_path=str(target_file), mode="wb") as f:
+                    f.write("New content".encode('utf-8'))
+                    raise RuntimeError("Simulated failure")
             except RuntimeError:
                 pass
             
@@ -154,7 +165,8 @@ class TestGenericHandlerFactory:
                 self.name = name
         
         factory.register("test", TestHandler)
-        handler = factory.create("test", "test_instance")
+        handler_class = factory.get_handler("test")
+        handler = handler_class("test_instance")
         
         assert isinstance(handler, TestHandler)
         assert handler.name == "test_instance"

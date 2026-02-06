@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/2.integration/io_tests/test_io_codec_integration.py
 """
 Comprehensive IO + Codec integration tests.
 """
@@ -702,4 +703,3 @@ class TestIntegration:
         fs2 = LocalFileSystem(output_dir)
         assert fs2.exists("file1.txt")
         assert fs2.read_text("file1.txt") == "Content 1"
-

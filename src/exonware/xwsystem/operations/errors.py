@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/operations/errors.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
@@ -37,4 +38,3 @@ class InvalidPathError(PatchError):
 class InvalidOperationError(OperationError):
     """Exception raised when an operation is invalid."""
     pass
-

@@ -1,23 +1,24 @@
+#exonware/xwsystem/src/exonware/xwsystem/security/base.py
 #exonware/xwsystem/security/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Security module base classes - abstract classes for security functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from .defs import HashAlgorithm, EncryptionAlgorithm, SecurityLevel
 
 
 class ACryptographicBase(ABC):
     """Abstract base class for cryptographic operations."""
     
-    def __init__(self, algorithm: Union[HashAlgorithm, EncryptionAlgorithm]):
+    def __init__(self, algorithm: HashAlgorithm | EncryptionAlgorithm):
         """
         Initialize cryptographic base.
         
@@ -44,32 +45,32 @@ class ACryptographicBase(ABC):
         pass
     
     @abstractmethod
-    def encrypt(self, data: Union[str, bytes]) -> bytes:
+    def encrypt(self, data: str | bytes) -> bytes:
         """Encrypt data."""
         pass
     
     @abstractmethod
-    def decrypt(self, encrypted_data: bytes) -> Union[str, bytes]:
+    def decrypt(self, encrypted_data: bytes) -> str | bytes:
         """Decrypt data."""
         pass
     
     @abstractmethod
-    def hash(self, data: Union[str, bytes]) -> str:
+    def hash(self, data: str | bytes) -> str:
         """Hash data."""
         pass
     
     @abstractmethod
-    def verify_hash(self, data: Union[str, bytes], hash_value: str) -> bool:
+    def verify_hash(self, data: str | bytes, hash_value: str) -> bool:
         """Verify data hash."""
         pass
     
     @abstractmethod
-    def sign(self, data: Union[str, bytes]) -> bytes:
+    def sign(self, data: str | bytes) -> bytes:
         """Sign data."""
         pass
     
     @abstractmethod
-    def verify_signature(self, data: Union[str, bytes], signature: bytes) -> bool:
+    def verify_signature(self, data: str | bytes, signature: bytes) -> bool:
         """Verify data signature."""
         pass
 
@@ -88,17 +89,17 @@ class AHashBase(ABC):
         self._salt: Optional[bytes] = None
     
     @abstractmethod
-    def hash(self, data: Union[str, bytes], salt: Optional[bytes] = None) -> str:
+    def hash(self, data: str | bytes, salt: Optional[bytes] = None) -> str:
         """Hash data."""
         pass
     
     @abstractmethod
-    def hash_file(self, file_path: Union[str, bytes]) -> str:
+    def hash_file(self, file_path: str | bytes) -> str:
         """Hash file content."""
         pass
     
     @abstractmethod
-    def verify_hash(self, data: Union[str, bytes], hash_value: str, salt: Optional[bytes] = None) -> bool:
+    def verify_hash(self, data: str | bytes, hash_value: str, salt: Optional[bytes] = None) -> bool:
         """Verify data hash."""
         pass
     
@@ -118,7 +119,7 @@ class AHashBase(ABC):
         pass
     
     @abstractmethod
-    def hash_with_salt(self, data: Union[str, bytes]) -> tuple[str, bytes]:
+    def hash_with_salt(self, data: str | bytes) -> tuple[str, bytes]:
         """Hash data with generated salt."""
         pass
 
@@ -158,22 +159,22 @@ class AEncryptionBase(ABC):
         pass
     
     @abstractmethod
-    def encrypt(self, data: Union[str, bytes], key: Optional[bytes] = None, iv: Optional[bytes] = None) -> bytes:
+    def encrypt(self, data: str | bytes, key: Optional[bytes] = None, iv: Optional[bytes] = None) -> bytes:
         """Encrypt data."""
         pass
     
     @abstractmethod
-    def decrypt(self, encrypted_data: bytes, key: Optional[bytes] = None, iv: Optional[bytes] = None) -> Union[str, bytes]:
+    def decrypt(self, encrypted_data: bytes, key: Optional[bytes] = None, iv: Optional[bytes] = None) -> str | bytes:
         """Decrypt data."""
         pass
     
     @abstractmethod
-    def encrypt_file(self, file_path: Union[str, bytes], output_path: Union[str, bytes]) -> bool:
+    def encrypt_file(self, file_path: str | bytes, output_path: str | bytes) -> bool:
         """Encrypt file."""
         pass
     
     @abstractmethod
-    def decrypt_file(self, encrypted_file_path: Union[str, bytes], output_path: Union[str, bytes]) -> bool:
+    def decrypt_file(self, encrypted_file_path: str | bytes, output_path: str | bytes) -> bool:
         """Decrypt file."""
         pass
 
@@ -193,37 +194,37 @@ class APathValidatorBase(ABC):
         self._blocked_paths: list[str] = []
     
     @abstractmethod
-    def validate_path(self, path: Union[str, bytes]) -> bool:
+    def validate_path(self, path: str | bytes) -> bool:
         """Validate file path."""
         pass
     
     @abstractmethod
-    def sanitize_path(self, path: Union[str, bytes]) -> str:
+    def sanitize_path(self, path: str | bytes) -> str:
         """Sanitize file path."""
         pass
     
     @abstractmethod
-    def is_safe_path(self, path: Union[str, bytes]) -> bool:
+    def is_safe_path(self, path: str | bytes) -> bool:
         """Check if path is safe."""
         pass
     
     @abstractmethod
-    def is_absolute_path(self, path: Union[str, bytes]) -> bool:
+    def is_absolute_path(self, path: str | bytes) -> bool:
         """Check if path is absolute."""
         pass
     
     @abstractmethod
-    def is_relative_path(self, path: Union[str, bytes]) -> bool:
+    def is_relative_path(self, path: str | bytes) -> bool:
         """Check if path is relative."""
         pass
     
     @abstractmethod
-    def contains_path_traversal(self, path: Union[str, bytes]) -> bool:
+    def contains_path_traversal(self, path: str | bytes) -> bool:
         """Check if path contains traversal sequences."""
         pass
     
     @abstractmethod
-    def normalize_path(self, path: Union[str, bytes]) -> str:
+    def normalize_path(self, path: str | bytes) -> str:
         """Normalize file path."""
         pass
     
@@ -396,6 +397,102 @@ class AUserInfo:
     email: Optional[str] = None
     roles: list[str] = field(default_factory=list)
     attributes: dict[str, Any] = field(default_factory=dict)
+
+
+class ASecurityMonitorBase(ABC):
+    """Abstract base class for security monitoring."""
+    
+    def __init__(self):
+        """Initialize security monitor."""
+        pass
+    
+    @abstractmethod
+    def detect_intrusion(self, event_data: dict[str, Any]) -> bool:
+        """Detect intrusion attempts."""
+        pass
+    
+    @abstractmethod
+    def monitor_failed_logins(self, user: str, max_attempts: int = 5) -> bool:
+        """Monitor failed login attempts."""
+        pass
+    
+    @abstractmethod
+    def detect_anomaly(self, behavior_data: dict[str, Any]) -> bool:
+        """Detect anomalous behavior."""
+        pass
+    
+    @abstractmethod
+    def get_security_alerts(self) -> list[dict[str, Any]]:
+        """Get security alerts."""
+        pass
+    
+    @abstractmethod
+    def clear_security_alerts(self) -> None:
+        """Clear security alerts."""
+        pass
+    
+    @abstractmethod
+    def get_threat_level(self) -> SecurityLevel:
+        """Get current threat level."""
+        pass
+    
+    @abstractmethod
+    def set_threat_level(self, level: SecurityLevel) -> None:
+        """Set threat level."""
+        pass
+    
+    @abstractmethod
+    def get_security_metrics(self) -> dict[str, Any]:
+        """Get security metrics."""
+        pass
+
+
+class ASecurityPolicyBase(ABC):
+    """Abstract base class for security policies."""
+    
+    def __init__(self):
+        """Initialize security policy manager."""
+        self._policies: dict[str, dict[str, Any]] = {}
+    
+    @abstractmethod
+    def get_policy(self, policy_name: str) -> dict[str, Any]:
+        """Get security policy."""
+        pass
+    
+    @abstractmethod
+    def set_policy(self, policy_name: str, policy: dict[str, Any]) -> None:
+        """Set security policy."""
+        pass
+    
+    @abstractmethod
+    def validate_policy(self, policy: dict[str, Any]) -> tuple[bool, list[str]]:
+        """Validate security policy."""
+        pass
+    
+    @abstractmethod
+    def apply_policy(self, policy_name: str, context: dict[str, Any]) -> bool:
+        """Apply security policy."""
+        pass
+    
+    @abstractmethod
+    def list_policies(self) -> list[str]:
+        """List all security policies."""
+        pass
+    
+    @abstractmethod
+    def remove_policy(self, policy_name: str) -> bool:
+        """Remove security policy."""
+        pass
+    
+    @abstractmethod
+    def get_policy_violations(self) -> list[dict[str, Any]]:
+        """Get policy violations."""
+        pass
+    
+    @abstractmethod
+    def clear_policy_violations(self) -> None:
+        """Clear policy violations."""
+        pass
 
 
 class AAuthProvider(ABC):

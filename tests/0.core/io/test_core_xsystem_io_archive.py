@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/io/test_core_xsystem_io_archive.py
 # -*- coding: utf-8 -*-
 """
 Core tests for archive operations.
@@ -295,12 +296,15 @@ class TestArchiveRegistry:
         # Get ZIP archiver
         archiver = get_archiver_by_id("zip")
         assert archiver is not None
-        assert isinstance(archiver, ZipArchiver)
+        # Check by format_id instead of isinstance since get_archiver_by_id returns
+        # formats.zip.ZipArchiver but we import archivers.ZipArchiver (different classes)
+        assert archiver.format_id == "zip"
         
         # Get TAR archiver
         archiver = get_archiver_by_id("tar")
         assert archiver is not None
-        assert isinstance(archiver, TarArchiver)
+        # Check by format_id for consistency
+        assert archiver.format_id == "tar"
 
 
 @pytest.mark.xwsystem_core
@@ -370,4 +374,3 @@ class TestArchiveRoundtrip:
         
         # Verify files
         assert len(extracted) >= 2
-

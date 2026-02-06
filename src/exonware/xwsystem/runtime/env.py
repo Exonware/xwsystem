@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/runtime/env.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Environment management utilities for runtime configuration and detection.
@@ -12,7 +13,7 @@ import os
 import platform
 import sys
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from ..config.logging_setup import get_logger
 
@@ -49,18 +50,18 @@ class EnvironmentManager:
 
     @property
     def is_windows(self) -> bool:
-        """Check if running on Windows."""
-        return platform.system().lower() == 'windows'
+        """Check if running on Windows using Python's native platform module."""
+        return platform.system() == 'Windows'
 
     @property
     def is_linux(self) -> bool:
-        """Check if running on Linux."""
-        return platform.system().lower() == 'linux'
+        """Check if running on Linux using Python's native platform module."""
+        return platform.system() == 'Linux'
 
     @property
     def is_macos(self) -> bool:
-        """Check if running on macOS."""
-        return platform.system().lower() == 'darwin'
+        """Check if running on macOS using Python's native platform module."""
+        return platform.system() == 'Darwin'
 
     @property
     def is_64bit(self) -> bool:
@@ -262,7 +263,8 @@ class EnvironmentManager:
 
     def get_temp_dir(self) -> Path:
         """Get system temporary directory."""
-        return Path(self.get_env('TEMP') or self.get_env('TMP') or '/tmp')
+        import tempfile
+        return Path(tempfile.gettempdir())
 
     def get_current_working_dir(self) -> Path:
         """Get current working directory."""

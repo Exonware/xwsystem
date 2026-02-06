@@ -298,4 +298,3 @@ class TestAllResultMethods:
         """Test detecting all possible codecs for a path."""
         codecs = populated_registry.detect_all('data.json')
         assert len(codecs) >= 1
-

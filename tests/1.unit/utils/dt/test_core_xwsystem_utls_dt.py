@@ -27,7 +27,7 @@ pytz = pytest.importorskip("pytz", reason="xwsystem datetime utilities rely on p
 
 from exonware.xwsystem.utils.dt.base import BaseDateTime
 from exonware.xwsystem.utils.dt.contracts import TimeFormat
-from exonware.xwsystem.utils.dt.errors import DateTimeError, DateTimeFormatError, FormatError, ParseError
+from exonware.xwsystem.utils.dt.errors import DateTimeError, DateTimeFormatError, DateTimeParseError
 from exonware.xwsystem.utils.dt.formatting import DateTimeFormatter
 from exonware.xwsystem.utils.dt.humanize import DateTimeHumanizer
 from exonware.xwsystem.utils.dt.parsing import DateTimeParser
@@ -203,8 +203,8 @@ class TestBaseDateTime:
 class TestErrorHierarchy:
     def test_datetime_errors_are_distinct(self) -> None:
         """Ensure the custom error hierarchy carries the expected types."""
-        assert issubclass(FormatError, DateTimeError)
-        assert issubclass(ParseError, DateTimeError)
+        assert issubclass(DateTimeFormatError, DateTimeError)
+        assert issubclass(DateTimeParseError, DateTimeError)
         with pytest.raises(DateTimeFormatError):
             raise DateTimeFormatError("format failure")
 
@@ -227,4 +227,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

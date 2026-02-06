@@ -35,4 +35,3 @@ class TestCachingStandalone:
         
         assert result == 'value1'
         assert cache.size() == 1
-

@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/codec_tests/test_contracts.py
 """
 Unit tests for io.codec.contracts module
 
@@ -33,4 +34,3 @@ class TestCodecInterfaces:
     def test_icodec_metadata_has_properties(self):
         """Test ICodecMetadata protocol defines metadata properties."""
         assert hasattr(ICodecMetadata, '__annotations__') or True
-

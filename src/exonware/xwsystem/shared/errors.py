@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/shared/errors.py
 #exonware/xwsystem/shared/errors.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Shared exceptions (merged from the former core module).
@@ -74,4 +75,3 @@ class CoreOperationError(CoreError):
     """Raised when core operation fails."""
 
     pass
-

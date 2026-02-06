@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/test_base.py
 """
 Unit tests for io.base module
 
@@ -130,4 +131,3 @@ class TestIAXWPattern:
         
         # AStream should have abstract methods
         assert len(AStream.__abstractmethods__) > 0
-

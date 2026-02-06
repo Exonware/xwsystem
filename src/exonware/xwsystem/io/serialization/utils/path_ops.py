@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 9, 2025
 
 Path operations utilities for serialization formats.
@@ -13,7 +13,7 @@ Provides JSONPointer path parsing and manipulation utilities that serializers
 can use for path-based operations. Includes path validation for security.
 """
 
-from typing import Any, Union
+from typing import Any
 from pathlib import Path
 
 from ...errors import SerializationError
@@ -42,7 +42,7 @@ def validate_json_pointer(path: str) -> bool:
     Example:
         >>> validate_json_pointer("/users/0/name")  # Valid
         True
-        >>> validate_json_pointer("invalid")  # Invalid - must start with /
+        >>> validate_json_pointer("invalid")  # Invalid - starts with /
         ValueError
     """
     if not isinstance(path, str):
@@ -51,7 +51,7 @@ def validate_json_pointer(path: str) -> bool:
     if not path:
         raise ValueError("Path cannot be empty")
     
-    # JSONPointer must start with / for non-empty paths
+    # JSONPointer starts with / for non-empty paths
     if path != "/" and not path.startswith("/"):
         raise ValueError(f"JSONPointer path must start with '/', got: {path}")
     
@@ -65,7 +65,7 @@ def validate_json_pointer(path: str) -> bool:
     return True
 
 
-def parse_json_pointer(path: str) -> list[Union[str, int]]:
+def parse_json_pointer(path: str) -> list[str | int]:
     """
     Parse a JSONPointer path into a list of keys/indices.
     
@@ -301,4 +301,3 @@ def normalize_path(path: str) -> str:
         return "/"
     
     return path
-

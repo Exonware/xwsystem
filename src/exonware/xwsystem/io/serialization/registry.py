@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/registry.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 Serialization Registry - Delegates to UniversalCodecRegistry.
@@ -10,7 +11,7 @@ Serialization Registry - Delegates to UniversalCodecRegistry.
 Provides serialization-specific convenience methods for format discovery.
 """
 
-from typing import Optional, Union
+from typing import Optional
 from pathlib import Path
 
 from ..codec.registry import UniversalCodecRegistry, get_registry
@@ -68,7 +69,7 @@ class SerializationRegistry:
         """
         return self._codec_registry.get_by_id(format_id)
     
-    def detect_from_file(self, file_path: Union[str, Path]) -> Optional[ISerialization]:
+    def detect_from_file(self, file_path: str | Path) -> Optional[ISerialization]:
         """
         Auto-detect serializer from file path.
         
@@ -184,4 +185,3 @@ def get_serialization_registry() -> SerializationRegistry:
     if _global_serialization_registry is None:
         _global_serialization_registry = SerializationRegistry()
     return _global_serialization_registry
-

@@ -1,15 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/common/atomic.py
 """
 Atomic file operations to prevent data corruption during writes.
 """
 
 import logging
 import os
+import platform
 import shutil
 import tempfile
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, BinaryIO, Optional, TextIO, Union
+from typing import Any, BinaryIO, Optional, TextIO
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +33,11 @@ class AtomicFileWriter:
 
     def __init__(
         self,
-        target_path: Union[str, Path],
+        target_path: str | Path,
         mode: str = "w",
         encoding: Optional[str] = "utf-8",
         backup: bool = False,
-        temp_dir: Optional[Union[str, Path]] = None,
+        temp_dir: Optional[str | Path] = None,
     ):
         """
         Initialize atomic file writer.
@@ -55,11 +57,11 @@ class AtomicFileWriter:
 
         self.temp_path: Optional[Path] = None
         self.backup_path: Optional[Path] = None
-        self.file_handle: Optional[Union[BinaryIO, TextIO]] = None
+        self.file_handle: Optional[BinaryIO | TextIO] = None
         self._committed = False
         self._started = False
 
-    def __enter__(self) -> Union[BinaryIO, TextIO]:
+    def __enter__(self) -> BinaryIO | TextIO:
         """Context manager entry - create temporary file."""
         return self.start()
 
@@ -73,7 +75,7 @@ class AtomicFileWriter:
             self.rollback()
         return False  # Don't suppress exceptions
 
-    def start(self) -> Union[BinaryIO, TextIO]:
+    def start(self) -> BinaryIO | TextIO:
         """
         Start the atomic write operation.
 
@@ -150,8 +152,8 @@ class AtomicFileWriter:
                 logger.warning(f"Temporary file is empty: {self.temp_path}")
 
             # Atomic move to target location
-            # On Windows, need to remove target first if it exists
-            if os.name == "nt" and self.target_path.exists():
+            # On Windows, need to remove target first if it exists (Windows filesystem limitation)
+            if platform.system() == 'Windows' and self.target_path.exists():
                 self.target_path.unlink()
 
             # Perform the atomic move
@@ -250,11 +252,11 @@ class AtomicFileWriter:
 
 @contextmanager
 def atomic_write(
-    target_path: Union[str, Path],
+    target_path: str | Path,
     mode: str = "w",
     encoding: Optional[str] = "utf-8",
     backup: bool = True,
-    temp_dir: Optional[Union[str, Path]] = None,
+    temp_dir: Optional[str | Path] = None,
 ):
     """
     Context manager for atomic file writing.
@@ -286,10 +288,11 @@ def atomic_write(
 
 
 def safe_write_text(
-    target_path: Union[str, Path],
+    target_path: str | Path,
     content: str,
     encoding: str = "utf-8",
     backup: bool = True,
+    append: bool = False,
 ) -> None:
     """
     Safely write text content to a file atomically.
@@ -300,12 +303,22 @@ def safe_write_text(
         encoding: Text encoding
         backup: Whether to create backup
     """
+    target_path = Path(target_path)
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # For append operations, atomic write semantics don't apply cleanly (we are not replacing the file).
+    # Tests and typical usage protect append with a lock (see FileLock usage in core tests).
+    if append:
+        with open(target_path, "a", encoding=encoding) as f:
+            f.write(content)
+        return
+
     with atomic_write(target_path, "w", encoding=encoding, backup=backup) as f:
         f.write(content)
 
 
 def safe_write_bytes(
-    target_path: Union[str, Path], content: bytes, backup: bool = True
+    target_path: str | Path, content: bytes, backup: bool = True
 ) -> None:
     """
     Safely write binary content to a file atomically.
@@ -320,7 +333,7 @@ def safe_write_bytes(
 
 
 def safe_read_text(
-    file_path: Union[str, Path], encoding: str = "utf-8", max_size_mb: float = 100.0
+    file_path: str | Path, encoding: str = "utf-8", max_size_mb: float = 100.0
 ) -> str:
     """
     Safely read text content from a file with size validation.
@@ -372,7 +385,7 @@ def safe_read_text(
         raise FileOperationError(f"IOError reading file '{file_path}': {e}") from e
 
 
-def safe_read_bytes(file_path: Union[str, Path], max_size_mb: float = 100.0) -> bytes:
+def safe_read_bytes(file_path: str | Path, max_size_mb: float = 100.0) -> bytes:
     """
     Safely read binary content from a file with size validation.
 
@@ -419,7 +432,7 @@ def safe_read_bytes(file_path: Union[str, Path], max_size_mb: float = 100.0) -> 
 
 
 def safe_read_with_fallback(
-    file_path: Union[str, Path],
+    file_path: str | Path,
     preferred_encoding: str = "utf-8",
     fallback_encodings: Optional[list[str]] = None,
     max_size_mb: float = 100.0,
@@ -442,7 +455,7 @@ def safe_read_with_fallback(
     if fallback_encodings is None:
         fallback_encodings = ["latin1", "cp1252", "iso-8859-1"]
 
-    # Try preferred encoding first
+    # Try encoding first
     try:
         return safe_read_text(file_path, preferred_encoding, max_size_mb)
     except FileOperationError as e:

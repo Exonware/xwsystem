@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 02-Nov-2025
 
 JSON5 Serialization - Extended JSON with Comments and Trailing Commas
@@ -23,7 +23,7 @@ Priority 4 (Performance): Efficient parsing via json5 library
 Priority 5 (Extensibility): Compatible with standard JSON
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 # Lazy import for json5 - the lazy hook will automatically handle ImportError
@@ -86,6 +86,11 @@ class Json5Serializer(JsonSerializer):
         return ["json5", "JSON5"]
     
     @property
+    def format_name(self) -> str:
+        """Format name."""
+        return "JSON5"
+    
+    @property
     def codec_types(self) -> list[str]:
         """JSON5 is a serialization and config format (supports comments)."""
         return ["serialization", "config"]
@@ -133,7 +138,7 @@ class Json5Serializer(JsonSerializer):
                 original_error=e
             )
     
-    def decode(self, data: Union[str, bytes], options: Optional[dict[str, Any]] = None) -> Any:
+    def decode(self, data: str | bytes, options: Optional[dict[str, Any]] = None) -> Any:
         """
         Decode JSON5 string to Python data.
         
@@ -191,4 +196,3 @@ class Json5Serializer(JsonSerializer):
                 format_name=self.format_name,
                 original_error=e
             )
-

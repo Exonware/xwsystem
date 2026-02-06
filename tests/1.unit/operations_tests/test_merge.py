@@ -283,4 +283,3 @@ class TestMergeEdgeCases:
         """Test merge with scalar values."""
         result = deep_merge({"a": 1}, {"a": 2})
         assert result["a"] == 2  # Source wins
-

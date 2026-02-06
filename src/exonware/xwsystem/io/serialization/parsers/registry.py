@@ -1,24 +1,25 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/registry.py
 """Parser registry for JSON parser selection and auto-detection."""
 
-from typing import Optional, Dict, Type
+from typing import Optional, Type
 
-from .base import IJsonParser
+from .base import AJsonParser
 from .standard import StandardJsonParser
 
 # Import hybrid parser (direct, no try/catch - assumes msgspec and orjson available)
 from .hybrid_parser import HybridParser
 
 # Registry of available parsers
-_PARSERS: Dict[str, Type[IJsonParser]] = {
+_PARSERS: dict[str, Type[AJsonParser]] = {
     "hybrid": HybridParser,  # Default: msgspec for reading, orjson for writing
     "standard": StandardJsonParser,  # Fallback only
 }
 
 # Cache of parser instances
-_PARSER_INSTANCES: Dict[str, IJsonParser] = {}
+_PARSER_INSTANCES: dict[str, AJsonParser] = {}
 
 
-def get_best_available_parser() -> IJsonParser:
+def get_best_available_parser() -> AJsonParser:
     """
     Auto-detect and return the best available parser.
     
@@ -38,11 +39,11 @@ def get_best_available_parser() -> IJsonParser:
         if parser.is_available:
             return parser
     
-    # Fallback to standard (always available)
+    # Fallback to standard (stdlib)
     return StandardJsonParser()
 
 
-def get_parser(name: Optional[str] = None) -> IJsonParser:
+def get_parser(name: Optional[str] = None) -> AJsonParser:
     """
     Get parser by name or auto-detect best available.
     
@@ -69,20 +70,20 @@ def get_parser(name: Optional[str] = None) -> IJsonParser:
     if parser.is_available:
         _PARSER_INSTANCES[name] = parser
     else:
-        # Fallback to best available if requested parser unavailable
+        # Fallback to available parser if requested parser unavailable
         if name != "standard":
             return get_best_available_parser()
     
     return parser
 
 
-def register_parser(name: str, parser_class: Type[IJsonParser]):
+def register_parser(name: str, parser_class: Type[AJsonParser]):
     """
     Register a new parser implementation.
     
     Args:
         name: Parser identifier
-        parser_class: Parser class implementing IJsonParser
+        parser_class: Parser class implementing AJsonParser
     """
     _PARSERS[name] = parser_class
     # Clear cache to allow new parser to be used

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/shared/__init__.py
 #exonware/xwsystem/shared/__init__.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 10-Sep-2025
 
 Shared types and utilities for XWSystem modules.
@@ -27,11 +28,13 @@ from .defs import (
 from .base import (
     AConfigurationBase,
     ACoreBase,
+    AObject,
     AOperationBase,
     AResourceManagerBase,
     AValidationBase,
     BaseCore,
 )
+from .xwobject import XWObject
 from .contracts import (
     ICloneable,
     IComparable,
@@ -41,9 +44,13 @@ from .contracts import (
     IFactory,
     IMetadata,
     INative,
+    IObject,
     IStringable,
     ILifecycle,
     IIterable,
+    # Provider interfaces (for xwauth/xwstorage decoupling)
+    IBasicProviderAuth,
+    IBasicProviderStorage,
 )
 from .errors import (
     CoreConfigurationError,
@@ -79,11 +86,14 @@ __all__ = [
     "AConfigurationBase",
     "AValidationBase",
     "AOperationBase",
+    "AObject",
     "BaseCore",
+    "XWObject",
     # Contracts
     "IID",
     "IStringable",
     "INative",
+    "IObject",
     "ICloneable",
     "IComparable",
     "IIterable",
@@ -92,6 +102,9 @@ __all__ = [
     "ILifecycle",
     "IFactory",
     "ICore",
+    # Provider interfaces
+    "IBasicProviderAuth",
+    "IBasicProviderStorage",
     # Errors
     "CoreError",
     "CoreInitializationError",

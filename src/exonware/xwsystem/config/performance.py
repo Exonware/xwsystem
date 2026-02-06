@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/config/performance.py
 """Performance optimization configuration for xwsystem I/O operations.
 
 This module provides configuration options to enable/disable performance
@@ -80,54 +81,8 @@ def set_performance_config(config: PerformanceConfig) -> None:
     _config = config
 
 
-# Placeholder classes for backward compatibility with existing config system
-# These are not used by the new optimization system but are required by __init__.py
-@dataclass
-class PerformanceLimits:
-    """Placeholder for backward compatibility."""
-    pass
-
-@dataclass
-class SerializationLimits:
-    """Placeholder for backward compatibility."""
-    pass
-
-@dataclass
-class NetworkLimits:
-    """Placeholder for backward compatibility."""
-    pass
-
-@dataclass
-class SecurityLimits:
-    """Placeholder for backward compatibility."""
-    pass
-
-def configure_performance(**kwargs):
-    """Placeholder for backward compatibility."""
-    pass
-
-def get_serialization_limits():
-    """Placeholder for backward compatibility."""
-    return SerializationLimits()
-
-def get_network_limits():
-    """Placeholder for backward compatibility."""
-    return NetworkLimits()
-
-def get_security_limits():
-    """Placeholder for backward compatibility."""
-    return SecurityLimits()
-
 __all__ = [
     "PerformanceConfig",
-    "PerformanceLimits",
-    "SerializationLimits",
-    "NetworkLimits",
-    "SecurityLimits",
     "get_performance_config",
     "set_performance_config",
-    "configure_performance",
-    "get_serialization_limits",
-    "get_network_limits",
-    "get_security_limits",
 ]

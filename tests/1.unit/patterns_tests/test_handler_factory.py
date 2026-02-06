@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/patterns_tests/test_handler_factory.py
 """
 Test suite for xSystem HandlerFactory functionality.
 Tests handler registration, creation, and thread safety.

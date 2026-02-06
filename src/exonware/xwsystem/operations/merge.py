@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/operations/merge.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 26, 2025
 
 Merge operations implementation.
 """
 
 import threading
-from typing import Any, Optional, Union
-from .base import IMergeOperation, MergeError
+from typing import Any, Optional
+from .base import MergeError
+from .contracts import IMergeOperation
 from .defs import MergeStrategy
 from ..config.logging_setup import get_logger
 
 logger = get_logger("xwsystem.operations.merge")
 
 
-class MergeOperation(IMergeOperation):
+class MergeOperation:
     """Thread-safe merge operation implementation."""
     
     def __init__(self):

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/formats_tests/text_tests/test_configparser.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for ConfigParser serializer.
@@ -32,4 +33,3 @@ class TestConfigParserSerializer:
             assert loaded is not None
         except ImportError:
             pytest.skip("ConfigParser serializer not available")
-

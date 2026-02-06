@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/0.core/performance/__init__.py
 #exonware/xwsystem/tests/core/performance/__init__.py
 """
 Performance Core Tests Package

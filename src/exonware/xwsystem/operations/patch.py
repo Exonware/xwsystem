@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 27, 2025
 
 Patch operations implementation (RFC 6902 JSON Patch).
@@ -13,15 +13,16 @@ Patch operations implementation (RFC 6902 JSON Patch).
 
 import threading
 import copy
-from typing import Any, Optional, Union
-from .base import IPatchOperation, PatchError
+from typing import Any, Optional
+from .base import PatchError
+from .contracts import IPatchOperation
 from .defs import PatchOperation, PatchResult
 from ..config.logging_setup import get_logger
 
 logger = get_logger("xwsystem.operations.patch")
 
 
-class PatchOperationImpl(IPatchOperation):
+class PatchOperationImpl:
     """Thread-safe patch operation implementation."""
     
     def __init__(self):

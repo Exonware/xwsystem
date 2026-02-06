@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/formats_tests/text_tests/test_yaml.py
 """
 Unit tests for YAML serializer
 
@@ -32,4 +33,3 @@ class TestYamlSerializer:
         serializer = YamlSerializer()
         assert hasattr(serializer, 'encode')
         assert hasattr(serializer, 'decode')
-

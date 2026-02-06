@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Base classes for stream operations.
@@ -39,4 +39,3 @@ class ACodecIO[T, R](ICodecIO[T, R], ABC):
 class APagedCodecIO[T, R](ACodecIO[T, R], IPagedCodecIO[T, R], ABC):
     """Abstract base for paged codec I/O."""
     pass
-

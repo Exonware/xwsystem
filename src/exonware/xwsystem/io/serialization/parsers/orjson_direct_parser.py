@@ -1,12 +1,13 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/orjson_direct_parser.py
 """orjson parser - DIRECT (no try/catch, assumes orjson is available)."""
 
-from typing import Any, Union
+from typing import Any
 import orjson  # Direct import, no try/catch
 
-from .base import IJsonParser
+from .base import AJsonParser
 
 
-class OrjsonDirectParser(IJsonParser):
+class OrjsonDirectParser(AJsonParser):
     """orjson parser - DIRECT (no try/catch, assumes orjson is available)."""
     
     @property
@@ -21,19 +22,19 @@ class OrjsonDirectParser(IJsonParser):
     def is_available(self) -> bool:
         return True  # Assumes orjson is available
     
-    def loads(self, s: Union[str, bytes]) -> Any:
+    def loads(self, s: str | bytes) -> Any:
         """Parse JSON using orjson.loads()."""
         if isinstance(s, str):
             s = s.encode("utf-8")
         return orjson.loads(s)
     
-    def dumps(self, obj: Any, **kwargs) -> Union[str, bytes]:
+    def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using orjson.dumps()."""
         option = 0
         
         # orjson options
         if not kwargs.get("ensure_ascii", True):
-            # orjson always outputs UTF-8, so ensure_ascii=False is default
+            # orjson outputs UTF-8, so ensure_ascii=False is default
             pass
         
         # Handle indent (orjson doesn't support indent directly)

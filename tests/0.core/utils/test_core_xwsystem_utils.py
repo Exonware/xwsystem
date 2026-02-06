@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/0.core/utils/test_core_xwsystem_utils.py
 #exonware/xwsystem/tests/core/utils/test_core_xwsystem_utils.py
 """
 XSystem Utils Core Tests
@@ -22,7 +23,7 @@ try:
     from exonware.xwsystem.utils.paths import PathUtils
     from exonware.xwsystem.utils.base import BaseUtils
     from exonware.xwsystem.utils.contracts import ILazyLoader, IPathUtils
-    from exonware.xwsystem.utils.errors import UtilsError, LazyLoadError, PathError
+    from exonware.xwsystem.utils.errors import UtilsError, LazyLoadError, PathUtilsError
 except ImportError as e:
     print(f"Import error: {e}")
     # Create mock classes for testing
@@ -52,7 +53,7 @@ except ImportError as e:
     
     class UtilsError(Exception): pass
     class LazyLoadError(Exception): pass
-    class PathError(Exception): pass
+    class PathUtilsError(Exception): pass
 
 
 def test_lazy_loader():
@@ -60,31 +61,26 @@ def test_lazy_loader():
     print("📋 Testing: Lazy Loader")
     print("-" * 30)
     
-    try:
-        loader = LazyLoader()
-        
-        # Test loading
-        result = loader.load("test_module")
-        assert isinstance(result, str)
-        assert "loaded_" in result
-        
-        # Test loaded check
-        is_loaded = loader.is_loaded("test_module")
-        assert isinstance(is_loaded, bool)
-        
-        # Test unloading
-        unloaded = loader.unload("test_module")
-        assert isinstance(unloaded, bool)
-        
-        # Test list loaded
-        loaded_list = loader.list_loaded()
-        assert isinstance(loaded_list, list)
-        
-        print("✅ Lazy loader tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Lazy loader tests failed: {e}")
-        return False
+    loader = LazyLoader()
+    
+    # Test loading
+    result = loader.load("test_module")
+    assert isinstance(result, str)
+    assert "loaded_" in result
+    
+    # Test loaded check
+    is_loaded = loader.is_loaded("test_module")
+    assert isinstance(is_loaded, bool)
+    
+    # Test unloading
+    unloaded = loader.unload("test_module")
+    assert isinstance(unloaded, bool)
+    
+    # Test list loaded
+    loaded_list = loader.list_loaded()
+    assert isinstance(loaded_list, list)
+    
+    print("✅ Lazy loader tests passed")
 
 
 def test_path_utils():
@@ -92,37 +88,32 @@ def test_path_utils():
     print("📋 Testing: Path Utils")
     print("-" * 30)
     
-    try:
-        path_utils = PathUtils()
-        
-        # Test path normalization
-        normalized = path_utils.normalize_path("test/path")
-        assert isinstance(normalized, str)
-        assert len(normalized) > 0
-        
-        # Test path joining
-        joined = path_utils.join_paths("dir1", "dir2", "file.txt")
-        assert isinstance(joined, str)
-        assert "dir1" in joined
-        assert "dir2" in joined
-        assert "file.txt" in joined
-        
-        # Test path existence checks
-        current_dir = "."
-        exists = path_utils.exists(current_dir)
-        assert isinstance(exists, bool)
-        
-        is_file = path_utils.is_file(current_dir)
-        assert isinstance(is_file, bool)
-        
-        is_dir = path_utils.is_dir(current_dir)
-        assert isinstance(is_dir, bool)
-        
-        print("✅ Path utils tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Path utils tests failed: {e}")
-        return False
+    path_utils = PathUtils()
+    
+    # Test path normalization
+    normalized = path_utils.normalize_path("test/path")
+    assert isinstance(normalized, str)
+    assert len(normalized) > 0
+    
+    # Test path joining
+    joined = path_utils.join_paths("dir1", "dir2", "file.txt")
+    assert isinstance(joined, str)
+    assert "dir1" in joined
+    assert "dir2" in joined
+    assert "file.txt" in joined
+    
+    # Test path existence checks
+    current_dir = "."
+    exists = path_utils.exists(current_dir)
+    assert isinstance(exists, bool)
+    
+    is_file = path_utils.is_file(current_dir)
+    assert isinstance(is_file, bool)
+    
+    is_dir = path_utils.is_dir(current_dir)
+    assert isinstance(is_dir, bool)
+    
+    print("✅ Path utils tests passed")
 
 
 def test_base_utils():
@@ -130,25 +121,20 @@ def test_base_utils():
     print("📋 Testing: Base Utils")
     print("-" * 30)
     
-    try:
-        utils = BaseUtils()
-        
-        # Test utils operations
-        utils.initialize()
-        
-        # Test info retrieval
-        info = utils.get_info()
-        assert isinstance(info, dict)
-        assert "version" in info
-        assert "type" in info
-        
-        utils.cleanup()
-        
-        print("✅ Base utils tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Base utils tests failed: {e}")
-        return False
+    utils = BaseUtils()
+    
+    # Test utils operations
+    utils.initialize()
+    
+    # Test info retrieval
+    info = utils.get_info()
+    assert isinstance(info, dict)
+    assert "version" in info
+    assert "type" in info
+    
+    utils.cleanup()
+    
+    print("✅ Base utils tests passed")
 
 
 def test_utils_interfaces():
@@ -156,22 +142,17 @@ def test_utils_interfaces():
     print("📋 Testing: Utils Interfaces")
     print("-" * 30)
     
-    try:
-        # Test interface compliance
-        loader = LazyLoader()
-        path_utils = PathUtils()
-        utils = BaseUtils()
-        
-        # Verify objects can be instantiated
-        assert loader is not None
-        assert path_utils is not None
-        assert utils is not None
-        
-        print("✅ Utils interfaces tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Utils interfaces tests failed: {e}")
-        return False
+    # Test interface compliance
+    loader = LazyLoader()
+    path_utils = PathUtils()
+    utils = BaseUtils()
+    
+    # Verify objects can be instantiated
+    assert loader is not None
+    assert path_utils is not None
+    assert utils is not None
+    
+    print("✅ Utils interfaces tests passed")
 
 
 def test_utils_error_handling():
@@ -179,21 +160,16 @@ def test_utils_error_handling():
     print("📋 Testing: Utils Error Handling")
     print("-" * 30)
     
-    try:
-        # Test error classes
-        utils_error = UtilsError("Test utils error")
-        lazy_error = LazyLoadError("Test lazy load error")
-        path_error = PathError("Test path error")
-        
-        assert str(utils_error) == "Test utils error"
-        assert str(lazy_error) == "Test lazy load error"
-        assert str(path_error) == "Test path error"
-        
-        print("✅ Utils error handling tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Utils error handling tests failed: {e}")
-        return False
+    # Test error classes
+    utils_error = UtilsError("Test utils error")
+    lazy_error = LazyLoadError("Test lazy load error")
+    path_error = PathUtilsError("Test path error")
+    
+    assert str(utils_error) == "Test utils error"
+    assert str(lazy_error) == "Test lazy load error"
+    assert str(path_error) == "Test path error"
+    
+    print("✅ Utils error handling tests passed")
 
 
 def test_utils_operations():
@@ -201,35 +177,30 @@ def test_utils_operations():
     print("📋 Testing: Utils Operations")
     print("-" * 30)
     
-    try:
-        loader = LazyLoader()
-        path_utils = PathUtils()
-        utils = BaseUtils()
-        
-        # Test integrated operations
-        utils.initialize()
-        
-        # Test lazy loading with path operations
-        module_name = "test_module"
-        loaded = loader.load(module_name)
-        assert isinstance(loaded, str)
-        
-        # Test path operations
-        test_path = "test/path/file.txt"
-        normalized = path_utils.normalize_path(test_path)
-        assert isinstance(normalized, str)
-        
-        # Test utils info
-        info = utils.get_info()
-        assert isinstance(info, dict)
-        
-        utils.cleanup()
-        
-        print("✅ Utils operations tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Utils operations tests failed: {e}")
-        return False
+    loader = LazyLoader()
+    path_utils = PathUtils()
+    utils = BaseUtils()
+    
+    # Test integrated operations
+    utils.initialize()
+    
+    # Test lazy loading with path operations
+    module_name = "test_module"
+    loaded = loader.load(module_name)
+    assert isinstance(loaded, str)
+    
+    # Test path operations
+    test_path = "test/path/file.txt"
+    normalized = path_utils.normalize_path(test_path)
+    assert isinstance(normalized, str)
+    
+    # Test utils info
+    info = utils.get_info()
+    assert isinstance(info, dict)
+    
+    utils.cleanup()
+    
+    print("✅ Utils operations tests passed")
 
 
 def test_utils_path_operations():
@@ -237,44 +208,39 @@ def test_utils_path_operations():
     print("📋 Testing: Utils Path Operations")
     print("-" * 30)
     
-    try:
-        path_utils = PathUtils()
+    path_utils = PathUtils()
+    
+    # Test various path operations
+    test_paths = [
+        "relative/path",
+        "/absolute/path",
+        "path/with/../parent",
+        "path/with/./current"
+    ]
+    
+    for test_path in test_paths:
+        # Test normalization
+        normalized = path_utils.normalize_path(test_path)
+        assert isinstance(normalized, str)
         
-        # Test various path operations
-        test_paths = [
-            "relative/path",
-            "/absolute/path",
-            "path/with/../parent",
-            "path/with/./current"
-        ]
+        # Test existence check
+        exists = path_utils.exists(test_path)
+        assert isinstance(exists, bool)
         
-        for test_path in test_paths:
-            # Test normalization
-            normalized = path_utils.normalize_path(test_path)
-            assert isinstance(normalized, str)
-            
-            # Test existence check
-            exists = path_utils.exists(test_path)
-            assert isinstance(exists, bool)
-            
-            # Test file/directory checks
-            is_file = path_utils.is_file(test_path)
-            is_dir = path_utils.is_dir(test_path)
-            assert isinstance(is_file, bool)
-            assert isinstance(is_dir, bool)
-        
-        # Test path joining
-        joined = path_utils.join_paths("base", "sub", "file.ext")
-        assert isinstance(joined, str)
-        assert "base" in joined
-        assert "sub" in joined
-        assert "file.ext" in joined
-        
-        print("✅ Utils path operations tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Utils path operations tests failed: {e}")
-        return False
+        # Test file/directory checks
+        is_file = path_utils.is_file(test_path)
+        is_dir = path_utils.is_dir(test_path)
+        assert isinstance(is_file, bool)
+        assert isinstance(is_dir, bool)
+    
+    # Test path joining
+    joined = path_utils.join_paths("base", "sub", "file.ext")
+    assert isinstance(joined, str)
+    assert "base" in joined
+    assert "sub" in joined
+    assert "file.ext" in joined
+    
+    print("✅ Utils path operations tests passed")
 
 
 def test_utils_lazy_loading():
@@ -282,35 +248,30 @@ def test_utils_lazy_loading():
     print("📋 Testing: Utils Lazy Loading")
     print("-" * 30)
     
-    try:
-        loader = LazyLoader()
+    loader = LazyLoader()
+    
+    # Test multiple lazy loading operations
+    test_modules = ["module1", "module2", "module3"]
+    
+    for module in test_modules:
+        # Load module
+        loaded = loader.load(module)
+        assert isinstance(loaded, str)
         
-        # Test multiple lazy loading operations
-        test_modules = ["module1", "module2", "module3"]
-        
-        for module in test_modules:
-            # Load module
-            loaded = loader.load(module)
-            assert isinstance(loaded, str)
-            
-            # Check if loaded
-            is_loaded = loader.is_loaded(module)
-            assert isinstance(is_loaded, bool)
-        
-        # Test list loaded modules
-        loaded_list = loader.list_loaded()
-        assert isinstance(loaded_list, list)
-        
-        # Test unloading
-        for module in test_modules:
-            unloaded = loader.unload(module)
-            assert isinstance(unloaded, bool)
-        
-        print("✅ Utils lazy loading tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Utils lazy loading tests failed: {e}")
-        return False
+        # Check if loaded
+        is_loaded = loader.is_loaded(module)
+        assert isinstance(is_loaded, bool)
+    
+    # Test list loaded modules
+    loaded_list = loader.list_loaded()
+    assert isinstance(loaded_list, list)
+    
+    # Test unloading
+    for module in test_modules:
+        unloaded = loader.unload(module)
+        assert isinstance(unloaded, bool)
+    
+    print("✅ Utils lazy loading tests passed")
 
 
 def test_utils_integration():
@@ -318,84 +279,44 @@ def test_utils_integration():
     print("📋 Testing: Utils Integration")
     print("-" * 30)
     
-    try:
-        loader = LazyLoader()
-        path_utils = PathUtils()
-        utils = BaseUtils()
-        
-        # Test integrated workflow
-        utils.initialize()
-        
-        # Load a module
-        module_name = "integration_test"
-        loaded = loader.load(module_name)
-        assert isinstance(loaded, str)
-        
-        # Work with paths
-        test_path = "integration/test/path"
-        normalized = path_utils.normalize_path(test_path)
-        joined = path_utils.join_paths("base", "integration", "test")
-        
-        assert isinstance(normalized, str)
-        assert isinstance(joined, str)
-        
-        # Get utils info
-        info = utils.get_info()
-        assert isinstance(info, dict)
-        
-        # Cleanup
-        loader.unload(module_name)
-        utils.cleanup()
-        
-        print("✅ Utils integration tests passed")
-        return True
-    except Exception as e:
-        print(f"❌ Utils integration tests failed: {e}")
-        return False
+    loader = LazyLoader()
+    path_utils = PathUtils()
+    utils = BaseUtils()
+    
+    # Test integrated workflow
+    utils.initialize()
+    
+    # Load a module
+    module_name = "integration_test"
+    loaded = loader.load(module_name)
+    assert isinstance(loaded, str)
+    
+    # Work with paths
+    test_path = "integration/test/path"
+    normalized = path_utils.normalize_path(test_path)
+    joined = path_utils.join_paths("base", "integration", "test")
+    
+    assert isinstance(normalized, str)
+    assert isinstance(joined, str)
+    
+    # Get utils info
+    info = utils.get_info()
+    assert isinstance(info, dict)
+    
+    # Cleanup
+    loader.unload(module_name)
+    utils.cleanup()
+    
+    print("✅ Utils integration tests passed")
 
 
 def main():
-    """Run all utils core tests."""
-    print("=" * 50)
-    print("🧪 XSystem Utils Core Tests")
-    print("=" * 50)
-    print("Testing XSystem utility functions including lazy loading,")
-    print("path utilities, and common utilities")
-    print("=" * 50)
-    
-    tests = [
-        test_lazy_loader,
-        test_path_utils,
-        test_base_utils,
-        test_utils_interfaces,
-        test_utils_error_handling,
-        test_utils_operations,
-        test_utils_path_operations,
-        test_utils_lazy_loading,
-        test_utils_integration,
-    ]
-    
-    passed = 0
-    total = len(tests)
-    
-    for test in tests:
-        try:
-            if test():
-                passed += 1
-        except Exception as e:
-            print(f"❌ Test {test.__name__} failed with exception: {e}")
-    
-    print("\n" + "=" * 50)
-    print("📊 XSYSTEM UTILS TEST SUMMARY")
-    print("=" * 50)
-    print(f"Results: {passed}/{total} tests passed")
-    
-    if passed == total:
-        print("🎉 All XSystem utils tests passed!")
-        return 0
-    else:
-        print("💥 Some XSystem utils tests failed!")
-        return 1
+    """Run all utils core tests using pytest."""
+    import pytest
+    import sys
+    # Use pytest to run this module's tests
+    exit_code = pytest.main([__file__, "-v"])
+    return exit_code
 
 
 if __name__ == "__main__":

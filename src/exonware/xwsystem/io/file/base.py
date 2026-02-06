@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Base classes for file operations.
@@ -20,7 +20,7 @@ Priority 5 (Extensibility): Ready for new file types
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Optional, Any
 
 from ..contracts import IFileSource, IPagedSource, IPagingStrategy
 from ..defs import PagingMode
@@ -38,7 +38,7 @@ class AFileSource(IFileSource, ABC):
     Provides common file source functionality.
     """
     
-    def __init__(self, path: Union[str, Path], mode: str = 'rb', encoding: Optional[str] = None):
+    def __init__(self, path: str | Path, mode: str = 'rb', encoding: Optional[str] = None):
         """Initialize file source."""
         self._path = Path(path)
         self._mode = mode
@@ -64,12 +64,12 @@ class AFileSource(IFileSource, ABC):
             self._path.unlink()
     
     @abstractmethod
-    def read(self, **options) -> Union[bytes, str]:
+    def read(self, **options) -> bytes | str:
         """Read entire file content."""
         pass
     
     @abstractmethod
-    def write(self, data: Union[bytes, str], **options) -> None:
+    def write(self, data: bytes | str, **options) -> None:
         """Write entire content to file."""
         pass
 
@@ -84,7 +84,7 @@ class APagedSource(IPagedSource, ABC):
     
     def __init__(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         mode: str = 'rb',
         encoding: Optional[str] = None,
         paging_strategy: Optional[IPagingStrategy] = None
@@ -116,7 +116,7 @@ class APagedSource(IPagedSource, ABC):
             return -1
         return self._path.stat().st_size
     
-    def read_page(self, page: int, page_size: int, **options) -> Union[bytes, str]:
+    def read_page(self, page: int, page_size: int, **options) -> bytes | str:
         """Read specific page using strategy."""
         return self._paging_strategy.read_page(
             self._path,
@@ -138,7 +138,7 @@ class APagedSource(IPagedSource, ABC):
         )
     
     @abstractmethod
-    def read_chunk(self, offset: int, size: int, **options) -> Union[bytes, str]:
+    def read_chunk(self, offset: int, size: int, **options) -> bytes | str:
         """Read chunk by byte offset."""
         pass
     
@@ -146,4 +146,3 @@ class APagedSource(IPagedSource, ABC):
     def iter_chunks(self, chunk_size: int, **options):
         """Iterate over chunks."""
         pass
-

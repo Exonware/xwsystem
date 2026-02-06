@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/test_facade.py
 """
 Unit tests for io.facade module
 
@@ -47,10 +48,10 @@ class TestXWIOFacade:
         assert hasattr(io, 'save_serialized')
         assert hasattr(io, 'load_serialized')
     
-    def test_xwio_has_backward_compatible_aliases(self):
-        """Test that XWIO maintains backward compatibility aliases."""
+    def test_xwio_has_file_operations(self):
+        """Test that XWIO provides file operations."""
         io = XWIO()
-        # Aliases for file operations
+        # File operations
         assert hasattr(io, 'read_file')
         assert hasattr(io, 'write_file')
 
@@ -73,4 +74,3 @@ class TestXWIOIntegration:
         assert hasattr(io, 'read_file')  # File operations
         assert hasattr(io, 'serialize')  # Serialization
         assert hasattr(io, 'open')  # Stream operations
-

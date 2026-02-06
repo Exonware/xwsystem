@@ -1,3 +1,4 @@
+#exonware/xwsystem/examples/lazy_install_demo.py
 """
 Lazy Install Demo for xwsystem
 

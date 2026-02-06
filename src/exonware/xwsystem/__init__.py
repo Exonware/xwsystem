@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/__init__.py
 #exonware/xwsystem/__init__.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 10, 2025
 
 XWSystem - Enterprise-grade Python framework with AI-powered performance optimization.
@@ -57,6 +58,18 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Any
 
+# =============================================================================
+# XWLAZY INTEGRATION - Auto-install missing dependencies silently (EARLY)
+# =============================================================================
+# Activate xwlazy BEFORE other imports to enable auto-installation of missing dependencies
+# This enables silent auto-installation of missing libraries when they are imported
+try:
+    from exonware.xwlazy import auto_enable_lazy
+    auto_enable_lazy(__package__ or "exonware.xwsystem", mode="smart")
+except ImportError:
+    # xwlazy not installed - lazy mode simply stays disabled (normal behavior)
+    pass
+
 # Logging utilities
 from .config.logging_setup import get_logger, setup_logging
 
@@ -91,7 +104,10 @@ from .io.serialization import (
     # Registry
     SerializationRegistry, get_serialization_registry,
     # Flyweight optimization
-    get_serializer, get_flyweight_stats, clear_serializer_cache, 
+    get_serializer, get_flyweight_stats, clear_serializer_cache,
+    # Universal options
+    map_universal_options, get_supported_universal_options, validate_universal_options,
+    get_all_supported_formats, get_format_option_info, UniversalOption, 
     get_cache_info, create_serializer, SerializerPool,
     # Auto-detection utilities
     XWSerializer, AutoSerializer,
@@ -187,11 +203,13 @@ from .caching import (
 )
 from .caching.ttl_cache import TTLCache, AsyncTTLCache
 
-# CLI utilities
-from .cli.colors import colorize, Colors, Style
-from .cli.args import ArgumentParser, Argument, Command, ArgumentType
-from .cli.progress import ProgressBar, SpinnerProgress, MultiProgress, ProgressConfig
-from .cli.tables import Table, TableFormatter, Column, Alignment, BorderStyle
+# CLI utilities - import general console enums from console level (priority)
+from .console.defs import Colors, Style, Alignment, BorderStyle
+from .console.cli.colors import colorize, CliColoredOutput
+from .console.cli.args import CliArgumentParser, CliArgument, CliCommand, ArgumentType
+from .console.cli.progress import CliProgressBar, CliSpinnerProgress, CliMultiProgress, CliProgressConfig
+from .console.cli.tables import CliTable, CliTableFormatter, CliColumn
+from .console.cli.console import CliConsole
 
 # Validation utilities
 from .validation.declarative import XModel, Field, ValidationError
@@ -216,9 +234,16 @@ from .utils.dt import (
     humanize_timedelta, humanize_timestamp, time_ago, time_until,
     duration_to_human, parse_human_duration, TimezoneManager,
     convert_timezone, get_timezone_info, list_timezones,
-    format_datetime
+    format_datetime, get_datetime, get_date, get_date_from_to_month,
+    calculate_duration_days, parse_timestamp_milliseconds
 )
 from .utils.dt.parsing import parse_datetime, parse_date, parse_time, parse_iso8601, parse_timestamp
+
+# String utilities
+from .utils.string import find_nth_occurrence
+
+# Web utilities
+from .utils.web import validate_url_accessible, extract_webpage_text
 
 # IPC utilities
 from .ipc import (
@@ -257,15 +282,12 @@ from .config import (
     PATH_SEPARATOR_FORWARD, PATH_SEPARATOR_BACKWARD,
     CIRCULAR_REFERENCE_PLACEHOLDER, MAX_DEPTH_EXCEEDED_PLACEHOLDER,
     LOGGING_ENABLED, LOGGING_LEVEL, setup_logging, get_logger,
-    PerformanceConfig, PerformanceLimits,
-    SerializationLimits, NetworkLimits, SecurityLimits
+    ConsoleEventLogger, ConsoleEvent,
+    PerformanceConfig
 )
 from .config.performance import (
     get_performance_config,
-    configure_performance,
-    get_serialization_limits,
-    get_network_limits,
-    get_security_limits,
+    set_performance_config,
 )
 
 # Monitoring utilities
@@ -320,9 +342,12 @@ from .validation.type_safety import (
 )
 
 # Enterprise utilities - distributed across security, monitoring, and io/serialization
+# Note: Authentication provider implementations (OAuth2Provider, JWTProvider, SAMLProvider, EnterpriseAuth)
+# have been moved to xwauth, which extends xwsystem. Use xwauth for actual authentication providers.
 from .security import (
-    OAuth2Provider, JWTProvider, SAMLProvider,
-    AuthenticationError, AuthorizationError, TokenExpiredError
+    AuthenticationError, AuthorizationError, TokenExpiredError,
+    AAuthProvider, ATokenInfo, AUserInfo,
+    IAuthenticatable, IAuthorization, ISecurityToken
 )
 from .monitoring import (
     TracingManager, OpenTelemetryTracer, JaegerTracer,
@@ -502,7 +527,7 @@ def list_available_formats():
     
     # Test which formats are available by trying to create serializers
     all_formats = [
-        'json', 'yaml', 'toml', 'xml', 'csv', 'ini', 'formdata', 'multipart',  # Text
+        'json', 'jsonl', 'ndjson', 'yaml', 'toml', 'xml', 'csv', 'ini', 'formdata', 'multipart',  # Text (NDJSON/JSONL explicitly listed)
         'bson', 'msgpack', 'cbor', 'pickle', 'marshal', 'dbm', 'shelve', 'plist',  # Binary
         'avro', 'protobuf', 'thrift', 'parquet', 'orc', 'capnproto', 'flatbuffers',  # Enterprise
         'leveldb', 'lmdb', 'zarr',  # Key-value stores
@@ -523,7 +548,7 @@ def list_available_formats():
     return {
         'all': available,
         'missing': missing,
-        'text': [f for f in available if f in ['json', 'yaml', 'toml', 'xml', 'csv', 'ini', 'formdata', 'multipart']],
+        'text': [f for f in available if f in ['json', 'jsonl', 'ndjson', 'yaml', 'toml', 'xml', 'csv', 'ini', 'formdata', 'multipart']],
         'binary': [f for f in available if f in ['bson', 'msgpack', 'cbor', 'pickle', 'marshal', 'dbm', 'shelve', 'plist']],
         'enterprise': [f for f in available if f in ['avro', 'protobuf', 'thrift', 'parquet', 'orc', 'capnproto', 'flatbuffers']],
         'keyvalue': [f for f in available if f in ['leveldb', 'lmdb', 'zarr']],
@@ -543,17 +568,23 @@ __all__ = [
     "ASerialization", 
     "SerializationError",
     
-    # Text formats (8) - I→A pattern
+    # Text formats (7) - I→A pattern (CSV moved to tabular)
     "JsonSerializer",
     "Json5Serializer",
     "JsonLinesSerializer",
     "YamlSerializer",
     "TomlSerializer",
     "XmlSerializer",
-    "CsvSerializer",
     "ConfigParserSerializer",
     "FormDataSerializer",
     "MultipartSerializer",
+    
+    # Tabular formats (4) - I→A→ATabular pattern
+    "ATabularSerialization",
+    "ExcelSerializer",
+    "CsvSerializer",  # Moved from text/ to tabular/
+    "GoogleSheetsSerializer",
+    "DataFrameSerializer",
     
     # Binary formats (6) - I→A pattern
     "MsgPackSerializer",
@@ -574,6 +605,9 @@ __all__ = [
     "detect_format",
     "get_serializer", "get_flyweight_stats", "clear_serializer_cache", 
     "get_cache_info", "create_serializer", "SerializerPool",
+    # Universal options
+    "map_universal_options", "get_supported_universal_options", "validate_universal_options",
+    "get_all_supported_formats", "get_format_option_info", "UniversalOption",
     # HTTP
     "HttpClient",
     "AsyncHttpClient",
@@ -659,12 +693,10 @@ __all__ = [
     "get_logger",
     "disable_logging",
     "enable_logging",
+    "ConsoleEventLogger",
+    "ConsoleEvent",
     # Performance Configuration
     "get_performance_config",
-    "configure_performance",
-    "get_serialization_limits",
-    "get_network_limits",
-    "get_security_limits",
     # Configuration
     "DEFAULT_ENCODING",
     "DEFAULT_PATH_DELIMITER",
@@ -688,7 +720,6 @@ __all__ = [
     "MAX_DEPTH_EXCEEDED_PLACEHOLDER",
     # Performance Configuration
     "PerformanceConfig",
-    "PerformanceLimits",
     # Validation
     "DataValidator",
     "check_data_depth",
@@ -752,26 +783,26 @@ __all__ = [
     "CacheConfig",
     "CacheStats",
     
-    # CLI
-    "ArgumentParser",
-    "Argument",
-    "Command", 
-    "ArgumentType",
-    "ColoredOutput",
+    # CLI - general console enums (from console level)
     "Colors",
     "Style",
-    "colorize",
-    "print_colored",
-    "ProgressBar",
-    "SpinnerProgress",
-    "MultiProgress",
-    "ProgressConfig",
-    "Table",
-    "TableFormatter",
-    "Column",
     "Alignment",
     "BorderStyle",
-    "Console",
+    # CLI-specific classes
+    "CliArgumentParser",
+    "CliArgument",
+    "CliCommand", 
+    "ArgumentType",
+    "CliColoredOutput",
+    "colorize",
+    "CliProgressBar",
+    "CliSpinnerProgress",
+    "CliMultiProgress",
+    "CliProgressConfig",
+    "CliTable",
+    "CliTableFormatter",
+    "CliColumn",
+    "CliConsole",  # From console.cli.console
     
         # Validation
     "XModel",
@@ -781,10 +812,13 @@ __all__ = [
     # Enterprise Features
     # NOTE: Schema Registry classes moved to exonware-xwschema
     # Available in: pip install exonware-xwschema
+    # NOTE: Authentication provider implementations (OAuth2Provider, JWTProvider, SAMLProvider, EnterpriseAuth)
+    # have been moved to xwauth, which extends xwsystem. Use xwauth for actual authentication providers.
     "TracingManager", "OpenTelemetryTracer", "JaegerTracer",
     "TracingError", "SpanContext", "TraceContext",
-    "OAuth2Provider", "JWTProvider", "SAMLProvider",
     "AuthenticationError", "AuthorizationError", "TokenExpiredError",
+    "AAuthProvider", "ATokenInfo", "AUserInfo",
+    "IAuthenticatable", "IAuthorization", "ISecurityToken",
     
     # Security Hazmat
     "AES_GCM",
@@ -829,7 +863,17 @@ __all__ = [
     "parse_time",
     "parse_iso8601",
     "parse_timestamp",
+    "parse_timestamp_milliseconds",
     "format_datetime",
+    "get_datetime",
+    "get_date",
+    "get_date_from_to_month",
+    "calculate_duration_days",
+    # String utilities
+    "find_nth_occurrence",
+    # Web utilities
+    "validate_url_accessible",
+    "extract_webpage_text",
     
     # IPC
     "ProcessManager",
@@ -851,7 +895,7 @@ __all__ = [
     "quick_decrypt",
     "list_available_formats",
     
-    # Protocol Definitions - Better type safety
+    # Protocol Definitions
     "Serializable",
     "AsyncSerializable", 
     "Hashable",
@@ -866,4 +910,32 @@ __all__ = [
     "ValidationRule",
     "CacheKey",
     "ConfigValue",
+    
+    # Unified Facades (DX Improvements)
+    "XWCache",
+    "XWArchive",
+    "XWIndex",
+    "XWSecurity",
+    "XWCrypto",
+    "XWHTTP",
+    "XWValidator",
+    "XWMonitor",
+    "XWConcurrency",
 ]
+
+# =============================================================================
+# UNIFIED FACADES - Simplified Developer Experience (DX)
+# =============================================================================
+
+# Import unified facades from their respective modules
+from .caching.facade import XWCache
+from .io.archive.facade import XWArchive
+from .io.indexing.facade import XWIndex
+from .security.facade import XWSecurity, XWCrypto
+from .http_client.facade import XWHTTP
+from .validation.facade import XWValidator
+from .monitoring.facade import XWMonitor
+from .threading.facade import XWConcurrency
+
+# XWSerializer already exists in io.serialization.serializer
+# XWIO already exists in io.facade

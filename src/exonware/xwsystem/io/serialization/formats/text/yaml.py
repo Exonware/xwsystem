@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/yaml.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 YAML serialization - Human-readable data serialization format.
@@ -13,7 +14,7 @@ Following I→A pattern:
 - Concrete: YamlSerializer
 """
 
-from typing import Any, Optional, Union, Iterator
+from typing import Any, Optional, Iterator
 from pathlib import Path
 
 from ...base import ASerialization
@@ -104,7 +105,7 @@ class YamlSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using PyYAML library)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to YAML string.
         
@@ -147,7 +148,7 @@ class YamlSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode YAML string to data.
         
@@ -189,7 +190,7 @@ class YamlSerializer(ASerialization):
     
     def incremental_load(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         **options: Any,
     ) -> Iterator[Any]:
         """
@@ -228,4 +229,5 @@ class YamlSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             ) from e
-
+    
+    # Note: File operations (save_file, load_file) are inherited from ASerialization base class

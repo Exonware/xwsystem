@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/multipart.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 Multipart serialization - Multipart form data format.
@@ -20,7 +21,7 @@ from email import encoders
 from email.parser import BytesParser
 from email.policy import default
 import io
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -97,7 +98,7 @@ class MultipartSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using email.mime modules)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to multipart format.
         
@@ -150,7 +151,7 @@ class MultipartSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode multipart data.
         
@@ -209,4 +210,3 @@ class MultipartSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             )
-

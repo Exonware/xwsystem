@@ -1,18 +1,21 @@
+#exonware/xwsystem/src/exonware/xwsystem/http_client/client.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 HTTP client with retry mechanisms, connection pooling, and error handling.
 """
 
+from __future__ import annotations
+
 import asyncio
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from urllib.parse import urljoin
 
 # Prevent httpx from importing rich (Python 3.8+ only, no legacy deps)
@@ -91,7 +94,7 @@ class HttpClient:
             headers=self.default_headers
         )
 
-    def __enter__(self) -> 'HttpClient':
+    def __enter__(self) -> HttpClient:
         """Context manager entry."""
         return self
 
@@ -345,7 +348,7 @@ class AsyncHttpClient:
             headers=self.default_headers
         )
 
-    async def __aenter__(self) -> 'AsyncHttpClient':
+    async def __aenter__(self) -> AsyncHttpClient:
         """Async context manager entry."""
         return self
 

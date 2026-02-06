@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/formats_tests/database_tests/test_sqlite3.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for SQLite3 serializer.
@@ -32,4 +33,3 @@ class TestSqlite3Serializer:
             assert loaded == test_data
         except ImportError:
             pytest.skip("SQLite3 serializer not available")
-

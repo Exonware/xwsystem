@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
 Brotli (.br) compression format - RANK #6 WEB COMPRESSION.
@@ -18,6 +18,7 @@ Priority 4 (Performance): Optimized for web
 Priority 5 (Extensibility): Lazy installation of brotli
 """
 
+import sys
 import tarfile
 from pathlib import Path
 from typing import Optional
@@ -25,10 +26,17 @@ from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 
-# Lazy import for brotli - optional dependency
+# Optional dependency: brotli
+import importlib.util
 try:
-    import brotli
-except ImportError:
+    _brotli_spec = importlib.util.find_spec('brotli')
+    if _brotli_spec is not None and _brotli_spec.loader is not None:
+        import brotli
+    else:
+        brotli = None  # type: ignore
+except (ValueError, AttributeError, ImportError):
+    # Handle case where find_spec raises ValueError (e.g., module.__spec__ is None)
+    # or other import-related errors
     brotli = None  # type: ignore
 
 
@@ -119,12 +127,18 @@ class BrotliArchiver(IArchiveFormat):
             
             extracted = []
             with tarfile.open(fileobj=tar_buffer, mode='r') as tar:
+                # Use data filter for Python 3.12+ compatibility (prevents deprecation warning)
+                # For older Python versions, filter parameter is not available
+                extract_kwargs = {}
+                if sys.version_info >= (3, 12):
+                    extract_kwargs['filter'] = 'data'
+                
                 if members:
                     for member in members:
-                        tar.extract(member, output_dir)
+                        tar.extract(member, output_dir, **extract_kwargs)
                         extracted.append(output_dir / member)
                 else:
-                    tar.extractall(output_dir)
+                    tar.extractall(output_dir, **extract_kwargs)
                     extracted = [output_dir / m.name for m in tar.getmembers()]
             
             return extracted
@@ -148,4 +162,3 @@ class BrotliArchiver(IArchiveFormat):
     def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
         """Not supported - recreate archive instead."""
         raise ArchiveError("Brotli doesn't support append mode. Recreate the archive.")
-

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/monitoring/runner.py
 """
 Core Monitoring Test Runner
 
@@ -114,8 +115,8 @@ class MonitoringCoreTester:
             try:
                 breaker.call(failed_operation)
                 print("[WARNING]  Expected exception from failed operation")
-            except Exception:
-                pass  # Expected behavior
+            except Exception as e:
+                _ = e  # Expected: circuit breaker propagates failure
             
             print("[PASS] Circuit breaker tests passed")
             return True

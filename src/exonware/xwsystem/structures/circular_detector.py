@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/structures/circular_detector.py
 """
 Circular reference detection and management utilities.
 """
@@ -5,7 +6,7 @@ Circular reference detection and management utilities.
 import logging
 import weakref
 from collections import defaultdict
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,18 @@ class CircularReferenceDetector:
             return True
         finally:
             self.reset()
+    
+    def has_circular_references(self, obj: Any) -> bool:
+        """
+        Check if an object has circular references (alias for is_circular).
+
+        Args:
+            obj: Object to check
+
+        Returns:
+            True if circular references are detected
+        """
+        return self.is_circular(obj)
 
     def traverse(self, obj: Any, path: list[str]) -> None:
         """
@@ -139,7 +152,7 @@ class CircularReferenceDetector:
 
             self.traverse(value, new_path)
 
-    def _traverse_sequence(self, obj: Union[list, tuple, set], path: list[str]) -> None:
+    def _traverse_sequence(self, obj: list | tuple | set, path: list[str]) -> None:
         """Traverse sequence objects (list, tuple, set)."""
         for i, item in enumerate(obj):
             new_path = path + [f"[{i}]"]
@@ -298,18 +311,6 @@ def has_circular_references(obj: Any, max_depth: int = 100) -> bool:
     """
     detector = CircularReferenceDetector(max_depth=max_depth)
     return detector.is_circular(obj)
-
-
-class CircularDetector(CircularReferenceDetector):
-    """Alias for CircularReferenceDetector for backward compatibility."""
-    
-    def __init__(self, max_depth: int = 100):
-        """Initialize circular detector."""
-        super().__init__(max_depth)
-    
-    def detect(self, obj: Any) -> bool:
-        """Detect circular references (alias for is_circular)."""
-        return self.is_circular(obj)
     
     def check(self, obj: Any) -> bool:
         """Check for circular references (alias for is_circular)."""

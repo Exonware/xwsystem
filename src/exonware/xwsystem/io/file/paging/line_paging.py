@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Line-based paging strategy.
@@ -17,7 +17,7 @@ Priority 5 (Extensibility): Pluggable via registry
 """
 
 from pathlib import Path
-from typing import Union, Optional, Iterator
+from typing import Optional, Iterator
 
 from ...contracts import IPagingStrategy
 
@@ -84,4 +84,3 @@ class LinePagingStrategy:
                 break
             yield content
             page += 1
-

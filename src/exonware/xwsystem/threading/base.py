@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/threading/base.py
 #exonware/xwsystem/threading/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Threading module base classes - abstract classes for threading functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Callable, Coroutine
+from typing import Any, Optional, Callable, Coroutine
 from .contracts import ThreadState, LockType, AsyncPrimitiveType, ConcurrencyMode
 
 

@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/validation/base.py
 #exonware/xwsystem/validation/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Validation module base classes - abstract classes for validation functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Callable
+from typing import Any, Optional, Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from .contracts import ValidationType, ValidationLevel, ConstraintType, SchemaType
@@ -102,13 +103,13 @@ class ADataValidatorBase(ABC):
         pass
     
     @abstractmethod
-    def validate_range(self, data: Union[int, float], min_value: Optional[Union[int, float]] = None, 
-                      max_value: Optional[Union[int, float]] = None) -> bool:
+    def validate_range(self, data: int | float, min_value: Optional[int | float] = None, 
+                      max_value: Optional[int | float] = None) -> bool:
         """Validate data range."""
         pass
     
     @abstractmethod
-    def validate_length(self, data: Union[str, list, dict], min_length: Optional[int] = None, 
+    def validate_length(self, data: str | list | dict, min_length: Optional[int] = None, 
                        max_length: Optional[int] = None) -> bool:
         """Validate data length."""
         pass

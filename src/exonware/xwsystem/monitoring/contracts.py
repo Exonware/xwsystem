@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/monitoring/contracts.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Monitoring protocol interfaces for XWSystem.
 """
 
-from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, Iterator, Callable, Protocol
-from typing_extensions import runtime_checkable
+from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
 import time
 
 # Import enums from types module
@@ -29,14 +28,14 @@ from .defs import (
 # PERFORMANCE INTERFACES
 # ============================================================================
 
-class IPerformance(ABC):
+@runtime_checkable
+class IPerformance(Protocol):
     """
     Interface for performance monitoring.
     
     Enforces consistent performance monitoring across XWSystem.
     """
     
-    @abstractmethod
     def start_timer(self, operation: str) -> str:
         """
         Start performance timer.
@@ -47,9 +46,8 @@ class IPerformance(ABC):
         Returns:
             Timer ID
         """
-        pass
+        ...
     
-    @abstractmethod
     def end_timer(self, timer_id: str) -> float:
         """
         End performance timer.
@@ -60,9 +58,8 @@ class IPerformance(ABC):
         Returns:
             Elapsed time in seconds
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_metrics(self) -> dict[str, Any]:
         """
         Get performance metrics.
@@ -70,16 +67,14 @@ class IPerformance(ABC):
         Returns:
             Performance metrics dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def reset_metrics(self) -> None:
         """
         Reset performance metrics.
         """
-        pass
+        ...
     
-    @abstractmethod
     def record_metric(self, name: str, value: float, metric_type: MetricType = MetricType.GAUGE) -> None:
         """
         Record performance metric.
@@ -89,9 +84,8 @@ class IPerformance(ABC):
             value: Metric value
             metric_type: Type of metric
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_metric(self, name: str) -> Optional[float]:
         """
         Get performance metric value.
@@ -102,9 +96,8 @@ class IPerformance(ABC):
         Returns:
             Metric value or None
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_performance_level(self) -> PerformanceLevel:
         """
         Get current performance level.
@@ -112,9 +105,8 @@ class IPerformance(ABC):
         Returns:
             Current performance level
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_performance_threshold(self, metric: str, threshold: float) -> None:
         """
         Set performance threshold.
@@ -123,9 +115,8 @@ class IPerformance(ABC):
             metric: Metric name
             threshold: Threshold value
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_performance_acceptable(self) -> bool:
         """
         Check if performance is acceptable.
@@ -133,35 +124,33 @@ class IPerformance(ABC):
         Returns:
             True if performance is acceptable
         """
-        pass
+        ...
 
 
 # ============================================================================
 # MONITORABLE INTERFACES
 # ============================================================================
 
-class IMonitorable(ABC):
+@runtime_checkable
+class IMonitorable(Protocol):
     """
     Interface for monitorable objects.
     
     Enforces consistent monitoring behavior across XWSystem.
     """
     
-    @abstractmethod
     def start_monitoring(self) -> None:
         """
         Start monitoring.
         """
-        pass
+        ...
     
-    @abstractmethod
     def stop_monitoring(self) -> None:
         """
         Stop monitoring.
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_status(self) -> HealthStatus:
         """
         Get current status.
@@ -169,9 +158,8 @@ class IMonitorable(ABC):
         Returns:
             Current health status
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_health(self) -> dict[str, Any]:
         """
         Get health information.
@@ -179,9 +167,8 @@ class IMonitorable(ABC):
         Returns:
             Health information dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_monitoring(self) -> bool:
         """
         Check if monitoring is active.
@@ -189,9 +176,8 @@ class IMonitorable(ABC):
         Returns:
             True if monitoring is active
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_monitoring_info(self) -> dict[str, Any]:
         """
         Get monitoring information.
@@ -199,9 +185,8 @@ class IMonitorable(ABC):
         Returns:
             Monitoring information dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_monitoring_interval(self, interval: float) -> None:
         """
         Set monitoring interval.
@@ -209,9 +194,8 @@ class IMonitorable(ABC):
         Args:
             interval: Monitoring interval in seconds
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_monitoring_interval(self) -> float:
         """
         Get monitoring interval.
@@ -219,21 +203,21 @@ class IMonitorable(ABC):
         Returns:
             Monitoring interval in seconds
         """
-        pass
+        ...
 
 
 # ============================================================================
 # METRICS INTERFACES
 # ============================================================================
 
-class IMetrics(ABC):
+@runtime_checkable
+class IMetrics(Protocol):
     """
     Interface for metrics collection.
     
     Enforces consistent metrics behavior across XWSystem.
     """
     
-    @abstractmethod
     def collect_metrics(self) -> dict[str, Any]:
         """
         Collect all metrics.
@@ -241,9 +225,8 @@ class IMetrics(ABC):
         Returns:
             Dictionary of collected metrics
         """
-        pass
+        ...
     
-    @abstractmethod
     def add_metric(self, name: str, value: Any, labels: Optional[dict[str, str]] = None) -> None:
         """
         Add metric.
@@ -253,9 +236,8 @@ class IMetrics(ABC):
             value: Metric value
             labels: Optional metric labels
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_metric(self, name: str) -> Optional[Any]:
         """
         Get metric value.
@@ -266,9 +248,8 @@ class IMetrics(ABC):
         Returns:
             Metric value or None
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_metric(self, name: str) -> bool:
         """
         Remove metric.
@@ -279,9 +260,8 @@ class IMetrics(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
     def list_metrics(self) -> list[str]:
         """
         List all metric names.
@@ -289,9 +269,8 @@ class IMetrics(ABC):
         Returns:
             List of metric names
         """
-        pass
+        ...
     
-    @abstractmethod
     def export_metrics(self, format: str = "json") -> str:
         """
         Export metrics in specified format.
@@ -302,16 +281,14 @@ class IMetrics(ABC):
         Returns:
             Exported metrics string
         """
-        pass
+        ...
     
-    @abstractmethod
     def clear_metrics(self) -> None:
         """
         Clear all metrics.
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_metrics_summary(self) -> dict[str, Any]:
         """
         Get metrics summary.
@@ -319,21 +296,21 @@ class IMetrics(ABC):
         Returns:
             Metrics summary dictionary
         """
-        pass
+        ...
 
 
 # ============================================================================
 # HEALTH CHECK INTERFACES
 # ============================================================================
 
-class IHealthCheck(ABC):
+@runtime_checkable
+class IHealthCheck(Protocol):
     """
     Interface for health checks.
     
     Enforces consistent health checking across XWSystem.
     """
     
-    @abstractmethod
     def check_health(self) -> HealthStatus:
         """
         Perform health check.
@@ -341,9 +318,8 @@ class IHealthCheck(ABC):
         Returns:
             Health status
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_health_details(self) -> dict[str, Any]:
         """
         Get detailed health information.
@@ -351,9 +327,8 @@ class IHealthCheck(ABC):
         Returns:
             Health details dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def add_health_check(self, name: str, check_func: Callable[[], HealthStatus]) -> None:
         """
         Add health check function.
@@ -362,9 +337,8 @@ class IHealthCheck(ABC):
             name: Health check name
             check_func: Health check function
         """
-        pass
+        ...
     
-    @abstractmethod
     def remove_health_check(self, name: str) -> bool:
         """
         Remove health check.
@@ -375,9 +349,8 @@ class IHealthCheck(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
     
-    @abstractmethod
     def list_health_checks(self) -> list[str]:
         """
         List all health check names.
@@ -385,9 +358,8 @@ class IHealthCheck(ABC):
         Returns:
             List of health check names
         """
-        pass
+        ...
     
-    @abstractmethod
     def run_health_checks(self) -> dict[str, HealthStatus]:
         """
         Run all health checks.
@@ -395,9 +367,8 @@ class IHealthCheck(ABC):
         Returns:
             Dictionary of health check results
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_overall_health(self) -> HealthStatus:
         """
         Get overall health status.
@@ -405,9 +376,8 @@ class IHealthCheck(ABC):
         Returns:
             Overall health status
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_health_threshold(self, check_name: str, threshold: float) -> None:
         """
         Set health check threshold.
@@ -416,21 +386,21 @@ class IHealthCheck(ABC):
             check_name: Health check name
             threshold: Threshold value
         """
-        pass
+        ...
 
 
 # ============================================================================
 # ALERTING INTERFACES
 # ============================================================================
 
-class IAlerting(ABC):
+@runtime_checkable
+class IAlerting(Protocol):
     """
     Interface for alerting.
     
     Enforces consistent alerting behavior across XWSystem.
     """
     
-    @abstractmethod
     def create_alert(self, message: str, level: AlertLevel, source: str = "") -> str:
         """
         Create alert.
@@ -443,9 +413,8 @@ class IAlerting(ABC):
         Returns:
             Alert ID
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_alert(self, alert_id: str) -> Optional[dict[str, Any]]:
         """
         Get alert by ID.
@@ -456,9 +425,8 @@ class IAlerting(ABC):
         Returns:
             Alert information or None
         """
-        pass
+        ...
     
-    @abstractmethod
     def list_alerts(self, level: Optional[AlertLevel] = None) -> list[dict[str, Any]]:
         """
         List alerts.
@@ -469,9 +437,8 @@ class IAlerting(ABC):
         Returns:
             List of alert information
         """
-        pass
+        ...
     
-    @abstractmethod
     def acknowledge_alert(self, alert_id: str, user: str = "") -> bool:
         """
         Acknowledge alert.
@@ -483,9 +450,8 @@ class IAlerting(ABC):
         Returns:
             True if acknowledged
         """
-        pass
+        ...
     
-    @abstractmethod
     def resolve_alert(self, alert_id: str, resolution: str = "") -> bool:
         """
         Resolve alert.
@@ -497,9 +463,8 @@ class IAlerting(ABC):
         Returns:
             True if resolved
         """
-        pass
+        ...
     
-    @abstractmethod
     def clear_alert(self, alert_id: str) -> bool:
         """
         Clear alert.
@@ -510,9 +475,8 @@ class IAlerting(ABC):
         Returns:
             True if cleared
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_alert_stats(self) -> dict[str, int]:
         """
         Get alert statistics.
@@ -520,9 +484,8 @@ class IAlerting(ABC):
         Returns:
             Alert statistics dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_alert_threshold(self, metric: str, threshold: float, level: AlertLevel) -> None:
         """
         Set alert threshold.
@@ -532,21 +495,21 @@ class IAlerting(ABC):
             threshold: Threshold value
             level: Alert level
         """
-        pass
+        ...
 
 
 # ============================================================================
 # SYSTEM MONITORING INTERFACES
 # ============================================================================
 
-class ISystemMonitor(ABC):
+@runtime_checkable
+class ISystemMonitor(Protocol):
     """
     Interface for system monitoring.
     
     Enforces consistent system monitoring across XWSystem.
     """
     
-    @abstractmethod
     def get_cpu_usage(self) -> float:
         """
         Get CPU usage percentage.
@@ -554,9 +517,8 @@ class ISystemMonitor(ABC):
         Returns:
             CPU usage percentage
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_memory_usage(self) -> dict[str, Any]:
         """
         Get memory usage information.
@@ -564,9 +526,8 @@ class ISystemMonitor(ABC):
         Returns:
             Memory usage dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_disk_usage(self) -> dict[str, Any]:
         """
         Get disk usage information.
@@ -574,9 +535,8 @@ class ISystemMonitor(ABC):
         Returns:
             Disk usage dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_network_usage(self) -> dict[str, Any]:
         """
         Get network usage information.
@@ -584,9 +544,8 @@ class ISystemMonitor(ABC):
         Returns:
             Network usage dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_process_info(self) -> list[dict[str, Any]]:
         """
         Get process information.
@@ -594,9 +553,8 @@ class ISystemMonitor(ABC):
         Returns:
             List of process information
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_system_load(self) -> float:
         """
         Get system load average.
@@ -604,9 +562,8 @@ class ISystemMonitor(ABC):
         Returns:
             System load average
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_uptime(self) -> float:
         """
         Get system uptime.
@@ -614,9 +571,8 @@ class ISystemMonitor(ABC):
         Returns:
             Uptime in seconds
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_system_info(self) -> dict[str, Any]:
         """
         Get system information.
@@ -624,21 +580,21 @@ class ISystemMonitor(ABC):
         Returns:
             System information dictionary
         """
-        pass
+        ...
 
 
 # ============================================================================
 # PERFORMANCE PROFILING INTERFACES
 # ============================================================================
 
-class IProfiler(ABC):
+@runtime_checkable
+class IProfiler(Protocol):
     """
     Interface for performance profiling.
     
     Enforces consistent profiling behavior across XWSystem.
     """
     
-    @abstractmethod
     def start_profiling(self, name: str) -> str:
         """
         Start profiling session.
@@ -649,9 +605,8 @@ class IProfiler(ABC):
         Returns:
             Profiling session ID
         """
-        pass
+        ...
     
-    @abstractmethod
     def stop_profiling(self, session_id: str) -> dict[str, Any]:
         """
         Stop profiling session.
@@ -662,9 +617,8 @@ class IProfiler(ABC):
         Returns:
             Profiling results
         """
-        pass
+        ...
     
-    @abstractmethod
     def profile_function(self, func: Callable, *args, **kwargs) -> tuple[Any, dict[str, Any]]:
         """
         Profile function execution.
@@ -677,9 +631,8 @@ class IProfiler(ABC):
         Returns:
             Tuple of (result, profiling_data)
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_profiling_results(self, session_id: str) -> Optional[dict[str, Any]]:
         """
         Get profiling results.
@@ -690,9 +643,8 @@ class IProfiler(ABC):
         Returns:
             Profiling results or None
         """
-        pass
+        ...
     
-    @abstractmethod
     def list_profiling_sessions(self) -> list[str]:
         """
         List profiling sessions.
@@ -700,16 +652,14 @@ class IProfiler(ABC):
         Returns:
             List of session IDs
         """
-        pass
+        ...
     
-    @abstractmethod
     def clear_profiling_data(self) -> None:
         """
         Clear profiling data.
         """
-        pass
+        ...
     
-    @abstractmethod
     def export_profiling_data(self, session_id: str, format: str = "json") -> str:
         """
         Export profiling data.
@@ -721,21 +671,21 @@ class IProfiler(ABC):
         Returns:
             Exported profiling data
         """
-        pass
+        ...
 
 
 # ============================================================================
 # MONITORING CONFIGURATION INTERFACES
 # ============================================================================
 
-class IMonitoringConfig(ABC):
+@runtime_checkable
+class IMonitoringConfig(Protocol):
     """
     Interface for monitoring configuration.
     
     Enforces consistent monitoring configuration across XWSystem.
     """
     
-    @abstractmethod
     def set_monitoring_mode(self, mode: MonitoringMode) -> None:
         """
         Set monitoring mode.
@@ -743,9 +693,8 @@ class IMonitoringConfig(ABC):
         Args:
             mode: Monitoring mode
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_monitoring_mode(self) -> MonitoringMode:
         """
         Get monitoring mode.
@@ -753,9 +702,8 @@ class IMonitoringConfig(ABC):
         Returns:
             Current monitoring mode
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_metric_interval(self, metric: str, interval: float) -> None:
         """
         Set metric collection interval.
@@ -764,9 +712,8 @@ class IMonitoringConfig(ABC):
             metric: Metric name
             interval: Collection interval in seconds
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_metric_interval(self, metric: str) -> Optional[float]:
         """
         Get metric collection interval.
@@ -777,9 +724,8 @@ class IMonitoringConfig(ABC):
         Returns:
             Collection interval or None
         """
-        pass
+        ...
     
-    @abstractmethod
     def enable_metric(self, metric: str) -> None:
         """
         Enable metric collection.
@@ -787,9 +733,8 @@ class IMonitoringConfig(ABC):
         Args:
             metric: Metric name
         """
-        pass
+        ...
     
-    @abstractmethod
     def disable_metric(self, metric: str) -> None:
         """
         Disable metric collection.
@@ -797,9 +742,8 @@ class IMonitoringConfig(ABC):
         Args:
             metric: Metric name
         """
-        pass
+        ...
     
-    @abstractmethod
     def is_metric_enabled(self, metric: str) -> bool:
         """
         Check if metric is enabled.
@@ -810,9 +754,8 @@ class IMonitoringConfig(ABC):
         Returns:
             True if enabled
         """
-        pass
+        ...
     
-    @abstractmethod
     def get_monitoring_config(self) -> dict[str, Any]:
         """
         Get monitoring configuration.
@@ -820,9 +763,8 @@ class IMonitoringConfig(ABC):
         Returns:
             Monitoring configuration dictionary
         """
-        pass
+        ...
     
-    @abstractmethod
     def set_monitoring_config(self, config: dict[str, Any]) -> None:
         """
         Set monitoring configuration.
@@ -830,7 +772,7 @@ class IMonitoringConfig(ABC):
         Args:
             config: Monitoring configuration
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -838,8 +780,8 @@ class IMonitoringConfig(ABC):
 # ============================================================================
 
 @runtime_checkable
-class Monitorable(Protocol):
-    """Protocol for objects that support performance monitoring."""
+class IMonitorableSimple(Protocol):
+    """Protocol for objects that support performance monitoring (simpler interface than IMonitorable)."""
     
     def start_monitoring(self) -> None:
         """Start performance monitoring."""

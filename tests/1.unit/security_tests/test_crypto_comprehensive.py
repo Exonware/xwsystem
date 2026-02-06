@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/security_tests/test_crypto_comprehensive.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
@@ -314,28 +315,37 @@ class TestPasswordUtilities:
     def test_hash_password(self):
         """Test password hashing."""
         password = "test_password"
-        hashed, salt = hash_password(password)
+        hashed = hash_password(password)
         
-        assert len(hashed) == 64  # SHA-256 hex
-        assert len(salt) == 32  # 16 bytes hex
+        # hash_password returns a single string with format: pbkdf2:iterations:salt:hash
+        assert isinstance(hashed, str)
+        assert hashed.startswith("pbkdf2:")
         assert hashed != password
+        # Verify format: pbkdf2:iterations:salt:hash
+        parts = hashed.split(":")
+        assert len(parts) == 4
+        assert parts[0] == "pbkdf2"
 
     def test_verify_password(self):
         """Test password verification."""
         password = "test_password"
-        hashed, salt = hash_password(password)
+        hashed = hash_password(password)
         
-        assert verify_password(password, hashed, salt)
-        assert not verify_password("wrong_password", hashed, salt)
+        # verify_password takes (password, hashed_password) where hashed_password is the full hash string
+        assert verify_password(password, hashed)
+        assert not verify_password("wrong_password", hashed)
 
     def test_same_password_different_hashes(self):
         """Test same password produces different hashes with different salts."""
         password = "test_password"
-        hashed1, salt1 = hash_password(password)
-        hashed2, salt2 = hash_password(password)
+        hashed1 = hash_password(password)
+        hashed2 = hash_password(password)
         
-        assert hashed1 != hashed2  # Different salts
-        assert salt1 != salt2
+        # Each hash includes a unique salt, so they should be different
+        assert hashed1 != hashed2  # Different salts in the hash string
+        # But both should verify correctly
+        assert verify_password(password, hashed1)
+        assert verify_password(password, hashed2)
 
 
 class TestTokenGeneration:
@@ -420,9 +430,22 @@ class TestCryptoSecurityProperties:
         # Generate many random values
         values = [SecureRandom.token_hex(16) for _ in range(100)]
         
-        # Should be all unique
+        # Should be all unique (primary requirement - no collisions)
         assert len(set(values)) == 100
         
-        # Should not have obvious patterns
-        assert not any(val == val[::-1] for val in values)  # No palindromes
-        assert not any('0000' in val or 'aaaa' in val for val in values)  # No obvious repeats
+        # Check statistical properties - with truly random data, patterns can occur by chance
+        # Instead of requiring NO patterns (which is statistically unlikely), check that:
+        # 1. Values are sufficiently diverse (many unique values)
+        # 2. Pattern occurrence is rare (not frequent)
+        palindromes = sum(1 for val in values if val == val[::-1])
+        obvious_repeats = sum(1 for val in values if '0000' in val or 'aaaa' in val)
+        
+        # With 100 random 32-character hex strings, palindromes and obvious repeats should be rare
+        # Allow a small chance (statistically, should be near zero but not absolutely zero)
+        assert palindromes < 5, f"Too many palindromes found: {palindromes}/100 (random chance should be < 5)"
+        assert obvious_repeats < 10, f"Too many obvious repeats: {obvious_repeats}/100 (should be rare)"
+        
+        # Verify randomness - should have high entropy (many different characters used)
+        all_chars = set(''.join(values))
+        # Hex should use 0-9 and a-f
+        assert len(all_chars) >= 10, "Random values should use diverse character set"

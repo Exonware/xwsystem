@@ -1,16 +1,18 @@
+#exonware/xwsystem/src/exonware/xwsystem/shared/contracts.py
 #exonware/xwsystem/shared/contracts.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 10, 2025
 
 Shared protocol interfaces (merged from the former core module).
 """
 
-from abc import ABC, abstractmethod
-from typing import Any, Iterator, Optional, Union
+from typing import Protocol, runtime_checkable
+from typing import Any, Iterator, Optional
+from datetime import datetime
 
 from .defs import CloneMode, CoreMode, CorePriority, CoreState, DataType
 
@@ -20,7 +22,8 @@ from .defs import CloneMode, CoreMode, CorePriority, CoreState, DataType
 # ============================================================================
 
 
-class IID(ABC):
+@runtime_checkable
+class IID(Protocol):
     """
     Interface for objects that have unique identification.
 
@@ -28,7 +31,6 @@ class IID(ABC):
     """
 
     @property
-    @abstractmethod
     def id(self) -> str:
         """
         Get the primary identifier.
@@ -36,10 +38,9 @@ class IID(ABC):
         Returns:
             Primary ID string
         """
-        pass
+        ...
 
     @property
-    @abstractmethod
     def uid(self) -> str:
         """
         Get the unique identifier (UUID).
@@ -47,9 +48,8 @@ class IID(ABC):
         Returns:
             UUID string
         """
-        pass
+        ...
 
-    @abstractmethod
     def generate_id(self) -> str:
         """
         Generate a new ID.
@@ -57,9 +57,8 @@ class IID(ABC):
         Returns:
             New ID string
         """
-        pass
+        ...
 
-    @abstractmethod
     def validate_id(self, id_value: str) -> bool:
         """
         Validate an ID format.
@@ -70,9 +69,8 @@ class IID(ABC):
         Returns:
             True if valid
         """
-        pass
+        ...
 
-    @abstractmethod
     def is_same_id(self, other: "IID") -> bool:
         """
         Check if this object has the same ID as another.
@@ -83,7 +81,7 @@ class IID(ABC):
         Returns:
             True if same ID
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -91,14 +89,14 @@ class IID(ABC):
 # ============================================================================
 
 
-class IStringable(ABC):
+@runtime_checkable
+class IStringable(Protocol):
     """
     Interface for objects that can convert to/from string representation.
 
     Enforces consistent string conversion behavior across XWSystem.
     """
 
-    @abstractmethod
     def to_string(self) -> str:
         """
         Convert object to string representation.
@@ -106,9 +104,8 @@ class IStringable(ABC):
         Returns:
             String representation of the object
         """
-        pass
+        ...
 
-    @abstractmethod
     def from_string(self, string: str) -> bool:
         """
         Initialize object from string representation.
@@ -119,17 +116,17 @@ class IStringable(ABC):
         Returns:
             True if parsing was successful, False otherwise
         """
-        pass
+        ...
 
 
-class INative(ABC):
+@runtime_checkable
+class INative(Protocol):
     """
     Interface for objects that can convert to/from native Python types.
 
     Enforces consistent native data conversion across XWSystem.
     """
 
-    @abstractmethod
     def to_native(self) -> Any:
         """
         Convert to native Python object.
@@ -137,9 +134,8 @@ class INative(ABC):
         Returns:
             Native Python object (dict, list, str, int, float, bool, etc.)
         """
-        pass
+        ...
 
-    @abstractmethod
     def from_native(self, data: Any) -> "INative":
         """
         Create from native Python object.
@@ -150,9 +146,8 @@ class INative(ABC):
         Returns:
             New instance created from native data
         """
-        pass
+        ...
 
-    @abstractmethod
     def is_native_compatible(self, data: Any) -> bool:
         """
         Check if data is compatible with native conversion.
@@ -163,9 +158,8 @@ class INative(ABC):
         Returns:
             True if compatible
         """
-        pass
+        ...
 
-    @abstractmethod
     def get_native_type(self) -> DataType:
         """
         Get the native data type.
@@ -173,7 +167,136 @@ class INative(ABC):
         Returns:
             DataType enum value
         """
-        pass
+        ...
+
+
+# ============================================================================
+# CORE OBJECT INTERFACE
+# ============================================================================
+
+
+@runtime_checkable
+class IObject(IID, INative, Protocol):
+    """
+    Core interface for all objects in the eXonware ecosystem.
+    
+    This is the foundational object interface that combines identity (IID),
+    native conversion (INative), timestamps, metadata (title/description),
+    serialization, and storage operations. This interface can be used by
+    xwauth, xwstorage, xwentity, and other libraries to ensure consistency.
+    
+    Objects implementing IObject can be:
+    - Identified (id, uid)
+    - Converted to/from native Python types (to_native, from_native)
+    - Tracked with timestamps (created_at, updated_at)
+    - Described with metadata (title, description)
+    - Serialized (to_dict)
+    - Stored and loaded (save, load)
+    """
+
+    @property
+    def created_at(self) -> datetime:
+        """
+        Get the creation timestamp.
+
+        Returns:
+            Creation datetime
+        """
+        ...
+
+    @property
+    def updated_at(self) -> datetime:
+        """
+        Get the last update timestamp.
+
+        Returns:
+            Last update datetime
+        """
+        ...
+
+    @property
+    def title(self) -> Optional[str]:
+        """
+        Get the object title.
+
+        Returns:
+            Title string or None if not set
+        """
+        ...
+
+    @property
+    def description(self) -> Optional[str]:
+        """
+        Get the object description.
+
+        Returns:
+            Description string or None if not set
+        """
+        ...
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Export object as dictionary.
+
+        Should include id, uid, created_at, updated_at, title, description,
+        and any object-specific data.
+
+        Returns:
+            Dictionary representation of the object
+        """
+        ...
+
+    def save(self, *args, **kwargs) -> None:
+        """
+        Save object to storage.
+
+        Subclasses implement object-specific storage logic. This method
+        can be decorated with @XWAction to enable action-based execution,
+        validation, and authorization.
+
+        Args:
+            *args: Positional arguments (implementation-specific)
+            **kwargs: Keyword arguments (implementation-specific)
+        """
+        ...
+
+    def load(self, *args, **kwargs) -> None:
+        """
+        Load object from storage.
+
+        Subclasses implement object-specific loading logic. This method
+        can be decorated with @XWAction to enable action-based execution,
+        validation, and authorization.
+
+        Args:
+            *args: Positional arguments (implementation-specific)
+            **kwargs: Keyword arguments (implementation-specific)
+        """
+        ...
+    
+    def __getitem__(self, key: str) -> Any:
+        """
+        Get object property using dictionary-style access.
+        
+        Supports accessing properties like:
+        - obj["uid"] -> returns uid property
+        - obj["title"] -> returns title property
+        - obj["description"] -> returns description property
+        - obj["id"] -> returns id property
+        - obj["created_at"] -> returns created_at property
+        - obj["updated_at"] -> returns updated_at property
+        - obj["property_name"] -> returns any other attribute
+        
+        Args:
+            key: Property name to access
+            
+        Returns:
+            Property value
+            
+        Raises:
+            KeyError: If property doesn't exist
+        """
+        ...
 
 
 # ============================================================================
@@ -181,14 +304,14 @@ class INative(ABC):
 # ============================================================================
 
 
-class ICloneable(ABC):
+@runtime_checkable
+class ICloneable(Protocol):
     """
     Interface for objects that can be cloned.
 
     Enforces consistent cloning behavior across XWSystem.
     """
 
-    @abstractmethod
     def clone(self, mode: CloneMode = CloneMode.DEEP) -> "ICloneable":
         """
         Create a clone of this object.
@@ -199,9 +322,8 @@ class ICloneable(ABC):
         Returns:
             Cloned object
         """
-        pass
+        ...
 
-    @abstractmethod
     def deep_clone(self) -> "ICloneable":
         """
         Create a deep clone.
@@ -209,9 +331,8 @@ class ICloneable(ABC):
         Returns:
             Deep cloned object
         """
-        pass
+        ...
 
-    @abstractmethod
     def shallow_clone(self) -> "ICloneable":
         """
         Create a shallow clone.
@@ -219,9 +340,8 @@ class ICloneable(ABC):
         Returns:
             Shallow cloned object
         """
-        pass
+        ...
 
-    @abstractmethod
     def reference_clone(self) -> "ICloneable":
         """
         Create a reference clone (same object, different reference).
@@ -229,9 +349,8 @@ class ICloneable(ABC):
         Returns:
             Reference cloned object
         """
-        pass
+        ...
 
-    @abstractmethod
     def is_cloneable(self, mode: CloneMode = CloneMode.DEEP) -> bool:
         """
         Check if object can be cloned in given mode.
@@ -242,7 +361,7 @@ class ICloneable(ABC):
         Returns:
             True if cloneable
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -250,14 +369,14 @@ class ICloneable(ABC):
 # ============================================================================
 
 
-class IComparable(ABC):
+@runtime_checkable
+class IComparable(Protocol):
     """
     Interface for objects that can be compared.
 
     Enforces consistent comparison behavior across XWSystem.
     """
 
-    @abstractmethod
     def equals(self, other: Any) -> bool:
         """
         Check if this object equals another.
@@ -268,9 +387,8 @@ class IComparable(ABC):
         Returns:
             True if equal
         """
-        pass
+        ...
 
-    @abstractmethod
     def compare_to(self, other: Any) -> int:
         """
         Compare this object to another.
@@ -281,9 +399,8 @@ class IComparable(ABC):
         Returns:
             -1 if less than, 0 if equal, 1 if greater than
         """
-        pass
+        ...
 
-    @abstractmethod
     def hash_code(self) -> int:
         """
         Get hash code for this object.
@@ -291,9 +408,8 @@ class IComparable(ABC):
         Returns:
             Hash code
         """
-        pass
+        ...
 
-    @abstractmethod
     def is_comparable(self, other: Any) -> bool:
         """
         Check if this object can be compared to another.
@@ -304,7 +420,7 @@ class IComparable(ABC):
         Returns:
             True if comparable
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -312,14 +428,14 @@ class IComparable(ABC):
 # ============================================================================
 
 
-class IIterable(ABC):
+@runtime_checkable
+class IIterable(Protocol):
     """
     Interface for objects that can be iterated.
 
     Enforces consistent iteration behavior across XWSystem.
     """
 
-    @abstractmethod
     def __iter__(self) -> Iterator[Any]:
         """
         Get iterator for this object.
@@ -327,9 +443,8 @@ class IIterable(ABC):
         Returns:
             Iterator
         """
-        pass
+        ...
 
-    @abstractmethod
     def __len__(self) -> int:
         """
         Get length of this object.
@@ -337,9 +452,8 @@ class IIterable(ABC):
         Returns:
             Length
         """
-        pass
+        ...
 
-    @abstractmethod
     def __contains__(self, item: Any) -> bool:
         """
         Check if object contains item.
@@ -350,9 +464,8 @@ class IIterable(ABC):
         Returns:
             True if contains
         """
-        pass
+        ...
 
-    @abstractmethod
     def is_iterable(self) -> bool:
         """
         Check if object is iterable.
@@ -360,9 +473,8 @@ class IIterable(ABC):
         Returns:
             True if iterable
         """
-        pass
+        ...
 
-    @abstractmethod
     def get_iterator_type(self) -> str:
         """
         Get the type of iterator this object provides.
@@ -370,7 +482,7 @@ class IIterable(ABC):
         Returns:
             Iterator type name
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -378,14 +490,14 @@ class IIterable(ABC):
 # ============================================================================
 
 
-class IContainer(ABC):
+@runtime_checkable
+class IContainer(Protocol):
     """
     Interface for objects that act as containers.
 
     Enforces consistent container behavior across XWSystem.
     """
 
-    @abstractmethod
     def add(self, item: Any) -> bool:
         """
         Add item to container.
@@ -396,9 +508,8 @@ class IContainer(ABC):
         Returns:
             True if added successfully
         """
-        pass
+        ...
 
-    @abstractmethod
     def remove(self, item: Any) -> bool:
         """
         Remove item from container.
@@ -409,16 +520,14 @@ class IContainer(ABC):
         Returns:
             True if removed successfully
         """
-        pass
+        ...
 
-    @abstractmethod
     def clear(self) -> None:
         """
         Clear all items from container.
         """
-        pass
+        ...
 
-    @abstractmethod
     def is_empty(self) -> bool:
         """
         Check if container is empty.
@@ -426,9 +535,8 @@ class IContainer(ABC):
         Returns:
             True if empty
         """
-        pass
+        ...
 
-    @abstractmethod
     def size(self) -> int:
         """
         Get size of container.
@@ -436,9 +544,8 @@ class IContainer(ABC):
         Returns:
             Number of items
         """
-        pass
+        ...
 
-    @abstractmethod
     def contains(self, item: Any) -> bool:
         """
         Check if container contains item.
@@ -449,7 +556,7 @@ class IContainer(ABC):
         Returns:
             True if contains
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -457,14 +564,14 @@ class IContainer(ABC):
 # ============================================================================
 
 
-class IMetadata(ABC):
+@runtime_checkable
+class IMetadata(Protocol):
     """
     Interface for objects that have metadata.
 
     Enforces consistent metadata handling across XWSystem.
     """
 
-    @abstractmethod
     def get_metadata(self, key: str) -> Any:
         """
         Get metadata value by key.
@@ -475,9 +582,8 @@ class IMetadata(ABC):
         Returns:
             Metadata value
         """
-        pass
+        ...
 
-    @abstractmethod
     def set_metadata(self, key: str, value: Any) -> None:
         """
         Set metadata value by key.
@@ -486,9 +592,8 @@ class IMetadata(ABC):
             key: Metadata key
             value: Metadata value
         """
-        pass
+        ...
 
-    @abstractmethod
     def has_metadata(self, key: str) -> bool:
         """
         Check if metadata key exists.
@@ -499,9 +604,8 @@ class IMetadata(ABC):
         Returns:
             True if exists
         """
-        pass
+        ...
 
-    @abstractmethod
     def remove_metadata(self, key: str) -> bool:
         """
         Remove metadata by key.
@@ -512,9 +616,8 @@ class IMetadata(ABC):
         Returns:
             True if removed
         """
-        pass
+        ...
 
-    @abstractmethod
     def get_all_metadata(self) -> dict[str, Any]:
         """
         Get all metadata.
@@ -522,14 +625,13 @@ class IMetadata(ABC):
         Returns:
             Dictionary of all metadata
         """
-        pass
+        ...
 
-    @abstractmethod
     def clear_metadata(self) -> None:
         """
         Clear all metadata.
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -537,34 +639,30 @@ class IMetadata(ABC):
 # ============================================================================
 
 
-class ILifecycle(ABC):
+@runtime_checkable
+class ILifecycle(Protocol):
     """
     Interface for objects with lifecycle management.
 
     Enforces consistent lifecycle behavior across XWSystem.
     """
 
-    @abstractmethod
     def initialize(self) -> None:
         """Initialize the object."""
-        pass
+        ...
 
-    @abstractmethod
     def start(self) -> None:
         """Start the object."""
-        pass
+        ...
 
-    @abstractmethod
     def stop(self) -> None:
         """Stop the object."""
-        pass
+        ...
 
-    @abstractmethod
     def shutdown(self) -> None:
         """Shutdown the object."""
-        pass
+        ...
 
-    @abstractmethod
     def is_initialized(self) -> bool:
         """
         Check if object is initialized.
@@ -572,9 +670,8 @@ class ILifecycle(ABC):
         Returns:
             True if initialized
         """
-        pass
+        ...
 
-    @abstractmethod
     def is_running(self) -> bool:
         """
         Check if object is running.
@@ -582,9 +679,8 @@ class ILifecycle(ABC):
         Returns:
             True if running
         """
-        pass
+        ...
 
-    @abstractmethod
     def get_state(self) -> str:
         """
         Get current state.
@@ -592,7 +688,7 @@ class ILifecycle(ABC):
         Returns:
             Current state string
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -600,14 +696,14 @@ class ILifecycle(ABC):
 # ============================================================================
 
 
-class IFactory(ABC):
+@runtime_checkable
+class IFactory(Protocol):
     """
     Interface for factory objects.
 
     Enforces consistent factory behavior across XWSystem.
     """
 
-    @abstractmethod
     def create(self, *args, **kwargs) -> Any:
         """
         Create a new instance.
@@ -619,9 +715,8 @@ class IFactory(ABC):
         Returns:
             New instance
         """
-        pass
+        ...
 
-    @abstractmethod
     def create_from_config(self, config: dict[str, Any]) -> Any:
         """
         Create instance from configuration.
@@ -632,9 +727,8 @@ class IFactory(ABC):
         Returns:
             New instance
         """
-        pass
+        ...
 
-    @abstractmethod
     def get_supported_types(self) -> list[str]:
         """
         Get list of supported types.
@@ -642,9 +736,8 @@ class IFactory(ABC):
         Returns:
             List of supported type names
         """
-        pass
+        ...
 
-    @abstractmethod
     def can_create(self, type_name: str) -> bool:
         """
         Check if factory can create type.
@@ -655,7 +748,7 @@ class IFactory(ABC):
         Returns:
             True if can create
         """
-        pass
+        ...
 
 
 # ============================================================================
@@ -663,48 +756,244 @@ class IFactory(ABC):
 # ============================================================================
 
 
-class ICore(ABC):
+@runtime_checkable
+class ICore(Protocol):
     """Interface for core functionality."""
 
     @property
-    @abstractmethod
     def mode(self) -> CoreMode:
         """Get core mode."""
-        pass
+        ...
 
     @property
-    @abstractmethod
     def state(self) -> CoreState:
         """Get core state."""
-        pass
+        ...
 
-    @abstractmethod
     def initialize(self) -> None:
         """Initialize core functionality."""
-        pass
+        ...
 
-    @abstractmethod
     def shutdown(self) -> None:
         """Shutdown core functionality."""
-        pass
+        ...
 
-    @abstractmethod
     def is_initialized(self) -> bool:
         """Check if core is initialized."""
-        pass
+        ...
 
-    @abstractmethod
     def is_shutdown(self) -> bool:
         """Check if core is shutdown."""
-        pass
+        ...
 
-    @abstractmethod
     def get_dependencies(self) -> list[str]:
         """Get all dependencies."""
-        pass
+        ...
 
-    @abstractmethod
     def check_dependencies(self) -> bool:
         """Check if all dependencies are satisfied."""
-        pass
+        ...
 
+
+# ============================================================================
+# PROVIDER INTERFACES (for xwauth/xwstorage decoupling)
+# ============================================================================
+# These minimal basic interfaces enable dependency inversion to avoid circular
+# dependencies between xwauth and xwstorage. They are defined here in xwsystem
+# (the foundation) so both libraries can import them without creating circular
+# dependencies.
+#
+# Architecture:
+# - xwsystem defines IBasicProviderAuth and IBasicProviderStorage (minimal core)
+# - xwstorage extends IBasicProviderAuth to IAuthProvider (full interface)
+# - xwauth extends IBasicProviderStorage to IStorageProvider (full interface)
+# - xwentity uses IBasicProviderAuth and IBasicProviderStorage from xwsystem
+#
+# Data models (User, Token, Session, etc.) stay in their original locations:
+# - xwstorage/auth/interface.py - TokenValidationResult, TokenIntrospectionResult, User
+# - xwauth/storage/interface.py - User, Session, Token, AuditLog, etc.
+
+
+# ============================================================================
+# BASIC AUTH PROVIDER INTERFACE
+# ============================================================================
+
+@runtime_checkable
+class IBasicProviderAuth(Protocol):
+    """
+    Basic authentication provider interface (minimal core).
+    
+    This minimal interface provides only the essential auth operations needed
+    by xwstorage and xwentity. Full IAuthProvider extends this with additional
+    methods (validate_token, introspect_token, etc.).
+    
+    Defined in xwsystem to serve as single source of truth for all libraries.
+    Uses simple types (dict, str, list) that can be replaced at runtime by
+    advanced objects in external projects.
+    """
+    
+    async def check_permission(
+        self,
+        user_id: str,
+        resource: str,
+        action: str
+    ) -> bool:
+        """
+        Check if a user has permission for a resource action.
+        
+        Args:
+            user_id: User identifier
+            resource: Resource identifier (e.g., "bucket:my-bucket", "entity:entity_id")
+            action: Action to check (e.g., "read", "write", "delete", "admin")
+            
+        Returns:
+            True if user has permission, False otherwise
+        """
+        ...
+    
+    async def get_user_roles(self, user_id: str) -> list[str]:
+        """
+        Get list of roles for a user.
+        
+        Args:
+            user_id: User identifier
+            
+        Returns:
+            List of role names
+        """
+        ...
+    
+    async def validate_token(self, token: str) -> dict[str, Any]:
+        """
+        Validate a token and return simple token information.
+        
+        Returns a simple dict with:
+        - valid: bool - Whether token is valid
+        - user_id: Optional[str] - User ID if valid
+        - scopes: list[str] - List of scopes
+        - expires_at: Optional[float] - Expiration timestamp
+        
+        Args:
+            token: Token string to validate
+            
+        Returns:
+            Dictionary with token validation result (simple types only)
+        """
+        ...
+
+
+# ============================================================================
+# BASIC STORAGE PROVIDER INTERFACE
+# ============================================================================
+
+@runtime_checkable
+class IBasicProviderStorage(Protocol):
+    """
+    Basic storage provider interface (minimal, generic core).
+    
+    This minimal interface provides generic CRUD operations that work with
+    ANY entity/table/object type. Full IStorageProvider extends this with
+    domain-specific convenience methods (save_user, get_session, etc.).
+    
+    Defined in xwsystem to serve as single source of truth for all libraries.
+    The interface is entity-agnostic - it works with any entity type.
+    """
+    
+    async def save(
+        self,
+        entity_type: str,
+        entity_id: str,
+        data: dict[str, Any]
+    ) -> None:
+        """
+        Save entity to storage.
+        
+        Args:
+            entity_type: Entity type identifier (e.g., "user", "session", "token", "product")
+            entity_id: Entity identifier
+            data: Entity data dictionary
+        """
+        ...
+    
+    async def get(
+        self,
+        entity_type: str,
+        entity_id: str
+    ) -> Optional[dict[str, Any]]:
+        """
+        Get entity by ID.
+        
+        Args:
+            entity_type: Entity type identifier
+            entity_id: Entity identifier
+            
+        Returns:
+            Entity data dictionary if found, None otherwise
+        """
+        ...
+    
+    async def get_by_field(
+        self,
+        entity_type: str,
+        field: str,
+        value: Any
+    ) -> Optional[dict[str, Any]]:
+        """
+        Get entity by field value.
+        
+        Args:
+            entity_type: Entity type identifier
+            field: Field name to search by
+            value: Field value to match
+            
+        Returns:
+            Entity data dictionary if found, None otherwise
+        """
+        ...
+    
+    async def update(
+        self,
+        entity_type: str,
+        entity_id: str,
+        updates: dict[str, Any]
+    ) -> None:
+        """
+        Update entity data.
+        
+        Args:
+            entity_type: Entity type identifier
+            entity_id: Entity identifier
+            updates: Dictionary of fields to update
+        """
+        ...
+    
+    async def delete(
+        self,
+        entity_type: str,
+        entity_id: str
+    ) -> None:
+        """
+        Delete entity from storage.
+        
+        Args:
+            entity_type: Entity type identifier
+            entity_id: Entity identifier
+        """
+        ...
+    
+    async def list(
+        self,
+        entity_type: str,
+        filters: Optional[dict[str, Any]] = None
+    ) -> list[dict[str, Any]]:
+        """
+        List entities with optional filters.
+        
+        Args:
+            entity_type: Entity type identifier
+            filters: Optional filter dictionary (e.g., {"status": "active"})
+            
+        Returns:
+            List of entity data dictionaries
+        """
+        ...

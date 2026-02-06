@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/2.integration/test_caching_integration.py
 """
 Integration tests for caching module.
 
@@ -22,7 +23,7 @@ from exonware.xwsystem.caching.lfu_optimized import OptimizedLFUCache
 from exonware.xwsystem.caching.secure_cache import SecureLRUCache
 from exonware.xwsystem.caching.observable_cache import ObservableLRUCache
 from exonware.xwsystem.caching.events import CacheEvent
-from exonware.xwsystem.caching.decorators import cached, async_cached
+from exonware.xwsystem.caching.decorators import xwcached, xw_async_cached
 from exonware.xwsystem.caching.warming import warm_cache, PreloadWarmingStrategy
 
 
@@ -116,7 +117,7 @@ class TestCacheWithDecorators:
         """Test caching expensive function results."""
         call_count = [0]
         
-        @cached()
+        @xwcached()
         def expensive_function(x, y):
             call_count[0] += 1
             time.sleep(0.01)  # Simulate expensive operation
@@ -142,7 +143,7 @@ class TestCacheWithDecorators:
         """Test caching async function results."""
         call_count = [0]
         
-        @async_cached()
+        @xw_async_cached()
         async def expensive_async_function(x, y):
             call_count[0] += 1
             await asyncio.sleep(0.01)
@@ -267,4 +268,3 @@ class TestPerformanceOptimizations:
         assert optimized_time <= naive_time * 1.2, (
             f"Optimized LFU not faster: {speedup:.2f}x speedup"
         )
-

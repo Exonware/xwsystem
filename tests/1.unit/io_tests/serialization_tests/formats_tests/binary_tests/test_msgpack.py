@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/formats_tests/binary_tests/test_msgpack.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for MessagePack serializer.
@@ -32,4 +33,3 @@ class TestMsgPackSerializer:
             assert loaded == test_data
         except ImportError:
             pytest.skip("MessagePack serializer not available")
-

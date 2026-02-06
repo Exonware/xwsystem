@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 File locking implementation for concurrent access control.
@@ -16,9 +16,11 @@ Priority 4 (Performance): Minimal overhead, fast lock acquisition
 Priority 5 (Extensibility): Easy to extend with different lock types
 """
 
+from __future__ import annotations
+
 import time
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Optional, Any
 
 from ..contracts import IFileLock
 
@@ -38,7 +40,7 @@ class FileLock(IFileLock):
         ...     save_file("data.json", data)
     """
     
-    def __init__(self, path: Union[str, Path], timeout: Optional[float] = None):
+    def __init__(self, path: str | Path, timeout: Optional[float] = None):
         """
         Initialize file lock.
         
@@ -113,7 +115,7 @@ class FileLock(IFileLock):
         """Check if currently locked."""
         return self._locked
     
-    def __enter__(self) -> 'FileLock':
+    def __enter__(self) -> FileLock:
         """Context manager entry."""
         self.acquire()
         return self
@@ -125,4 +127,3 @@ class FileLock(IFileLock):
     def __del__(self):
         """Cleanup on deletion."""
         self.release()
-

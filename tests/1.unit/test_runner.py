@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/test_runner.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
@@ -288,7 +289,7 @@ def run_pytest(
     return result.returncode, result.stdout, result.stderr
 
 
-class TestRunner:
+class RunnerUtil:  # Utility class (not a test class - renamed to avoid pytest collection)
     """
     Reusable test runner with colored output and Markdown generation.
     
@@ -300,7 +301,7 @@ class TestRunner:
     - Summary statistics
     
     Usage:
-        runner = TestRunner(
+        runner = RunnerUtil(
             library_name="xwnode",
             layer_name="0.core",
             description="Core Tests - Fast, High-Value Checks"
@@ -523,4 +524,3 @@ class TestRunner:
             print(f"💾 {save_msg}")
         
         return exit_code
-

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/events.py
 #exonware/xwsystem/caching/events.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Event system for caching module.
@@ -14,6 +15,7 @@ Extensibility Priority #5 - Event-driven architecture for custom behaviors.
 from typing import Callable, Any, Optional
 from enum import Enum
 from ..config.logging_setup import get_logger
+from ..console import ConsoleEventLogger
 
 logger = get_logger("xwsystem.caching.events")
 
@@ -139,56 +141,138 @@ class EventLogger:
     Built-in event logger for debugging.
     
     Logs all cache events for debugging and monitoring.
+    Uses ConsoleEventLogger internally for XWUIConsole compatibility.
     """
     
-    def __init__(self, log_level: str = "DEBUG"):
+    # Map CacheEvent to ConsoleEventType
+    _CACHE_EVENT_TO_CONSOLE_TYPE = {
+        CacheEvent.HIT: 'info',
+        CacheEvent.MISS: 'warn',
+        CacheEvent.PUT: 'log',
+        CacheEvent.DELETE: 'log',
+        CacheEvent.EVICT: 'warn',
+        CacheEvent.EXPIRE: 'warn',
+        CacheEvent.CLEAR: 'system',
+        CacheEvent.ERROR: 'error',
+    }
+    
+    def __init__(self, log_level: str = "DEBUG", max_entries: int = 1000):
         """
         Initialize event logger.
         
         Args:
-            log_level: Logging level for events
+            log_level: Logging level for events (for compatibility, not used by ConsoleEventLogger)
+            max_entries: Maximum number of events to keep
         """
         self.log_level = log_level
-        self.events_log: list[dict[str, Any]] = []
+        # Use ConsoleEventLogger internally
+        self._console_logger = ConsoleEventLogger(
+            max_entries=max_entries,
+            use_milliseconds=True,
+            default_source="cache.events"
+        )
     
     def __call__(self, event: CacheEvent, **kwargs):
         """Log event."""
-        import time
+        # Map CacheEvent to ConsoleEventType
+        console_type = self._CACHE_EVENT_TO_CONSOLE_TYPE.get(event, 'log')
         
-        log_entry = {
-            'timestamp': time.time(),
-            'event': event.value,
-            'data': kwargs
-        }
-        
-        self.events_log.append(log_entry)
-        
-        # Format message
+        # Format message based on event type
         key = kwargs.get('key', '?')
         if event == CacheEvent.HIT:
-            logger.debug(f"[EVENT] Cache HIT: {key}")
+            msg = f"Cache HIT: {key}"
+            logger.debug(f"[EVENT] {msg}")
         elif event == CacheEvent.MISS:
-            logger.debug(f"[EVENT] Cache MISS: {key}")
+            msg = f"Cache MISS: {key}"
+            logger.debug(f"[EVENT] {msg}")
         elif event == CacheEvent.PUT:
-            logger.debug(f"[EVENT] Cache PUT: {key}")
+            msg = f"Cache PUT: {key}"
+            logger.debug(f"[EVENT] {msg}")
         elif event == CacheEvent.DELETE:
-            logger.debug(f"[EVENT] Cache DELETE: {key}")
+            msg = f"Cache DELETE: {key}"
+            logger.debug(f"[EVENT] {msg}")
         elif event == CacheEvent.EVICT:
-            logger.debug(f"[EVENT] Cache EVICT: {key}")
+            msg = f"Cache EVICT: {key}"
+            logger.debug(f"[EVENT] {msg}")
         elif event == CacheEvent.EXPIRE:
-            logger.debug(f"[EVENT] Cache EXPIRE: {key}")
+            msg = f"Cache EXPIRE: {key}"
+            logger.debug(f"[EVENT] {msg}")
+        elif event == CacheEvent.CLEAR:
+            msg = "Cache CLEAR"
+            logger.debug(f"[EVENT] {msg}")
         elif event == CacheEvent.ERROR:
-            logger.error(f"[EVENT] Cache ERROR: {kwargs.get('error', 'Unknown')}")
+            error_msg = kwargs.get('error', 'Unknown')
+            msg = f"Cache ERROR: {error_msg}"
+            logger.error(f"[EVENT] {msg}")
+        else:
+            msg = f"Cache {event.value.upper()}: {key}"
+        
+        # Log to ConsoleEventLogger
+        # Include original cache event type in data for filtering
+        event_data = kwargs.copy()
+        event_data['_cache_event'] = event.value
+        
+        self._console_logger.add_event(
+            event_type=console_type,
+            msg=msg,
+            source="cache.events",
+            data=event_data
+        )
     
     def get_events(self, event_type: Optional[CacheEvent] = None) -> list[dict[str, Any]]:
-        """Get logged events, optionally filtered by type."""
-        if event_type:
-            return [e for e in self.events_log if e['event'] == event_type.value]
-        return self.events_log
+        """
+        Get logged events, optionally filtered by type.
+        
+        Returns events in a simplified format.
+        For XWUIConsole format, use get_console_events() instead.
+        """
+        # Get events from ConsoleEventLogger
+        console_events = self._console_logger.get_events_raw()
+        
+        # Convert to simplified format
+        result = []
+        for event in console_events:
+            # Extract original event type from data if available
+            event_data = event.data or {}
+            cache_event_value = event_data.get('_cache_event', None)
+            
+            # Filter by event_type if specified
+            if event_type is not None:
+                if cache_event_value != event_type.value:
+                    continue
+            
+            # Convert to old format
+            old_format = {
+                'timestamp': event.timestamp / 1000 if isinstance(event.timestamp, (int, float)) and event.timestamp > 1e10 else event.timestamp,
+                'event': cache_event_value or event.type,
+                'data': event.data
+            }
+            result.append(old_format)
+        
+        return result
+    
+    def get_console_events(self) -> list[dict[str, Any]]:
+        """
+        Get logged events in structured format.
+        
+        Returns:
+            List of event dictionaries in ConsoleEvent format
+        """
+        return self._console_logger.get_events()
     
     def clear(self) -> None:
         """Clear event log."""
-        self.events_log.clear()
+        self._console_logger.clear()
+    
+    @property
+    def console_logger(self) -> ConsoleEventLogger:
+        """
+        Get the underlying ConsoleEventLogger instance.
+        
+        Returns:
+            ConsoleEventLogger instance for direct access
+        """
+        return self._console_logger
 
 
 __all__ = [
@@ -196,4 +280,3 @@ __all__ = [
     'CacheEventEmitter',
     'EventLogger',
 ]
-

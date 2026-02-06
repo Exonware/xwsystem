@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/formats_tests/binary_tests/test_pickle.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for Pickle serializer.
@@ -32,4 +33,3 @@ class TestPickleSerializer:
             assert loaded == test_data
         except ImportError:
             pytest.skip("Pickle serializer not available")
-

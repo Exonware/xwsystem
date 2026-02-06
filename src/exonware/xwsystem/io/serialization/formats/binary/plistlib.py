@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/binary/plistlib.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 Plist serialization - Apple property list format.
@@ -14,7 +15,7 @@ Following I→A pattern:
 """
 
 import plistlib
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -98,7 +99,7 @@ class PlistSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using plistlib module)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to Plist bytes.
         
@@ -139,7 +140,7 @@ class PlistSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode Plist bytes to data.
         
@@ -171,4 +172,3 @@ class PlistSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             )
-

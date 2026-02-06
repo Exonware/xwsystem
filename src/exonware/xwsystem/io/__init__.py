@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/__init__.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 I/O utilities for safe file operations, path management, and codec integration.
@@ -95,6 +96,18 @@ from .file import (
 from .folder import XWFolder
 
 # ═══════════════════════════════════════════════════════════════════════
+# SOURCE READER - Load from path or URL (local + internet)
+# ═══════════════════════════════════════════════════════════════════════
+
+from .source_reader import (
+    SourceLoadConfig,
+    is_http_url,
+    get_scheme,
+    is_external_scheme,
+    read_source_text,
+)
+
+# ═══════════════════════════════════════════════════════════════════════
 # STREAM - Stream + Codec Integration
 # ═══════════════════════════════════════════════════════════════════════
 
@@ -113,7 +126,7 @@ from .filesystem import LocalFileSystem
 # ═══════════════════════════════════════════════════════════════════════
 
 from .archive import (
-    # Legacy Archive
+    # Archive
     Archive, Compression,
     # Archivers (Codecs - In-memory)
     ZipArchiver, TarArchiver,
@@ -138,7 +151,6 @@ from .codec.contracts import ICodec, ICodecMetadata
 from .codec.base import ACodec
 from .codec.registry import UniversalCodecRegistry, get_registry
 
-# Type aliases for backward compatibility
 from .contracts import EncodeOptions, DecodeOptions, Serializer, Formatter
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -191,6 +203,13 @@ __all__ = [
     
     # Folder operations
     "XWFolder",
+    
+    # Source reader (path or URI; config-driven, multi-scheme)
+    "SourceLoadConfig",
+    "is_http_url",
+    "get_scheme",
+    "is_external_scheme",
+    "read_source_text",
     
     # Stream operations
     "CodecIO", "PagedCodecIO", "AsyncAtomicFileWriter",

@@ -22,6 +22,12 @@ email = "connect@exonware.com"
 text = "MIT"
 
 [project.optional-dependencies]
+windows = [
+    "pywin32>=300",
+]
+lazy = [
+    "exonware-xwlazy>=1.0.1",
+]
 full = [
     # Core serialization formats (actually used in codebase)
     "PyYAML>=5.4.0",
@@ -43,6 +49,7 @@ full = [
     "protobuf>=3.19.0",
     "pyarrow>=8.0.0",
     "thrift>=0.10.0",
+    "pandas>=1.3.0",  # For tabular formats (CSV, Excel, Google Sheets, DataFrame)
     
     # Core framework dependencies
     "psutil>=5.8.0",
@@ -95,7 +102,7 @@ profile = "black"
 line_length = 88
 
 [tool.mypy]
-python_version = "0.1.0.1"
+python_version = "0.1.0.3"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -111,20 +118,15 @@ warn_unused_ignores = true
 warn_no_return = true
 warn_unreachable = true
 
-[tool.pytest.ini_options]
-testpaths = [ "tests",]
-python_files = [ "test_*.py",]
-python_classes = [ "Test*",]
-python_functions = [ "test_*",]
-addopts = "-v --tb=short"
-markers = [ "xwsystem_core: Core functionality tests", "xwsystem_unit: Unit tests for individual components", "xwsystem_integration: Integration tests between components", "xwsystem_config: Configuration and setup tests", "xwsystem_performance: Performance and benchmarking tests", "xwsystem_security: Security validation tests", "xwsystem_threading: Threading and concurrency tests", "xwsystem_io: I/O operations tests", "xwsystem_structures: Data structure tests", "xwsystem_patterns: Design pattern tests", "xwsystem_monitoring: Monitoring and metrics tests",]
-
 [tool.hatch.version]
 path = "src/exonware/xwsystem/version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = [ "src/exonware",]
 py-modules = [ "src/xwsystem",]
+include = [
+    "src/exonware/xwsystem/py.typed",
+]
 
 [tool.hatch.build.targets.sdist]
 include = [ "/src", "/tests", "/README.md", "/.github",]

@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 Serialization base classes - ASerialization abstract base.
@@ -13,9 +14,11 @@ Following I→A→XW pattern:
 - XW: XW{Format}Serializer (concrete implementations)
 """
 
+from __future__ import annotations
+
 import asyncio
 from abc import ABC, abstractmethod, ABCMeta
-from typing import Any, Union, Optional, BinaryIO, TextIO, AsyncIterator, Iterator, TYPE_CHECKING
+from typing import Any, Optional, BinaryIO, TextIO, AsyncIterator, Iterator, TYPE_CHECKING
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -31,7 +34,41 @@ if TYPE_CHECKING:
     from .schema_registry import SchemaInfo
 
 
-class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
+# ============================================================================
+# MODULE-LEVEL CACHE FOR SERIALIZER INSTANCES BY FILE PATH
+# ============================================================================
+
+# Module-level cache: file_path -> serializer_instance
+# All serializers (JsonSerializer, YamlSerializer, XWSerializer, etc.) use this
+# Benefits: O(1) lookup, automatic LRU eviction, thread-safe, statistics
+from ...caching import create_cache
+# Use flexible create_cache() to allow configuration via environment/settings
+# Defaults to FunctoolsLRUCache
+_file_serializer_cache = create_cache(capacity=100, namespace='xwsystem.serialization', name="FileSerializerCache")
+
+
+def get_cached_serializer_for_path(file_path: str | Path) -> Optional[ISerialization]:
+    """
+    Get cached serializer instance for file path, if available.
+    
+    This function allows retrieving a previously cached serializer instance
+    for a given file path. Serializers are automatically cached when
+    save_file() or load_file() is called.
+    
+    Args:
+        file_path: Path to the file
+        
+    Returns:
+        Cached serializer instance if available, None otherwise
+    """
+    if _file_serializer_cache is None:
+        return None
+    
+    path_str = str(Path(file_path).resolve())
+    return _file_serializer_cache.get(path_str)
+
+
+class ASerialization(ACodec[Any, bytes | str], ISerialization):
     """
     Abstract base class for serialization - follows I→A→XW pattern.
     
@@ -69,11 +106,11 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
         super().__init__(max_depth=max_depth, max_size_mb=max_size_mb)
     
     # ========================================================================
-    # CORE CODEC METHODS (Must implement in subclasses)
+    # CORE CODEC METHODS (Implement in subclasses)
     # ========================================================================
     
     @abstractmethod
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to representation - must implement in subclass.
         
@@ -83,7 +120,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
         pass
     
     @abstractmethod
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode representation to data - must implement in subclass.
         
@@ -93,7 +130,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
         pass
     
     # ========================================================================
-    # METADATA PROPERTIES (Must implement in subclasses)
+    # METADATA PROPERTIES (Implement in subclasses)
     # ========================================================================
     
     @property
@@ -301,7 +338,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     # FILE I/O METHODS (Default implementations using encode/decode)
     # ========================================================================
     
-    def save_file(self, data: Any, file_path: Union[str, Path], **options) -> None:
+    def save_file(self, data: Any, file_path: str | Path, **options) -> None:
         """
         Save data to file with atomic operations.
         
@@ -310,6 +347,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
         2. Encode data using encode()
         3. Write to file using Path.write_bytes() or write_text()
         4. Uses atomic operations if configured
+        5. Caches serializer instance by file path for performance
         
         Args:
             data: Data to serialize and save
@@ -321,6 +359,12 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
         """
         try:
             path = Path(file_path)
+            path_str = str(path.resolve())
+            
+            # Cache this serializer instance for this file path
+            # This enables reuse if the same file is accessed again
+            if _file_serializer_cache is not None:
+                _file_serializer_cache.put(path_str, self)
             
             # Ensure parent directory exists
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -349,13 +393,14 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
                 original_error=e
             )
     
-    def load_file(self, file_path: Union[str, Path], **options) -> Any:
+    def load_file(self, file_path: str | Path, **options) -> Any:
         """
         Load data from file.
         
         Default implementation:
         1. Read from file using Path.read_bytes() or read_text()
         2. Decode data using decode()
+        3. Caches serializer instance by file path for performance
         
         Args:
             file_path: Path to load from
@@ -369,6 +414,12 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
         """
         try:
             path = Path(file_path)
+            path_str = str(path.resolve())
+            
+            # Cache this serializer instance for this file path
+            # This enables reuse if the same file is accessed again
+            if _file_serializer_cache is not None:
+                _file_serializer_cache.put(path_str, self)
             
             if not path.exists():
                 raise FileNotFoundError(f"File not found: {path}")
@@ -401,7 +452,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
 
     def stream_read_record(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         match: callable,
         projection: Optional[list[Any]] = None,
         **options: Any,
@@ -430,7 +481,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
 
     def stream_update_record(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         match: callable,
         updater: callable,
         *,
@@ -469,7 +520,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
 
     def get_record_page(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         page_number: int,
         page_size: int,
         **options: Any,
@@ -500,7 +551,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
 
     def get_record_by_id(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         id_value: Any,
         *,
         id_field: str = "id",
@@ -572,7 +623,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     # STREAMING METHODS (Default implementations)
     # ========================================================================
     
-    def iter_serialize(self, data: Any, chunk_size: int = 8192) -> Iterator[Union[str, bytes]]:
+    def iter_serialize(self, data: Any, chunk_size: int = 8192) -> Iterator[str | bytes]:
         """
         Stream serialize data in chunks.
         
@@ -596,7 +647,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
             for i in range(0, len(repr_data), chunk_size):
                 yield repr_data[i:i + chunk_size]
     
-    def iter_deserialize(self, src: Union[TextIO, BinaryIO, Iterator[Union[str, bytes]]]) -> Any:
+    def iter_deserialize(self, src: TextIO | BinaryIO | Iterator[str | bytes]) -> Any:
         """
         Stream deserialize data from chunks.
         
@@ -625,7 +676,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     # ASYNC METHODS (Default implementations using asyncio.to_thread)
     # ========================================================================
     
-    async def save_file_async(self, data: Any, file_path: Union[str, Path], **options) -> None:
+    async def save_file_async(self, data: Any, file_path: str | Path, **options) -> None:
         """
         Async save data to file.
         
@@ -639,7 +690,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
         """
         await asyncio.to_thread(self.save_file, data, file_path, **options)
     
-    async def load_file_async(self, file_path: Union[str, Path], **options) -> Any:
+    async def load_file_async(self, file_path: str | Path, **options) -> Any:
         """
         Async load data from file.
         
@@ -655,7 +706,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
         """
         return await asyncio.to_thread(self.load_file, file_path, **options)
     
-    async def stream_serialize(self, data: Any, chunk_size: int = 8192) -> AsyncIterator[Union[str, bytes]]:
+    async def stream_serialize(self, data: Any, chunk_size: int = 8192) -> AsyncIterator[str | bytes]:
         """
         Async stream serialize data in chunks.
         
@@ -673,7 +724,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
             yield chunk
             await asyncio.sleep(0)  # Yield control
     
-    async def stream_deserialize(self, data_stream: AsyncIterator[Union[str, bytes]]) -> Any:
+    async def stream_deserialize(self, data_stream: AsyncIterator[str | bytes]) -> Any:
         """
         Async stream deserialize data from chunks.
         
@@ -703,7 +754,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     
     def atomic_update_path(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         path: str, 
         value: Any, 
         **options
@@ -743,13 +794,13 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
             
             # Load entire file
             # For large files, skip size validation (they use lazy loading/streaming)
-            # Root cause: Large files (10GB+) should use atomic path operations without full validation
+            # Root cause: Large files (10GB+) use atomic path operations without full validation
             # Solution: Skip size check for atomic operations (depth check still performed)
             large_file_options = {**options, 'skip_size_check': True}
             data = self.load_file(file_path, **large_file_options)
             
             # Update path in memory (simple dict/list update for now)
-            # Subclasses should override with format-specific logic
+            # Subclasses override with format-specific logic
             if isinstance(data, dict) and path.startswith('/'):
                 # Simple JSONPointer-like path handling
                 path_parts = path.strip('/').split('/')
@@ -795,7 +846,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     
     def atomic_read_path(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         path: str, 
         **options
     ) -> Any:
@@ -832,7 +883,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
             
             # Load entire file
             # For large files, skip size validation (they use lazy loading/streaming)
-            # Root cause: Large files (10GB+) should use atomic path operations without full validation
+            # Root cause: Large files (10GB+) use atomic path operations without full validation
             # Solution: Skip size check for atomic operations (depth check still performed)
             large_file_options = {**options, 'skip_size_check': True}
             data = self.load_file(file_path, **large_file_options)
@@ -898,7 +949,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     def incremental_save(
         self, 
         items: Iterator[Any], 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         **options
     ) -> None:
         """
@@ -939,7 +990,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     
     def incremental_load(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         **options
     ) -> Iterator[Any]:
         """
@@ -986,7 +1037,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     
     def query(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         query_expr: str, 
         **options
     ) -> Any:
@@ -1021,7 +1072,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
             )
         
         # Root cause fixed: Base class doesn't implement queries - raise immediately
-        # Subclasses should override this method to provide actual query implementation
+        # Subclasses override this method to provide actual query implementation
         # Priority #4: Performance - Don't load file if operation will fail
         raise NotImplementedError(
             f"Query operations require format-specific implementation for {self.format_name}. "
@@ -1031,7 +1082,7 @@ class ASerialization(ACodec[Any, Union[bytes, str]], ISerialization):
     
     def merge(
         self, 
-        file_path: Union[str, Path], 
+        file_path: str | Path, 
         updates: dict[str, Any], 
         **options
     ) -> None:
@@ -1115,17 +1166,17 @@ class ASchemaRegistry(ABC):
     """Abstract base class for schema registry implementations."""
     
     @abstractmethod
-    async def register_schema(self, subject: str, schema: str, schema_type: str = "AVRO") -> 'SchemaInfo':
+    async def register_schema(self, subject: str, schema: str, schema_type: str = "AVRO") -> SchemaInfo:
         """Register a new schema version."""
         pass
     
     @abstractmethod
-    async def get_schema(self, schema_id: int) -> 'SchemaInfo':
+    async def get_schema(self, schema_id: int) -> SchemaInfo:
         """Get schema by ID."""
         pass
     
     @abstractmethod
-    async def get_latest_schema(self, subject: str) -> 'SchemaInfo':
+    async def get_latest_schema(self, subject: str) -> SchemaInfo:
         """Get latest schema version for subject."""
         pass
     
@@ -1140,7 +1191,6 @@ class ASchemaRegistry(ABC):
         pass
     
     @abstractmethod
-    async def set_compatibility(self, subject: str, level: 'CompatibilityLevel') -> None:
+    async def set_compatibility(self, subject: str, level: CompatibilityLevel) -> None:
         """Set compatibility level for subject."""
         pass
-

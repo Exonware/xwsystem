@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/examples/format_conversion/example_format_conversion.py
 """
 Example: Format Conversion with IArchiver ↔ ICodec Integration
 
@@ -100,4 +101,3 @@ print("  [OK] XWFile.convert(source, target)")
 print("  [OK] file.save_as(path, format)")
 print("  [OK] Category-based validation")
 print("  [OK] Auto-detection from extensions")
-

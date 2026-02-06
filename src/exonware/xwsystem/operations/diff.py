@@ -5,22 +5,23 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 27, 2025
 
 Diff operations implementation.
 """
 
 import threading
-from typing import Any, Optional, Union
-from .base import IDiffOperation, DiffError
+from typing import Any, Optional
+from .base import DiffError
+from .contracts import IDiffOperation
 from .defs import DiffMode, DiffResult
 from ..config.logging_setup import get_logger
 
 logger = get_logger("xwsystem.operations.diff")
 
 
-class DiffOperation(IDiffOperation):
+class DiffOperation:
     """Thread-safe diff operation implementation."""
     
     def __init__(self):

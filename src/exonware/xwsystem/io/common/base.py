@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Base classes and utilities for common IO operations.
@@ -21,8 +21,10 @@ Priority 4 (Performance): Efficient operations
 Priority 5 (Extensibility): Ready for new utilities
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Optional, Union, Callable
+from typing import Optional, Callable
 from pathlib import Path
 
 from ..contracts import IAtomicWriter, IPathValidator, IFileWatcher, IFileLock
@@ -43,7 +45,7 @@ class AAtomicWriter(IAtomicWriter, ABC):
     Provides skeletal implementation for atomic write operations.
     """
     
-    def __init__(self, path: Union[str, Path], mode: AtomicMode = AtomicMode.WRITE_BACKUP):
+    def __init__(self, path: str | Path, mode: AtomicMode = AtomicMode.WRITE_BACKUP):
         """Initialize atomic writer."""
         self.path = Path(path)
         self.mode = mode
@@ -55,7 +57,7 @@ class AAtomicWriter(IAtomicWriter, ABC):
         """Write data atomically."""
         pass
     
-    def __enter__(self) -> 'AAtomicWriter':
+    def __enter__(self) -> AAtomicWriter:
         """Enter context manager."""
         return self
     
@@ -77,18 +79,18 @@ class APathValidator(IPathValidator, ABC):
         self.security_level = security_level
     
     @abstractmethod
-    def validate_path(self, path: Union[str, Path]) -> bool:
+    def validate_path(self, path: str | Path) -> bool:
         """Validate path safety."""
         pass
     
-    def is_safe_path(self, path: Union[str, Path]) -> bool:
+    def is_safe_path(self, path: str | Path) -> bool:
         """Check if path is safe to use."""
         try:
             return self.validate_path(path)
         except Exception:
             return False
     
-    def normalize_path(self, path: Union[str, Path]) -> Path:
+    def normalize_path(self, path: str | Path) -> Path:
         """Normalize and resolve path."""
         return Path(path).resolve()
 
@@ -134,7 +136,7 @@ class AFileLock(IFileLock, ABC):
     Provides common locking logic.
     """
     
-    def __init__(self, path: Union[str, Path], mode: LockMode = LockMode.EXCLUSIVE):
+    def __init__(self, path: str | Path, mode: LockMode = LockMode.EXCLUSIVE):
         """Initialize lock."""
         self.path = Path(path)
         self.mode = mode
@@ -154,7 +156,7 @@ class AFileLock(IFileLock, ABC):
         """Check if locked."""
         return self._locked
     
-    def __enter__(self) -> 'AFileLock':
+    def __enter__(self) -> AFileLock:
         """Context manager entry."""
         self.acquire()
         return self
@@ -162,4 +164,3 @@ class AFileLock(IFileLock, ABC):
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit."""
         self.release()
-

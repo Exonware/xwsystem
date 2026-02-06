@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/shared_tests/test_base.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for shared base classes.
@@ -58,4 +59,3 @@ class TestBaseCore:
     def test_base_core_exists(self):
         """Test BaseCore class exists."""
         assert BaseCore is not None
-

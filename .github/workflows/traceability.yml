@@ -1,0 +1,36 @@
+name: Traceability Matrix
+
+on:
+  pull_request:
+    paths:
+      - "xwsystem/docs/logs/plans/**"
+      - "xwsystem/docs/compliance/traceability/**"
+      - "tools/ci/python_scripts/generate_trace_matrix.py"
+      - "xwsystem/.github/workflows/traceability.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "xwsystem/docs/logs/plans/**"
+      - "xwsystem/docs/compliance/traceability/**"
+      - "tools/ci/python_scripts/generate_trace_matrix.py"
+      - "xwsystem/.github/workflows/traceability.yml"
+
+jobs:
+  traceability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate traceability matrix (xwsystem)
+        run: |
+          python tools/ci/python_scripts/generate_trace_matrix.py --package xwsystem
+
+      - name: Fail if traceability matrix is stale
+        run: |
+          git diff --exit-code xwsystem/docs/compliance/traceability
+

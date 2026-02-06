@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 02-Nov-2025
 
 JSON Lines (JSONL/NDJSON) Serialization - Newline-Delimited JSON
@@ -22,13 +22,13 @@ Priority 4 (Performance): Memory-efficient streaming
 Priority 5 (Extensibility): Compatible with standard JSON
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 import json
 
 from .json import JsonSerializer
 from ...parsers.registry import get_parser
-from ...parsers.base import IJsonParser
+from ...parsers.base import AJsonParser
 from ....errors import SerializationError
 from ....common.atomic import AtomicFileWriter
 from exonware.xwsystem.config.logging_setup import get_logger
@@ -55,12 +55,17 @@ class JsonLinesSerializer(JsonSerializer):
         """
         super().__init__(parser_name=parser_name)
         # Get parser instance for direct use in line-by-line operations
-        self._parser: IJsonParser = get_parser(parser_name)
+        self._parser: AJsonParser = get_parser(parser_name)
     
     @property
     def codec_id(self) -> str:
         """Codec identifier."""
-        return "jsonl"
+        return "jsonl"  # Primary ID, but "ndjson" also works via aliases
+    
+    @property
+    def format_name(self) -> str:
+        """Format display name."""
+        return "JSONL/NDJSON"  # Both names prominently displayed
     
     @property
     def media_types(self) -> list[str]:
@@ -74,8 +79,8 @@ class JsonLinesSerializer(JsonSerializer):
     
     @property
     def aliases(self) -> list[str]:
-        """Alternative names."""
-        return ["jsonl", "JSONL", "ndjson", "NDJSON", "jsonlines"]
+        """Alternative names - NDJSON is a first-class alias."""
+        return ["jsonl", "JSONL", "ndjson", "NDJSON", "jsonlines", "JSONLines"]
     
     @property
     def codec_types(self) -> list[str]:
@@ -139,7 +144,7 @@ class JsonLinesSerializer(JsonSerializer):
 
         return "\n".join(lines)
 
-    def decode(self, data: Union[str, bytes], *, options: Optional[dict[str, Any]] = None) -> list[Any]:
+    def decode(self, data: str | bytes, *, options: Optional[dict[str, Any]] = None) -> list[Any]:
         """
         Decode JSON Lines string to list of Python objects.
         
@@ -171,7 +176,7 @@ class JsonLinesSerializer(JsonSerializer):
 
     def stream_read_record(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         match: callable,
         projection: Optional[list[Any]] = None,
         **options: Any,
@@ -202,7 +207,7 @@ class JsonLinesSerializer(JsonSerializer):
 
     def stream_update_record(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         match: callable,
         updater: callable,
         *,
@@ -222,7 +227,7 @@ class JsonLinesSerializer(JsonSerializer):
         if not path.exists():
             raise FileNotFoundError(f"File not found: {path}")
 
-        # Check if append-only log should be used
+        # Check if append-only log is used
         perf_config = get_performance_config()
         use_append_log = options.get("use_append_log", None)
         if use_append_log is None:
@@ -335,7 +340,7 @@ class JsonLinesSerializer(JsonSerializer):
 
     def get_record_page(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         page_number: int,
         page_size: int,
         **options: Any,
@@ -379,7 +384,7 @@ class JsonLinesSerializer(JsonSerializer):
 
     def get_record_by_id(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         id_value: Any,
         *,
         id_field: str = "id",
@@ -407,4 +412,3 @@ class JsonLinesSerializer(JsonSerializer):
                     return record
 
         raise KeyError(f"Record with {id_field}={id_value!r} not found")
-

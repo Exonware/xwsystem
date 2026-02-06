@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/0.core/structures/test_core_xsystem_structures.py
 #exonware/xwsystem/tests/core/structures/test_core_xwsystem_structures.py
 """
 XSystem Structures Core Tests
@@ -15,7 +16,7 @@ from unittest.mock import patch, MagicMock
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
 
 try:
-    from exonware.xwsystem.structures.circular_detector import CircularDetector
+    from exonware.xwsystem.structures.circular_detector import CircularReferenceDetector
     from exonware.xwsystem.structures.tree_walker import TreeWalker
     from exonware.xwsystem.structures.base import BaseStructure
     from exonware.xwsystem.structures.contracts import ICircularDetector, ITreeWalker
@@ -23,7 +24,7 @@ try:
 except ImportError as e:
     print(f"Import error: {e}")
     # Create mock classes for testing
-    class CircularDetector:
+    class CircularReferenceDetector:
         def __init__(self): pass
         def detect_circular_reference(self, obj): return False
         def find_circular_path(self, obj): return []
@@ -56,7 +57,7 @@ def test_circular_detector():
     print("-" * 30)
     
     try:
-        detector = CircularDetector()
+        detector = CircularReferenceDetector()
         
         # Test circular reference detection
         test_obj = {"key": "value"}
@@ -146,7 +147,7 @@ def test_structures_interfaces():
     
     try:
         # Test interface compliance
-        detector = CircularDetector()
+        detector = CircularReferenceDetector()
         walker = TreeWalker()
         structure = BaseStructure()
         
@@ -190,7 +191,7 @@ def test_structures_operations():
     print("-" * 30)
     
     try:
-        detector = CircularDetector()
+        detector = CircularReferenceDetector()
         walker = TreeWalker()
         structure = BaseStructure()
         
@@ -233,7 +234,7 @@ def test_structures_analysis():
     print("-" * 30)
     
     try:
-        detector = CircularDetector()
+        detector = CircularReferenceDetector()
         walker = TreeWalker()
         
         # Test complex data structure
@@ -284,7 +285,7 @@ def test_structures_integration():
     print("-" * 30)
     
     try:
-        detector = CircularDetector()
+        detector = CircularReferenceDetector()
         walker = TreeWalker()
         structure = BaseStructure()
         

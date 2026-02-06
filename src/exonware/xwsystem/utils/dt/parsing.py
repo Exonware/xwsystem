@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/utils/dt/parsing.py
 """
 Datetime Parsing Utilities
 ==========================
@@ -7,13 +8,13 @@ Production-grade datetime parsing for XSystem.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generated: 2025-01-27
 """
 
 import re
 from datetime import datetime, date, time, timezone, timedelta
-from typing import Optional, Union
+from typing import Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -144,13 +145,32 @@ def parse_iso8601(text: str) -> Optional[datetime]:
     return parse_datetime(text)
 
 
-def parse_timestamp(timestamp: Union[int, float, str]) -> Optional[datetime]:
-    """Parse Unix timestamp to datetime."""
+def parse_timestamp(timestamp: int | float | str) -> Optional[datetime]:
+    """
+    Parse Unix timestamp to datetime.
+    
+    Automatically detects if timestamp is in seconds or milliseconds.
+    
+    Args:
+        timestamp: Unix timestamp (seconds or milliseconds)
+    
+    Returns:
+        Parsed datetime or None
+    
+    Examples:
+        >>> dt = parse_timestamp(1609459200)  # 2021-01-01 00:00:00 UTC
+        >>> dt is not None
+        True
+        >>> dt = parse_timestamp(1609459200000)  # milliseconds
+        >>> dt is not None
+        True
+    """
     try:
         if isinstance(timestamp, str):
             timestamp = float(timestamp)
         
         # Handle both seconds and milliseconds
+        # Timestamps > 1e10 are likely milliseconds (year 2286+ in seconds)
         if timestamp > 1e10:  # Likely milliseconds
             timestamp = timestamp / 1000
         
@@ -158,6 +178,37 @@ def parse_timestamp(timestamp: Union[int, float, str]) -> Optional[datetime]:
         
     except (ValueError, OSError, OverflowError) as e:
         logger.debug(f"Failed to parse timestamp '{timestamp}': {e}")
+        return None
+
+
+def parse_timestamp_milliseconds(timestamp: int | float | str) -> Optional[datetime]:
+    """
+    Parse timestamp that may be in milliseconds.
+    
+    Explicitly handles millisecond timestamps (common in JavaScript/Java).
+    
+    Args:
+        timestamp: Unix timestamp (assumed to be in milliseconds)
+    
+    Returns:
+        Parsed datetime or None
+    
+    Examples:
+        >>> dt = parse_timestamp_milliseconds(1609459200000)  # milliseconds
+        >>> dt is not None
+        True
+    """
+    try:
+        if isinstance(timestamp, str):
+            timestamp = float(timestamp)
+        
+        # Treat as milliseconds
+        timestamp_seconds = timestamp / 1000.0
+        
+        return datetime.fromtimestamp(timestamp_seconds, tz=timezone.utc)
+        
+    except (ValueError, OSError, OverflowError) as e:
+        logger.debug(f"Failed to parse millisecond timestamp '{timestamp}': {e}")
         return None
 
 
@@ -196,7 +247,7 @@ class DateTimeParser:
         """Parse ISO 8601 datetime string."""
         return parse_iso8601(text)
     
-    def parse_timestamp(self, timestamp: Union[int, float, str]) -> Optional[datetime]:
+    def parse_timestamp(self, timestamp: int | float | str) -> Optional[datetime]:
         """Parse Unix timestamp to datetime."""
         return parse_timestamp(timestamp)
     

@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/binary/marshal.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 Marshal serialization - Python internal serialization.
@@ -14,7 +15,7 @@ Following I→A pattern:
 """
 
 import marshal
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from pathlib import Path
 
 from ...base import ASerialization
@@ -95,7 +96,7 @@ class MarshalSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using marshal module)
     # ========================================================================
     
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> Union[bytes, str]:
+    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to Marshal bytes.
         
@@ -127,7 +128,7 @@ class MarshalSerializer(ASerialization):
                 original_error=e
             )
     
-    def decode(self, repr: Union[bytes, str], *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode Marshal bytes to data.
         
@@ -159,4 +160,3 @@ class MarshalSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             )
-

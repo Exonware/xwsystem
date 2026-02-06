@@ -1,7 +1,7 @@
-﻿# 📚 exonware-xwsystem Documentation Index
+# 📚 exonware-xwsystem Documentation Index
 
 **Version:** 0.0.1.387  
-**Last Updated:** 06-Nov-2025
+**Last Updated:** 29-Jan-2026
 
 ---
 
@@ -13,25 +13,6 @@
 
 ---
 
-## 📖 Universal Development Guides
-
-**All guides moved to:** **[guides/](guides/)** directory
-
-- **[guides/INDEX.md](guides/INDEX.md)** - Complete guide index
-- **[guides/GUIDE_PLAN.md](guides/GUIDE_PLAN.md)** - Development lifecycle (IDEA → PLAN → DEV → TEST → RELEASE)
-- **[guides/GUIDE_IDEA.md](guides/GUIDE_IDEA.md)** - Idea capture and evaluation
-- **[guides/GUIDE_PROJECT.md](guides/GUIDE_PROJECT.md)** - Requirements gathering
-- **[REF_PLAN.md](REF_PLAN.md)** - Planning reference and templates
-- **[guides/GUIDE_DEV.md](guides/GUIDE_DEV.md)** - Development standards (2,015 lines)
-- **[guides/GUIDE_TEST.md](guides/GUIDE_TEST.md)** - Testing standards (3,730 lines)
-- **[guides/GUIDE_BENCH.md](guides/GUIDE_BENCH.md)** - Benchmarking standards
-- **[guides/GUIDE_DOCS.md](guides/GUIDE_DOCS.md)** - Documentation standards (3,690 lines)
-- **[guides/GUIDE_USAGE.md](guides/GUIDE_USAGE.md)** - Usage guide
-
-**Note:** Guides are universal methodology that apply to all eXonware projects.
-
----
-
 ## 📚 Reference Documentation (REF_*)
 
 **Project & Architecture:**
@@ -39,10 +20,18 @@
 - **[REF_PROJECT.md](REF_PROJECT.md)** - Project requirements and goals
 - **[REF_ARCH.md](REF_ARCH.md)** - Architecture, design patterns, versioning, async/sync
 - **[REF_BENCH.md](REF_BENCH.md)** - Performance SLAs and NFRs
+- **[REF_DX.md](REF_DX.md)** - DX contract (happy paths, errors, ergonomics)
+- **[REF_QA.md](REF_QA.md)** - Quality gates and release readiness state
 
 **API & Technical References:**
-- **[REF_API.md](REF_API.md)** - Complete API reference (to be created)
-  - Will consolidate: Serialization API, Core modules, Codec API
+- **[REF_API.md](REF_API.md)** - Complete API reference
+
+**Production & Usage:**
+- **[GUIDE_USAGE.md](GUIDE_USAGE.md)** - Usage guide for this library (copy-pasteable workflows)
+- **[PRODUCTION_GUIDE.md](PRODUCTION_GUIDE.md)** - Production deployment guide
+- **[REAL_WORLD_EXAMPLES.md](REAL_WORLD_EXAMPLES.md)** - Real-world usage examples
+- **[MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)** - Version migration guide
+- **[STABLE_RELEASE_CHECKLIST.md](STABLE_RELEASE_CHECKLIST.md)** - Stable release checklist
 
 **Serialization & I/O:**
 - **[SerializationAdvanceRequirements.md](SerializationAdvanceRequirements.md)** - Advanced serialization features requirements & implementation plan
@@ -99,7 +88,7 @@
   - Types: DEV, TEST, DOCS, PROJECT, BENCH, MIXED
 
 **Benchmark Results:**
-- **[logs/benchmarks/](logs/benchmarks/)** - Performance benchmark results and templates
+- **[logs/benchmarks/](logs/benchmarks/)** - Performance benchmark results and templates (see also `REF_BENCH.md`)
   - **[logs/benchmarks/INDEX.md](logs/benchmarks/INDEX.md)** - Benchmarks index
   - **[logs/benchmarks/TEMPLATE.md](logs/benchmarks/TEMPLATE.md)** - Benchmark report template
   - Format: `BENCH_YYYYMMDD_HHMM_DESCRIPTION.md`
@@ -141,26 +130,11 @@
 **Capture a new idea:**
 → [REF_IDEA.md](REF_IDEA.md) - Idea brainstorming and evaluation
 
-**Learn how to use xwsystem:**
-→ [guides/GUIDE_USAGE.md](guides/GUIDE_USAGE.md)
-
 **See API documentation:**
 → [REF_API.md](REF_API.md) (to be created) or [CHANGE_20251030_2221_SERIALIZATION_REFERENCE.md](logs/changes/CHANGE_20251030_2221_SERIALIZATION_REFERENCE.md)
 
-**Understand development standards:**
-→ [guides/GUIDE_DEV.md](guides/GUIDE_DEV.md)
-
-**Set up testing:**
-→ [guides/GUIDE_TEST.md](guides/GUIDE_TEST.md)
-
-**Write benchmarks:**
-→ [guides/GUIDE_BENCH.md](guides/GUIDE_BENCH.md)
-
 **Check performance SLAs:**
 → [REF_BENCH.md](REF_BENCH.md)
-
-**Write documentation:**
-→ [guides/GUIDE_DOCS.md](guides/GUIDE_DOCS.md)
 
 **Create a plan:**
 → [REF_PLAN.md](REF_PLAN.md)
@@ -208,33 +182,21 @@
 
 ## 🎓 For New Developers
 
-**Read these in order:**
+**Suggested reading order:**
 1. [Main README](../README.md) - What is xwsystem?
-2. [guides/GUIDE_USAGE.md](guides/GUIDE_USAGE.md) - How to use it
-3. [guides/GUIDE_PLAN.md](guides/GUIDE_PLAN.md) - Development workflow overview
-4. [guides/GUIDE_IDEA.md](guides/GUIDE_IDEA.md) - Idea capture and evaluation
-5. [guides/GUIDE_PROJECT.md](guides/GUIDE_PROJECT.md) - Requirements gathering
-6. [REF_PLAN.md](REF_PLAN.md) - Planning standards
-7. [guides/GUIDE_DEV.md](guides/GUIDE_DEV.md) - Development standards
-8. [guides/GUIDE_TEST.md](guides/GUIDE_TEST.md) - Testing approach
-9. [guides/GUIDE_BENCH.md](guides/GUIDE_BENCH.md) - Benchmarking standards
-10. [guides/GUIDE_DOCS.md](guides/GUIDE_DOCS.md) - Documentation rules
+2. [GUIDE_USAGE.md](GUIDE_USAGE.md) - How to use it in real projects
+3. [REF_IDEA.md](REF_IDEA.md) - How ideas are captured for this library
+4. [REF_PROJECT.md](REF_PROJECT.md) - Requirements and scope
+5. [REF_PLAN.md](REF_PLAN.md) - Planning standards
+6. [REF_ARCH.md](REF_ARCH.md) - Architecture and patterns
+7. [REF_API.md](REF_API.md) - API surface
+8. [REF_BENCH.md](REF_BENCH.md) - Performance SLAs
 
 ---
 
 ## 🤖 For AI Assistants
 
-**Essential Reading:**
-1. **[guides/GUIDE_PLAN.md](guides/GUIDE_PLAN.md)** - Complete development workflow (IDEA → PLAN → DEV → TEST → RELEASE)
-2. **[guides/GUIDE_IDEA.md](guides/GUIDE_IDEA.md)** - Idea capture and evaluation (Phase I)
-3. **[guides/GUIDE_PROJECT.md](guides/GUIDE_PROJECT.md)** - Requirements gathering (Phase I)
-4. **[REF_PLAN.md](REF_PLAN.md)** - Planning standards (Phase II)
-5. **[guides/GUIDE_DEV.md](guides/GUIDE_DEV.md)** - All development rules (Phase III)
-6. **[guides/GUIDE_TEST.md](guides/GUIDE_TEST.md)** - All testing rules (Phase IV)
-7. **[guides/GUIDE_BENCH.md](guides/GUIDE_BENCH.md)** - All benchmarking rules (Phase IV)
-8. **[guides/GUIDE_DOCS.md](guides/GUIDE_DOCS.md)** - All documentation rules (All Phases)
-
-**Key References:**
+**Key library references:**
 - **[REF_IDEA.md](REF_IDEA.md)** - Idea capture template
 - **[REF_PROJECT.md](REF_PROJECT.md)** - Project requirements
 - **[REF_PLAN.md](REF_PLAN.md)** - Planning templates & compliance mapping
@@ -243,9 +205,8 @@
 
 **Critical Rules:**
 - ALL .md files go in docs/ (except root README.md)
-- Follow the 5-phase flow: IDEATION → PLANNING → DEVELOPMENT → QUALITY LOOP → RELEASE
-- Universal guides in guides/ folder
-- Project-specific references at docs root (REF_*)
+- Follow the 5-phase flow: IDEATION → PLANNING → DEVELOPMENT → QUALITY LOOP → RELEASE (as captured in `REF_PLAN.md`)
+- Use project-specific references at docs root (REF_*)
 - Use CHANGE_YYYYMMDD_HHMM_* for implementation logs
 - Use PLAN_YYYYMMDD_HHMM_* for planning documents
 - Use BENCH_YYYYMMDD_HHMM_* for benchmark results

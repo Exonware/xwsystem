@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/patterns/context_manager.py
 """
 Context manager utilities for combining and enhancing context managers.
 
@@ -9,7 +10,7 @@ import contextlib
 import logging
 import threading
 from contextlib import ExitStack, contextmanager
-from typing import Any, ContextManager, Generator, Optional, Union
+from typing import Any, ContextManager, Generator, Optional
 
 logger = logging.getLogger(__name__)
 

@@ -11,17 +11,82 @@ Version: 0.0.1.388
 Generation Date: 01-Nov-2025
 """
 
+from __future__ import annotations
+
+# Load custom plugin for import/path fixes (moved from pytest.ini; pytest_plugins belongs in conftest)
+pytest_plugins = ["tests.pytest_plugin"]
+
 import pytest
 from pathlib import Path
 import sys
 import time
 
-# Ensure src is in path for imports
-tests_dir = Path(__file__).resolve().parent
-project_root = tests_dir.parent
-src_path = project_root / "src"
-if str(src_path) not in sys.path:
-    sys.path.insert(0, str(src_path))
+# CRITICAL: Add test directories to path at module level BEFORE any imports
+# This fixes pytest collection issues where it tries to import test directories as modules
+_tests_dir = Path(__file__).resolve().parent
+
+# Add all test layer directories and their subdirectories
+_test_dirs_to_add = [
+    _tests_dir / "0.core",
+    _tests_dir / "1.unit",
+    _tests_dir / "2.integration",
+    _tests_dir / "3.advance",
+    _tests_dir,  # Add tests directory itself
+]
+
+# Add all subdirectories in unit tests that might be imported as modules (recursively)
+_unit_tests_dir = _tests_dir / "1.unit"
+if _unit_tests_dir.exists():
+    def add_subdirs_recursive(dir_path, add_parent=True):
+        """Recursively add all subdirectories to the list."""
+        for item in dir_path.iterdir():
+            if item.is_dir() and not item.name.startswith('__'):
+                # Add the directory itself
+                if add_parent and str(item) not in [str(d) for d in _test_dirs_to_add]:
+                    _test_dirs_to_add.append(item)
+                # Recursively add nested subdirectories
+                add_subdirs_recursive(item, add_parent=False)
+    add_subdirs_recursive(_unit_tests_dir)
+
+# Add all subdirectories in integration tests
+_integration_tests_dir = _tests_dir / "2.integration"
+if _integration_tests_dir.exists():
+    for item in _integration_tests_dir.iterdir():
+        if item.is_dir() and not item.name.startswith('__'):
+            _test_dirs_to_add.append(item)
+
+# Add all subdirectories in advance tests
+_advance_tests_dir = _tests_dir / "3.advance"
+if _advance_tests_dir.exists():
+    for item in _advance_tests_dir.iterdir():
+        if item.is_dir() and not item.name.startswith('__'):
+            _test_dirs_to_add.append(item)
+
+# Add all directories to sys.path
+for test_dir in _test_dirs_to_add:
+    if test_dir.exists() and str(test_dir) not in sys.path:
+        sys.path.insert(0, str(test_dir))
+
+
+def pytest_configure(config):
+    """Configure pytest before test collection starts."""
+    # Ensure test directories are in path for pytest collection
+    # This fixes issues with pytest trying to import test directories as modules
+    tests_dir = Path(__file__).resolve().parent
+    unit_tests_dir = tests_dir / "1.unit"
+    if str(unit_tests_dir) not in sys.path:
+        sys.path.insert(0, str(unit_tests_dir))
+
+
+def pytest_collection_modifyitems(config, items):
+    """Modify test collection to fix import issues."""
+    # Ensure test directories are in path during collection
+    tests_dir = Path(__file__).resolve().parent
+    unit_tests_dir = tests_dir / "1.unit"
+    if str(unit_tests_dir) not in sys.path:
+        sys.path.insert(0, str(unit_tests_dir))
+
+# Lib installed editable; no manual src path setup.
 
 def _install_enterprise_dependency_stubs() -> None:
     """
@@ -288,11 +353,16 @@ def _install_enterprise_dependency_stubs() -> None:
         sys.modules["json5"] = json5_module
 
     if "pyarrow" not in sys.modules:
-        pyarrow_module = types.ModuleType("pyarrow")
-        pyarrow_module.__xw_test_stub__ = True
-        sys.modules["pyarrow"] = pyarrow_module
-        sys.modules["pyarrow.lib"] = types.ModuleType("pyarrow.lib")
-        sys.modules["pyarrow.parquet"] = types.ModuleType("pyarrow.parquet")
+        try:
+            import pyarrow  # noqa: F401
+        except ImportError:
+            # Only create stub if pyarrow is actually not installed
+            pyarrow_module = types.ModuleType("pyarrow")
+            pyarrow_module.__xw_test_stub__ = True
+            pyarrow_module.__version__ = "0.0.0"  # Stub version for compatibility
+            sys.modules["pyarrow"] = pyarrow_module
+            sys.modules["pyarrow.lib"] = types.ModuleType("pyarrow.lib")
+            sys.modules["pyarrow.parquet"] = types.ModuleType("pyarrow.parquet")
 
     # ------------------------------------------------------------ google proto
     if "google" not in sys.modules:
@@ -505,4 +575,3 @@ def performance_timer():
             return None
     
     return Timer()
-

@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/archive_tests/test_archivers.py
 """
 Unit tests for io.archive.archivers module
 
@@ -53,18 +54,4 @@ class TestTarArchiver:
         assert hasattr(archiver, 'encode')
         assert hasattr(archiver, 'decode')
 
-
-@pytest.mark.xwsystem_unit
-class TestBackwardCompatibility:
-    """Test backward compatibility aliases."""
-    
-    def test_ziparchiver_alias_exists(self):
-        """Test ZipArchiver alias exists for backward compatibility."""
-        from exonware.xwsystem.io.archive import ZipArchiver
-        assert ZipArchiver is ZipArchiver
-    
-    def test_tararchiver_alias_exists(self):
-        """Test TarArchiver alias exists for backward compatibility."""
-        from exonware.xwsystem.io.archive import TarArchiver
-        assert TarArchiver is TarArchiver
 

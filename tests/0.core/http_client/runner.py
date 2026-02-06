@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/http_client/runner.py
 """
 Core HTTP Test Runner
 
@@ -191,21 +192,20 @@ class HttpCoreTester:
             # Test error handling for invalid URL
             try:
                 response = client.get("invalid-url")
-                # Should raise an exception or return an error response
-                if hasattr(response, 'status_code') and response.status_code >= 400:
-                    pass  # Expected behavior
+                if hasattr(response, "status_code") and response.status_code >= 400:
+                    pass
                 else:
                     print("[WARNING]  Expected error for invalid URL")
-            except Exception:
-                pass  # Expected behavior for invalid URL
-            
+            except Exception as e:
+                _ = e  # Expected: invalid URL may raise
+
             # Test error handling for non-existent endpoint
             try:
                 response = client.get("https://httpbin.org/status/404")
-                if hasattr(response, 'status_code'):
+                if hasattr(response, "status_code"):
                     assert response.status_code == 404
-            except Exception:
-                pass  # Expected behavior for 404
+            except Exception as e:
+                _ = e  # Expected: 404 or network error
             
             print("[PASS] HTTP error handling tests passed")
             return True

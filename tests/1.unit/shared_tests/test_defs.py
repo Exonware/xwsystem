@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/shared_tests/test_defs.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for shared enums and definitions.
@@ -84,4 +85,3 @@ class TestOtherEnums:
     def test_core_priority_enum(self):
         """Test CorePriority enum."""
         assert CorePriority is not None
-

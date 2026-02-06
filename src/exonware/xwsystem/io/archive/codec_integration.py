@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
 Archive-Codec Integration - Register archivers with CodecRegistry.
@@ -55,4 +55,3 @@ def register_archivers_as_codecs():
 
 # Auto-register on import
 register_archivers_as_codecs()
-

@@ -1,18 +1,21 @@
+#exonware/xwsystem/src/exonware/xwsystem/caching/lru_cache.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 LRU (Least Recently Used) Cache implementation with thread-safety and async support.
 """
 
+from __future__ import annotations
+
 import asyncio
 import threading
 import time
 from collections import OrderedDict
-from typing import Any, Optional, Union, Callable, Hashable
+from typing import Any, Optional, Callable, Hashable
 
 from ..config.logging_setup import get_logger
 from .base import ACache
@@ -26,8 +29,8 @@ class CacheNode:
     def __init__(self, key: Hashable, value: Any):
         self.key = key
         self.value = value
-        self.prev: Optional['CacheNode'] = None
-        self.next: Optional['CacheNode'] = None
+        self.prev: Optional[CacheNode] = None
+        self.next: Optional[CacheNode] = None
         self.access_time = time.time()
 
 

@@ -1,7 +1,9 @@
 # Requirements Traceability Matrix
 
-Generated automatically on **2025-11-08 12:31:14 UTC**.
+Generated automatically by `tools/ci/python_scripts/generate_trace_matrix.py`.
 
-This table is populated by `tools/ci/generate_trace_matrix.py`. Annotate plan documents with headings such as `Requirement ID:`, `Components:`, and `Verification:` to enrich the matrix.
+This table is populated by `tools/ci/python_scripts/generate_trace_matrix.py`. Annotate plan documents with headings such as `Requirement ID:`, `Components:`, and `Verification:` to enrich the matrix.
 
-> No planning documents were found. Add plan files under `docs/logs/plans/` to populate the traceability matrix.
+| Requirement ID | Plan | Components | Verification Evidence | Notes |
+|----------------|------|------------|-----------------------|-------|
+| TBD | [PLAN_20251109_1500_ASYNC_PROCESS_FABRIC](xwsystem/docs/logs/plans/PLAN_20251109_1500_ASYNC_PROCESS_FABRIC.md) | TBD | TBD | — |

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/formats_tests/binary_tests/test_plistlib.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for PlistLib serializer.
@@ -32,4 +33,3 @@ class TestPlistSerializer:
             assert loaded == test_data
         except ImportError:
             pytest.skip("PlistLib serializer not available")
-

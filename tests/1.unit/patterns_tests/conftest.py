@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/patterns_tests/conftest.py
 """
 Pytest configuration for xSystem patterns tests.
 """

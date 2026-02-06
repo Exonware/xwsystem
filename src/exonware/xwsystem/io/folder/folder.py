@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/folder/folder.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 XWFolder - Concrete implementation of folder operations.
@@ -11,7 +12,7 @@ XWFolder - Concrete implementation of folder operations.
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from ..base import AFolder
 from ..contracts import OperationResult, IFolder
@@ -37,7 +38,7 @@ class XWFolder(AFolder):
     - xwsystem integration (security, validation, monitoring)
     """
     
-    def __init__(self, dir_path: Union[str, Path], **config):
+    def __init__(self, dir_path: str | Path, **config):
         """
         Initialize XWFolder with xwsystem integration.
         
@@ -93,13 +94,17 @@ class XWFolder(AFolder):
                 logger.error(f"Failed to delete directory {self.dir_path}: {e}")
                 return False
     
-    def copy_to(self, destination: Union[str, Path]) -> bool:
+    def copy_to(self, destination: str | Path) -> bool:
         """Copy directory to destination."""
         dest_path = Path(destination)
         
         if self.validate_paths:
             self._path_validator.validate_path(self.dir_path)
-            self._path_validator.validate_path(dest_path)
+            # Destination doesn't need to exist yet - it will be created by copytree
+            # Use check_existence=False to allow destination to not exist
+            dest_parent = dest_path.parent
+            if dest_parent:
+                self._path_validator.validate_path(dest_parent, create_dirs=True)
         
         with performance_monitor("directory_copy"):
             try:
@@ -110,13 +115,17 @@ class XWFolder(AFolder):
                 logger.error(f"Failed to copy directory from {self.dir_path} to {dest_path}: {e}")
                 return False
     
-    def move_to(self, destination: Union[str, Path]) -> bool:
+    def move_to(self, destination: str | Path) -> bool:
         """Move directory to destination."""
         dest_path = Path(destination)
         
         if self.validate_paths:
             self._path_validator.validate_path(self.dir_path)
-            self._path_validator.validate_path(dest_path)
+            # Destination doesn't need to exist yet - it will be created by move
+            # Use check_existence=False to allow destination to not exist
+            dest_parent = dest_path.parent
+            if dest_parent:
+                self._path_validator.validate_path(dest_parent, create_dirs=True)
         
         with performance_monitor("directory_move"):
             try:

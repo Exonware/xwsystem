@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/config/defs.py
 #exonware/xwsystem/config/types.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 07-Sep-2025
 
 Config types and enums for XWSystem.
@@ -78,4 +79,4 @@ class AdvancedPerformanceMode(Enum):
     OPTIMIZED = "optimized"  # Prioritize memory efficiency
     MANUAL = "manual"  # Use specific custom settings
     ADAPTIVE = "adaptive"  # Runtime adaptation based on performance monitoring
-    DUAL_ADAPTIVE = "dual_adaptive"  # Smart dual-phase: fast cruise + intelligent deep-dive
+    DUAL_ADAPTIVE = "dual_adaptive"  # Dual-phase: fast cruise + deep-dive

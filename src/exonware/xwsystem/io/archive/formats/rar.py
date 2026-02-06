@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
 RAR5 archive format implementation - RANK #3 PROPRIETARY COMPRESSION.
@@ -24,10 +24,17 @@ from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 
-# Lazy import for rarfile - optional dependency
+# Optional dependency: rarfile
+import importlib.util
 try:
-    import rarfile
-except ImportError:
+    _rarfile_spec = importlib.util.find_spec('rarfile')
+    if _rarfile_spec is not None and _rarfile_spec.loader is not None:
+        import rarfile
+    else:
+        rarfile = None  # type: ignore
+except (ValueError, AttributeError, ImportError):
+    # Handle case where find_spec raises ValueError (e.g., module.__spec__ is None)
+    # or other import-related errors
     rarfile = None  # type: ignore
 
 
@@ -123,4 +130,3 @@ class RarArchiver(IArchiveFormat):
     def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
         """RAR append not supported (requires WinRAR binary)."""
         raise ArchiveError("RAR append requires WinRAR/RAR binary (proprietary).")
-

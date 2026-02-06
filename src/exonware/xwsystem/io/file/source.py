@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 File-based data source implementation.
@@ -17,12 +17,12 @@ Priority 5 (Extensibility): Foundation for other data sources (HTTP, S3, etc.)
 """
 
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Optional, Any
 
 from ..contracts import IDataSource
 
 
-class FileDataSource(IDataSource[Union[bytes, str]]):
+class FileDataSource(IDataSource[bytes | str]):
     """
     File-based data source implementation.
     
@@ -46,7 +46,7 @@ class FileDataSource(IDataSource[Union[bytes, str]]):
     
     def __init__(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         mode: str = 'rb',
         encoding: Optional[str] = None,
         validate_path: bool = True
@@ -66,16 +66,13 @@ class FileDataSource(IDataSource[Union[bytes, str]]):
         self._validate_path = validate_path
         
         if validate_path:
-            # Use PathValidator for validation if available
-            try:
-                from ...security.path_validator import PathValidator
-                # Don't check existence during initialization - file may be created later
-                pv = PathValidator(check_existence=False)
-                # For write modes, allow creating the file (path doesn't exist yet)
-                for_writing = mode and ('w' in mode or 'a' in mode or '+' in mode)
-                pv.validate_path(str(self._path), for_writing=for_writing, create_dirs=True)
-            except ImportError:
-                pass
+            # Use PathValidator for validation (always available in xwsystem)
+            from ...security.path_validator import PathValidator
+            # Don't check existence during initialization - file may be created later
+            pv = PathValidator(check_existence=False)
+            # For write modes, allow creating the file (path doesn't exist yet)
+            for_writing = mode and ('w' in mode or 'a' in mode or '+' in mode)
+            pv.validate_path(str(self._path), for_writing=for_writing, create_dirs=True)
     
     @property
     def uri(self) -> str:
@@ -87,7 +84,7 @@ class FileDataSource(IDataSource[Union[bytes, str]]):
         """Return scheme identifier."""
         return "file"
     
-    def read(self, **options) -> Union[bytes, str]:
+    def read(self, **options) -> bytes | str:
         """
         Read entire file content.
         
@@ -109,7 +106,7 @@ class FileDataSource(IDataSource[Union[bytes, str]]):
         except Exception as e:
             raise IOError(f"Failed to read {self._path}: {e}")
     
-    def write(self, data: Union[bytes, str], **options) -> None:
+    def write(self, data: bytes | str, **options) -> None:
         """
         Write entire content to file.
         
@@ -211,4 +208,3 @@ class FileDataSource(IDataSource[Union[bytes, str]]):
                 'uri': self.uri,
                 'error': str(e)
             }
-

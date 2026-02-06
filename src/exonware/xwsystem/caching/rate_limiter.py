@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/rate_limiter.py
 #exonware/xwsystem/caching/rate_limiter.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Rate limiting for caching module - Security Priority #1.
@@ -249,4 +250,3 @@ __all__ = [
     'RateLimiter',
     'FixedWindowRateLimiter',
 ]
-

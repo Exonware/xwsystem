@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Byte-based paging strategy.
@@ -17,7 +17,7 @@ Priority 5 (Extensibility): Pluggable via registry
 """
 
 from pathlib import Path
-from typing import Union, Optional, Iterator
+from typing import Optional, Iterator
 
 from ...contracts import IPagingStrategy
 
@@ -47,7 +47,7 @@ class BytePagingStrategy:
         mode: str = 'rb',
         encoding: Optional[str] = None,
         **options
-    ) -> Union[bytes, str]:
+    ) -> bytes | str:
         """Read page by byte offset."""
         offset = page * page_size
         
@@ -62,7 +62,7 @@ class BytePagingStrategy:
         mode: str = 'rb',
         encoding: Optional[str] = None,
         **options
-    ) -> Iterator[Union[bytes, str]]:
+    ) -> Iterator[bytes | str]:
         """Iterate over pages by byte chunks."""
         page = 0
         while True:
@@ -71,4 +71,3 @@ class BytePagingStrategy:
                 break
             yield content
             page += 1
-

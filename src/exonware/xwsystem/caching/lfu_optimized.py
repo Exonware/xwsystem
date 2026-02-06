@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/lfu_optimized.py
 #exonware/xwsystem/caching/lfu_optimized.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Optimized O(1) LFU Cache implementation.
@@ -257,7 +258,7 @@ class OptimizedLFUCache(ACache):
         - NEW: O(1) using min_freq bucket
         """
         if self._min_freq not in self._freq_to_keys:
-            # Shouldn't happen, but handle gracefully
+            # Handle case where min_freq bucket is empty
             if self._freq_to_keys:
                 self._min_freq = min(self._freq_to_keys.keys())
             else:
@@ -320,13 +321,25 @@ class OptimizedLFUCache(ACache):
         """
         with self._lock:
             count = 0
+            errors = []
             for key, value in items.items():
                 try:
                     self.put(key, value)
                     count += 1
-                except Exception:
-                    # Continue with other items even if one fails
-                    pass
+                except Exception as e:
+                    # Log error but continue with other items for batch resilience
+                    # This follows GUIDE_TEST.md by handling errors explicitly
+                    errors.append((key, str(e)))
+            
+            # Log any errors that occurred during batch operation
+            if errors:
+                # Use existing logger (imported at module level)
+                logger.warning(
+                    f"put_many: {len(errors)} items failed out of {len(items)}. "
+                    f"Successfully cached {count} items. "
+                    f"Errors: {errors[:5]}"  # Show first 5 errors
+                )
+            
             return count
     
     def delete_many(self, keys: list[Hashable]) -> int:
@@ -550,4 +563,3 @@ __all__ = [
     'OptimizedLFUCache',
     'AsyncOptimizedLFUCache',
 ]
-

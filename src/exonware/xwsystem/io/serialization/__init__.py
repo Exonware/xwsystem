@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/__init__.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 2, 2025
 
 Serialization module - 29+ serialization formats with I→A→XW pattern.
@@ -22,6 +23,16 @@ from .base import ASerialization, ASchemaRegistry
 
 # Registry
 from .registry import SerializationRegistry, get_serialization_registry
+
+# Universal options
+from .universal_options import (
+    map_universal_options,
+    get_supported_universal_options,
+    validate_universal_options,
+    get_all_supported_formats,
+    get_format_option_info,
+    UniversalOption,
+)
 
 # NOTE: Schema Registry moved to exonware-xwschema
 # from .schema_registry import (
@@ -106,7 +117,7 @@ for _serializer_class in [
         pass  # Skip if already registered or missing dependencies
 
 # NOTE: xwformats auto-discovery removed per DEV_GUIDELINES.md
-# "NO TRY/EXCEPT FOR IMPORTS" - Users should explicitly import xwformats when needed:
+# "NO TRY/EXCEPT FOR IMPORTS" - Users explicitly import xwformats when needed:
 # from exonware.xwformats import AvroSerializer, ProtobufSerializer, ...
 # xwformats auto-registers its formats on import
 
@@ -160,6 +171,14 @@ __all__ = [
     "detect_format",
     "AutoSerializer",
     "XWSerializer",
+    
+    # Universal options
+    "map_universal_options",
+    "get_supported_universal_options",
+    "validate_universal_options",
+    "get_all_supported_formats",
+    "get_format_option_info",
+    "UniversalOption",
 ]
 
 # NOTE: Enterprise formats available in exonware-xwformats:
@@ -169,4 +188,3 @@ __all__ = [
 # - Binary: UBJSON (1 format)
 # Total: 16 enterprise formats (~87 MB)
 # Install with: pip install exonware-xwformats
-

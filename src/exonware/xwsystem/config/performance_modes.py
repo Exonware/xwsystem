@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/config/performance_modes.py
 """
 Performance mode definitions for XWSystem framework.
 
@@ -10,18 +11,18 @@ import statistics
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from .defs import AdvancedPerformanceMode
 
 import psutil
 
 
-# Use AdvancedPerformanceMode directly as PerformanceMode for backward compatibility
+# Use AdvancedPerformanceMode directly as PerformanceMode
 PerformanceMode = AdvancedPerformanceMode
 
 
 class PerformanceModes:
-    """Performance mode constants for backward compatibility and simple usage."""
+    """Performance mode constants."""
     
     FAST = "fast"
     BALANCED = "balanced"
@@ -54,7 +55,7 @@ class PerformanceProfile:
     enable_thread_safety: bool
     lock_timeout: float
 
-    # Security limits (always enforced)
+    # Security limits (enforced)
     max_depth: int
     max_nodes: int
     max_path_length: int
@@ -127,7 +128,7 @@ class DualAdaptiveProfile(PerformanceProfile):
     deep_dive_sample_rate: int = 1  # Sample every operation in deep-dive
     deep_dive_history_size: int = 1000  # Keep detailed history during deep-dive
 
-    # Smart triggers
+    # Adaptive triggers
     memory_pressure_threshold: float = 0.8  # 80% memory usage triggers deep-dive
     cpu_pressure_threshold: float = 0.7  # 70% CPU usage triggers deep-dive
     performance_degradation_threshold: float = 0.2  # 20% degradation triggers deep-dive
@@ -343,7 +344,7 @@ class AdaptiveLearningEngine:
         if not mode_scores:
             return PerformanceMode.AUTO
 
-        # Return the best performing mode
+        # Return the highest performing mode
         best_mode_name = max(mode_scores.items(), key=lambda x: x[1])[0]
         return PerformanceMode.from_string(best_mode_name)
 
@@ -590,7 +591,7 @@ class DualPhaseAdaptiveEngine:
         if not mode_scores:
             return PerformanceMode.OPTIMIZED
 
-        # Return the best performing mode
+        # Return the highest performing mode
         best_mode_name = max(mode_scores.items(), key=lambda x: x[1])[0]
         return PerformanceMode.from_string(best_mode_name)
 
@@ -759,7 +760,7 @@ class PerformanceProfiles:
                 deep_dive_duration=200,  # Deep-dive for 200 operations (was 500)
                 deep_dive_sample_rate=5,  # Sample every 5th operation (was 1)
                 deep_dive_history_size=500,  # Keep detailed history (was 1000)
-                # Smart triggers
+                # Adaptive triggers
                 memory_pressure_threshold=0.9,  # 90% memory usage triggers deep-dive (was 0.8)
                 cpu_pressure_threshold=0.8,  # 80% CPU usage triggers deep-dive (was 0.7)
                 performance_degradation_threshold=0.3,  # 30% degradation triggers deep-dive (was 0.2)

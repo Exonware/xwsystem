@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/examples/serialization_example/x6_canonical/benchmark.py
 """
 Canonical Serialization Benchmark
 
@@ -208,4 +209,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

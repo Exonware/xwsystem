@@ -35,11 +35,11 @@ def run_serialization_tests():
     test_paths = [str(test_dir / test_file) for test_file in test_files]
     
     # Run tests with verbose output
+    # ⚠️ CRITICAL: Do NOT use --disable-warnings - it hides real problems!
     pytest_args = [
         '-v',  # Verbose output
         '--tb=short',  # Short traceback format
         '--strict-markers',  # Strict marker handling
-        '--disable-warnings',  # Disable warnings for cleaner output
         '--color=yes',  # Colored output
     ] + test_paths
     

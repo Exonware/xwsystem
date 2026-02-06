@@ -138,4 +138,3 @@ class TestAsyncLRUCache:
             await cache.put('key1', 'value1')
             result = await cache.get('key1')
             assert result == 'value1'
-

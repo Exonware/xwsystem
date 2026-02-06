@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/monitoring/tracing.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 05, 2025
 
 Distributed Tracing Integration for Enterprise Observability
@@ -19,7 +20,7 @@ import time
 import uuid
 from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass, field
-from typing import Any, AsyncContextManager, ContextManager, Optional, Union
+from typing import Any, AsyncContextManager, ContextManager, Optional
 from .base import ATracingProvider
 from .errors import TracingError
 from .defs import SpanKind
@@ -92,25 +93,27 @@ class OpenTelemetryTracer(ATracingProvider):
     
     def _setup_otlp_exporter(self, endpoint: str) -> None:
         """Set up OTLP exporter (modern standard, Python 3.8+ only, no legacy deps)."""
+        # Optional dependency: opentelemetry-exporter-otlp-proto-http
         try:
-            # Lazy import to avoid pulling in dependencies unless actually used
-            from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-            
-            otlp_exporter = OTLPSpanExporter(endpoint=endpoint)
-            span_processor = BatchSpanProcessor(otlp_exporter)
-            trace.get_tracer_provider().add_span_processor(span_processor)
-            logger.info(f"OTLP exporter configured for endpoint: {endpoint}")
-            
-        except ImportError:
-            logger.warning(
-                "OTLP exporter not available. Install with: pip install opentelemetry-exporter-otlp-proto-http"
-            )
+            import importlib.util
+            _otlp_exporter_spec = importlib.util.find_spec('opentelemetry.exporter.otlp.proto.http.trace_exporter')
+            if _otlp_exporter_spec is not None:
+                from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+                
+                otlp_exporter = OTLPSpanExporter(endpoint=endpoint)
+                span_processor = BatchSpanProcessor(otlp_exporter)
+                trace.get_tracer_provider().add_span_processor(span_processor)
+                logger.info(f"OTLP exporter configured for endpoint: {endpoint}")
+            else:
+                logger.warning(
+                    "OTLP exporter not available. Install with: pip install opentelemetry-exporter-otlp-proto-http"
+                )
         except Exception as e:
             logger.warning(f"Failed to setup OTLP exporter: {e}")
     
     def _setup_zipkin_exporter(self, endpoint: str) -> None:
         """Set up Zipkin exporter."""
-        # Import is explicit - if missing, user should install: pip install exonware-xwsystem[observability]
+        # Import is explicit - if missing, install: pip install exonware-xwsystem[observability]
         from opentelemetry.exporter.zipkin.json import ZipkinExporter
         
         try:
@@ -424,4 +427,3 @@ class DistributedTracing:
     def is_tracing_enabled(self) -> bool:
         """Check if tracing is enabled."""
         return self.manager.is_tracing_enabled()
-

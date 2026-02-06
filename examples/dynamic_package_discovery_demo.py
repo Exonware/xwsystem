@@ -1,3 +1,4 @@
+#exonware/xwsystem/examples/dynamic_package_discovery_demo.py
 """
 Dynamic Package Discovery Demo for xwsystem
 

@@ -1,0 +1,7 @@
+# Cargo configuration for xwsystem
+# This file configures build settings for the project
+
+[build]
+# Note: Environment variables for aws-lc-sys must be set before running cargo
+# Set AWS_LC_SYS_PREBUILT_NASM=1 in your environment or shell to use prebuilt NASM objects
+# This avoids requiring NASM installation on Windows

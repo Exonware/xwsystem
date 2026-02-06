@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/decorators.py
 #exonware/xwsystem/caching/decorators.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Advanced cache decorators with hooks and customization.
@@ -55,8 +56,11 @@ def xwcached(
             return value * 2
     """
     # Initialize cache if not provided
+    # Use flexible create_cache() to allow configuration via environment/settings
+    # Defaults to FunctoolsLRUCache (fastest Python cache)
     if cache is None:
-        cache = LRUCache(capacity=128)
+        from .factory import create_cache
+        cache = create_cache(capacity=128, namespace='xwsystem.decorators')
     
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
@@ -243,26 +247,9 @@ def xw_async_cache(func: Optional[Callable] = None, ttl: Optional[int] = None):
         return xw_async_cached()(func)
 
 
-# Backward compatibility aliases (deprecated, use xw-prefixed versions)
-cached = xwcached
-async_cached = xw_async_cached
-cache = xwcache
-async_cache = xw_async_cache
-cache_result = xwcache
-async_cache_result = xw_async_cache
-
-
 __all__ = [
-    # New XW-prefixed names (preferred)
     'xwcached',
     'xw_async_cached',
     'xwcache',
     'xw_async_cache',
-    # Backward compatibility (deprecated)
-    'cached',
-    'async_cached',
-    'cache',
-    'async_cache',
-    'cache_result',
-    'async_cache_result',
 ]

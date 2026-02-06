@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
 ZPAQ journaled compression format - RANK #8 EXTREME COMPRESSION.
@@ -150,4 +150,3 @@ class ZpaqArchiver(IArchiveFormat):
             raise ArchiveError(f"ZPAQ add failed: {e.stderr}")
         except Exception as e:
             raise ArchiveError(f"Failed to add file to zpaq: {e}")
-

@@ -1,16 +1,17 @@
+#exonware/xwsystem/src/exonware/xwsystem/config/base.py
 #exonware/xwsystem/config/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Config module base classes - abstract classes for configuration functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from .contracts import ConfigType, LogLevel, PerformanceMode
 
 
@@ -29,7 +30,7 @@ class AConfigBase(ABC):
         self._defaults: dict[str, Any] = {}
     
     @abstractmethod
-    def load(self, source: Union[str, dict[str, Any]]) -> None:
+    def load(self, source: str | dict[str, Any]) -> None:
         """Load configuration from source."""
         pass
     
@@ -230,9 +231,8 @@ class AConfigManagerBase(ABC):
         pass
 
 
-# Concrete implementation for backward compatibility
 class BaseConfig(AConfigBase):
-    """Concrete implementation of AConfigBase for backward compatibility."""
+    """Concrete implementation of AConfigBase."""
     
     def load(self, source: Any = None) -> None:
         """Load configuration from source."""

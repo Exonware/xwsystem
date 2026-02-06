@@ -7,8 +7,8 @@
 **Company:** eXonware.com  
 **Author:** Eng. Muhammad AlShehri  
 **Email:** connect@exonware.com  
-**Version:** 0.1.0.1
-**Updated:** 22-Dec-2025
+**Version:** 0.1.0.3
+**Updated:** 06-Feb-2026
 
 ## 🎯 **The Python Revolution Starts Here**
 
@@ -487,7 +487,7 @@ pip install exonware-xwsystem[full]
 ✅ **Atomic File Operations** - All-or-nothing writes  
 ✅ **Automatic Backups** - Safety nets for critical files  
 ✅ **Path Management** - Safe directory operations  
-✅ **Cross-Platform** - Windows/Linux/macOS compatibility  
+✅ **Cross-Platform** - Windows/Linux/macOS compatibility (see [Platform Compatibility](#-platform-compatibility) section)  
 ✅ **Permission Handling** - Maintain file security  
 
 ### 🔍 **Runtime Intelligence**
@@ -606,10 +606,13 @@ parquet_data = pqs.dumps(data)    # Columnar format for analytics
 ## 📚 Documentation
 
 - **[📖 Complete Documentation](docs/INDEX.md)** - Comprehensive documentation index
+- **[🚀 Production Deployment Guide](docs/PRODUCTION_GUIDE.md)** - Production deployment best practices
+- **[💼 Real-World Examples](docs/REAL_WORLD_EXAMPLES.md)** - Complete real-world usage scenarios
 - **[🧠 Lazy Install System](docs/LAZY_INSTALL_SYSTEM.md)** - Revolutionary auto-installation guide
 - **[⚡ Serialization Guide](docs/SERIALIZATION.md)** - 24+ serialization formats
 - **[🔧 Development Guidelines](docs/DEV_GUIDELINES.md)** - Complete development standards
 - **[Examples](examples/)** - Practical usage examples
+- **[Production Examples](examples/production_deployment/)** - Production-ready examples
 - **[Tests](tests/)** - Test suites and usage patterns
 
 ## 🔧 Development
@@ -762,6 +765,65 @@ pip install exonware-xwsystem[lazy]
 from exonware.xwsystem import xwimport
 cv2 = xwimport("cv2")  # Watch the magic happen!
 ```
+
+---
+
+## 🌐 **Platform Compatibility**
+
+XWSystem is **fully cross-platform** and works seamlessly on **Windows, Linux, and macOS**.
+
+### **Supported Platforms**
+
+✅ **Windows 10/11** - Fully supported  
+✅ **Linux** (Ubuntu, Debian, CentOS, etc.) - Fully supported  
+✅ **macOS** (10.14+) - Fully supported  
+
+### **Platform-Specific Features**
+
+#### **Windows Optimizations**
+- **Optional:** Install `pywin32` for optimized Windows named pipes:
+  ```bash
+  pip install exonware-xwsystem[windows]
+  ```
+- Windows reserved filenames (CON, PRN, AUX, COM1-9, LPT1-9) are automatically blocked
+- ProcessPoolExecutor automatically respects Windows 61-worker limit
+- UTF-8 console encoding configured automatically
+
+#### **Unix/Linux/macOS**
+- POSIX-compliant file operations
+- Unix domain sockets for IPC
+- No worker limits for ProcessPoolExecutor
+- Standard Unix path handling
+
+### **Known Limitations**
+
+⚠️ **Async Pipes on Windows:** `AsyncPipe.connect()` is not fully implemented on Windows. Use synchronous `Pipe` class or multiprocessing pipes instead.
+
+⚠️ **WIM Format:** Requires external `wimlib` package on non-Windows systems:
+  ```bash
+  # Ubuntu/Debian
+  sudo apt-get install wimtools
+  
+  # macOS
+  brew install wimlib
+  ```
+
+### **Platform-Aware Defaults**
+
+XWSystem automatically adapts to your platform:
+- **Path length limits:** Windows (260), Linux (4096), macOS (1024)
+- **Temporary directories:** Uses platform-appropriate temp directory
+- **File locking:** Platform-optimized locking mechanisms
+- **Process management:** Platform-specific signal handling
+
+### **Testing**
+
+XWSystem is tested on:
+- ✅ Windows 10/11 (Primary development platform)
+- ✅ Ubuntu 20.04/22.04 LTS
+- ✅ macOS 12+ (Monterey, Ventura, Sonoma)
+
+For detailed compatibility information, see [CROSS_PLATFORM_COMPATIBILITY_REPORT.md](CROSS_PLATFORM_COMPATIBILITY_REPORT.md).
 
 ---
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/serialization_tests/test_optimization_simple.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
@@ -66,10 +67,11 @@ def test_optimized_serializers_basic():
         bson_serializer = BsonSerializer()
         
         # Basic serialization
-        bson_str = bson_serializer.dumps(test_data)
-        bson_loaded = bson_serializer.loads(bson_str)
+        # BSON is binary format, so it returns bytes, not a string
+        bson_bytes = bson_serializer.dumps(test_data)
+        bson_loaded = bson_serializer.loads(bson_bytes)
         
-        assert isinstance(bson_str, str)  # BSON returns base64 string
+        assert isinstance(bson_bytes, bytes)  # BSON is binary format, returns raw bytes
         assert isinstance(bson_loaded, dict)
         assert bson_serializer.is_binary_format
         

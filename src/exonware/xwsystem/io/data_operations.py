@@ -16,7 +16,7 @@ lazy, paged, and atomic access features without re-implementing I/O logic.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 15-Dec-2025
 """
 
@@ -28,6 +28,8 @@ from typing import Any, Callable, Optional
 from abc import ABC, abstractmethod
 import json
 import os
+import platform
+import sys
 import tempfile
 import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -55,11 +57,8 @@ def _process_chunk_worker(args: tuple[int, int, int, str, str, str | None, int |
     lines_processed = 0
     
     # Import parser in worker process (can't pickle serializer)
-    try:
-        from exonware.xwsystem.io.serialization.parsers.registry import get_best_available_parser
-        parser = get_best_available_parser()
-    except ImportError:
-        import json as parser
+    from exonware.xwsystem.io.serialization.parsers.registry import get_best_available_parser
+    parser = get_best_available_parser()
     
     try:
         with open(file_path_str, "rb") as f:
@@ -99,7 +98,7 @@ def _process_chunk_worker(args: tuple[int, int, int, str, str, str | None, int |
                             id_val = str(obj[id_field_arg])
                             chunk_id_index[id_val] = line_idx
                     except Exception:
-                        # Skip invalid lines (best-effort indexing)
+                        # Skip invalid lines (fallback indexing)
                         pass
                 
                 lines_processed += 1
@@ -353,7 +352,7 @@ class NDJSONDataOperations(ADataOperations):
                 try:
                     tmp_path.unlink()
                 except OSError:
-                    # Best-effort cleanup; do not mask original error.
+                    # Cleanup attempt; do not mask original error.
                     logger.debug("Failed to cleanup temp file %s", tmp_path)
 
     # ------------------------------------------------------------------
@@ -433,11 +432,8 @@ class NDJSONDataOperations(ADataOperations):
         mtime = target.stat().st_mtime
 
         # Cache parser instance (matches example code pattern)
-        try:
-            from exonware.xwsystem.io.serialization.parsers.registry import get_best_available_parser
-            parser = get_best_available_parser()
-        except ImportError:
-            import json as parser
+        from exonware.xwsystem.io.serialization.parsers.registry import get_best_available_parser
+        parser = get_best_available_parser()
 
         offset = 0
         with target.open("rb") as f:
@@ -461,7 +457,7 @@ class NDJSONDataOperations(ADataOperations):
                                 if max_id_index is None or len(id_index) < max_id_index:
                                     id_index[id_val] = line_no
                     except Exception:
-                        # Index should be best-effort and robust to bad lines.
+                        # Index is robust to bad lines.
                         # Skip invalid lines silently for performance
                         pass
 
@@ -492,9 +488,14 @@ class NDJSONDataOperations(ADataOperations):
             # ProcessPoolExecutor max_workers limit is 61 on Windows
             file_size_mb = file_path.stat().st_size / 1_048_576  # 1024 * 1024
             calculated_workers = int(file_size_mb / 10)  # 1 worker per 10MB
-            # Cap at 61 (ProcessPoolExecutor limit) or CPU count, whichever is higher
             cpu_count = mp.cpu_count()
-            num_workers = max(cpu_count, min(61, calculated_workers))
+            # Windows has a hard limit of 61 workers for ProcessPoolExecutor
+            # Unix/Linux systems have no such limit
+            # Use Python's native platform module for cross-platform detection
+            if platform.system() == 'Windows':
+                num_workers = max(cpu_count, min(61, calculated_workers))
+            else:
+                num_workers = max(cpu_count, calculated_workers)
         
         file_size = file_path.stat().st_size
         chunk_size_bytes = chunk_size_mb * 1_048_576  # 1024 * 1024
@@ -559,10 +560,10 @@ class NDJSONDataOperations(ADataOperations):
         
         # Merge results (process in order by chunk_id)
         if build_line_offsets:
-            # Optimize: Pre-calculate total size for better memory allocation
+            # Optimize: Pre-calculate total size for memory allocation
             total_offsets = sum(len(offsets) if offsets else 0 for offsets, _ in chunk_results_dict.values())
             if total_offsets > 0:
-                # Pre-allocate list for better performance
+                # Pre-allocate list for performance
                 line_offsets = [0] * total_offsets
                 current_idx = 0
             else:
@@ -742,5 +743,3 @@ __all__ = [
     "ADataOperations",
     "NDJSONDataOperations",
 ]
-
-

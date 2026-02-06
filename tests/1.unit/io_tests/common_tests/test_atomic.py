@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/common_tests/test_atomic.py
 """
 Unit tests for io.common.atomic module
 
@@ -26,4 +27,3 @@ class TestAtomicOperations:
         # Atomic operations should prevent partial writes
         # Tested through integration tests
         assert True  # Placeholder
-

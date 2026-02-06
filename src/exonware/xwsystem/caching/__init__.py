@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/caching/__init__.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 XSystem Caching Package
@@ -59,10 +60,7 @@ from .lfu_cache import LFUCache, AsyncLFUCache
 from .ttl_cache import TTLCache, AsyncTTLCache
 from .cache_manager import CacheManager, CacheConfig, CacheStats
 from .decorators import (
-    # New XW-prefixed names (preferred)
-    xwcached, xw_async_cached, xwcache, xw_async_cache,
-    # Backward compatibility
-    cache, async_cache, cache_result, async_cache_result, cached, async_cached
+    xwcached, xw_async_cached, xwcache, xw_async_cache
 )
 from .distributed import DistributedCache, RedisCache
 
@@ -119,8 +117,23 @@ from .utils import (
     default_key_builder,
 )
 
+# Cache Factory (configurable cache creation)
+from .factory import CacheFactory, CacheType, create_cache
+
 # Interfaces (for advanced usage)
 from .contracts import ICache
+
+# External cache libraries
+from .external_caching_python import (
+    CacheboxCache,
+    FunctoolsLRUCache,
+    CachetoolsLRUCache,
+    CachetoolsLFUCache,
+    CachetoolsTTLCache,
+    CachetoolsRRCache,
+    HAS_CACHEBOX,
+    HAS_CACHETOOLS,
+)
 
 # Errors
 from .errors import (
@@ -211,6 +224,11 @@ __all__ = [
     "format_bytes",
     "default_key_builder",
     
+    # Cache Factory
+    "CacheFactory",
+    "CacheType",
+    "create_cache",
+    
     # Interfaces
     "ICache",
     
@@ -219,22 +237,25 @@ __all__ = [
     "CacheConfig",
     "CacheStats",
     
-    # Decorators (XW-prefixed - preferred)
+    # Decorators
     "xwcached",
     "xw_async_cached",
     "xwcache",
     "xw_async_cache",
-    # Backward compatibility (deprecated)
-    "cache",
-    "async_cache",
-    "cache_result",
-    "async_cache_result",
-    "cached",
-    "async_cached",
     
     # Distributed
     "DistributedCache",
     "RedisCache",
+    
+    # External cache libraries
+    "CacheboxCache",
+    "FunctoolsLRUCache",
+    "CachetoolsLRUCache",
+    "CachetoolsLFUCache",
+    "CachetoolsTTLCache",
+    "CachetoolsRRCache",
+    "HAS_CACHEBOX",
+    "HAS_CACHETOOLS",
     
     # Errors
     "CacheError",
@@ -246,5 +267,10 @@ __all__ = [
     "CacheRateLimitError",
     "CacheValueSizeError",
     "CacheKeySizeError",
+    
+    # Unified Facade
+    "XWCache",
 ]
 
+# Import unified facade
+from .facade import XWCache

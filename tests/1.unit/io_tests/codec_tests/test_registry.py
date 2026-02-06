@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/codec_tests/test_registry.py
 """
 Unit tests for io.codec.registry module
 
@@ -73,4 +74,3 @@ class TestCodecRegistration:
         
         mime_types = registry.list_mime_types()
         assert mime_types is not None
-

@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/0.core/config/test_core_xsystem_config.py
 #exonware/xwsystem/tests/core/config/test_core_xwsystem_config.py
 """
 XSystem Config Core Tests
@@ -24,8 +25,8 @@ try:
     from exonware.xwsystem.config.logging_setup import LoggingSetup
     from exonware.xwsystem.config.logging import LoggingConfig
     from exonware.xwsystem.config.base import BaseConfig
-    from exonware.xwsystem.config.contracts import IConfig, IPerformanceConfig, ILoggingConfig
-    from exonware.xwsystem.config.errors import ConfigError, PerformanceError, LoggingError
+    from exonware.xwsystem.config.contracts import IConfigurable
+    from exonware.xwsystem.config.errors import ConfigError, PerformanceConfigError, LoggingConfigError
 except ImportError as e:
     print(f"Import error: {e}")
     # Create mock classes for testing
@@ -66,13 +67,11 @@ except ImportError as e:
         def save(self): pass
         def validate(self): return True
     
-    class IConfig: pass
-    class IPerformanceConfig: pass
-    class ILoggingConfig: pass
+    class IConfigurable: pass
     
     class ConfigError(Exception): pass
-    class PerformanceError(Exception): pass
-    class LoggingError(Exception): pass
+    class PerformanceConfigError(Exception): pass
+    class LoggingConfigError(Exception): pass
 
 
 def test_default_config():
@@ -240,8 +239,8 @@ def test_config_error_handling():
     try:
         # Test error classes
         config_error = ConfigError("Test config error")
-        perf_error = PerformanceError("Test performance error")
-        log_error = LoggingError("Test logging error")
+        perf_error = PerformanceConfigError("Test performance error")
+        log_error = LoggingConfigError("Test logging error")
         
         assert str(config_error) == "Test config error"
         assert str(perf_error) == "Test performance error"

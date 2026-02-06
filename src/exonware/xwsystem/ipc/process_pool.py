@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/ipc/process_pool.py
 """
 Process Pool Utilities
 ======================
@@ -17,7 +18,7 @@ import logging
 import multiprocessing as mp
 import time
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ class ProcessPool:
     
     def __init__(self, 
                  max_workers: Optional[int] = None,
-                 size: Optional[int] = None,  # Alias for max_workers for backward compatibility
+                 size: Optional[int] = None,
                  initializer: Optional[Callable] = None,
                  initargs: tuple = (),
                  timeout: Optional[float] = None):
@@ -57,12 +58,12 @@ class ProcessPool:
         
         Args:
             max_workers: Maximum number of worker processes
-            size: Alias for max_workers (for backward compatibility)
+            size: Alias for max_workers
             initializer: Function to run in each worker on startup
             initargs: Arguments for initializer function
             timeout: Default timeout for tasks
         """
-        # Handle backward compatibility with 'size' parameter
+        # Handle 'size' parameter as alias for max_workers
         if size is not None and max_workers is None:
             max_workers = size
         
@@ -188,7 +189,7 @@ class ProcessPool:
                 # Wait for completion
                 future.result(timeout=timeout)
                 
-                # Should be in completed tasks now
+                # In completed tasks now
                 for result in self._completed_tasks:
                     if result.task_id == task_id:
                         return result.result

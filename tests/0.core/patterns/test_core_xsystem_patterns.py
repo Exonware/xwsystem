@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/0.core/patterns/test_core_xsystem_patterns.py
 #exonware/xwsystem/tests/core/patterns/test_core_xwsystem_patterns.py
 """
 XSystem Patterns Core Tests

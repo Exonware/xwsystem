@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/format_detector.py
 #exonware\xwsystem\serialization\format_detector.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Intelligent format detection for automatic serialization format selection.
@@ -11,7 +12,7 @@ Intelligent format detection for automatic serialization format selection.
 
 import re
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from ...config.logging_setup import get_logger
 
@@ -127,7 +128,7 @@ class FormatDetector:
             ],
         }
     
-    def detect_from_extension(self, file_path: Union[str, Path]) -> list[str]:
+    def detect_from_extension(self, file_path: str | Path) -> list[str]:
         """
         Detect format from file extension.
         
@@ -164,7 +165,7 @@ class FormatDetector:
         
         return []
     
-    def detect_from_content(self, content: Union[str, bytes]) -> dict[str, float]:
+    def detect_from_content(self, content: str | bytes) -> dict[str, float]:
         """
         Detect format from content analysis with confidence scores.
         
@@ -208,8 +209,8 @@ class FormatDetector:
     
     def detect_format(
         self, 
-        file_path: Optional[Union[str, Path]] = None,
-        content: Optional[Union[str, bytes]] = None,
+        file_path: Optional[str | Path] = None,
+        content: Optional[str | bytes] = None,
         data: Optional[bytes] = None
     ) -> dict[str, float]:
         """
@@ -252,8 +253,8 @@ class FormatDetector:
     
     def get_best_format(
         self, 
-        file_path: Optional[Union[str, Path]] = None,
-        content: Optional[Union[str, bytes]] = None,
+        file_path: Optional[str | Path] = None,
+        content: Optional[str | bytes] = None,
         data: Optional[bytes] = None
     ) -> Optional[str]:
         """
@@ -283,8 +284,8 @@ class FormatDetector:
     
     def get_format_suggestions(
         self, 
-        file_path: Optional[Union[str, Path]] = None,
-        content: Optional[Union[str, bytes]] = None,
+        file_path: Optional[str | Path] = None,
+        content: Optional[str | bytes] = None,
         data: Optional[bytes] = None,
         max_suggestions: int = 3
     ) -> list[tuple[str, float]]:
@@ -342,8 +343,8 @@ class FormatDetector:
 _global_detector = FormatDetector()
 
 def detect_format(
-    file_path: Optional[Union[str, Path]] = None,
-    content: Optional[Union[str, bytes]] = None,
+    file_path: Optional[str | Path] = None,
+    content: Optional[str | bytes] = None,
     data: Optional[bytes] = None
 ) -> Optional[str]:
     """
@@ -360,8 +361,8 @@ def detect_format(
     return _global_detector.get_best_format(file_path, content, data)
 
 def get_format_suggestions(
-    file_path: Optional[Union[str, Path]] = None,
-    content: Optional[Union[str, bytes]] = None,
+    file_path: Optional[str | Path] = None,
+    content: Optional[str | bytes] = None,
     data: Optional[bytes] = None,
     max_suggestions: int = 3
 ) -> list[tuple[str, float]]:

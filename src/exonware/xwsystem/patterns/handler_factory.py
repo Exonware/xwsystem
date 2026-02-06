@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/patterns/handler_factory.py
 #exonware/xwsystem/patterns/handler_factory.py
 """
 Generic handler factory pattern combining all xwsystem utilities.
@@ -309,7 +310,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
 
 
 class HandlerFactory[T](GenericHandlerFactory[T]):
-    """Simplified handler factory for backward compatibility."""
+    """Simplified handler factory."""
     
     def __init__(self, base_path: Optional[str] = None):
         """Initialize handler factory with basic settings."""
@@ -343,5 +344,3 @@ class HandlerFactory[T](GenericHandlerFactory[T]):
     def has_handler(self, name: str) -> bool:
         """Check if handler is registered."""
         return self.has_handler(name)
-
-

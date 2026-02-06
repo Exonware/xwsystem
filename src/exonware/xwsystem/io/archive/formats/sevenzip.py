@@ -4,10 +4,10 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 1, 2025
 
-7z archive format implementation - RANK #1 BEST COMPRESSION.
+7z archive format implementation - High compression ratio.
 
 **Best overall ratio + AES-256 encryption + solid archiving**
 
@@ -24,10 +24,17 @@ from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 
-# Lazy import for py7zr - optional dependency
+# Optional dependency: py7zr
+import importlib.util
 try:
-    import py7zr
-except ImportError:
+    _py7zr_spec = importlib.util.find_spec('py7zr')
+    if _py7zr_spec is not None and _py7zr_spec.loader is not None:
+        import py7zr
+    else:
+        py7zr = None  # type: ignore
+except (ValueError, AttributeError, ImportError):
+    # Handle case where find_spec raises ValueError (e.g., module.__spec__ is None)
+    # or other import-related errors
     py7zr = None  # type: ignore
 
 
@@ -133,4 +140,3 @@ class SevenZipArchiver(IArchiveFormat):
                 zf.write(file, arcname=arcname)
         except Exception as e:
             raise ArchiveError(f"Failed to add file to 7z: {e}")
-

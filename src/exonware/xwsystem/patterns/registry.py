@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/patterns/registry.py
 #exonware/xwsystem/patterns/registry.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: October 26, 2025
 
 Generic registry pattern for dynamic registration and discovery.
@@ -15,7 +16,7 @@ import time
 from typing import Any, Optional, Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
-from abc import ABC, abstractmethod
+from .contracts import IGenericRegistry
 from ..config.logging_setup import get_logger
 
 logger = get_logger("xwsystem.patterns.registry")
@@ -26,46 +27,7 @@ class RegistryError(Exception):
     pass
 
 
-class IRegistry[T](ABC):
-    """
-    Interface for registry implementations.
-    
-    Root cause: Adding generic type parameter for better type safety.
-    Priority #3: Maintainability - Generic types improve code clarity and type checking.
-    """
-    
-    @abstractmethod
-    def register(self, name: str, item: T, metadata: Optional[dict[str, Any]] = None) -> bool:
-        """Register an item with optional metadata."""
-        pass
-    
-    @abstractmethod
-    def unregister(self, name: str) -> bool:
-        """Unregister an item."""
-        pass
-    
-    @abstractmethod
-    def get(self, name: str) -> Optional[T]:
-        """Get an item by name."""
-        pass
-    
-    @abstractmethod
-    def list_names(self) -> list[str]:
-        """List all registered names."""
-        pass
-    
-    @abstractmethod
-    def exists(self, name: str) -> bool:
-        """Check if an item exists."""
-        pass
-    
-    @abstractmethod
-    def clear(self) -> bool:
-        """Clear all registrations."""
-        pass
-
-
-class GenericRegistry[T](IRegistry[T]):
+class GenericRegistry[T](IGenericRegistry[T]):
     """
     Generic registry for dynamic registration and discovery.
     
@@ -437,7 +399,6 @@ def clear_all_registries() -> bool:
 
 __all__ = [
     "RegistryError",
-    "IRegistry",
     "GenericRegistry",
     "get_registry",
     "list_registries",

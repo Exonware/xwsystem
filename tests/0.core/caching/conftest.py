@@ -20,4 +20,3 @@ def basic_cache_config():
         'capacity': 128,
         'ttl': 300.0
     }
-

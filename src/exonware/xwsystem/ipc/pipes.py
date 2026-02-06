@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/ipc/pipes.py
 """
 Pipe Communication Utilities
 ============================
@@ -12,10 +13,11 @@ Generation Date: September 05, 2025
 
 import asyncio
 import os
+import platform
 import sys
 import threading
 import multiprocessing as mp
-from typing import Any, Optional, Union, Callable, BinaryIO
+from typing import Any, Optional, Callable, BinaryIO
 import pickle
 import struct
 import logging
@@ -46,8 +48,8 @@ class Pipe:
         self.duplex = duplex
         self.buffer_size = buffer_size
         
-        # Create pipe
-        if sys.platform == 'win32':
+        # Create pipe using Python's native platform detection
+        if platform.system() == 'Windows':
             # Windows named pipes
             import uuid
             self.pipe_name = f"\\\\.\\pipe\\xwsystem_{uuid.uuid4().hex}"
@@ -61,37 +63,41 @@ class Pipe:
     
     def _create_windows_pipe(self):
         """Create Windows named pipe."""
-        # Import is explicit - if missing, user should install pywin32 for Windows optimizations
-        import win32pipe
-        import win32file
+        # Use conditional import - pywin32 is optional for Windows optimizations
+        # If not available, fallback to multiprocessing pipe
+        if platform.system() == 'Windows':
+            import importlib.util
+            # Check if pywin32 is available without try/except
+            spec = importlib.util.find_spec('win32pipe')
+            if spec is not None:
+                win32pipe = importlib.import_module('win32pipe')
+                win32file = importlib.import_module('win32file')
+                
+                # Create named pipe
+                self._pipe_handle = win32pipe.CreateNamedPipe(
+                    self.pipe_name,
+                    win32pipe.PIPE_ACCESS_DUPLEX if self.duplex else win32pipe.PIPE_ACCESS_OUTBOUND,
+                    win32pipe.PIPE_TYPE_BYTE | win32pipe.PIPE_READMODE_BYTE | win32pipe.PIPE_WAIT,
+                    1,  # max instances
+                    self.buffer_size,  # out buffer size
+                    self.buffer_size,  # in buffer size
+                    0,  # default timeout
+                    None  # security attributes
+                )
+                
+                self._read_handle = self._pipe_handle
+                self._write_handle = self._pipe_handle
+                return
         
-        try:
-            # Create named pipe
-            self._pipe_handle = win32pipe.CreateNamedPipe(
-                self.pipe_name,
-                win32pipe.PIPE_ACCESS_DUPLEX if self.duplex else win32pipe.PIPE_ACCESS_OUTBOUND,
-                win32pipe.PIPE_TYPE_BYTE | win32pipe.PIPE_READMODE_BYTE | win32pipe.PIPE_WAIT,
-                1,  # max instances
-                self.buffer_size,  # out buffer size
-                self.buffer_size,  # in buffer size
-                0,  # default timeout
-                None  # security attributes
-            )
-            
-            self._read_handle = self._pipe_handle
-            self._write_handle = self._pipe_handle
-            
-        except Exception as e:
-            # Fallback to multiprocessing pipe if named pipe creation fails
-            logger.warning(f"Windows named pipe creation failed: {e}, using multiprocessing pipe")
-            self._read_conn, self._write_conn = mp.Pipe(self.duplex)
-            self._read_handle = self._read_conn
-            self._write_handle = self._write_conn
+        # Fallback to multiprocessing pipe (if not Windows or pywin32 not available)
+        self._read_conn, self._write_conn = mp.Pipe(self.duplex)
+        self._read_handle = self._read_conn
+        self._write_handle = self._write_conn
     
     def _create_unix_pipe(self):
         """Create Unix pipe."""
         try:
-            # Try to use os.pipe() for better performance
+            # Try to use os.pipe() for performance
             read_fd, write_fd = os.pipe()
             self._read_handle = os.fdopen(read_fd, 'rb')
             self._write_handle = os.fdopen(write_fd, 'wb')
@@ -277,7 +283,7 @@ class AsyncPipe:
     async def connect(self) -> bool:
         """Connect to the async pipe."""
         try:
-            if sys.platform != 'win32':
+            if platform.system() != 'Windows':
                 # Unix domain socket
                 if not self._server:
                     await self._create_unix_socket()
@@ -287,10 +293,40 @@ class AsyncPipe:
                 self._setup_complete.set()
                 
             else:
-                # Windows: Use asyncio subprocess pipes
-                # This is a simplified implementation
-                logger.warning("Windows async pipes not fully implemented")
-                return False
+                # Windows: Use multiprocessing pipes wrapped in asyncio for cross-platform parity
+                # This ensures Windows and Linux have the same capabilities
+                # Create multiprocessing pipe and wrap in asyncio streams
+                self._read_conn, self._write_conn = mp.Pipe(duplex=True)
+                
+                # Wrap multiprocessing connection in asyncio streams
+                # Use loop.run_in_executor for blocking operations
+                loop = asyncio.get_event_loop()
+                
+                # Create reader/writer from file descriptors
+                # Note: multiprocessing.Pipe() returns Connection objects, not file descriptors
+                # We need to use a different approach - use asyncio subprocess pipes
+                # For true cross-platform parity, we'll use the same Unix socket approach on Windows
+                # by using a temporary named pipe path that works on both platforms
+                import tempfile
+                temp_dir = tempfile.gettempdir()
+                self._pipe_path = os.path.join(temp_dir, f"xwsystem_pipe_{os.getpid()}")
+                
+                # On Windows, use TCP localhost socket instead (works same as Unix sockets)
+                # This ensures exact same capabilities on both platforms
+                self._server = await asyncio.start_server(
+                    self._handle_client,
+                    '127.0.0.1',
+                    0  # Let OS assign port
+                )
+                # Get the actual port
+                sock = self._server.sockets[0]
+                self._pipe_port = sock.getsockname()[1]
+                
+                # Connect as client
+                self._reader, self._writer = await asyncio.open_connection('127.0.0.1', self._pipe_port)
+                self._setup_complete.set()
+                
+                logger.debug(f"Created async TCP localhost pipe on Windows (port {self._pipe_port}) for cross-platform parity")
             
             logger.debug("Connected to async pipe")
             return True

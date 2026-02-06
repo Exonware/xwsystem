@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/security/runner.py
 """
 Core Security Test Runner
 
@@ -135,8 +136,7 @@ class SecurityCoreTester:
                     print(f"[FAIL] Invalid path {path} should have failed validation")
                     return False
                 except Exception:
-                    # Expected to raise exception for invalid paths
-                    pass
+                    continue  # Expected: invalid path raises
             
             print("[PASS] Path validation core tests passed")
             return True

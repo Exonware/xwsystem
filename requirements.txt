@@ -2,7 +2,7 @@
 # Company: eXonware.com
 # Author: Eng. Muhammad AlShehri
 # Email: connect@exonware.com
-# Version: 0.1.0.1
+# Version: 0.1.0.3
 # Generation Date: 02-Nov-2025
 #
 # This file contains dependencies for xSystem's 17 core lightweight serialization formats (~10 MB)
@@ -89,6 +89,7 @@ opentelemetry-sdk>=1.15.0        # OpenTelemetry SDK
 pytest>=7.0.0                    # Testing framework
 pytest-cov>=4.0.0                # Coverage reporting
 pytest-asyncio>=0.20.0           # Async testing support
+pytest-benchmark>=4.0.0          # Benchmarking (GUIDE_54_BENCH.md)
 
 # Code Quality
 black>=22.0.0                    # Code formatting

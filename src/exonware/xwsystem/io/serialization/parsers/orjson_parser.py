@@ -1,18 +1,21 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/orjson_parser.py
 """orjson parser - Tier 1 (3-4x faster than stdlib)."""
 
-from typing import Any, Union
+from typing import Any
+import importlib.util
 
-try:
+_orjson_spec = importlib.util.find_spec('orjson')
+if _orjson_spec is not None:
     import orjson
     ORJSON_AVAILABLE = True
-except ImportError:
+else:
     ORJSON_AVAILABLE = False
     orjson = None
 
-from .base import IJsonParser
+from .base import AJsonParser
 
 
-class OrjsonParser(IJsonParser):
+class OrjsonParser(AJsonParser):
     """orjson parser - Tier 1 (3-4x faster than stdlib)."""
     
     @property
@@ -27,19 +30,19 @@ class OrjsonParser(IJsonParser):
     def is_available(self) -> bool:
         return ORJSON_AVAILABLE
     
-    def loads(self, s: Union[str, bytes]) -> Any:
+    def loads(self, s: str | bytes) -> Any:
         """Parse JSON using orjson.loads()."""
         if isinstance(s, str):
             s = s.encode("utf-8")
         return orjson.loads(s)
     
-    def dumps(self, obj: Any, **kwargs) -> Union[str, bytes]:
+    def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using orjson.dumps()."""
         option = 0
         
         # orjson options
         if not kwargs.get("ensure_ascii", True):
-            # orjson always outputs UTF-8, so ensure_ascii=False is default
+            # orjson outputs UTF-8, so ensure_ascii=False is default
             pass
         
         # Handle indent (orjson doesn't support indent directly)

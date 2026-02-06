@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Archive codecs - In-memory archive processors.
@@ -22,11 +22,12 @@ Priority 4 (Performance): Efficient in-memory operations
 Priority 5 (Extensibility): Easy to add new formats (7z, RAR, etc.)
 """
 
+import sys
 import zipfile
 import tarfile
 import io
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from ..archive.base import AArchiver
 from ..contracts import IArchiver, EncodeOptions, DecodeOptions
@@ -96,6 +97,44 @@ class ZipArchiver(AArchiver):
     def supports_capability(self, capability: CodecCapability) -> bool:
         """Check capability support."""
         return capability in (CodecCapability.BIDIRECTIONAL, CodecCapability.COMPRESSION)
+
+    # ----------------------------------------------------------------------
+    # File-based convenience API (used by archive facade + tests)
+    # ----------------------------------------------------------------------
+
+    @property
+    def format_id(self) -> str:
+        """Format identifier alias (compat with archive facade/tests)."""
+        return self.codec_id
+
+    def create(self, files: list[Path], archive_path: Path, compression: int = zipfile.ZIP_DEFLATED) -> Path:
+        """
+        Create a ZIP archive on disk from a list of files.
+        """
+        try:
+            archive_path.parent.mkdir(parents=True, exist_ok=True)
+            with zipfile.ZipFile(archive_path, "w", compression=compression) as zf:
+                for file_path in files:
+                    zf.write(file_path, arcname=file_path.name)
+            return archive_path
+        except Exception as e:
+            raise ArchiveError(f"Failed to create zip archive '{archive_path}': {e}")
+
+    def list_contents(self, archive_path: Path) -> list[str]:
+        """List contents of a ZIP archive on disk."""
+        try:
+            with zipfile.ZipFile(archive_path, "r") as zf:
+                return zf.namelist()
+        except Exception as e:
+            raise ArchiveError(f"Failed to list zip contents for '{archive_path}': {e}")
+
+    def add_file(self, archive_path: Path, file_path: Path, compression: int = zipfile.ZIP_DEFLATED) -> None:
+        """Add a file to an existing ZIP archive."""
+        try:
+            with zipfile.ZipFile(archive_path, "a", compression=compression) as zf:
+                zf.write(file_path, arcname=file_path.name)
+        except Exception as e:
+            raise ArchiveError(f"Failed to add file to zip '{archive_path}': {e}")
     
     def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes:
         """
@@ -174,13 +213,26 @@ class ZipArchiver(AArchiver):
         """
         return self.encode(data, options=options)
     
-    def extract(self, archive_bytes: bytes, **options) -> Any:
+    def extract(self, source: bytes | Path, extract_dir: Optional[Path] = None, **options) -> Any:
         """
-        User-friendly: Extract zip bytes to data.
-        
-        Delegates to decode().
+        Extract ZIP from either in-memory bytes or a file path.
+
+        - If source is bytes: returns dict[str, bytes] via decode()
+        - If source is Path: extracts to extract_dir and returns list[Path]
         """
-        return self.decode(archive_bytes, options=options)
+        if isinstance(source, (bytes, bytearray)):
+            return self.decode(bytes(source), options=options)
+
+        if extract_dir is None:
+            raise ArchiveError("extract_dir is required when extracting from a file path")
+
+        try:
+            extract_dir.mkdir(parents=True, exist_ok=True)
+            with zipfile.ZipFile(source, "r") as zf:
+                zf.extractall(extract_dir)
+                return [extract_dir / name for name in zf.namelist()]
+        except Exception as e:
+            raise ArchiveError(f"Failed to extract zip archive '{source}': {e}")
 
 
 class TarArchiver(AArchiver):
@@ -226,6 +278,42 @@ class TarArchiver(AArchiver):
     def supports_capability(self, capability: CodecCapability) -> bool:
         """Check capability support."""
         return capability in (CodecCapability.BIDIRECTIONAL, CodecCapability.COMPRESSION)
+
+    # ----------------------------------------------------------------------
+    # File-based convenience API (used by archive facade + tests)
+    # ----------------------------------------------------------------------
+
+    @property
+    def format_id(self) -> str:
+        """Format identifier alias (compat with archive facade/tests)."""
+        return self.codec_id
+
+    def create(self, files: list[Path], archive_path: Path, mode: str = "w") -> Path:
+        """Create a TAR archive on disk from a list of files."""
+        try:
+            archive_path.parent.mkdir(parents=True, exist_ok=True)
+            with tarfile.open(archive_path, mode) as tf:
+                for file_path in files:
+                    tf.add(file_path, arcname=file_path.name)
+            return archive_path
+        except Exception as e:
+            raise ArchiveError(f"Failed to create tar archive '{archive_path}': {e}")
+
+    def list_contents(self, archive_path: Path) -> list[str]:
+        """List contents of a TAR archive on disk."""
+        try:
+            with tarfile.open(archive_path, "r:*") as tf:
+                return [m.name for m in tf.getmembers() if m.name]
+        except Exception as e:
+            raise ArchiveError(f"Failed to list tar contents for '{archive_path}': {e}")
+
+    def add_file(self, archive_path: Path, file_path: Path) -> None:
+        """Add a file to an existing TAR archive (append mode)."""
+        try:
+            with tarfile.open(archive_path, "a") as tf:
+                tf.add(file_path, arcname=file_path.name)
+        except Exception as e:
+            raise ArchiveError(f"Failed to add file to tar '{archive_path}': {e}")
     
     def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes:
         """Encode data to tar bytes (in RAM)."""
@@ -286,7 +374,29 @@ class TarArchiver(AArchiver):
         """User-friendly: Compress data to tar bytes."""
         return self.encode(data, options=options)
     
-    def extract(self, archive_bytes: bytes, **options) -> Any:
-        """User-friendly: Extract tar bytes to data."""
-        return self.decode(archive_bytes, options=options)
+    def extract(self, source: bytes | Path, extract_dir: Optional[Path] = None, **options) -> Any:
+        """
+        Extract TAR from either in-memory bytes or a file path.
 
+        - If source is bytes: returns dict[str, bytes] via decode()
+        - If source is Path: extracts to extract_dir and returns list[Path]
+        """
+        if isinstance(source, (bytes, bytearray)):
+            return self.decode(bytes(source), options=options)
+
+        if extract_dir is None:
+            raise ArchiveError("extract_dir is required when extracting from a file path")
+
+        try:
+            extract_dir.mkdir(parents=True, exist_ok=True)
+            with tarfile.open(source, "r:*") as tf:
+                # Use data filter for Python 3.12+ compatibility (prevents deprecation warning)
+                # data_filter allows all files but validates paths for security
+                # For older Python versions, filter parameter is not available
+                extract_kwargs = {}
+                if sys.version_info >= (3, 12):
+                    extract_kwargs['filter'] = 'data'
+                tf.extractall(extract_dir, **extract_kwargs)
+                return [extract_dir / m.name for m in tf.getmembers() if m.name]
+        except Exception as e:
+            raise ArchiveError(f"Failed to extract tar archive '{source}': {e}")

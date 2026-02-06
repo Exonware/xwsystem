@@ -266,4 +266,3 @@ def test_bootstrap_fails_gracefully():
                 import_succeeded = False
 
             assert import_succeeded, "Package should load even if hook installation fails"
-

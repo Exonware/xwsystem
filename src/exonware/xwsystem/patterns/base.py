@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/patterns/base.py
 #exonware/xwsystem/patterns/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Abstract base classes for XSystem patterns.

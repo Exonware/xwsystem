@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/io/test_core_io_modular_imports.py
 """
 Core-level sanity checks for IO package reorganisation.
 """
@@ -30,4 +31,3 @@ def test_io_registries_expose_entries():
 
     assert paging_reg.list_strategies(), "Expected paging strategies to be registered"
     assert archive_reg.list_formats(), "Expected archive formats to be registered"
-

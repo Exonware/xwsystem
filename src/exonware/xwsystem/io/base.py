@@ -1,17 +1,20 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/base.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 IO module base classes - abstract classes for input/output functionality.
 """
 
+from __future__ import annotations
+
 import os
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union, BinaryIO, TextIO
+from typing import Any, Optional, BinaryIO, TextIO
 from pathlib import Path
 from .contracts import FileMode, FileType, PathType, OperationResult, LockType, IFile, IFolder, IPath, IStream, IAsyncIO, IAtomicOperations, IBackupOperations, ITemporaryOperations, IUnifiedIO, IFileManager
 
@@ -23,10 +26,10 @@ from .contracts import FileMode, FileType, PathType, OperationResult, LockType, 
 class AFile(IFile, ABC):
     """Abstract base class for file operations with both static and instance methods."""
     
-    def __init__(self, file_path: Union[str, Path]):
+    def __init__(self, file_path: str | Path):
         """Initialize file base."""
         self.file_path = Path(file_path)
-        self._handle: Optional[Union[TextIO, BinaryIO]] = None
+        self._handle: Optional[TextIO | BinaryIO] = None
     
     # ============================================================================
     # INSTANCE METHODS
@@ -38,12 +41,12 @@ class AFile(IFile, ABC):
         pass
     
     @abstractmethod
-    def read(self, size: Optional[int] = None) -> Union[str, bytes]:
+    def read(self, size: Optional[int] = None) -> str | bytes:
         """Read from file."""
         pass
     
     @abstractmethod
-    def write(self, data: Union[str, bytes]) -> int:
+    def write(self, data: str | bytes) -> int:
         """Write to file."""
         pass
     
@@ -63,17 +66,17 @@ class AFile(IFile, ABC):
         pass
     
     @abstractmethod
-    def save_as(self, path: Union[str, Path], data: Any, **kwargs) -> bool:
+    def save_as(self, path: str | Path, data: Any, **kwargs) -> bool:
         """Save data to specific path."""
         pass
     
     @abstractmethod
-    def to_file(self, path: Union[str, Path], **kwargs) -> bool:
+    def to_file(self, path: str | Path, **kwargs) -> bool:
         """Write current object to file."""
         pass
     
     @abstractmethod
-    def from_file(self, path: Union[str, Path], **kwargs) -> 'AFile':
+    def from_file(self, path: str | Path, **kwargs) -> AFile:
         """Load object from file."""
         pass
     
@@ -82,19 +85,19 @@ class AFile(IFile, ABC):
     # ============================================================================
     
     @staticmethod
-    def exists(path: Union[str, Path]) -> bool:
+    def exists(path: str | Path) -> bool:
         """Check if file exists."""
         return Path(path).exists() and Path(path).is_file()
     
     @staticmethod
-    def size(path: Union[str, Path]) -> int:
+    def size(path: str | Path) -> int:
         """Get file size."""
         if AFile.exists(path):
             return Path(path).stat().st_size
         return 0
     
     @staticmethod
-    def delete(path: Union[str, Path]) -> bool:
+    def delete(path: str | Path) -> bool:
         """Delete file."""
         try:
             if AFile.exists(path):
@@ -105,7 +108,7 @@ class AFile(IFile, ABC):
             return False
     
     @staticmethod
-    def copy(source: Union[str, Path], destination: Union[str, Path]) -> bool:
+    def copy(source: str | Path, destination: str | Path) -> bool:
         """Copy file."""
         try:
             import shutil
@@ -115,7 +118,7 @@ class AFile(IFile, ABC):
             return False
     
     @staticmethod
-    def move(source: Union[str, Path], destination: Union[str, Path]) -> bool:
+    def move(source: str | Path, destination: str | Path) -> bool:
         """Move file."""
         try:
             import shutil
@@ -125,60 +128,60 @@ class AFile(IFile, ABC):
             return False
     
     @staticmethod
-    def rename(old_path: Union[str, Path], new_path: Union[str, Path]) -> bool:
+    def rename(old_path: str | Path, new_path: str | Path) -> bool:
         """Rename file."""
         return AFile.move(old_path, new_path)
     
     @staticmethod
-    def get_modified_time(path: Union[str, Path]) -> float:
+    def get_modified_time(path: str | Path) -> float:
         """Get file modification time."""
         if AFile.exists(path):
             return Path(path).stat().st_mtime
         return 0.0
     
     @staticmethod
-    def get_created_time(path: Union[str, Path]) -> float:
+    def get_created_time(path: str | Path) -> float:
         """Get file creation time."""
         if AFile.exists(path):
             return Path(path).stat().st_ctime
         return 0.0
     
     @staticmethod
-    def get_permissions(path: Union[str, Path]) -> int:
+    def get_permissions(path: str | Path) -> int:
         """Get file permissions."""
         if AFile.exists(path):
             return Path(path).stat().st_mode
         return 0
     
     @staticmethod
-    def is_readable(path: Union[str, Path]) -> bool:
+    def is_readable(path: str | Path) -> bool:
         """Check if file is readable."""
         return AFile.exists(path) and os.access(path, os.R_OK)
     
     @staticmethod
-    def is_writable(path: Union[str, Path]) -> bool:
+    def is_writable(path: str | Path) -> bool:
         """Check if file is writable."""
         return AFile.exists(path) and os.access(path, os.W_OK)
     
     @staticmethod
-    def is_executable(path: Union[str, Path]) -> bool:
+    def is_executable(path: str | Path) -> bool:
         """Check if file is executable."""
         return AFile.exists(path) and os.access(path, os.X_OK)
     
     @staticmethod
-    def read_text(path: Union[str, Path], encoding: str = 'utf-8') -> str:
+    def read_text(path: str | Path, encoding: str = 'utf-8') -> str:
         """Read file as text."""
         with open(path, 'r', encoding=encoding) as f:
             return f.read()
     
     @staticmethod
-    def read_bytes(path: Union[str, Path]) -> bytes:
+    def read_bytes(path: str | Path) -> bytes:
         """Read file as bytes."""
         with open(path, 'rb') as f:
             return f.read()
     
     @staticmethod
-    def write_text(path: Union[str, Path], content: str, encoding: str = 'utf-8') -> bool:
+    def write_text(path: str | Path, content: str, encoding: str = 'utf-8') -> bool:
         """Write text to file."""
         try:
             Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -189,7 +192,7 @@ class AFile(IFile, ABC):
             return False
     
     @staticmethod
-    def write_bytes(path: Union[str, Path], content: bytes) -> bool:
+    def write_bytes(path: str | Path, content: bytes) -> bool:
         """Write bytes to file."""
         try:
             Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -200,7 +203,7 @@ class AFile(IFile, ABC):
             return False
     
     @staticmethod
-    def safe_read_text(path: Union[str, Path], encoding: str = 'utf-8') -> Optional[str]:
+    def safe_read_text(path: str | Path, encoding: str = 'utf-8') -> Optional[str]:
         """Safely read text file, returning None on error."""
         try:
             return AFile.read_text(path, encoding)
@@ -208,7 +211,7 @@ class AFile(IFile, ABC):
             return None
     
     @staticmethod
-    def safe_read_bytes(path: Union[str, Path]) -> Optional[bytes]:
+    def safe_read_bytes(path: str | Path) -> Optional[bytes]:
         """Safely read binary file, returning None on error."""
         try:
             return AFile.read_bytes(path)
@@ -216,12 +219,12 @@ class AFile(IFile, ABC):
             return None
     
     @staticmethod
-    def safe_write_text(path: Union[str, Path], content: str, encoding: str = 'utf-8') -> bool:
+    def safe_write_text(path: str | Path, content: str, encoding: str = 'utf-8') -> bool:
         """Safely write text to file."""
         return AFile.write_text(path, content, encoding)
     
     @staticmethod
-    def safe_write_bytes(path: Union[str, Path], content: bytes) -> bool:
+    def safe_write_bytes(path: str | Path, content: bytes) -> bool:
         """Safely write bytes to file."""
         return AFile.write_bytes(path, content)
     
@@ -230,22 +233,23 @@ class AFile(IFile, ABC):
     # ============================================================================
     
     @staticmethod
-    def atomic_write(file_path: Union[str, Path], data: Union[str, bytes], 
+    def atomic_write(file_path: str | Path, data: str | bytes, 
                     backup: bool = True) -> OperationResult:
         """Atomically write data to file (static version)."""
         from .common.atomic import AtomicFileWriter
         try:
-            with AtomicFileWriter(Path(file_path), backup=backup) as writer:
-                if isinstance(data, str):
-                    writer.write(data.encode('utf-8'))
-                else:
+            if isinstance(data, bytes):
+                with AtomicFileWriter(Path(file_path), mode="wb", backup=backup) as writer:
+                    writer.write(data)
+            else:
+                with AtomicFileWriter(Path(file_path), mode="w", encoding="utf-8", backup=backup) as writer:
                     writer.write(data)
             return OperationResult.SUCCESS
         except Exception:
             return OperationResult.FAILED
     
     @staticmethod
-    def atomic_copy(source: Union[str, Path], destination: Union[str, Path]) -> OperationResult:
+    def atomic_copy(source: str | Path, destination: str | Path) -> OperationResult:
         """Atomically copy file (static version)."""
         from .common.atomic import AtomicFileWriter
         import shutil
@@ -258,7 +262,7 @@ class AFile(IFile, ABC):
             return OperationResult.FAILED
     
     @staticmethod
-    def atomic_move(source: Union[str, Path], destination: Union[str, Path]) -> OperationResult:
+    def atomic_move(source: str | Path, destination: str | Path) -> OperationResult:
         """Atomically move file (static version)."""
         result = AFile.atomic_copy(source, destination)
         if result == OperationResult.SUCCESS:
@@ -270,7 +274,7 @@ class AFile(IFile, ABC):
         return OperationResult.FAILED
     
     @staticmethod
-    def atomic_delete(file_path: Union[str, Path], backup: bool = True) -> OperationResult:
+    def atomic_delete(file_path: str | Path, backup: bool = True) -> OperationResult:
         """Atomically delete file (static version)."""
         target = Path(file_path)
         try:
@@ -286,7 +290,7 @@ class AFile(IFile, ABC):
             return OperationResult.FAILED
     
     @staticmethod
-    def create_backup(source: Union[str, Path], backup_dir: Union[str, Path]) -> Optional[Path]:
+    def create_backup(source: str | Path, backup_dir: str | Path) -> Optional[Path]:
         """Create backup of file (static version)."""
         import shutil
         source_path = Path(source)
@@ -303,7 +307,7 @@ class AFile(IFile, ABC):
             return None
     
     @staticmethod
-    def restore_backup(backup_path: Union[str, Path], target: Union[str, Path]) -> OperationResult:
+    def restore_backup(backup_path: str | Path, target: str | Path) -> OperationResult:
         """Restore from backup (static version)."""
         import shutil
         try:
@@ -336,7 +340,7 @@ class AFile(IFile, ABC):
 class AFolder(IFolder, ABC):
     """Abstract base class for folder operations with both static and instance methods."""
     
-    def __init__(self, dir_path: Union[str, Path]):
+    def __init__(self, dir_path: str | Path):
         """Initialize folder base."""
         self.dir_path = Path(dir_path)
     
@@ -374,11 +378,11 @@ class AFolder(IFolder, ABC):
         """Check if directory is empty."""
         return AFolder.is_empty_static(self.dir_path)
     
-    def copy_to(self, destination: Union[str, Path]) -> bool:
+    def copy_to(self, destination: str | Path) -> bool:
         """Copy directory to destination."""
         return AFolder.copy_dir(self.dir_path, destination)
     
-    def move_to(self, destination: Union[str, Path]) -> bool:
+    def move_to(self, destination: str | Path) -> bool:
         """Move directory to destination."""
         return AFolder.move_dir(self.dir_path, destination)
     
@@ -387,12 +391,12 @@ class AFolder(IFolder, ABC):
     # ============================================================================
     
     @staticmethod
-    def exists(path: Union[str, Path]) -> bool:
+    def exists(path: str | Path) -> bool:
         """Check if directory exists."""
         return Path(path).exists() and Path(path).is_dir()
     
     @staticmethod
-    def create_dir(path: Union[str, Path], parents: bool = True, exist_ok: bool = True) -> bool:
+    def create_dir(path: str | Path, parents: bool = True, exist_ok: bool = True) -> bool:
         """Create directory."""
         try:
             Path(path).mkdir(parents=parents, exist_ok=exist_ok)
@@ -401,7 +405,7 @@ class AFolder(IFolder, ABC):
             return False
     
     @staticmethod
-    def delete_dir(path: Union[str, Path], recursive: bool = False) -> bool:
+    def delete_dir(path: str | Path, recursive: bool = False) -> bool:
         """Delete directory."""
         try:
             if recursive:
@@ -414,7 +418,7 @@ class AFolder(IFolder, ABC):
             return False
     
     @staticmethod
-    def list_files_static(path: Union[str, Path], pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files_static(path: str | Path, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         if not AFolder.exists(path):
             return []
@@ -431,7 +435,7 @@ class AFolder(IFolder, ABC):
                 return [p for p in Path(path).iterdir() if p.is_file()]
     
     @staticmethod
-    def list_directories_static(path: Union[str, Path], recursive: bool = False) -> list[Path]:
+    def list_directories_static(path: str | Path, recursive: bool = False) -> list[Path]:
         """List subdirectories."""
         if not AFolder.exists(path):
             return []
@@ -442,7 +446,7 @@ class AFolder(IFolder, ABC):
             return [p for p in Path(path).iterdir() if p.is_dir()]
     
     @staticmethod
-    def walk_static(path: Union[str, Path]) -> list[tuple[Path, list[str], list[str]]]:
+    def walk_static(path: str | Path) -> list[tuple[Path, list[str], list[str]]]:
         """Walk directory tree."""
         if not AFolder.exists(path):
             return []
@@ -453,7 +457,7 @@ class AFolder(IFolder, ABC):
         return result
     
     @staticmethod
-    def get_size_static(path: Union[str, Path]) -> int:
+    def get_size_static(path: str | Path) -> int:
         """Get directory size."""
         if not AFolder.exists(path):
             return 0
@@ -468,7 +472,7 @@ class AFolder(IFolder, ABC):
         return total_size
     
     @staticmethod
-    def is_empty_static(path: Union[str, Path]) -> bool:
+    def is_empty_static(path: str | Path) -> bool:
         """Check if directory is empty."""
         if not AFolder.exists(path):
             return True
@@ -479,7 +483,7 @@ class AFolder(IFolder, ABC):
             return True
     
     @staticmethod
-    def copy_dir(source: Union[str, Path], destination: Union[str, Path]) -> bool:
+    def copy_dir(source: str | Path, destination: str | Path) -> bool:
         """Copy directory."""
         try:
             import shutil
@@ -489,7 +493,7 @@ class AFolder(IFolder, ABC):
             return False
     
     @staticmethod
-    def move_dir(source: Union[str, Path], destination: Union[str, Path]) -> bool:
+    def move_dir(source: str | Path, destination: str | Path) -> bool:
         """Move directory."""
         try:
             import shutil
@@ -499,24 +503,24 @@ class AFolder(IFolder, ABC):
             return False
     
     @staticmethod
-    def get_permissions(path: Union[str, Path]) -> int:
+    def get_permissions(path: str | Path) -> int:
         """Get directory permissions."""
         if AFolder.exists(path):
             return Path(path).stat().st_mode
         return 0
     
     @staticmethod
-    def is_readable(path: Union[str, Path]) -> bool:
+    def is_readable(path: str | Path) -> bool:
         """Check if directory is readable."""
         return AFolder.exists(path) and os.access(path, os.R_OK)
     
     @staticmethod
-    def is_writable(path: Union[str, Path]) -> bool:
+    def is_writable(path: str | Path) -> bool:
         """Check if directory is writable."""
         return AFolder.exists(path) and os.access(path, os.W_OK)
     
     @staticmethod
-    def is_executable(path: Union[str, Path]) -> bool:
+    def is_executable(path: str | Path) -> bool:
         """Check if directory is executable."""
         return AFolder.exists(path) and os.access(path, os.X_OK)
 
@@ -533,85 +537,85 @@ class APath(IPath, ABC):
     # ============================================================================
     
     @staticmethod
-    def normalize(path: Union[str, Path]) -> Path:
+    def normalize(path: str | Path) -> Path:
         """Normalize path."""
         return Path(path).resolve()
     
     @staticmethod
-    def resolve(path: Union[str, Path]) -> Path:
+    def resolve(path: str | Path) -> Path:
         """Resolve path."""
         return Path(path).resolve()
     
     @staticmethod
-    def absolute(path: Union[str, Path]) -> Path:
+    def absolute(path: str | Path) -> Path:
         """Get absolute path."""
         return Path(path).absolute()
     
     @staticmethod
-    def relative(path: Union[str, Path], start: Optional[Union[str, Path]] = None) -> Path:
+    def relative(path: str | Path, start: Optional[str | Path] = None) -> Path:
         """Get relative path."""
         if start is None:
             start = Path.cwd()
         return Path(path).relative_to(Path(start))
     
     @staticmethod
-    def join(*paths: Union[str, Path]) -> Path:
+    def join(*paths: str | Path) -> Path:
         """Join paths."""
         return Path(*paths)
     
     @staticmethod
-    def split(path: Union[str, Path]) -> tuple[Path, str]:
+    def split(path: str | Path) -> tuple[Path, str]:
         """Split path into directory and filename."""
         p = Path(path)
         return p.parent, p.name
     
     @staticmethod
-    def get_extension(path: Union[str, Path]) -> str:
+    def get_extension(path: str | Path) -> str:
         """Get file extension."""
         return Path(path).suffix
     
     @staticmethod
-    def get_stem(path: Union[str, Path]) -> str:
+    def get_stem(path: str | Path) -> str:
         """Get file stem (name without extension)."""
         return Path(path).stem
     
     @staticmethod
-    def get_name(path: Union[str, Path]) -> str:
+    def get_name(path: str | Path) -> str:
         """Get file/directory name."""
         return Path(path).name
     
     @staticmethod
-    def get_parent(path: Union[str, Path]) -> Path:
+    def get_parent(path: str | Path) -> Path:
         """Get parent directory."""
         return Path(path).parent
     
     @staticmethod
-    def is_absolute(path: Union[str, Path]) -> bool:
+    def is_absolute(path: str | Path) -> bool:
         """Check if path is absolute."""
         return Path(path).is_absolute()
     
     @staticmethod
-    def is_relative(path: Union[str, Path]) -> bool:
+    def is_relative(path: str | Path) -> bool:
         """Check if path is relative."""
         return not Path(path).is_absolute()
     
     @staticmethod
-    def get_parts(path: Union[str, Path]) -> tuple:
+    def get_parts(path: str | Path) -> tuple:
         """Get path parts."""
         return Path(path).parts
     
     @staticmethod
-    def match(path: Union[str, Path], pattern: str) -> bool:
+    def match(path: str | Path, pattern: str) -> bool:
         """Check if path matches pattern."""
         return Path(path).match(pattern)
     
     @staticmethod
-    def with_suffix(path: Union[str, Path], suffix: str) -> Path:
+    def with_suffix(path: str | Path, suffix: str) -> Path:
         """Get path with new suffix."""
         return Path(path).with_suffix(suffix)
     
     @staticmethod
-    def with_name(path: Union[str, Path], name: str) -> Path:
+    def with_name(path: str | Path, name: str) -> Path:
         """Get path with new name."""
         return Path(path).with_name(name)
 
@@ -627,19 +631,19 @@ class AStream(IStream, ABC):
         """Initialize stream base."""
         self._closed = False
         self._position = 0
-        self._stream: Optional[Union[TextIO, BinaryIO]] = None
+        self._stream: Optional[TextIO | BinaryIO] = None
     
     # ============================================================================
     # INSTANCE METHODS
     # ============================================================================
     
     @abstractmethod
-    def read(self, size: Optional[int] = None) -> Union[str, bytes]:
+    def read(self, size: Optional[int] = None) -> str | bytes:
         """Read from stream."""
         pass
     
     @abstractmethod
-    def write(self, data: Union[str, bytes]) -> int:
+    def write(self, data: str | bytes) -> int:
         """Write to stream."""
         pass
     
@@ -670,27 +674,27 @@ class AStream(IStream, ABC):
     # ============================================================================
     
     @staticmethod
-    def open_file(path: Union[str, Path], mode: str = 'r', encoding: Optional[str] = None) -> Union[TextIO, BinaryIO]:
+    def open_file(path: str | Path, mode: str = 'r', encoding: Optional[str] = None) -> TextIO | BinaryIO:
         """Open file as stream."""
         return open(path, mode, encoding=encoding)
     
     @staticmethod
-    def is_closed(stream: Union[TextIO, BinaryIO]) -> bool:
+    def is_closed(stream: TextIO | BinaryIO) -> bool:
         """Check if stream is closed."""
         return stream.closed
     
     @staticmethod
-    def readable(stream: Union[TextIO, BinaryIO]) -> bool:
+    def readable(stream: TextIO | BinaryIO) -> bool:
         """Check if stream is readable."""
         return hasattr(stream, 'readable') and stream.readable()
     
     @staticmethod
-    def writable(stream: Union[TextIO, BinaryIO]) -> bool:
+    def writable(stream: TextIO | BinaryIO) -> bool:
         """Check if stream is writable."""
         return hasattr(stream, 'writable') and stream.writable()
     
     @staticmethod
-    def seekable(stream: Union[TextIO, BinaryIO]) -> bool:
+    def seekable(stream: TextIO | BinaryIO) -> bool:
         """Check if stream is seekable."""
         return hasattr(stream, 'seekable') and stream.seekable()
 
@@ -713,12 +717,12 @@ class AAsyncIO(IAsyncIO, ABC):
     # ============================================================================
     
     @abstractmethod
-    async def aread(self, size: Optional[int] = None) -> Union[str, bytes]:
+    async def aread(self, size: Optional[int] = None) -> str | bytes:
         """Async read operation."""
         pass
     
     @abstractmethod
-    async def awrite(self, data: Union[str, bytes]) -> int:
+    async def awrite(self, data: str | bytes) -> int:
         """Async write operation."""
         pass
     
@@ -749,14 +753,14 @@ class AAsyncIO(IAsyncIO, ABC):
     # ============================================================================
     
     @staticmethod
-    async def aopen_file(path: Union[str, Path], mode: str = 'r', encoding: Optional[str] = None) -> Any:
+    async def aopen_file(path: str | Path, mode: str = 'r', encoding: Optional[str] = None) -> Any:
         """Async open file."""
         # Lazy installation system will handle aiofiles if missing
         import aiofiles
         return await aiofiles.open(path, mode, encoding=encoding)
     
     @staticmethod
-    async def aread_text(path: Union[str, Path], encoding: str = 'utf-8') -> str:
+    async def aread_text(path: str | Path, encoding: str = 'utf-8') -> str:
         """Async read text file."""
         # Lazy installation system will handle aiofiles if missing
         import aiofiles
@@ -764,7 +768,7 @@ class AAsyncIO(IAsyncIO, ABC):
             return await f.read()
     
     @staticmethod
-    async def aread_bytes(path: Union[str, Path]) -> bytes:
+    async def aread_bytes(path: str | Path) -> bytes:
         """Async read binary file."""
         # Lazy installation system will handle aiofiles if missing
         import aiofiles
@@ -772,7 +776,7 @@ class AAsyncIO(IAsyncIO, ABC):
             return await f.read()
     
     @staticmethod
-    async def awrite_text(path: Union[str, Path], content: str, encoding: str = 'utf-8') -> bool:
+    async def awrite_text(path: str | Path, content: str, encoding: str = 'utf-8') -> bool:
         """Async write text to file."""
         try:
             # Lazy installation system will handle aiofiles if missing
@@ -785,7 +789,7 @@ class AAsyncIO(IAsyncIO, ABC):
             return False
     
     @staticmethod
-    async def awrite_bytes(path: Union[str, Path], content: bytes) -> bool:
+    async def awrite_bytes(path: str | Path, content: bytes) -> bool:
         """Async write bytes to file."""
         try:
             # Lazy installation system will handle aiofiles if missing
@@ -815,28 +819,28 @@ class AAtomicOperations(IAtomicOperations, ABC):
     # ============================================================================
     
     @abstractmethod
-    def atomic_write(self, file_path: Union[str, Path], data: Union[str, bytes], 
+    def atomic_write(self, file_path: str | Path, data: str | bytes, 
                     backup: bool = True) -> OperationResult:
         """Atomically write data to file."""
         pass
     
     @abstractmethod
-    def atomic_copy(self, source: Union[str, Path], destination: Union[str, Path]) -> OperationResult:
+    def atomic_copy(self, source: str | Path, destination: str | Path) -> OperationResult:
         """Atomically copy file."""
         pass
     
     @abstractmethod
-    def atomic_move(self, source: Union[str, Path], destination: Union[str, Path]) -> OperationResult:
+    def atomic_move(self, source: str | Path, destination: str | Path) -> OperationResult:
         """Atomically move file."""
         pass
     
     @abstractmethod
-    def atomic_delete(self, file_path: Union[str, Path], backup: bool = True) -> OperationResult:
+    def atomic_delete(self, file_path: str | Path, backup: bool = True) -> OperationResult:
         """Atomically delete file."""
         pass
     
     @abstractmethod
-    def atomic_rename(self, old_path: Union[str, Path], new_path: Union[str, Path]) -> OperationResult:
+    def atomic_rename(self, old_path: str | Path, new_path: str | Path) -> OperationResult:
         """Atomically rename file."""
         pass
     
@@ -845,7 +849,7 @@ class AAtomicOperations(IAtomicOperations, ABC):
     # ============================================================================
     
     @staticmethod
-    def atomic_write_static(file_path: Union[str, Path], data: Union[str, bytes], 
+    def atomic_write_static(file_path: str | Path, data: str | bytes, 
                            backup: bool = True) -> OperationResult:
         """Atomically write data to file."""
         try:
@@ -860,7 +864,7 @@ class AAtomicOperations(IAtomicOperations, ABC):
             return OperationResult.FAILED
     
     @staticmethod
-    def atomic_copy_static(source: Union[str, Path], destination: Union[str, Path]) -> OperationResult:
+    def atomic_copy_static(source: str | Path, destination: str | Path) -> OperationResult:
         """Atomically copy file."""
         try:
             from .atomic_file import AtomicFileWriter
@@ -873,7 +877,7 @@ class AAtomicOperations(IAtomicOperations, ABC):
             return OperationResult.FAILED
     
     @staticmethod
-    def atomic_move_static(source: Union[str, Path], destination: Union[str, Path]) -> OperationResult:
+    def atomic_move_static(source: str | Path, destination: str | Path) -> OperationResult:
         """Atomically move file."""
         try:
             from .atomic_file import AtomicFileWriter
@@ -891,7 +895,7 @@ class AAtomicOperations(IAtomicOperations, ABC):
             return OperationResult.FAILED
     
     @staticmethod
-    def atomic_delete_static(file_path: Union[str, Path], backup: bool = True) -> OperationResult:
+    def atomic_delete_static(file_path: str | Path, backup: bool = True) -> OperationResult:
         """Atomically delete file."""
         try:
             if backup and Path(file_path).exists():
@@ -905,7 +909,7 @@ class AAtomicOperations(IAtomicOperations, ABC):
             return OperationResult.FAILED
     
     @staticmethod
-    def atomic_rename_static(old_path: Union[str, Path], new_path: Union[str, Path]) -> OperationResult:
+    def atomic_rename_static(old_path: str | Path, new_path: str | Path) -> OperationResult:
         """Atomically rename file."""
         return AAtomicOperations.atomic_move_static(old_path, new_path)
 
@@ -926,24 +930,24 @@ class ABackupOperations(IBackupOperations, ABC):
     # ============================================================================
     
     @abstractmethod
-    def create_backup(self, source: Union[str, Path], backup_dir: Union[str, Path]) -> Optional[Path]:
+    def create_backup(self, source: str | Path, backup_dir: str | Path) -> Optional[Path]:
         """Create backup of file or directory."""
         pass
     
     @abstractmethod
-    def restore_backup(self, backup_path: Union[str, Path], target: Union[str, Path]) -> OperationResult:
+    def restore_backup(self, backup_path: str | Path, target: str | Path) -> OperationResult:
         """Restore from backup."""
         pass
     
-    def list_backups(self, backup_dir: Union[str, Path]) -> list[Path]:
+    def list_backups(self, backup_dir: str | Path) -> list[Path]:
         """List available backups."""
         return ABackupOperations.list_backups_static(backup_dir)
     
-    def cleanup_backups(self, backup_dir: Union[str, Path], max_age_days: int = 30) -> int:
+    def cleanup_backups(self, backup_dir: str | Path, max_age_days: int = 30) -> int:
         """Cleanup old backups."""
         return ABackupOperations.cleanup_backups_static(backup_dir, max_age_days)
     
-    def verify_backup(self, backup_path: Union[str, Path]) -> bool:
+    def verify_backup(self, backup_path: str | Path) -> bool:
         """Verify backup integrity."""
         return ABackupOperations.verify_backup_static(backup_path)
     
@@ -952,7 +956,7 @@ class ABackupOperations(IBackupOperations, ABC):
     # ============================================================================
     
     @staticmethod
-    def create_backup_static(source: Union[str, Path], backup_dir: Union[str, Path]) -> Optional[Path]:
+    def create_backup_static(source: str | Path, backup_dir: str | Path) -> Optional[Path]:
         """Create backup of file or directory."""
         try:
             source_path = Path(source)
@@ -976,7 +980,7 @@ class ABackupOperations(IBackupOperations, ABC):
             return None
     
     @staticmethod
-    def restore_backup_static(backup_path: Union[str, Path], target: Union[str, Path]) -> OperationResult:
+    def restore_backup_static(backup_path: str | Path, target: str | Path) -> OperationResult:
         """Restore from backup."""
         try:
             backup = Path(backup_path)
@@ -1000,7 +1004,7 @@ class ABackupOperations(IBackupOperations, ABC):
             return OperationResult.FAILED
     
     @staticmethod
-    def list_backups_static(backup_dir: Union[str, Path]) -> list[Path]:
+    def list_backups_static(backup_dir: str | Path) -> list[Path]:
         """List available backups."""
         try:
             backup_path = Path(backup_dir)
@@ -1012,7 +1016,7 @@ class ABackupOperations(IBackupOperations, ABC):
             return []
     
     @staticmethod
-    def cleanup_backups_static(backup_dir: Union[str, Path], max_age_days: int = 30) -> int:
+    def cleanup_backups_static(backup_dir: str | Path, max_age_days: int = 30) -> int:
         """Cleanup old backups."""
         try:
             backup_path = Path(backup_dir)
@@ -1033,7 +1037,7 @@ class ABackupOperations(IBackupOperations, ABC):
             return 0
     
     @staticmethod
-    def verify_backup_static(backup_path: Union[str, Path]) -> bool:
+    def verify_backup_static(backup_path: str | Path) -> bool:
         """Verify backup integrity."""
         try:
             backup = Path(backup_path)
@@ -1069,7 +1073,7 @@ class ATemporaryOperations(ITemporaryOperations, ABC):
         """Create temporary directory."""
         pass
     
-    def cleanup_temp(self, path: Union[str, Path]) -> bool:
+    def cleanup_temp(self, path: str | Path) -> bool:
         """Cleanup temporary file or directory."""
         return ATemporaryOperations.cleanup_temp_static(path)
     
@@ -1107,7 +1111,7 @@ class ATemporaryOperations(ITemporaryOperations, ABC):
         return Path(temp_path)
     
     @staticmethod
-    def cleanup_temp_static(path: Union[str, Path]) -> bool:
+    def cleanup_temp_static(path: str | Path) -> bool:
         """Cleanup temporary file or directory."""
         try:
             temp_path = Path(path)
@@ -1129,7 +1133,7 @@ class ATemporaryOperations(ITemporaryOperations, ABC):
         return Path(tempfile.gettempdir())
     
     @staticmethod
-    def is_temp(path: Union[str, Path]) -> bool:
+    def is_temp(path: str | Path) -> bool:
         """Check if path is temporary."""
         temp_path = Path(path)
         temp_base = ATemporaryOperations.get_temp_base_dir()
@@ -1160,7 +1164,7 @@ class AUnifiedIO(AFile, AFolder, APath, AStream, AAsyncIO, AAtomicOperations, AB
     - xwsystem integration (security, validation, monitoring)
     """
     
-    def __init__(self, file_path: Optional[Union[str, Path]] = None, **config):
+    def __init__(self, file_path: Optional[str | Path] = None, **config):
         """
         Initialize unified I/O with xwsystem integration.
         
@@ -1225,7 +1229,7 @@ class AFileManager(AFile, AFolder, APath, AAtomicOperations, ABackupOperations, 
     - Format detection and intelligent handling
     """
     
-    def __init__(self, base_path: Optional[Union[str, Path]] = None, **config):
+    def __init__(self, base_path: Optional[str | Path] = None, **config):
         """
         Initialize file manager with xwsystem integration.
         
@@ -1268,7 +1272,7 @@ class AFileManager(AFile, AFolder, APath, AAtomicOperations, ABackupOperations, 
         if self.cleanup_temp_on_exit:
             self.cleanup_all_temp()
     
-    def detect_file_type(self, file_path: Union[str, Path]) -> str:
+    def detect_file_type(self, file_path: str | Path) -> str:
         """
         Detect file type from extension and content.
         
@@ -1315,7 +1319,7 @@ class AFileManager(AFile, AFolder, APath, AAtomicOperations, ABackupOperations, 
         
         return type_mappings.get(ext, 'unknown')
     
-    def get_file_info(self, file_path: Union[str, Path]) -> dict[str, Any]:
+    def get_file_info(self, file_path: str | Path) -> dict[str, Any]:
         """
         Get comprehensive file information.
         
@@ -1358,7 +1362,7 @@ class AFileManager(AFile, AFolder, APath, AAtomicOperations, ABackupOperations, 
                 'error': str(e)
             }
     
-    def is_safe_to_process(self, file_path: Union[str, Path]) -> bool:
+    def is_safe_to_process(self, file_path: str | Path) -> bool:
         """
         Check if file is safe to process (not too large, accessible, etc.).
         

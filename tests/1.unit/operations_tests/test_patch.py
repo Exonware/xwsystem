@@ -303,4 +303,3 @@ class TestPatchEdgeCases:
         
         assert result.success
         assert result.result["items"] == [1, 2, 3, 4]
-

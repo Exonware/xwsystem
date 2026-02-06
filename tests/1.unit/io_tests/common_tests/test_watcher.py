@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/common_tests/test_watcher.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for FileWatcher.
@@ -87,4 +88,3 @@ class TestFileWatcher:
         
         # Should have detected creation
         assert len(events) > 0
-

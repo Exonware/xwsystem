@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/utils/test_auto_install.py
 """
 Test auto-installation of missing packages using xwimport
 """
@@ -61,19 +62,17 @@ def test_avro_serializer():
         print("   Testing serialization...")
         serialized = serializer.dumps_binary(test_data)
         print(f"   ✅ SUCCESS: Data serialized to {len(serialized)} bytes")
+        assert len(serialized) > 0, "Serialized data should not be empty"
         
         print("   Testing deserialization...")
         deserialized = serializer.loads_bytes(serialized)
         print(f"   ✅ SUCCESS: Data deserialized: {deserialized}")
-        
-        return True
+        assert deserialized == test_data, "Deserialized data should match original"
         
     except ImportError as e:
-        print(f"   ❌ FAILED: Could not import AvroSerializer: {e}")
-        return False
+        pytest.skip(f"AvroSerializer not available: {e}")
     except Exception as e:
-        print(f"   ❌ ERROR: Unexpected error: {e}")
-        return False
+        pytest.fail(f"Unexpected error: {e}")
 
 def main():
     """Run the auto-installation tests."""

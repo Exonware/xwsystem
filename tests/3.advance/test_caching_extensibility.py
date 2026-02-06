@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/3.advance/test_caching_extensibility.py
 """
 Advance extensibility tests for caching module.
 Priority #5: Extensibility Excellence
@@ -20,7 +21,7 @@ from exonware.xwsystem.caching.eviction_strategies import (
 )
 from exonware.xwsystem.caching.observable_cache import ObservableLRUCache
 from exonware.xwsystem.caching.events import CacheEvent
-from exonware.xwsystem.caching.decorators import cached
+from exonware.xwsystem.caching.decorators import xwcached
 
 
 @pytest.mark.xwsystem_advance
@@ -121,7 +122,7 @@ class TestCachingExtensibilityExcellence:
         def should_cache(args, kwargs):
             return args[0] > 0
         
-        @cached(
+        @xwcached(
             key_builder=custom_key_builder,
             condition=should_cache
         )
@@ -168,4 +169,3 @@ class TestCachingExtensibilityExcellence:
         assert len(cache.operation_log) == 2
         assert cache.operation_log[0] == ('PUT', 'key', 'value')
         assert cache.operation_log[1][0] == 'GET'
-

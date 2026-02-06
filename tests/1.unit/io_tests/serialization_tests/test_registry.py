@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/test_registry.py
 """
 Unit tests for io.serialization.registry module
 
@@ -55,4 +56,3 @@ class TestSerializationRegistryIntegration:
         # Should be able to list formats (delegates to universal registry)
         formats = registry.list_formats()
         assert formats is not None
-

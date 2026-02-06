@@ -251,4 +251,3 @@ class TestDiffEdgeCases:
         
         result = generate_diff(original, modified)
         assert result.total_changes > 0
-

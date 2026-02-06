@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/shared_tests/test_errors.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for shared error classes.
@@ -111,4 +112,3 @@ class TestOtherCoreErrors:
         """Test CoreOperationError."""
         error = CoreOperationError("Operation failed")
         assert isinstance(error, CoreError)
-

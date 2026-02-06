@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/ipc/message_queue.py
 """
 Message Queue Utilities
 =======================
@@ -208,7 +209,8 @@ class MessageQueue[T]:
         while not self.empty():
             try:
                 self.get_nowait()
-            except:
+            except queue.Empty:
+                # Queue is empty, stop clearing
                 break
     
     def get_stats(self) -> dict:
@@ -398,7 +400,8 @@ class AsyncMessageQueue[T]:
         while not self.empty():
             try:
                 self.get_nowait()
-            except:
+            except queue.Empty:
+                # Queue is empty, stop clearing
                 break
     
     async def get_stats(self) -> dict:

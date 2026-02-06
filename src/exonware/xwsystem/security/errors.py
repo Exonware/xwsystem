@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/security/errors.py
 #exonware/xwsystem/security/errors.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 Security module errors - exception classes for security functionality.

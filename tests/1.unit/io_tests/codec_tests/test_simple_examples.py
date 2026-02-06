@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/codec_tests/test_simple_examples.py
 """
 Additional codec tests covering bespoke serializer/formatter examples.
 """
@@ -467,4 +468,3 @@ def test_registry_workflow():
 
     sql_codec = get_codec_by_id("sql-test")
     assert sql_codec is not None
-

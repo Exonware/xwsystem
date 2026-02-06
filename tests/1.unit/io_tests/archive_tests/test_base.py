@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/archive_tests/test_base.py
 """
 Unit tests for io.archive.base module
 
@@ -43,4 +44,3 @@ class TestArchiveAbstractBases:
         """Test AArchiver extends ACodec following I→A→XW pattern."""
         from exonware.xwsystem.io.codec.base import ACodec
         assert issubclass(AArchiver, ACodec)
-

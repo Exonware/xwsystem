@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/warming.py
 #exonware/xwsystem/caching/warming.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Cache warming utilities for preloading data.
@@ -64,9 +65,12 @@ class PreloadWarmingStrategy(AWarmingStrategy):
         
         elapsed = time.time() - start_time
         
+        # Avoid division by zero if operation completes instantly
+        keys_per_sec = len(keys) / elapsed if elapsed > 0 else float('inf')
+        
         logger.info(
             f"Cache warming complete: {success_count}/{len(keys)} loaded "
-            f"in {elapsed:.2f}s ({len(keys)/elapsed:.0f} keys/sec)"
+            f"in {elapsed:.2f}s ({keys_per_sec:.0f} keys/sec)"
         )
         
         if failures:
@@ -239,4 +243,3 @@ __all__ = [
     'warm_cache',
     'warm_cache_async',
 ]
-

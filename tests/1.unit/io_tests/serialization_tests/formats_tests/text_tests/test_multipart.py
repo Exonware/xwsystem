@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/formats_tests/text_tests/test_multipart.py
 # -*- coding: utf-8 -*-
 """
 Unit tests for Multipart serializer.
@@ -30,4 +31,3 @@ class TestMultipartSerializer:
             assert decoded is not None
         except ImportError:
             pytest.skip("Multipart serializer not available")
-

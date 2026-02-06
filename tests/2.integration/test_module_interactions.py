@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/2.integration/test_module_interactions.py
 """
 Integration tests for xSystem module interactions.
 
@@ -54,11 +55,12 @@ class TestModuleInteractions:
         with tempfile.TemporaryDirectory() as tmpdir:
             validator = PathValidator(base_path=tmpdir, allow_absolute=True)
             safe_path = Path(tmpdir) / "test.txt"
-            validated_path = validator.validate_path(str(safe_path))
+            # File doesn't exist yet - validate parent and allow creation
+            validated_path = validator.validate_path(str(safe_path), for_writing=True, create_dirs=True)
             
             # Use with atomic file writer
-            writer = AtomicFileWriter()
-            writer.write_file(validated_path, "test content")
+            with AtomicFileWriter(safe_path) as writer:
+                writer.write("test content")
             
             # Verify file was written
             assert safe_path.exists()

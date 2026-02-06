@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Codec-integrated I/O - THE KILLER FEATURE!
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Works with ANY codec + ANY data source
 """
 
 from pathlib import Path
-from typing import Union, Optional, Iterator, Any
+from typing import Optional, Iterator, Any
 
 from ..contracts import ICodecIO, IPagedCodecIO, IDataSource, IPagedDataSource
 
@@ -165,7 +165,7 @@ class CodecIO[T, R](ICodecIO[T, R]):
         # Fallback: load full file, update in memory, save
         data = self.load(**opts)
         
-        # Simple path update (subclasses should override for format-specific logic)
+        # Simple path update (subclasses override for format-specific logic)
         if isinstance(data, dict) and path.startswith('/'):
             from ..serialization.utils.path_ops import set_value_by_path
             set_value_by_path(data, path, value, create=opts.get('create', False))
@@ -213,7 +213,7 @@ class CodecIO[T, R](ICodecIO[T, R]):
         # Fallback: load full file, extract path
         data = self.load(**opts)
         
-        # Simple path extraction (subclasses should override for format-specific logic)
+        # Simple path extraction (subclasses override for format-specific logic)
         if isinstance(data, dict) and path.startswith('/'):
             from ..serialization.utils.path_ops import get_value_by_path
             return get_value_by_path(data, path)
@@ -224,7 +224,7 @@ class CodecIO[T, R](ICodecIO[T, R]):
             )
     
     @staticmethod
-    def from_file(path: Union[str, Path], mode: str = 'rb', encoding: Optional[str] = None):
+    def from_file(path: str | Path, mode: str = 'rb', encoding: Optional[str] = None):
         """
         Create CodecIO with auto-detected codec from file extension.
         
@@ -399,7 +399,7 @@ class PagedCodecIO[T, R](CodecIO[T, R], IPagedCodecIO[T, R]):
             self._source.write(combined, **opts)
     
     @staticmethod
-    def from_file(path: Union[str, Path], mode: str = 'rb', encoding: Optional[str] = None):
+    def from_file(path: str | Path, mode: str = 'rb', encoding: Optional[str] = None):
         """
         Create PagedCodecIO with auto-detected codec from file extension.
         
@@ -431,4 +431,3 @@ class PagedCodecIO[T, R](CodecIO[T, R], IPagedCodecIO[T, R]):
         source = PagedFileSource(path, mode=mode, encoding=encoding)
         
         return PagedCodecIO(codec, source)
-

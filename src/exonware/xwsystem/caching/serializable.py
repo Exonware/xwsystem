@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/src/exonware/xwsystem/caching/serializable.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 01-Nov-2025
 
 Cache serialization utilities.
 Usability Priority #2 - Persist and restore cache state.
 """
 
+from __future__ import annotations
+
 import pickle
 import json
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 from .lru_cache import LRUCache
 from .lfu_optimized import OptimizedLFUCache
 from ..config.logging_setup import get_logger
@@ -40,7 +43,7 @@ class SerializableCache(LRUCache):
         assert cache2.get('key1') == 'value1'
     """
     
-    def save_to_file(self, file_path: Union[str, Path], format: str = 'pickle') -> bool:
+    def save_to_file(self, file_path: str | Path, format: str = 'pickle') -> bool:
         """
         Save cache to file.
         
@@ -80,7 +83,7 @@ class SerializableCache(LRUCache):
             return False
     
     @classmethod
-    def load_from_file(cls, file_path: Union[str, Path], format: str = 'pickle') -> 'SerializableCache':
+    def load_from_file(cls, file_path: str | Path, format: str = 'pickle') -> SerializableCache:
         """
         Load cache from file.
         
@@ -121,7 +124,7 @@ class SerializableCache(LRUCache):
             logger.error(f"Failed to load cache from {file_path}: {e}")
             raise
     
-    def backup(self, backup_path: Union[str, Path]) -> bool:
+    def backup(self, backup_path: str | Path) -> bool:
         """
         Create backup of cache.
         
@@ -133,7 +136,7 @@ class SerializableCache(LRUCache):
         """
         return self.save_to_file(backup_path, format='pickle')
     
-    def restore(self, backup_path: Union[str, Path]) -> bool:
+    def restore(self, backup_path: str | Path) -> bool:
         """
         Restore cache from backup.
         
@@ -164,4 +167,3 @@ class SerializableCache(LRUCache):
 __all__ = [
     'SerializableCache',
 ]
-

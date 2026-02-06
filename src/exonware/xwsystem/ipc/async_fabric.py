@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/ipc/async_fabric.py
 #exonware/xwsystem/ipc/async_fabric.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 09-Nov-2025
 
 Async Process Fabric
@@ -39,7 +40,7 @@ from .shared_memory import SharedData, SharedMemoryManager
 
 logger = logging.getLogger("xwsystem.ipc.async_fabric")
 
-CallableRef = Union[str, Callable[..., Any]]
+CallableRef = str | Callable[..., Any]
 TaskId = str
 
 
@@ -230,7 +231,7 @@ class AsyncProcessFabricSession:
 
     async def iter_results(
         self,
-        task_ids: Union[TaskId, Sequence[TaskId]],
+        task_ids: TaskId | Sequence[TaskId],
         *,
         timeout: Optional[float] = None,
     ) -> AsyncIterator[Any]:
@@ -355,4 +356,3 @@ class AsyncProcessFabricSession:
     def active_tasks(self) -> Sequence[TaskId]:
         """Return snapshot of currently tracked task IDs."""
         return tuple(self._active_task_ids)
-

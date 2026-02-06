@@ -1,3 +1,4 @@
+#exonware/xwsystem/tests/1.unit/io_tests/serialization_tests/formats_tests/text_tests/test_json.py
 """
 Unit tests for JSON serializer
 
@@ -34,4 +35,3 @@ class TestJsonSerializer:
         assert hasattr(serializer, 'decode')
         assert callable(serializer.encode)
         assert callable(serializer.decode)
-

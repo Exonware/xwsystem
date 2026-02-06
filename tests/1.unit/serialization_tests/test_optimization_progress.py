@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/1.unit/serialization_tests/test_optimization_progress.py
 """
 Test current optimization progress
 """
@@ -73,7 +74,7 @@ class TestOptimizedSerializers:
         # Test Pickle
         try:
             from exonware.xwsystem.io.serialization import PickleSerializer
-            pickle_ser = PickleSerializer(allow_unsafe=True)
+            pickle_ser = PickleSerializer()
             assert pickle_ser.is_binary_format
             pickle_bytes = pickle_ser.dumps(test_data)
             pickle_loaded = pickle_ser.loads(pickle_bytes)
@@ -131,7 +132,7 @@ class TestOptimizedSerializers:
         
         try:
             from exonware.xwsystem.io.serialization import PickleSerializer
-            serializers.append(("Pickle", PickleSerializer(allow_unsafe=True), ".pkl"))
+            serializers.append(("Pickle", PickleSerializer(), ".pkl"))
         except ImportError:
             pass
         

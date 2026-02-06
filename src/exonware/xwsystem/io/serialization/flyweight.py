@@ -1,9 +1,10 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/serialization/flyweight.py
 #exonware\xwsystem\serialization\flyweight.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 05, 2025
 
 Flyweight Pattern Implementation for Serializers
@@ -14,7 +15,7 @@ configuration, which is especially important for high-throughput applications.
 """
 
 import threading
-from typing import Any, Hashable, Optional, Union
+from typing import Any, Hashable, Optional
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from weakref import WeakValueDictionary
@@ -172,7 +173,10 @@ class SerializerFlyweight:
 _serializer_flyweight = SerializerFlyweight()
 
 
-def get_serializer[T: ISerialization](serializer_class: type[T], **config: Any) -> T:
+def get_serializer[T: ISerialization](
+    serializer_class_or_name: type[T] | str, 
+    **config: Any
+) -> T:
     """
     Get a serializer instance using the flyweight pattern.
     
@@ -180,20 +184,163 @@ def get_serializer[T: ISerialization](serializer_class: type[T], **config: Any) 
     automatic memory optimization through instance sharing.
     
     Args:
-        serializer_class: The serializer class to instantiate
+        serializer_class_or_name: The serializer class to instantiate, or a string
+                                  format name (e.g., "json", "yaml", "toml")
         **config: Configuration parameters for the serializer
         
     Returns:
         Shared serializer instance
-        
+    
     Example:
         >>> from xwsystem.serialization import JsonSerializer
         >>> # These will return the same instance
         >>> json1 = get_serializer(JsonSerializer, validate_input=True)
         >>> json2 = get_serializer(JsonSerializer, validate_input=True)
         >>> assert json1 is json2  # Same instance
+        >>> 
+        >>> # Can also use string format name
+        >>> json3 = get_serializer("json")
+        >>> json4 = get_serializer("json")
+        >>> assert json3 is json4  # Same instance
+        >>> assert json1 is json3  # Same instance (if config matches)
     """
+    # If string format name is provided, resolve to serializer class
+    if isinstance(serializer_class_or_name, str):
+        serializer_class = _get_serializer_class_from_name(serializer_class_or_name)
+    else:
+        serializer_class = serializer_class_or_name
+    
     return _serializer_flyweight.get_serializer(serializer_class, **config)
+
+
+def _get_serializer_class_from_name(format_name: str) -> type[ISerialization]:
+    """
+    Get serializer class from format name string.
+    
+    Args:
+        format_name: Format name (e.g., "json", "yaml", "toml")
+        
+    Returns:
+        Serializer class
+        
+    Raises:
+        ValueError: If format is not supported
+    """
+    # Import here to avoid circular imports
+    # Import from formats.text, formats.binary, formats.database packages
+    from .formats.text import (
+        JsonSerializer, YamlSerializer, TomlSerializer, XmlSerializer,
+        CsvSerializer, ConfigParserSerializer, FormDataSerializer, 
+        MultipartSerializer, Json5Serializer, JsonLinesSerializer
+    )
+    from .formats.binary import (
+        PickleSerializer, MarshalSerializer, BsonSerializer, 
+        MsgPackSerializer, CborSerializer, PlistSerializer
+    )
+    from .formats.database import (
+        DbmSerializer, ShelveSerializer, Sqlite3Serializer
+    )
+    
+    # Core formats (17+ formats)
+    format_map = {
+        'json': JsonSerializer,
+        'yaml': YamlSerializer, 
+        'toml': TomlSerializer,
+        'xml': XmlSerializer,
+        'csv': CsvSerializer,
+        'ini': ConfigParserSerializer,
+        'configparser': ConfigParserSerializer,
+        'pickle': PickleSerializer,
+        'marshal': MarshalSerializer,
+        'bson': BsonSerializer,
+        'msgpack': MsgPackSerializer,
+        'cbor': CborSerializer,
+        'dbm': DbmSerializer,
+        'shelve': ShelveSerializer,
+        'plist': PlistSerializer,
+        'formdata': FormDataSerializer,
+        'multipart': MultipartSerializer,
+        'json5': Json5Serializer,
+        'jsonl': JsonLinesSerializer,
+        'jsonlines': JsonLinesSerializer,
+        'ndjson': JsonLinesSerializer,
+        'sqlite3': Sqlite3Serializer,
+        'sqlite': Sqlite3Serializer,
+    }
+    
+    # Check for enterprise formats (available in xwformats)
+    enterprise_formats = {
+        'avro', 'protobuf', 'thrift', 'parquet', 'orc', 'capnproto', 'flatbuffers',
+        'hdf5', 'feather', 'zarr', 'netcdf', 'mat',
+        'lmdb', 'graphdb', 'leveldb', 'ubjson'
+    }
+    
+    format_lower = format_name.lower()
+    
+    if format_lower in enterprise_formats:
+        # Try to get from xwformats registry
+        from ..codec.registry import get_registry
+        registry = get_registry()
+        codec = (registry.get_by_id(format_lower) or 
+                registry.get_by_id(format_name.lower()) or 
+                registry.get_by_id(format_name.upper()) or
+                registry.get_by_alias(format_lower) or
+                registry.get_by_alias(format_name.lower()) or
+                registry.get_by_alias(format_name.upper()))
+        
+        if codec:
+            # Check if codec implements ISerialization (has dumps/loads)
+            if hasattr(codec, 'dumps') and hasattr(codec, 'loads'):
+                return type(codec)
+            else:
+                raise ValueError(
+                    f"Format '{format_name}' found in registry but doesn't implement ISerialization. "
+                    f"Use the codec directly or ensure it's a full serializer implementation."
+                )
+        else:
+            raise ValueError(
+                f"Enterprise format '{format_name}' requires exonware-xwformats.\n"
+                f"Install with: pip install exonware-xwformats\n"
+                f"Or use lazy install: pip install exonware-xwsystem[lazy]\n"
+                f"Then import: from exonware.xwformats import {format_name.capitalize()}Serializer"
+            )
+    
+    serializer_class = format_map.get(format_lower)
+    if not serializer_class:
+        # Check UniversalCodecRegistry for auto-registered formats (like XWJSON)
+        # XWJSON and other formats auto-register themselves when their modules are imported
+        try:
+            from ..codec.registry import get_registry
+            registry = get_registry()
+            # Try format name as-is, then lowercase, then uppercase, then aliases
+            codec = (registry.get_by_id(format_lower) or 
+                    registry.get_by_id(format_name.lower()) or 
+                    registry.get_by_id(format_name.upper()) or
+                    registry.get_by_alias(format_lower) or
+                    registry.get_by_alias(format_name.lower()) or
+                    registry.get_by_alias(format_name.upper()))
+            
+            if codec:
+                # Check if codec implements ISerialization (has dumps/loads or load_file/save_file)
+                if hasattr(codec, 'load_file') and hasattr(codec, 'save_file'):
+                    # This is a full ISerialization implementation (like XWJSONSerializer)
+                    return type(codec)
+                elif hasattr(codec, 'dumps') and hasattr(codec, 'loads'):
+                    # This is a full ISerialization implementation
+                    return type(codec)
+        except Exception:
+            # Registry not available or format not found, continue to error
+            pass
+        
+        available_formats = list(format_map.keys())
+        raise ValueError(
+            f"Unsupported format: {format_name}. "
+            f"Available core formats: {', '.join(sorted(available_formats))}\n"
+            f"Enterprise formats available in exonware-xwformats: {', '.join(sorted(enterprise_formats))}\n"
+            f"Auto-registered formats (XWJSON, etc.) should be available via UniversalCodecRegistry"
+        )
+    
+    return serializer_class
 
 
 def get_flyweight_stats() -> dict[str, Any]:
@@ -334,7 +481,7 @@ def create_serializer(format_name: str, **config: Any) -> ISerialization:
         ValueError: If format is not supported
     """
     # Import here to avoid circular imports
-    # Core formats (always available)
+    # Core formats (stdlib)
     from . import (
         JsonSerializer, YamlSerializer, TomlSerializer, XmlSerializer,
         CsvSerializer, ConfigParserSerializer, PickleSerializer, MarshalSerializer,
@@ -344,7 +491,7 @@ def create_serializer(format_name: str, **config: Any) -> ISerialization:
     )
     
     # NOTE: Enterprise formats moved to exonware-xwformats per DEV_GUIDELINES.md
-    # Users should explicitly import from xwformats:
+    # Users explicitly import from xwformats:
     # from exonware.xwformats import AvroSerializer, ProtobufSerializer, ...
     # Then use them directly or via registry
     

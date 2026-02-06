@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Local filesystem implementation.
@@ -17,7 +17,7 @@ Priority 5 (Extensibility): Foundation for other FS (S3, FTP, etc.)
 """
 
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Optional, Any
 
 from ..contracts import IFileSystem
 
@@ -39,7 +39,7 @@ class LocalFileSystem(IFileSystem):
         >>> fs.write_text("file.txt", "content")  # Saves to S3!
     """
     
-    def __init__(self, base_path: Optional[Union[str, Path]] = None):
+    def __init__(self, base_path: Optional[str | Path] = None):
         """
         Initialize local filesystem.
         
@@ -152,4 +152,3 @@ class LocalFileSystem(IFileSystem):
     def write(self, path: str, content: bytes) -> None:
         """Write file contents."""
         self.write_bytes(path, content)
-

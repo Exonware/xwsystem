@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#exonware/xwsystem/tests/0.core/io/test_yaml_import_behavior.py
 # -*- coding: utf-8 -*-
 """
 Core tests for YAML import behavior.
@@ -117,4 +118,3 @@ def test_yaml_circular_import_when_installed():
         if "partially initialized module 'yaml'" in str(e) or "'yaml' has no attribute" in str(e):
             pytest.fail(f"Circular import error occurs even with yaml installed: {e}")
         raise
-

@@ -1,8 +1,9 @@
+#exonware/xwsystem/src/exonware/xwsystem/io/facade.py
 """
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: September 04, 2025
 
 XWIO - Main facade for all I/O operations (MANDATORY facade pattern).
@@ -10,12 +11,14 @@ XWIO - Main facade for all I/O operations (MANDATORY facade pattern).
 This is the primary entry point for the IO module, following GUIDELINES_DEV.md.
 """
 
+from __future__ import annotations
+
 import os
 import shutil
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Optional, Union, BinaryIO, TextIO
+from typing import Any, Optional, BinaryIO, TextIO
 
 from .base import AUnifiedIO
 from .contracts import FileMode, FileType, PathType, OperationResult, LockType, IUnifiedIO
@@ -54,7 +57,7 @@ class XWIO(AUnifiedIO):
     - Delegates to specialized components
     """
     
-    def __init__(self, file_path: Optional[Union[str, Path]] = None, **config):
+    def __init__(self, file_path: Optional[str | Path] = None, **config):
         """
         Initialize XWIO facade.
         
@@ -81,7 +84,7 @@ class XWIO(AUnifiedIO):
     # FILE OPERATIONS
     # ============================================================================
     
-    def open_file(self, file_path: Optional[Union[str, Path]] = None, mode: FileMode = FileMode.READ) -> None:
+    def open_file(self, file_path: Optional[str | Path] = None, mode: FileMode = FileMode.READ) -> None:
         """Open file with validation and monitoring."""
         target_path = Path(file_path) if file_path else self.file_path
         if not target_path:
@@ -100,7 +103,7 @@ class XWIO(AUnifiedIO):
             self.file_path = target_path
             logger.debug(f"File opened: {target_path} in mode {mode.value}")
     
-    def open_stream(self, stream: Union[BinaryIO, TextIO]) -> None:
+    def open_stream(self, stream: BinaryIO | TextIO) -> None:
         """Open stream for stream operations."""
         self._stream = stream
         self._position = 0
@@ -110,12 +113,12 @@ class XWIO(AUnifiedIO):
     # ABSTRACT METHOD IMPLEMENTATIONS (from AFile)
     # ============================================================================
     
-    # Keep open() for backward compatibility - delegate to file operations
+    # Delegate to file operations
     def open(self, mode: FileMode = FileMode.READ) -> None:
         """Open file with validation and monitoring (alias for open_file())."""
         self.open_file(mode=mode)
     
-    def read(self, size: Optional[int] = None) -> Union[str, bytes]:
+    def read(self, size: Optional[int] = None) -> str | bytes:
         """
         Read from file (implements AFile abstract method).
         
@@ -133,7 +136,7 @@ class XWIO(AUnifiedIO):
             # File operation  
             return self.read_file(size)
     
-    def write(self, data: Union[str, bytes]) -> int:
+    def write(self, data: str | bytes) -> int:
         """
         Write to file (implements AFile abstract method).
         
@@ -151,26 +154,7 @@ class XWIO(AUnifiedIO):
             # File operation
             return self.write_file(data)
     
-    def save_as(self, path: Union[str, Path], data: Any, **kwargs) -> bool:
-        """
-        Save data to specific path (implements AFile abstract method).
-        
-        Args:
-            path: Target file path
-            data: Data to save
-            **kwargs: Additional options
-            
-        Returns:
-            True if successful, False otherwise
-        """
-        try:
-            self.save(data, file_path=path, **kwargs)
-            return True
-        except Exception as e:
-            logger.error(f"Failed to save data to {path}: {e}")
-            return False
-    
-    def to_file(self, path: Union[str, Path], **kwargs) -> bool:
+    def to_file(self, path: str | Path, **kwargs) -> bool:
         """
         Write current data to file (implements AFile abstract method).
         
@@ -198,7 +182,7 @@ class XWIO(AUnifiedIO):
         logger.warning("No data to write to file")
         return False
     
-    def from_file(self, path: Union[str, Path], **kwargs) -> 'XWIO':
+    def from_file(self, path: str | Path, **kwargs) -> XWIO:
         """
         Load data from file and return new XWIO instance (implements AFile abstract method).
         
@@ -212,8 +196,17 @@ class XWIO(AUnifiedIO):
         new_instance = XWIO(file_path=path, **self.__dict__.get('_config', {}))
         new_instance._current_data = new_instance.load(file_path=path, **kwargs)
         return new_instance
+
+    def load_from(self, path: str | Path, **kwargs) -> Any:
+        """
+        Load data from a specific path (convenience alias).
+
+        This matches the facade-style API used in core tests:
+        - `load_from(path)` delegates to `load(file_path=...)`.
+        """
+        return self.load(file_path=path, **kwargs)
     
-    def read_file(self, size: Optional[int] = None) -> Union[str, bytes]:
+    def read_file(self, size: Optional[int] = None) -> str | bytes:
         """Read from file with validation."""
         if not self.is_open():
             raise ValueError("File not open")
@@ -226,7 +219,7 @@ class XWIO(AUnifiedIO):
             
             return data
     
-    def write_file(self, data: Union[str, bytes]) -> int:
+    def write_file(self, data: str | bytes) -> int:
         """Write to file with validation."""
         if not self.is_open():
             raise ValueError("File not open")
@@ -238,14 +231,20 @@ class XWIO(AUnifiedIO):
             return self._handle.write(data)
     
     
-    def save(self, data: Any, file_path: Optional[Union[str, Path]] = None) -> None:
-        """Save data to file with atomic operations."""
+    def save(self, data: Any, file_path: Optional[str | Path] = None) -> bool:
+        """
+        Save data to file with atomic operations.
+
+        Returns:
+            True if successful.
+        """
         target_path = Path(file_path) if file_path else self.file_path
         if not target_path:
             raise ValueError("No file path specified")
         
         if self.validate_paths:
-            self._path_validator.validate_path(target_path)
+            # Saving is a write operation; allow creating new files in valid directories.
+            self._path_validator.validate_path(target_path, for_writing=True, create_dirs=True)
         
         if self.validate_data:
             self._data_validator.validate_data(data)
@@ -253,18 +252,21 @@ class XWIO(AUnifiedIO):
         with performance_monitor("file_save"):
             if self.use_atomic_operations:
                 # Use atomic file writer
-                with AtomicFileWriter(target_path, backup=self.auto_backup) as writer:
-                    if isinstance(data, str):
-                        writer.write(data.encode('utf-8'))
-                    else:
+                if isinstance(data, bytes):
+                    with AtomicFileWriter(target_path, mode="wb", backup=self.auto_backup) as writer:
+                        writer.write(data)
+                else:
+                    # Treat as text (most common path for XWIO facade)
+                    with AtomicFileWriter(target_path, mode="w", encoding="utf-8", backup=self.auto_backup) as writer:
                         writer.write(data)
             else:
                 # Direct write
                 target_path.parent.mkdir(parents=True, exist_ok=True)
                 with open(target_path, 'wb' if isinstance(data, bytes) else 'w') as f:
                     f.write(data)
+        return True
     
-    def load(self, file_path: Optional[Union[str, Path]] = None) -> Any:
+    def load(self, file_path: Optional[str | Path] = None) -> Any:
         """Load data from file with validation."""
         target_path = Path(file_path) if file_path else self.file_path
         if not target_path:
@@ -342,7 +344,7 @@ class XWIO(AUnifiedIO):
     # ATOMIC OPERATIONS
     # ============================================================================
     
-    def atomic_write(self, file_path: Union[str, Path], data: Union[str, bytes], 
+    def atomic_write(self, file_path: str | Path, data: str | bytes, 
                     backup: bool = True) -> OperationResult:
         """Atomically write data to file."""
         target_path = Path(file_path)
@@ -365,7 +367,7 @@ class XWIO(AUnifiedIO):
                 logger.error(f"Atomic write failed for {target_path}: {e}")
                 return OperationResult.FAILED
     
-    def atomic_copy(self, source: Union[str, Path], destination: Union[str, Path]) -> OperationResult:
+    def atomic_copy(self, source: str | Path, destination: str | Path) -> OperationResult:
         """Atomically copy file."""
         source_path = Path(source)
         dest_path = Path(destination)
@@ -385,7 +387,7 @@ class XWIO(AUnifiedIO):
                 logger.error(f"Atomic copy failed from {source_path} to {dest_path}: {e}")
                 return OperationResult.FAILED
     
-    def atomic_move(self, source: Union[str, Path], destination: Union[str, Path]) -> OperationResult:
+    def atomic_move(self, source: str | Path, destination: str | Path) -> OperationResult:
         """Atomically move file."""
         source_path = Path(source)
         dest_path = Path(destination)
@@ -411,7 +413,7 @@ class XWIO(AUnifiedIO):
                 logger.error(f"Atomic move failed from {source_path} to {dest_path}: {e}")
                 return OperationResult.FAILED
     
-    def atomic_delete(self, file_path: Union[str, Path], backup: bool = True) -> OperationResult:
+    def atomic_delete(self, file_path: str | Path, backup: bool = True) -> OperationResult:
         """Atomically delete file."""
         target_path = Path(file_path)
         
@@ -431,7 +433,7 @@ class XWIO(AUnifiedIO):
                 logger.error(f"Atomic delete failed for {target_path}: {e}")
                 return OperationResult.FAILED
     
-    def atomic_rename(self, old_path: Union[str, Path], new_path: Union[str, Path]) -> OperationResult:
+    def atomic_rename(self, old_path: str | Path, new_path: str | Path) -> OperationResult:
         """Atomically rename file."""
         old_file = Path(old_path)
         new_file = Path(new_path)
@@ -455,7 +457,7 @@ class XWIO(AUnifiedIO):
     # BACKUP OPERATIONS
     # ============================================================================
     
-    def create_backup(self, source: Union[str, Path], backup_dir: Union[str, Path]) -> Optional[Path]:
+    def create_backup(self, source: str | Path, backup_dir: str | Path) -> Optional[Path]:
         """Create backup of file or directory."""
         source_path = Path(source)
         backup_path = Path(backup_dir)
@@ -484,7 +486,7 @@ class XWIO(AUnifiedIO):
                 logger.error(f"Backup creation failed for {source_path}: {e}")
                 return None
     
-    def restore_backup(self, backup_path: Union[str, Path], target: Union[str, Path]) -> OperationResult:
+    def restore_backup(self, backup_path: str | Path, target: str | Path) -> OperationResult:
         """Restore from backup."""
         backup = Path(backup_path)
         target_path = Path(target)
@@ -553,7 +555,7 @@ class XWIO(AUnifiedIO):
     # ASYNC OPERATIONS
     # ============================================================================
     
-    async def aread(self, size: Optional[int] = None) -> Union[str, bytes]:
+    async def aread(self, size: Optional[int] = None) -> str | bytes:
         """Async read operation."""
         if not self._async_stream:
             raise ValueError("Async stream not initialized")
@@ -561,7 +563,7 @@ class XWIO(AUnifiedIO):
         with performance_monitor("async_read"):
             return await self._async_stream.read(size)
     
-    async def awrite(self, data: Union[str, bytes]) -> int:
+    async def awrite(self, data: str | bytes) -> int:
         """Async write operation."""
         if not self._async_stream:
             raise ValueError("Async stream not initialized")
@@ -640,7 +642,7 @@ class XWIO(AUnifiedIO):
     # CODEC INTEGRATION (UniversalCodecRegistry)
     # ============================================================================
     
-    def serialize(self, data: Any, format_id: str, **options) -> Union[bytes, str]:
+    def serialize(self, data: Any, format_id: str, **options) -> bytes | str:
         """
         Serialize data using specified format.
         
@@ -669,7 +671,7 @@ class XWIO(AUnifiedIO):
         
         return codec.encode(data, options=options or None)
     
-    def deserialize(self, data: Union[bytes, str], format_id: str, **options) -> Any:
+    def deserialize(self, data: bytes | str, format_id: str, **options) -> Any:
         """
         Deserialize data using specified format.
         
@@ -698,7 +700,7 @@ class XWIO(AUnifiedIO):
         
         return codec.decode(data, options=options or None)
     
-    def save_serialized(self, data: Any, file_path: Union[str, Path], format_id: Optional[str] = None, **options) -> None:
+    def save_serialized(self, data: Any, file_path: str | Path, format_id: Optional[str] = None, **options) -> None:
         """
         Serialize and save data to file.
         
@@ -742,7 +744,7 @@ class XWIO(AUnifiedIO):
             else:
                 path.write_text(repr_data, encoding='utf-8')
     
-    def load_serialized(self, file_path: Union[str, Path], format_id: Optional[str] = None, **options) -> Any:
+    def load_serialized(self, file_path: str | Path, format_id: Optional[str] = None, **options) -> Any:
         """
         Load and deserialize data from file.
         
@@ -789,7 +791,7 @@ class XWIO(AUnifiedIO):
     # CONVENIENCE ALIASES (User-friendly API)
     # ============================================================================
     
-    def load_as(self, file_path: Union[str, Path], format_id: str, **options) -> Any:
+    def load_as(self, file_path: str | Path, format_id: str, **options) -> Any:
         """
         Load data from file using specified format (convenience alias).
         
@@ -810,16 +812,30 @@ class XWIO(AUnifiedIO):
         """
         return self.load_serialized(file_path, format_id=format_id, **options)
     
-    def save_as(self, file_path: Union[str, Path], data: Any, format_id: str, **options) -> None:
+    def save_as(
+        self,
+        file_path: str | Path,
+        data: Any,
+        format_id: Optional[str] = None,
+        **options,
+    ) -> bool:
         """
-        Save data to file using specified format (convenience alias).
+        Save data to a specific path.
+
+        This method intentionally supports **two** usage patterns:
+
+        1) **File-like save** (AFile-style):
+           - `save_as(path, data)` → writes raw text/bytes to the target path
+
+        2) **Serialization save** (format-aware):
+           - `save_as(path, data, format_id="json", ...)` → serializes and writes via codec registry
         
-        Alias for save_serialized() with explicit format.
+        If you want a more explicit serialization name, prefer `write_as(...)`.
         
         Args:
             file_path: Path to save to
             data: Data to serialize
-            format_id: Format identifier (e.g., 'json', 'yaml', 'xml')
+            format_id: Optional format identifier (e.g., 'json', 'yaml', 'xml')
             **options: Format-specific options
         
         Examples:
@@ -827,9 +843,19 @@ class XWIO(AUnifiedIO):
             >>> io.save_as("config.yml", config_dict, "yaml", indent=2)
             >>> io.save_as("users.xml", users_list, "xml", pretty=True)
         """
-        self.save_serialized(data, file_path, format_id=format_id, **options)
+        try:
+            if format_id is None:
+                # Raw save (string/bytes) with path validation + atomic ops
+                return bool(self.save(data, file_path=file_path))
+
+            # Format-aware save via codec registry
+            self.save_serialized(data, file_path, format_id=format_id, **options)
+            return True
+        except Exception as e:
+            logger.error(f"Failed to save data to {file_path}: {e}")
+            return False
     
-    def read_as(self, file_path: Union[str, Path], format_id: Optional[str] = None, **options) -> Any:
+    def read_as(self, file_path: str | Path, format_id: Optional[str] = None, **options) -> Any:
         """
         Read and deserialize file (auto-detect or explicit format).
         
@@ -850,7 +876,7 @@ class XWIO(AUnifiedIO):
         """
         return self.load_serialized(file_path, format_id=format_id, **options)
     
-    def write_as(self, file_path: Union[str, Path], data: Any, format_id: Optional[str] = None, **options) -> None:
+    def write_as(self, file_path: str | Path, data: Any, format_id: Optional[str] = None, **options) -> None:
         """
         Serialize and write to file (auto-detect or explicit format).
         
@@ -902,7 +928,7 @@ class XWIO(AUnifiedIO):
         
         # Close async stream
         if self._async_stream:
-            # Note: This should be called in async context
+            # Note: Called in async context
             logger.warning("Async stream still open - call aclose() in async context")
         
         # Cleanup temporary resources

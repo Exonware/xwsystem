@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/structures/tree_walker.py
 """
 Generic tree walking utilities for processing nested data structures.
 
@@ -7,7 +8,7 @@ previously embedded in xData but is generally useful across xLib components.
 
 import logging
 from collections.abc import Mapping, Sequence
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,4 @@
+#exonware/xwsystem/src/exonware/xwsystem/patterns/import_registry.py
 """
 Import registration utilities for automatic __init__.py management.
 

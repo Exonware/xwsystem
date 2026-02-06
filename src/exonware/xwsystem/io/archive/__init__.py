@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: 30-Oct-2025
 
 Archive and compression with REGISTRY PATTERN!
@@ -118,4 +118,10 @@ __all__ = [
     # Facades
     "Archive",
     "Compression",
+    
+    # Unified Facade
+    "XWArchive",
 ]
+
+# Import unified facade
+from .facade import XWArchive

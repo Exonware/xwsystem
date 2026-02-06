@@ -91,4 +91,3 @@ class TestCachingSecurityExcellence:
         # Excessive traffic should be limited
         # (implementation specific - may need adjustment based on rate limiter)
         assert cache.size() <= 10
-

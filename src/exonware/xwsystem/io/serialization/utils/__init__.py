@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.1
+Version: 0.1.0.3
 Generation Date: November 9, 2025
 
 Serialization utilities module.
@@ -29,4 +29,3 @@ __all__ = [
     "validate_path_security",
     "normalize_path",
 ]
-
