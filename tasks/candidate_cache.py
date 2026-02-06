@@ -11,17 +11,20 @@ Candidate cache implementation for freelancer benchmarking.
 This file is INTENTIONALLY left without a real implementation.
 It defines the contract and expectations for a NEW cache that a
 freelancer must implement to COMPETE with the fastest caches
-currently available in `exonware.xwsystem.caching`, especially
-the `OptimizedLFUCache` in `lfu_optimized.py`.
+currently available in `exonware.xwsystem.caching`, with a
+special focus on the external `FunctoolsLRUCache` wrapper from
+`external_caching_python.py` (which reaches ~16k–20k ops/sec
+in the historical benchmarks).
 
 The goal is to:
 - Implement a high‑performance, general‑purpose in‑memory cache
-- Beat the existing fastest cache on the official benchmark in:
+- Beat the `FunctoolsLRUCache` baseline on the official benchmark in:
   `xwsystem/tasks/json_and_cache_competition_benchmark.py`
 - Preserve correctness (no lost entries, predictable eviction policy)
 
 STRICT RULES FOR FREELANCER IMPLEMENTATION:
-- DO NOT wrap, delegate to, or subclass `OptimizedLFUCache`.
+- DO NOT wrap, delegate to, or subclass `FunctoolsLRUCache` or other
+  external cache wrappers (the point is to design your own cache).
 - DO NOT simply proxy all calls to any existing cache in this package.
 - DO NOT copy‑paste internal data‑structure logic from other caches.
 
@@ -31,7 +34,7 @@ You MAY:
 - Trade off memory for speed as long as behaviour is well‑defined
 
 The benchmark will:
-- Compare this `CandidateCache` against `OptimizedLFUCache`
+- Compare this `CandidateCache` against `FunctoolsLRUCache`
 - Measure operations/second for repeated put/get cycles
 - Verify correctness on standard cache workloads
 """
@@ -52,7 +55,7 @@ class CandidateCache(ACache):
     - Provide a cache that:
       * Handles high read/write throughput
       * Has predictable eviction semantics
-      * Outperforms `OptimizedLFUCache` on the official benchmark
+      * Outperforms `FunctoolsLRUCache` on the official benchmark
     """
 
     def __init__(self, capacity: int = 1024, ttl: Optional[int] = None, **_: Any) -> None:

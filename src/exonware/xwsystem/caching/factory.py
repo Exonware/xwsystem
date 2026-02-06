@@ -5,7 +5,7 @@ Cache Factory - Configurable cache creation utility.
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.4
+Version: 0.1.0.5
 Generation Date: January 2025
 
 Provides configurable cache factory that allows choosing different caching engines

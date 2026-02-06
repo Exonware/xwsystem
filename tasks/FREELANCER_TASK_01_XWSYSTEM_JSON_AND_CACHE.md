@@ -7,7 +7,7 @@ This task is a **backend performance & architecture challenge** on top of **XWSY
 You will implement:
 
 - **A new JSON serializer** that competes with and **outperforms** the existing `JsonSerializer`.
-- **A new in‑memory cache** that competes with and **outperforms** the existing `OptimizedLFUCache`.
+- **A new in‑memory cache** that competes with and **outperforms** the external `FunctoolsLRUCache` baseline.
 
 Your work will be validated by an **official benchmark script** in this folder.
 
@@ -21,7 +21,7 @@ Your work will be validated by an **official benchmark script** in this folder.
 
 - **Cache objective**: Implement `CandidateCache` so that it:
   - Behaves as a correct, deterministic in‑memory cache (predictable eviction).
-  - **Beats `OptimizedLFUCache` in operations/second** on the hot read/write benchmark.
+  - **Beats `FunctoolsLRUCache` in operations/second** on the hot read/write benchmark.
 
 This task is designed to test:
 
@@ -46,10 +46,10 @@ You will work in the following Python files:
 - `xwsystem/tasks/json_and_cache_competition_benchmark.py`
   - Official benchmark script comparing baseline vs your implementations.
 
-The **existing production implementations** you are competing against live inside the installed `exonware.xwsystem` package (do not modify them):
+The **existing production/baseline implementations** you are competing against live inside the installed `exonware.xwsystem` package (do not modify them):
 
 - `exonware.xwsystem.io.serialization.formats.text.json.JsonSerializer`
-- `exonware.xwsystem.caching.lfu_optimized.OptimizedLFUCache`
+- `exonware.xwsystem.caching.external_caching_python.FunctoolsLRUCache` (external LRU wrapper used as the fastest Python baseline in prior benchmarks, with ~16k–20k ops/sec on PUT/GET).
 
 ---
 
@@ -115,7 +115,7 @@ The file is intentionally mostly empty and documents the **rules and expectation
 
 You **MUST NOT**:
 
-- Wrap, delegate to, or subclass `OptimizedLFUCache` or any other existing cache in `exonware.xwsystem.caching`.
+- Wrap, delegate to, or subclass `FunctoolsLRUCache` or any other existing cache in `exonware.xwsystem.caching`.
 - Implement a cache that simply proxies calls to an existing implementation.
 - Copy‑paste internal data‑structure logic from `lfu_optimized.py` or other caches.
 
@@ -144,7 +144,7 @@ You **MAY**:
 
 In `json_and_cache_competition_benchmark.py`, your cache is compared against:
 
-- `OptimizedLFUCache (baseline)`
+- `FunctoolsLRUCache (baseline)`
 - `CandidateCache`
 
 You should aim for **strictly higher `operations_per_second`** for your candidate on the cache section of the benchmark, for realistic key‑space and iteration counts.

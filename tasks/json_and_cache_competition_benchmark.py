@@ -7,7 +7,7 @@ Purpose:
 - Provide a FAIR, REPEATABLE benchmark for freelancers.
 - Compare:
   1) Existing `JsonSerializer` vs new `CandidateJsonSerializer`
-  2) Existing `OptimizedLFUCache` vs new `CandidateCache`
+  2) Existing external `FunctoolsLRUCache` vs new `CandidateCache`
 
 Freelancer goals:
 - Implement `CandidateJsonSerializer` so that it:
@@ -15,7 +15,7 @@ Freelancer goals:
   * Outperforms `JsonSerializer` in encode+decode throughput
 - Implement `CandidateCache` so that it:
   * Is functionally correct on cache workloads
-  * Outperforms `OptimizedLFUCache` on hot read/write scenarios
+  * Outperforms `FunctoolsLRUCache` on hot read/write scenarios
 
 IMPORTANT:
 - The candidate implementations live in this folder:
@@ -38,7 +38,7 @@ from dataclasses import dataclass, asdict
 from typing import Any, Callable
 
 from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
-from exonware.xwsystem.caching.lfu_optimized import OptimizedLFUCache
+from exonware.xwsystem.caching.external_caching_python import FunctoolsLRUCache
 
 from candidate_json import CandidateJsonSerializer
 from candidate_cache import CandidateCache
@@ -232,11 +232,11 @@ def run_cache_benchmarks(iterations: int = 10_000) -> list[PerfResult]:
     """Run benchmarks for baseline vs candidate cache implementations."""
     results: list[PerfResult] = []
 
-    # Baseline: OptimizedLFUCache (current fastest implementation)
+    # Baseline: FunctoolsLRUCache (fast external LRU baseline from benchmarks)
     results.append(
         benchmark_cache(
-            "OptimizedLFUCache (baseline)",
-            lambda: OptimizedLFUCache(capacity=4_096),
+            "FunctoolsLRUCache (baseline)",
+            lambda: FunctoolsLRUCache(capacity=4_096),
             iterations=iterations,
         ),
     )

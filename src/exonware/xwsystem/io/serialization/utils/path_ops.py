@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: Eng. Muhammad AlShehri
 Email: connect@exonware.com
-Version: 0.1.0.4
+Version: 0.1.0.5
 Generation Date: November 9, 2025
 
 Path operations utilities for serialization formats.
