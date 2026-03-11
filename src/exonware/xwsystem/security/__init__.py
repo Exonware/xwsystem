@@ -79,6 +79,7 @@ from .at_rest import (
     is_envelope,
     XWJE_MAGIC,
 )
+from .secret_key import SecretKeyStore, secret_key
 __all__ = [
     # Unified Facades
     "XWSecurity",
@@ -146,4 +147,7 @@ __all__ = [
     "parse_envelope",
     "is_envelope",
     "XWJE_MAGIC",
+    # Secret key helper
+    "SecretKeyStore",
+    "secret_key",
 ]

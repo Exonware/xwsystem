@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.11
+Version: 0.9.0.1
 Generation Date: 2025-01-27
 Console Event Logger implementation for structured logging.
 """

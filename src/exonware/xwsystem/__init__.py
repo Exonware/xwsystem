@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.11
+Version: 0.9.0.1
 Generation Date: October 10, 2025
 XWSystem - Enterprise-grade Python framework with AI-powered performance optimization.
 🚀 QUICK START:

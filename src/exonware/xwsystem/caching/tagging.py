@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.11
+Version: 0.9.0.1
 Generation Date: 01-Nov-2025
 Tag-based cache invalidation.
 Extensibility Priority #5 - Flexible invalidation patterns.

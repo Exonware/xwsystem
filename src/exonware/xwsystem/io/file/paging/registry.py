@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.11
+Version: 0.9.0.1
 Generation Date: 30-Oct-2025
 Paging strategy registry - LIKE CodecRegistry!
 Enables pluggable, extensible paging algorithms.
