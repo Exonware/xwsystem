@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.10
+Version: 0.1.0.11
 Generation Date: November 1, 2025
 ZPAQ journaled compression format - RANK #8 EXTREME COMPRESSION.
 **Extreme compression ratio, slow, archival only**

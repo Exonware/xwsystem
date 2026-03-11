@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.10
+Version: 0.1.0.11
 Generation Date: 07-Sep-2025
 Monitoring types and enums for XWSystem.
 """

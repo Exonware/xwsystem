@@ -12,7 +12,7 @@ lazy, paged, and atomic access features without re-implementing I/O logic.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.10
+Version: 0.1.0.11
 Generation Date: 15-Dec-2025
 """
 

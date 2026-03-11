@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.10
+Version: 0.1.0.11
 Generation Date: 01-Nov-2025
 Rate limiting for caching module - Security Priority #1.
 Prevents DoS attacks via cache flooding.

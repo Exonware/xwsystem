@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.10
+Version: 0.1.0.11
 Generation Date: 01-Nov-2025
 Bloom filter-enhanced cache for faster negative lookups.
 Performance Priority #4 - Probabilistic data structure for efficiency.

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.10
+Version: 0.1.0.11
 Generation Date: November 2, 2025
 JSON serialization - Universal, human-readable data interchange format.
 Following I→A pattern:
