@@ -1,12 +1,11 @@
 #exonware/xwsystem/rust/python/exonware/rust/xwsystem/version.py
 """
 Python wrapper for Rust version module.
-
 This provides a Pythonic interface to the Rust version module.
 """
-
 # Version info not available from Rust module yet
 # Provide fallback version info
+
 VERSION = "0.1.0"
 VERSION_MAJOR = 0
 VERSION_MINOR = 1
@@ -14,9 +13,9 @@ VERSION_PATCH = 0
 VERSION_BUILD = 0
 VERSION_SUFFIX = ""
 VERSION_STRING = "0.1.0"
-
-
 # Re-export functions
+
+
 def get_version() -> str:
     """Get the current version string."""
     return VERSION_STRING
@@ -47,8 +46,6 @@ def is_dev_version() -> bool:
 def is_release_version() -> bool:
     """Check if this is a release version."""
     return VERSION_MAJOR > 0
-
-
 __all__ = [
     "VERSION",
     "VERSION_MAJOR",

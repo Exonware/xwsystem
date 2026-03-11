@@ -1,11 +1,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/runtime/env.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Environment management utilities for runtime configuration and detection.
 """
 
@@ -14,9 +13,7 @@ import platform
 import sys
 from pathlib import Path
 from typing import Any, Optional
-
 from ..config.logging_setup import get_logger
-
 logger = get_logger("xwsystem.runtime.env")
 
 
@@ -30,8 +27,8 @@ class EnvironmentManager:
         """Initialize environment manager."""
         self._cache: dict[str, Any] = {}
         self._env_vars: dict[str, str] = dict(os.environ)
-
     @property
+
     def platform_info(self) -> dict[str, str]:
         """Get comprehensive platform information."""
         if 'platform_info' not in self._cache:
@@ -47,28 +44,28 @@ class EnvironmentManager:
                 'node': platform.node(),
             }
         return self._cache['platform_info']
-
     @property
+
     def is_windows(self) -> bool:
         """Check if running on Windows using Python's native platform module."""
         return platform.system() == 'Windows'
-
     @property
+
     def is_linux(self) -> bool:
         """Check if running on Linux using Python's native platform module."""
         return platform.system() == 'Linux'
-
     @property
+
     def is_macos(self) -> bool:
         """Check if running on macOS using Python's native platform module."""
         return platform.system() == 'Darwin'
-
     @property
+
     def is_64bit(self) -> bool:
         """Check if running on 64-bit architecture."""
         return platform.architecture()[0] == '64bit'
-
     @property
+
     def python_info(self) -> dict[str, Any]:
         """Get Python runtime information."""
         if 'python_info' not in self._cache:
@@ -94,11 +91,9 @@ class EnvironmentManager:
     def get_env(self, key: str, default: Optional[str] = None) -> Optional[str]:
         """
         Get environment variable with optional default.
-
         Args:
             key: Environment variable name
             default: Default value if not found
-
         Returns:
             Environment variable value or default
         """
@@ -107,11 +102,9 @@ class EnvironmentManager:
     def get_env_bool(self, key: str, default: bool = False) -> bool:
         """
         Get environment variable as boolean.
-
         Args:
             key: Environment variable name
             default: Default value if not found
-
         Returns:
             Boolean value of environment variable
         """
@@ -123,11 +116,9 @@ class EnvironmentManager:
     def get_env_int(self, key: str, default: int = 0) -> int:
         """
         Get environment variable as integer.
-
         Args:
             key: Environment variable name
             default: Default value if not found
-
         Returns:
             Integer value of environment variable
         """
@@ -143,11 +134,9 @@ class EnvironmentManager:
     def get_env_float(self, key: str, default: float = 0.0) -> float:
         """
         Get environment variable as float.
-
         Args:
             key: Environment variable name
             default: Default value if not found
-
         Returns:
             Float value of environment variable
         """
@@ -163,12 +152,10 @@ class EnvironmentManager:
     def get_env_list(self, key: str, separator: str = ',', default: Optional[list[str]] = None) -> list[str]:
         """
         Get environment variable as list.
-
         Args:
             key: Environment variable name
             separator: List item separator
             default: Default value if not found
-
         Returns:
             List of string values
         """
@@ -180,7 +167,6 @@ class EnvironmentManager:
     def set_env(self, key: str, value: str) -> None:
         """
         Set environment variable.
-
         Args:
             key: Environment variable name
             value: Environment variable value
@@ -191,10 +177,8 @@ class EnvironmentManager:
     def unset_env(self, key: str) -> bool:
         """
         Unset environment variable.
-
         Args:
             key: Environment variable name
-
         Returns:
             True if variable was removed, False if it didn't exist
         """
@@ -212,10 +196,8 @@ class EnvironmentManager:
     def get_user_config_dir(self, app_name: Optional[str] = None) -> Path:
         """
         Get user configuration directory.
-
         Args:
             app_name: Application name for subdirectory
-
         Returns:
             Path to configuration directory
         """
@@ -229,19 +211,15 @@ class EnvironmentManager:
             base = Path(self.get_env('XDG_CONFIG_HOME', ''))
             if not base:
                 base = self.get_user_home() / '.config'
-
         if app_name:
             base = base / app_name
-
         return base
 
     def get_user_data_dir(self, app_name: Optional[str] = None) -> Path:
         """
         Get user data directory.
-
         Args:
             app_name: Application name for subdirectory
-
         Returns:
             Path to data directory
         """
@@ -255,10 +233,8 @@ class EnvironmentManager:
             base = Path(self.get_env('XDG_DATA_HOME', ''))
             if not base:
                 base = self.get_user_home() / '.local' / 'share'
-
         if app_name:
             base = base / app_name
-
         return base
 
     def get_temp_dir(self) -> Path:
@@ -303,7 +279,6 @@ class EnvironmentManager:
     def get_environment_type(self) -> str:
         """
         Get current environment type.
-
         Returns:
             Environment type: 'development', 'testing', 'production', or 'unknown'
         """
@@ -319,7 +294,6 @@ class EnvironmentManager:
     def get_available_memory_mb(self) -> Optional[float]:
         """
         Get available system memory in MB.
-
         Returns:
             Available memory in MB or None if cannot determine
         """
@@ -340,7 +314,6 @@ class EnvironmentManager:
                         ("ullAvailVirtual", ctypes.c_ulonglong),
                         ("ullAvailExtendedVirtual", ctypes.c_ulonglong),
                     ]
-
                 memoryStatus = MEMORYSTATUSEX()
                 memoryStatus.dwLength = ctypes.sizeof(MEMORYSTATUSEX)
                 kernel32.GlobalMemoryStatusEx(ctypes.byref(memoryStatus))
@@ -383,8 +356,6 @@ class EnvironmentManager:
                 'is_64bit': self.is_64bit,
             }
         }
-
-
 # Global instance for convenience
 _env_manager: Optional[EnvironmentManager] = None
 

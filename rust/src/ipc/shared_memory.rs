@@ -4,7 +4,7 @@
 //! 
 //! Production-grade shared memory management for XSystem.
 //! 
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Company: eXonware.com
 //! Generation Date: September 05, 2025

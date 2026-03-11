@@ -1,4 +1,4 @@
-﻿# Verification & Validation (V&V)
+# Verification & Validation (V&V)
 
 **Purpose:** Provide documented evidence that requirements are verified and validated to NASA-STD-8739.8, ECSS-Q-ST-80C, DO-178C, and related standards.  
 **Applicability:** All core libraries and safety-critical services; mandatory from v2 onwards.  
@@ -53,7 +53,7 @@ Store raw artefacts beneath `docs/compliance/evidence/` and reference them from 
 
 ---
 
-## Formal Verification Scope (ECSS-E-ST-70-41C / DO-178C §6.4.4)
+## Formal Verification Scope (ECSS-E-ST-70-41C / DO-178C sec. 6.4.4)
 
 | Component | Classification | Property Focus | Verification Path |
 |-----------|----------------|----------------|-------------------|
@@ -82,7 +82,7 @@ Store raw artefacts beneath `docs/compliance/evidence/` and reference them from 
 | Planning | PLAN document annotated with requirement IDs and verification strategy | `docs/logs/plans/PLAN_*.md` |
 | Implementation | CHANGE doc summarising code and test updates | `docs/logs/changes/CHANGE_*.md` |
 | Execution | Test runners, benchmark reports, formal proofs | `tests/` hierarchy, `docs/benchmarks/` |
-| Reporting | Traceability matrix row, metrics update, release checklist | `docs/compliance/traceability/TRACE_MATRIX.md`, `vv_metrics.md`, `REF_PLAN.md` |
+| Reporting | Traceability matrix row, metrics update, release checklist | `docs/compliance/traceability/TRACE_MATRIX.md`, `vv_metrics.md`, `REF_21_PLAN.md` |
 
 ## Evidence Links
 

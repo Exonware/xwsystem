@@ -1,25 +1,21 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/append_only_log.py
 """Append-only log for fast atomic updates in JSONL files.
-
 This module provides an append-only log system that can be used by
 JsonLinesSerializer for fast atomic updates without full file rewrites.
 """
 
 from __future__ import annotations
-
-import json
 import threading
 import time
 from pathlib import Path
 from typing import Any, Callable
-
 from exonware.xwsystem.io.serialization.parsers.registry import get_best_available_parser
 _parser = get_best_available_parser()
 
 
 class AppendOnlyLog:
     """Append-only log for fast atomic updates with in-memory index."""
-    
+
     def __init__(self, db_path: Path, log_path: Path | None = None):
         self.db_path = db_path
         self.log_path = log_path or db_path.with_suffix(db_path.suffix + '.log')
@@ -29,12 +25,11 @@ class AppendOnlyLog:
         self._compaction_threshold_mb = 100
         self._log_file_handle = None
         self._load_log_index()
-    
+
     def _load_log_index(self):
         """Load log index from file (build in-memory index)."""
         if not self.log_path.exists():
             return
-        
         try:
             with open(self.log_path, 'rb') as f:
                 offset = 0
@@ -44,7 +39,6 @@ class AppendOnlyLog:
                     if not line:
                         offset = f.tell()
                         continue
-                    
                     try:
                         entry = _parser.loads(line)
                         key = f"{entry.get('type')}:{entry.get('id')}"
@@ -53,11 +47,10 @@ class AppendOnlyLog:
                         self._log_cache[key] = entry
                     except Exception:
                         pass
-                    
                     offset = f.tell()
         except Exception:
             pass
-    
+
     def update_record(
         self,
         type_name: str,
@@ -66,12 +59,10 @@ class AppendOnlyLog:
     ) -> int:
         """
         Update record by appending to log (O(1) operation).
-        
         Returns:
             Number of records updated (always 1)
         """
         key = f"{type_name}:{id_value}"
-        
         # Read base record first (if we need to apply updater)
         base_record = None
         try:
@@ -81,7 +72,6 @@ class AppendOnlyLog:
             pass
         except Exception:
             pass
-        
         # Create log entry with full updated record
         # In a real implementation, we'd apply updater to base_record
         log_entry = {
@@ -90,47 +80,40 @@ class AppendOnlyLog:
             'timestamp': time.time(),
             'updated': True,
         }
-        
         with self._lock:
             # Append to log file (FAST - just append)
             try:
                 # Open in append mode
                 with open(self.log_path, 'a', encoding='utf-8') as f:
-                    entry_json = json.dumps(log_entry, ensure_ascii=False)
+                    raw = _parser.dumps(log_entry, ensure_ascii=False)
+                    entry_json = raw.decode("utf-8") if isinstance(raw, bytes) else raw
                     log_offset = f.tell()
                     f.write(entry_json + '\n')
                     f.flush()
-                
                 # Update in-memory index (O(1))
                 self._log_index[key] = log_offset
                 self._log_cache[key] = log_entry
-                
             except Exception as e:
                 raise RuntimeError(f"Failed to write to append-only log: {e}") from e
-            
             # Check if compaction is needed
             if self.log_path.exists():
                 log_size_mb = self.log_path.stat().st_size / (1024 * 1024)
                 if log_size_mb > self._compaction_threshold_mb:
                     # Trigger background compaction (non-blocking)
                     threading.Thread(target=self._compact_background, daemon=True).start()
-        
         return 1
-    
+
     def read_record(self, type_name: str, id_value: str) -> dict[str, Any] | None:
         """
         Read record (check log first, then main file).
-        
         Returns:
             Latest record (from log if exists, else from main file)
         """
         key = f"{type_name}:{id_value}"
-        
         with self._lock:
             # Check in-memory cache first (O(1))
             if key in self._log_cache:
                 return self._log_cache[key]
-            
             # Check log file using index (O(1) lookup)
             if key in self._log_index:
                 log_offset = self._log_index[key]
@@ -144,10 +127,9 @@ class AppendOnlyLog:
                             return entry
                 except Exception:
                     pass
-        
         # Not in log, return None (caller reads from main file)
         return None
-    
+
     def _compact_background(self):
         """Merge log into main file (background thread)."""
         try:
@@ -173,7 +155,6 @@ def atomic_update_with_append_log(
 ) -> int:
     """
     Atomic update using append-only log with fallback to full rewrite.
-    
     This is a helper that can be used by JsonLinesSerializer.
     """
     # Auto-detect: use append-only log for files >100MB
@@ -183,7 +164,6 @@ def atomic_update_with_append_log(
             use_append_log = file_size_mb > 100
         else:
             use_append_log = False
-    
     if use_append_log:
         try:
             log = AppendOnlyLog(db_path)
@@ -194,6 +174,5 @@ def atomic_update_with_append_log(
         except Exception:
             # Fall through to full rewrite
             pass
-    
     # Fall back to full rewrite (caller handles this)
     return 0

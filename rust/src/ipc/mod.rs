@@ -4,7 +4,7 @@
 //! 
 //! Production-grade IPC utilities for XSystem.
 //! 
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Company: eXonware.com
 //! Generated: 2025-01-27

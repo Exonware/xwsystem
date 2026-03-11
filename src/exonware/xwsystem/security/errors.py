@@ -2,11 +2,10 @@
 #exonware/xwsystem/security/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Security module errors - exception classes for security functionality.
 """
 
@@ -99,8 +98,6 @@ class SecurityConfigurationError(SecurityError):
 class SecurityPolicyError(SecurityError):
     """Raised when security policy is violated."""
     pass
-
-
 # ============================================================================
 # AUTHENTICATION ERRORS (Moved from enterprise)
 # ============================================================================

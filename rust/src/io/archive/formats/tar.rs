@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/io/archive/formats/tar.rs
 //exonware/xwsystem/src/exonware/xwsystem/io/archive/formats/tar.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: 30-Oct-2025

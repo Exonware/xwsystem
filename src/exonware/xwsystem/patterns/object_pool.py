@@ -2,7 +2,6 @@
 #exonware/xwsystem/patterns/object_pool.py
 """
 Generic object pool implementation for XSystem framework.
-
 This module provides a reusable object pool that can be used across different
 components to reduce memory allocation overhead and improve performance.
 """
@@ -11,14 +10,12 @@ import threading
 from typing import Any, Callable, Optional
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
-
 from ..config.logging_setup import get_logger
 
 
 class ObjectPool:
     """
     Generic object pool for reusing instances to reduce memory allocation overhead.
-
     This is particularly effective when creating and destroying many objects
     of the same type frequently.
     """
@@ -31,7 +28,6 @@ class ObjectPool:
     ):
         """
         Initialize the object pool.
-
         Args:
             max_size: Maximum number of objects to keep in the pool
             enable_thread_safety: Whether to use thread-safe operations
@@ -46,17 +42,14 @@ class ObjectPool:
     def get[T](self, obj_type: type[T], *args, **kwargs) -> T:
         """
         Get an object from the pool or create a new one if the pool is empty.
-
         Args:
             obj_type: The type of object to get/create
             *args: Arguments to pass to the object constructor
             **kwargs: Keyword arguments to pass to the object constructor
-
         Returns:
             An instance of the requested type
         """
         pool = self._pools.get(obj_type, [])
-
         if self._lock:
             with self._lock:
                 return self._get_from_pool(obj_type, pool, *args, **kwargs)
@@ -75,7 +68,6 @@ class ObjectPool:
             self._stats["reused"] += 1
             self._logger.debug(f"Reused {obj_type.__name__} from pool")
             return obj
-
         # Create new object
         obj = obj_type(*args, **kwargs)
         self._stats["created"] += 1
@@ -85,16 +77,13 @@ class ObjectPool:
     def release(self, obj: Any) -> None:
         """
         Return an object to the pool for future reuse.
-
         Args:
             obj: The object to return to the pool
         """
         obj_type = type(obj)
-
         # Clear references if object has a cleanup method
         if hasattr(obj, "cleanup"):
             obj.cleanup()
-
         if self._lock:
             with self._lock:
                 self._release_to_pool(obj, obj_type)
@@ -105,9 +94,7 @@ class ObjectPool:
         """Internal method to release object to pool."""
         if obj_type not in self._pools:
             self._pools[obj_type] = []
-
         pool = self._pools[obj_type]
-
         if len(pool) < self._max_size:
             pool.append(obj)
             self._stats["released"] += 1
@@ -119,7 +106,6 @@ class ObjectPool:
     def clear(self, obj_type: Optional[type] = None) -> None:
         """
         Clear objects from the pool.
-
         Args:
             obj_type: Specific type to clear, or None to clear all
         """
@@ -145,7 +131,6 @@ class ObjectPool:
     def get_stats(self) -> dict[str, Any]:
         """
         Get pool statistics.
-
         Returns:
             Dictionary containing pool statistics
         """
@@ -158,7 +143,6 @@ class ObjectPool:
     def _get_pool_stats(self) -> dict[str, Any]:
         """Internal method to get pool statistics."""
         pool_sizes = {t.__name__: len(pool) for t, pool in self._pools.items()}
-
         return {
             "stats": self._stats.copy(),
             "pool_sizes": pool_sizes,
@@ -178,7 +162,6 @@ class ObjectPool:
 class PooledObject:
     """
     Base class for objects that can be pooled.
-
     Objects that inherit from this class can be automatically managed
     by the ObjectPool with proper cleanup and reset functionality.
     """
@@ -186,7 +169,6 @@ class PooledObject:
     def cleanup(self) -> None:
         """
         Clean up the object before returning to pool.
-
         Override this method to implement custom cleanup logic.
         """
         pass
@@ -194,12 +176,9 @@ class PooledObject:
     def reset(self, *args, **kwargs) -> None:
         """
         Reset the object to initial state.
-
         Override this method to implement custom reset logic.
         """
         pass
-
-
 # Global object pool registry
 _pool_registry: dict[str, ObjectPool] = {}
 _pool_registry_lock = threading.RLock()
@@ -212,12 +191,10 @@ def get_object_pool(
 ) -> ObjectPool:
     """
     Get or create an object pool for a specific component.
-
     Args:
         component_name: Name of the component
         max_size: Maximum pool size
         enable_thread_safety: Whether to use thread-safe operations
-
     Returns:
         ObjectPool instance for the component
     """
@@ -234,7 +211,6 @@ def get_object_pool(
 def clear_object_pool(component_name: str) -> None:
     """
     Clear a specific object pool.
-
     Args:
         component_name: Name of the component pool to clear
     """
@@ -247,7 +223,6 @@ def clear_object_pool(component_name: str) -> None:
 def get_all_pool_stats() -> dict[str, dict[str, Any]]:
     """
     Get statistics for all object pools.
-
     Returns:
         Dictionary mapping component names to their pool statistics
     """

@@ -1,18 +1,16 @@
 #exonware/xwsystem/tests/1.unit/security_tests/test_crypto_comprehensive.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.0.1
 Generation Date: August 31, 2025
-
 Comprehensive tests for cryptographic utilities.
 """
 
 import pytest
 import secrets
 from pathlib import Path
-
 from exonware.xwsystem.security.crypto import (
     AsymmetricEncryption,
     SecureHash,
@@ -34,7 +32,6 @@ class TestSecureHash:
         data = "test data"
         hash1 = SecureHash.sha256(data)
         hash2 = SecureHash.sha256(data)
-        
         assert hash1 == hash2  # Deterministic
         assert len(hash1) == 64  # SHA-256 hex length
         assert all(c in '0123456789abcdef' for c in hash1)
@@ -44,14 +41,12 @@ class TestSecureHash:
         data = b"test data"
         hash1 = SecureHash.sha256(data)
         hash2 = SecureHash.sha256("test data")
-        
         assert hash1 == hash2  # Same result for string/bytes
 
     def test_sha512(self):
         """Test SHA-512 hashing."""
         data = "test data"
         hash_val = SecureHash.sha512(data)
-        
         assert len(hash_val) == 128  # SHA-512 hex length
         assert all(c in '0123456789abcdef' for c in hash_val)
 
@@ -60,7 +55,6 @@ class TestSecureHash:
         data = "test data"
         hash1 = SecureHash.blake2b(data)
         hash2 = SecureHash.blake2b(data, key=b"test_key")
-        
         assert len(hash1) == 128  # BLAKE2b hex length
         assert hash1 != hash2  # Different with key
 
@@ -70,7 +64,6 @@ class TestSecureHash:
         key = "test_key"
         hmac1 = SecureHash.hmac_sha256(data, key)
         hmac2 = SecureHash.hmac_sha256(data, key)
-        
         assert hmac1 == hmac2  # Deterministic
         assert len(hmac1) == 64  # SHA-256 hex length
 
@@ -79,7 +72,6 @@ class TestSecureHash:
         data = "test data"
         key = "test_key"
         hmac_val = SecureHash.hmac_sha256(data, key)
-        
         assert SecureHash.verify_hmac(data, key, hmac_val)
         assert not SecureHash.verify_hmac(data, "wrong_key", hmac_val)
         assert not SecureHash.verify_hmac("wrong_data", key, hmac_val)
@@ -92,7 +84,6 @@ class TestSecureRandom:
         """Test random bytes generation."""
         bytes1 = SecureRandom.token_bytes(32)
         bytes2 = SecureRandom.token_bytes(32)
-        
         assert len(bytes1) == 32
         assert len(bytes2) == 32
         assert bytes1 != bytes2  # Should be different
@@ -101,7 +92,6 @@ class TestSecureRandom:
         """Test random hex generation."""
         hex1 = SecureRandom.token_hex(16)
         hex2 = SecureRandom.token_hex(16)
-        
         assert len(hex1) == 32  # 16 bytes = 32 hex chars
         assert len(hex2) == 32
         assert hex1 != hex2
@@ -111,7 +101,6 @@ class TestSecureRandom:
         """Test URL-safe token generation."""
         token1 = SecureRandom.token_urlsafe(32)
         token2 = SecureRandom.token_urlsafe(32)
-        
         assert token1 != token2
         # URL-safe characters
         assert all(c.isalnum() or c in '-_' for c in token1)
@@ -126,16 +115,15 @@ class TestSecureRandom:
         """Test secure random choice."""
         options = ['a', 'b', 'c', 'd', 'e']
         choices = [SecureRandom.choice(options) for _ in range(100)]
-        
         # Should see variety
         assert len(set(choices)) > 1
         assert all(choice in options for choice in choices)
-
-
 @pytest.mark.skipif(
     not hasattr(SymmetricEncryption, '_fernet'),
     reason="cryptography library not available"
 )
+
+
 class TestSymmetricEncryption:
     """Test symmetric encryption."""
 
@@ -143,7 +131,6 @@ class TestSymmetricEncryption:
         """Test encryption key generation."""
         key1 = SymmetricEncryption.generate_key()
         key2 = SymmetricEncryption.generate_key()
-        
         assert len(key1) == 44  # Fernet key length (base64)
         assert key1 != key2
 
@@ -152,7 +139,6 @@ class TestSymmetricEncryption:
         password = "test_password"
         key1, salt1 = SymmetricEncryption.derive_key_from_password(password)
         key2, salt2 = SymmetricEncryption.derive_key_from_password(password, salt1)
-        
         assert key1 == key2  # Same password + salt = same key
         assert salt1 == salt2
 
@@ -160,10 +146,8 @@ class TestSymmetricEncryption:
         """Test bytes encryption/decryption."""
         enc = SymmetricEncryption()
         data = b"sensitive data"
-        
         encrypted = enc.encrypt(data)
         decrypted = enc.decrypt(encrypted)
-        
         assert decrypted == data
         assert encrypted != data
 
@@ -171,10 +155,8 @@ class TestSymmetricEncryption:
         """Test string encryption/decryption."""
         enc = SymmetricEncryption()
         text = "sensitive text"
-        
         encrypted = enc.encrypt_string(text)
         decrypted = enc.decrypt_string(encrypted)
-        
         assert decrypted == text
         assert encrypted != text
 
@@ -183,27 +165,23 @@ class TestSymmetricEncryption:
         enc1 = SymmetricEncryption()
         enc2 = SymmetricEncryption()
         data = "test data"
-        
         encrypted1 = enc1.encrypt_string(data)
         encrypted2 = enc2.encrypt_string(data)
-        
         assert encrypted1 != encrypted2  # Different keys
-        
         with pytest.raises(Exception):  # Should fail with wrong key
             enc1.decrypt_string(encrypted2)
-
-
 @pytest.mark.skipif(
     not hasattr(AsymmetricEncryption, 'private_key'),
     reason="cryptography library not available"
 )
+
+
 class TestAsymmetricEncryption:
     """Test asymmetric encryption."""
 
     def test_key_pair_generation(self):
         """Test RSA key pair generation."""
         enc, private_pem, public_pem = AsymmetricEncryption.generate_key_pair()
-        
         assert b'BEGIN PRIVATE KEY' in private_pem
         assert b'BEGIN PUBLIC KEY' in public_pem
         assert enc.private_key is not None
@@ -213,10 +191,8 @@ class TestAsymmetricEncryption:
         """Test public key encryption and private key decryption."""
         enc, _, _ = AsymmetricEncryption.generate_key_pair()
         data = "sensitive data"
-        
         encrypted = enc.encrypt(data)
         decrypted = enc.decrypt(encrypted)
-        
         assert decrypted.decode('utf-8') == data
         assert encrypted != data.encode('utf-8')
 
@@ -224,7 +200,6 @@ class TestAsymmetricEncryption:
         """Test digital signature and verification."""
         enc, _, _ = AsymmetricEncryption.generate_key_pair()
         data = "data to sign"
-        
         signature = enc.sign(data)
         assert enc.verify(data, signature)
         assert not enc.verify("tampered data", signature)
@@ -232,16 +207,13 @@ class TestAsymmetricEncryption:
     def test_encryption_with_separate_keys(self):
         """Test encryption with public key only."""
         _, private_pem, public_pem = AsymmetricEncryption.generate_key_pair()
-        
         # Encrypt with public key only
         enc_pub = AsymmetricEncryption(public_key=public_pem)
         data = "test data"
         encrypted = enc_pub.encrypt(data)
-        
         # Decrypt with private key only
         enc_priv = AsymmetricEncryption(private_key=private_pem)
         decrypted = enc_priv.decrypt(encrypted)
-        
         assert decrypted.decode('utf-8') == data
 
 
@@ -253,10 +225,8 @@ class TestSecureStorage:
         storage = SecureStorage()
         key = "test_key"
         value = {"sensitive": "data", "number": 42}
-        
         storage.store(key, value)
         retrieved = storage.retrieve(key)
-        
         assert retrieved == value
 
     def test_store_with_metadata(self):
@@ -265,10 +235,8 @@ class TestSecureStorage:
         key = "test_key"
         value = "test value"
         metadata = {"type": "sensitive", "level": "high"}
-        
         storage.store(key, value, metadata)
         retrieved_metadata = storage.get_metadata(key)
-        
         assert retrieved_metadata == metadata
 
     def test_key_operations(self):
@@ -276,13 +244,10 @@ class TestSecureStorage:
         storage = SecureStorage()
         key = "test_key"
         value = "test value"
-        
         assert not storage.exists(key)
-        
         storage.store(key, value)
         assert storage.exists(key)
         assert key in storage.list_keys()
-        
         assert storage.delete(key)
         assert not storage.exists(key)
         assert not storage.delete(key)  # Already deleted
@@ -290,21 +255,17 @@ class TestSecureStorage:
     def test_clear_storage(self):
         """Test clearing all storage."""
         storage = SecureStorage()
-        
         storage.store("key1", "value1")
         storage.store("key2", "value2")
         assert len(storage.list_keys()) == 2
-        
         storage.clear()
         assert len(storage.list_keys()) == 0
 
     def test_key_not_found(self):
         """Test retrieving non-existent key."""
         storage = SecureStorage()
-        
         with pytest.raises(KeyError):
             storage.retrieve("non_existent")
-            
         with pytest.raises(KeyError):
             storage.get_metadata("non_existent")
 
@@ -316,7 +277,6 @@ class TestPasswordUtilities:
         """Test password hashing."""
         password = "test_password"
         hashed = hash_password(password)
-        
         # hash_password returns a single string with format: pbkdf2:iterations:salt:hash
         assert isinstance(hashed, str)
         assert hashed.startswith("pbkdf2:")
@@ -330,7 +290,6 @@ class TestPasswordUtilities:
         """Test password verification."""
         password = "test_password"
         hashed = hash_password(password)
-        
         # verify_password takes (password, hashed_password) where hashed_password is the full hash string
         assert verify_password(password, hashed)
         assert not verify_password("wrong_password", hashed)
@@ -340,7 +299,6 @@ class TestPasswordUtilities:
         password = "test_password"
         hashed1 = hash_password(password)
         hashed2 = hash_password(password)
-        
         # Each hash includes a unique salt, so they should be different
         assert hashed1 != hashed2  # Different salts in the hash string
         # But both should verify correctly
@@ -355,7 +313,6 @@ class TestTokenGeneration:
         """Test API key generation."""
         key1 = generate_api_key()
         key2 = generate_api_key()
-        
         assert key1 != key2
         assert len(key1) > 30  # Should be reasonably long
 
@@ -363,7 +320,6 @@ class TestTokenGeneration:
         """Test session token generation."""
         token1 = generate_session_token()
         token2 = generate_session_token()
-        
         assert token1 != token2
         assert len(token1) > 30  # Should be reasonably long
 
@@ -371,11 +327,10 @@ class TestTokenGeneration:
         """Test custom length token generation."""
         short_key = generate_api_key(16)
         long_key = generate_api_key(64)
-        
         assert len(short_key) < len(long_key)
-
-
 @pytest.mark.xwsystem_unit
+
+
 class TestCryptoErrorHandling:
     """Test error handling in crypto operations."""
 
@@ -393,15 +348,13 @@ class TestCryptoErrorHandling:
     def test_decrypt_with_wrong_data(self):
         """Test decryption with invalid data."""
         enc = SymmetricEncryption()
-        
         with pytest.raises(Exception):
             enc.decrypt(b"invalid_encrypted_data")
-            
         with pytest.raises(Exception):
             enc.decrypt_string("invalid_encrypted_string")
-
-
 @pytest.mark.xwsystem_unit 
+
+
 class TestCryptoSecurityProperties:
     """Test security properties of crypto operations."""
 
@@ -409,19 +362,15 @@ class TestCryptoSecurityProperties:
         """Test that encryption produces random-looking output."""
         enc = SymmetricEncryption()
         data = "test data"
-        
         # Encrypt same data multiple times
         encrypted_values = [enc.encrypt_string(data) for _ in range(10)]
-        
         # All should be different (due to random IV)
         assert len(set(encrypted_values)) == 10
 
     def test_hash_consistency(self):
         """Test that hashes are consistent."""
         data = "test data"
-        
         hashes = [SecureHash.sha256(data) for _ in range(10)]
-        
         # All should be the same
         assert len(set(hashes)) == 1
 
@@ -429,22 +378,18 @@ class TestCryptoSecurityProperties:
         """Test that random generation is unpredictable."""
         # Generate many random values
         values = [SecureRandom.token_hex(16) for _ in range(100)]
-        
         # Should be all unique (primary requirement - no collisions)
         assert len(set(values)) == 100
-        
         # Check statistical properties - with truly random data, patterns can occur by chance
         # Instead of requiring NO patterns (which is statistically unlikely), check that:
         # 1. Values are sufficiently diverse (many unique values)
         # 2. Pattern occurrence is rare (not frequent)
         palindromes = sum(1 for val in values if val == val[::-1])
         obvious_repeats = sum(1 for val in values if '0000' in val or 'aaaa' in val)
-        
         # With 100 random 32-character hex strings, palindromes and obvious repeats should be rare
         # Allow a small chance (statistically, should be near zero but not absolutely zero)
         assert palindromes < 5, f"Too many palindromes found: {palindromes}/100 (random chance should be < 5)"
         assert obvious_repeats < 10, f"Too many obvious repeats: {obvious_repeats}/100 (should be rare)"
-        
         # Verify randomness - should have high entropy (many different characters used)
         all_chars = set(''.join(values))
         # Hex should use 0-9 and a-f

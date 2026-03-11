@@ -1,12 +1,10 @@
 #exonware/xwsystem/tests/3.advance/benchmarks/legacy/benchmarks/caching/external_python_caches.py
 """
 Python wrappers for external Python caching libraries.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.1.0.1
-
 Wrappers for:
 - cachebox: Rust-based Python cache
 - functools.lru_cache: Standard library LRU
@@ -20,7 +18,6 @@ from typing import Any, Optional, Callable
 from functools import lru_cache as std_lru_cache
 import sys
 import time
-
 # Try to import the new proper implementations
 USE_NEW_IMPLEMENTATIONS = False
 try:
@@ -38,7 +35,6 @@ try:
 except ImportError:
     HAS_CACHEBOX = False
     HAS_CACHETOOLS = False
-
 # Import flags from new implementations if available
 if USE_NEW_IMPLEMENTATIONS:
     # Use the new implementations directly
@@ -57,7 +53,6 @@ else:
     except ImportError:
         HAS_CACHEBOX = False
         cachebox = None
-
     # Cachetools wrapper
     try:
         import cachetools
@@ -77,7 +72,6 @@ else:
         CachetoolsLFU = None
         CachetoolsTTL = None
         CachetoolsRR = None
-
 # Diskcache wrapper
 try:
     import diskcache
@@ -85,7 +79,6 @@ try:
 except ImportError:
     HAS_DISKCACHE = False
     diskcache = None
-
 # Cacheout wrapper
 try:
     import cacheout
@@ -103,7 +96,6 @@ except ImportError:
     CacheoutLFU = None
     CacheoutTTL = None
     CacheoutFIFO = None
-
 # Pylru wrapper
 try:
     import pylru
@@ -115,26 +107,25 @@ except ImportError:
 
 class CacheboxWrapper:
     """Wrapper for cachebox library."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_CACHEBOX:
             raise ImportError("cachebox not available. Install with: pip install cachebox")
-        
         # cachebox uses maxsize parameter
         self._cache = cachebox.Cache(maxsize=capacity)
         self._capacity = capacity
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         try:
             return self._cache.get(key, default)
         except Exception:
             return default
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -142,16 +133,16 @@ class CacheboxWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._capacity
@@ -159,14 +150,14 @@ class CacheboxWrapper:
 
 class FunctoolsLRUWrapper:
     """Wrapper for functools.lru_cache."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         self._capacity = capacity
         self._cache = {}
         self._access_order = []
         # functools.lru_cache is a decorator, so we implement LRU manually
         # or use a simple dict with manual LRU tracking
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         if key in self._cache:
@@ -175,7 +166,7 @@ class FunctoolsLRUWrapper:
             self._access_order.append(key)
             return self._cache[key]
         return default
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         if key in self._cache:
@@ -186,10 +177,9 @@ class FunctoolsLRUWrapper:
             if self._access_order:
                 lru_key = self._access_order.pop(0)
                 del self._cache[lru_key]
-        
         self._cache[key] = value
         self._access_order.append(key)
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         if key in self._cache:
@@ -198,17 +188,17 @@ class FunctoolsLRUWrapper:
                 self._access_order.remove(key)
             return True
         return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
         self._access_order.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._capacity
@@ -216,20 +206,20 @@ class FunctoolsLRUWrapper:
 
 class CachetoolsLRUWrapper:
     """Wrapper for cachetools LRUCache."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_CACHETOOLS:
             raise ImportError("cachetools not available. Install with: pip install cachetools")
         self._cache = CachetoolsLRU(maxsize=capacity)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         return self._cache.get(key, default)
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -237,16 +227,16 @@ class CachetoolsLRUWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._cache.maxsize or 0
@@ -254,20 +244,20 @@ class CachetoolsLRUWrapper:
 
 class CachetoolsLFUWrapper:
     """Wrapper for cachetools LFUCache."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_CACHETOOLS:
             raise ImportError("cachetools not available. Install with: pip install cachetools")
         self._cache = CachetoolsLFU(maxsize=capacity)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         return self._cache.get(key, default)
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -275,16 +265,16 @@ class CachetoolsLFUWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._cache.maxsize or 0
@@ -292,20 +282,20 @@ class CachetoolsLFUWrapper:
 
 class CachetoolsTTLWrapper:
     """Wrapper for cachetools TTLCache."""
-    
+
     def __init__(self, capacity: int = 128, ttl: float = 3600.0, **kwargs):
         if not HAS_CACHETOOLS:
             raise ImportError("cachetools not available. Install with: pip install cachetools")
         self._cache = CachetoolsTTL(maxsize=capacity, ttl=ttl)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         return self._cache.get(key, default)
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -313,16 +303,16 @@ class CachetoolsTTLWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._cache.maxsize or 0
@@ -330,20 +320,20 @@ class CachetoolsTTLWrapper:
 
 class CachetoolsRRWrapper:
     """Wrapper for cachetools RRCache (Random Replacement)."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_CACHETOOLS:
             raise ImportError("cachetools not available. Install with: pip install cachetools")
         self._cache = CachetoolsRR(maxsize=capacity)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         return self._cache.get(key, default)
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -351,16 +341,16 @@ class CachetoolsRRWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._cache.maxsize or 0
@@ -368,42 +358,41 @@ class CachetoolsRRWrapper:
 
 class DiskcacheWrapper:
     """Wrapper for diskcache library."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_DISKCACHE:
             raise ImportError("diskcache not available. Install with: pip install diskcache")
-        
         # diskcache uses size parameter for max entries
         self._cache = diskcache.Cache(size_limit=capacity)
         self._capacity = capacity
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         try:
             return self._cache.get(key, default)
         except Exception:
             return default
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
             return self._cache.delete(key)
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._capacity
@@ -411,20 +400,20 @@ class DiskcacheWrapper:
 
 class CacheoutLRUWrapper:
     """Wrapper for cacheout LRUCache."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_CACHEOUT:
             raise ImportError("cacheout not available. Install with: pip install cacheout")
         self._cache = CacheoutLRU(maxsize=capacity)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         return self._cache.get(key, default)
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -432,16 +421,16 @@ class CacheoutLRUWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._cache.maxsize or 0
@@ -449,20 +438,20 @@ class CacheoutLRUWrapper:
 
 class CacheoutLFUWrapper:
     """Wrapper for cacheout LFUCache."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_CACHEOUT:
             raise ImportError("cacheout not available. Install with: pip install cacheout")
         self._cache = CacheoutLFU(maxsize=capacity)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         return self._cache.get(key, default)
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -470,16 +459,16 @@ class CacheoutLFUWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._cache.maxsize or 0
@@ -487,20 +476,20 @@ class CacheoutLFUWrapper:
 
 class CacheoutTTLWrapper:
     """Wrapper for cacheout TTLCache."""
-    
+
     def __init__(self, capacity: int = 128, ttl: float = 3600.0, **kwargs):
         if not HAS_CACHEOUT:
             raise ImportError("cacheout not available. Install with: pip install cacheout")
         self._cache = CacheoutTTL(maxsize=capacity, ttl=ttl)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         return self._cache.get(key, default)
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -508,16 +497,16 @@ class CacheoutTTLWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._cache.maxsize or 0
@@ -525,20 +514,20 @@ class CacheoutTTLWrapper:
 
 class CacheoutFIFOWrapper:
     """Wrapper for cacheout FIFOCache."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_CACHEOUT:
             raise ImportError("cacheout not available. Install with: pip install cacheout")
         self._cache = CacheoutFIFO(maxsize=capacity)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         return self._cache.get(key, default)
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -546,16 +535,16 @@ class CacheoutFIFOWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         self._cache.clear()
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._cache.maxsize or 0
@@ -563,26 +552,25 @@ class CacheoutFIFOWrapper:
 
 class PylruWrapper:
     """Wrapper for pylru library."""
-    
+
     def __init__(self, capacity: int = 128, **kwargs):
         if not HAS_PYLRU:
             raise ImportError("pylru not available. Install with: pip install pylru")
-        
         self._cache = pylru.lrucache(capacity)
         self._capacity = capacity
         self._access_order = []
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value from cache."""
         try:
             return self._cache[key]
         except KeyError:
             return default
-    
+
     def put(self, key: str, value: Any) -> None:
         """Put value in cache."""
         self._cache[key] = value
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from cache."""
         try:
@@ -590,22 +578,20 @@ class PylruWrapper:
             return True
         except KeyError:
             return False
-    
+
     def clear(self) -> None:
         """Clear cache."""
         # pylru doesn't have clear, so we recreate
         self._cache = pylru.lrucache(self._capacity)
-    
+
     def size(self) -> int:
         """Get cache size."""
         return len(self._cache)
-    
     @property
+
     def capacity(self) -> int:
         """Get cache capacity."""
         return self._capacity
-
-
 # Export available wrappers
 __all__ = [
     'CacheboxWrapper',

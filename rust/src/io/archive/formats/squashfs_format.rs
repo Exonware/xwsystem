@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/io/archive/formats/squashfs_format.rs
 //exonware/xwsystem/src/exonware/xwsystem/io/archive/formats/squashfs_format.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: November 1, 2025

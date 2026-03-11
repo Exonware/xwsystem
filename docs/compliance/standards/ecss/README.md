@@ -1,4 +1,4 @@
-﻿# ECSS Standards Compliance
+# ECSS Standards Compliance
 
 **Scope:** European Cooperation for Space Standardization (software engineering, product assurance, formal methods, dependability, data exchange).  
 **Applicability:** All core libraries and mission-critical services; mandatory from v2 onwards.  
@@ -12,7 +12,7 @@
 
 | ID | Requirement | Owner | Implementation Artifact | Evidence | Status |
 |----|-------------|-------|--------------------------|---------|--------|
-| ECSS-E-40C-RQ-001 | Align development lifecycle with ECSS processes | Architecture | GUIDE_PLAN / REF_PLAN / GUIDE_ARCH | `../../guides/GUIDE_PLAN.md`, `../../REF_PLAN.md` | ✅ |
+| ECSS-E-40C-RQ-001 | Align development lifecycle with ECSS processes | Architecture | GUIDE_PLAN / REF_PLAN / GUIDE_ARCH | `../../guides/GUIDE_PLAN.md`, `../../REF_21_PLAN.md` | ✅ |
 | ECSS-E-40C-RQ-002 | Maintain requirements/design/code traceability | Compliance | Trace matrix generator | `../traceability/TRACE_MATRIX.md`, `.github/workflows/traceability.yml` | ✅ |
 | ECSS-E-70-41C-RQ-001 | Apply formal methods to critical modules | Architecture | verification/vv_plan.md | `../verification/README.md#formal-verification-scope` | ✅ |
 | ECSS-Q-80C-RQ-001 | Establish product assurance plan & metrics | QA | verification/vv_metrics.md | `../verification/README.md`, `../evidence/verification/` | ✅ |

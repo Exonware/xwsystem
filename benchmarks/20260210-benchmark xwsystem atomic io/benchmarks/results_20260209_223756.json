@@ -1,0 +1,48 @@
+{
+  "timestamp": "20260209_223756",
+  "campaign": "20260210-benchmark xwsystem atomic io",
+  "num_writes": 200,
+  "payload_sizes": [
+    "1KB",
+    "100KB",
+    "1MB"
+  ],
+  "results": [
+    {
+      "name": "AtomicFileWriter (1KB)",
+      "size_name": "1KB",
+      "size_bytes": 1024,
+      "writes_per_sec": 365.71
+    },
+    {
+      "name": "plain write (1KB)",
+      "size_name": "1KB",
+      "size_bytes": 1024,
+      "writes_per_sec": 1322.33
+    },
+    {
+      "name": "AtomicFileWriter (100KB)",
+      "size_name": "100KB",
+      "size_bytes": 102400,
+      "writes_per_sec": 515.67
+    },
+    {
+      "name": "plain write (100KB)",
+      "size_name": "100KB",
+      "size_bytes": 102400,
+      "writes_per_sec": 1192.52
+    },
+    {
+      "name": "AtomicFileWriter (1MB)",
+      "size_name": "1MB",
+      "size_bytes": 1048576,
+      "writes_per_sec": 495.54
+    },
+    {
+      "name": "plain write (1MB)",
+      "size_name": "1MB",
+      "size_bytes": 1048576,
+      "writes_per_sec": 792.64
+    }
+  ]
+}

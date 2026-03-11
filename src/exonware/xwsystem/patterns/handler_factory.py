@@ -8,9 +8,7 @@ import logging
 from typing import Any, Callable, Optional
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
-
 from .contracts import IHandler
-
 from ..io.common.atomic import AtomicFileWriter, atomic_write
 from ..security.path_validator import PathSecurityError, PathValidator
 from ..structures.circular_detector import (
@@ -18,14 +16,12 @@ from ..structures.circular_detector import (
     has_circular_references,
 )
 from ..threading.safe_factory import MethodGenerator, ThreadSafeFactory
-
 logger = logging.getLogger(__name__)
 
 
 class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     """
     Enhanced handler factory that combines all xwsystem utilities.
-
     This factory provides thread-safe handler registration with additional
     features like path validation, atomic operations, and circular reference
     detection.
@@ -40,7 +36,6 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     ):
         """
         Initialize enhanced handler factory.
-
         Args:
             base_path: Base path for file operations
             enable_security: Whether to enable path security validation
@@ -48,7 +43,6 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
             max_circular_depth: Maximum depth for circular reference detection
         """
         super().__init__()
-
         # Initialize utilities
         self.path_validator = (
             PathValidator(base_path=base_path) if enable_security else None
@@ -58,11 +52,9 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
             if enable_circular_detection
             else None
         )
-
         # Configuration
         self.enable_security = enable_security
         self.enable_circular_detection = enable_circular_detection
-
         # Statistics
         self._operation_stats = {
             "handlers_registered": 0,
@@ -80,13 +72,11 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     ) -> None:
         """
         Safely register a handler with additional validation.
-
         Args:
             name: Handler name
             handler_class: Handler class to register
             extensions: File extensions this handler supports
             validate_class: Whether to validate the handler class for circular references
-
         Raises:
             CircularReferenceError: If circular references detected in handler class
             TypeError: If handler class is invalid
@@ -96,7 +86,6 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
             raise TypeError(
                 f"handler_class must be a class type, got {type(handler_class)}"
             )
-
         # Check for circular references in handler class if enabled
         if self.enable_circular_detection and validate_class:
             if has_circular_references(handler_class, max_depth=50):
@@ -104,11 +93,9 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
                 raise CircularReferenceError(
                     f"Circular references detected in handler class: {handler_class}"
                 )
-
         # Register the handler
         self.register(name, handler_class, extensions)
         self._operation_stats["handlers_registered"] += 1
-
         logger.debug(f"Safely registered handler: {name} -> {handler_class.__name__}")
 
     def safe_file_operation(
@@ -120,34 +107,27 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     ) -> Any:
         """
         Perform a file operation with path validation and safety checks.
-
         Args:
             file_path: Path to the file
             operation: Function to perform on the validated path
             for_writing: Whether the operation involves writing
             create_dirs: Whether to create parent directories
-
         Returns:
             Result of the operation
-
         Raises:
             PathSecurityError: If path validation fails
         """
         if not self.enable_security:
             return operation(file_path)
-
         try:
             # Validate the path
             validated_path = self.path_validator.validate_path(
                 file_path, for_writing=for_writing, create_dirs=create_dirs
             )
-
             # Perform the operation with validated path
             result = operation(str(validated_path))
             self._operation_stats["safe_operations"] += 1
-
             return result
-
         except PathSecurityError:
             self._operation_stats["security_violations"] += 1
             raise
@@ -162,7 +142,6 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     ) -> None:
         """
         Perform an atomic write operation with path validation.
-
         Args:
             target_path: Target file path
             writer_func: Function that takes a file handle and writes to it
@@ -170,13 +149,11 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
             encoding: Text encoding
             backup: Whether to create backup
         """
-
         def validated_write_operation(validated_path: str) -> None:
             with atomic_write(
                 validated_path, mode=mode, encoding=encoding, backup=backup
             ) as f:
                 writer_func(f)
-
         self.safe_file_operation(
             target_path, validated_write_operation, for_writing=True, create_dirs=True
         )
@@ -186,30 +163,24 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     ) -> bool:
         """
         Validate a data structure for circular references.
-
         Args:
             data: Data structure to validate
             max_depth: Maximum depth to check (uses factory default if None)
-
         Returns:
             True if data structure is safe
-
         Raises:
             CircularReferenceError: If circular references are detected
         """
         if not self.enable_circular_detection:
             return True
-
         detector = self.circular_detector
         if max_depth is not None:
             detector = CircularReferenceDetector(max_depth=max_depth)
-
         if detector.is_circular(data):
             self._operation_stats["circular_references_detected"] += 1
             raise CircularReferenceError(
                 "Circular references detected in data structure"
             )
-
         return True
 
     def create_safe_temp_file(
@@ -217,11 +188,9 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     ) -> str:
         """
         Create a safe temporary file path.
-
         Args:
             prefix: Optional filename prefix
             suffix: Optional filename suffix
-
         Returns:
             Path to safe temporary file
         """
@@ -232,10 +201,8 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
             return str(temp_path)
         else:
             import tempfile
-
             fd, temp_path = tempfile.mkstemp(prefix=prefix, suffix=suffix)
             import os
-
             os.close(fd)
             return temp_path
 
@@ -248,14 +215,12 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     ) -> None:
         """
         Generate enhanced dynamic methods with safety features.
-
         Args:
             target_class: Class to add methods to
             method_template: Template function for generated methods
             method_name_pattern: Pattern for method names
             method_doc_pattern: Pattern for method docstrings
         """
-
         # Wrap the method template with safety features
         def safe_method_template(self_obj, format_name: str, *args, **kwargs):
             # Add safety checks to the method call
@@ -264,7 +229,6 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
             except Exception as e:
                 logger.error(f"Error in generated method for format {format_name}: {e}")
                 raise
-
         MethodGenerator.generate_export_methods(
             target_class=target_class,
             factory=self,
@@ -276,7 +240,6 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
     def get_operation_stats(self) -> dict[str, Any]:
         """
         Get statistics about factory operations.
-
         Returns:
             Dictionary with operation statistics
         """
@@ -285,15 +248,12 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
             "registered_extensions": len(self._extensions),
             "available_formats": self.get_available_formats(),
         }
-
         base_stats.update(self._operation_stats)
-
         # Add circular detector stats if available
         if self.circular_detector:
             base_stats.update(
                 {"circular_detector_stats": self.circular_detector.get_stats()}
             )
-
         return base_stats
 
     def reset_stats(self) -> None:
@@ -304,14 +264,13 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
             "security_violations": 0,
             "circular_references_detected": 0,
         }
-
         if self.circular_detector:
             self.circular_detector.reset()
 
 
 class HandlerFactory[T](GenericHandlerFactory[T]):
     """Simplified handler factory."""
-    
+
     def __init__(self, base_path: Optional[str] = None):
         """Initialize handler factory with basic settings."""
         super().__init__(
@@ -320,27 +279,26 @@ class HandlerFactory[T](GenericHandlerFactory[T]):
             enable_circular_detection=True,
             max_circular_depth=50
         )
-    
+
     def create_handler(self, name: str, *args, **kwargs) -> T:
         """Create a handler instance."""
         handler_class = self.get_handler(name)
         if handler_class is None:
             raise ValueError(f"Handler '{name}' not found")
-        
         return handler_class(*args, **kwargs)
-    
+
     def register_handler(self, name: str, handler_class: type[T], extensions: Optional[list[str]] = None):
         """Register a handler class."""
         self.register_safe(name, handler_class, extensions)
-    
+
     def unregister_handler(self, name: str):
         """Unregister a handler."""
         self.unregister(name)
-    
+
     def list_handlers(self) -> list[str]:
         """List all registered handlers."""
         return self.get_available_formats()
-    
+
     def has_handler(self, name: str) -> bool:
         """Check if handler is registered."""
         return self.has_handler(name)

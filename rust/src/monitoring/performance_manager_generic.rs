@@ -7,7 +7,7 @@
 //! health monitoring, and recommendations without being tied to specific implementations.
 //! 
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: November 04, 2025

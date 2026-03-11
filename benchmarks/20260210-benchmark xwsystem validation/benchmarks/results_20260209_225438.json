@@ -1,0 +1,19 @@
+{
+  "timestamp": "20260209_225438",
+  "campaign": "20260210-benchmark xwsystem validation",
+  "num_ops": 10000,
+  "results": [
+    {
+      "name": "check_data_depth (shallow)",
+      "ops_per_sec": 1108672.03
+    },
+    {
+      "name": "check_data_depth (deep)",
+      "ops_per_sec": 229014.28
+    },
+    {
+      "name": "validate_path_input (safe)",
+      "ops_per_sec": 2583779.02
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 //! Centralized version management for eXonware projects.
 //! 
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Generation Date: January 27, 2025
 //! 

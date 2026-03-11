@@ -1,11 +1,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/stream/async_operations.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Asynchronous I/O operations for non-blocking file handling.
 """
 
@@ -18,21 +17,17 @@ import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, AsyncContextManager, BinaryIO, Optional, TextIO
-
 # Import aiofiles - lazy installation system will handle it if missing
 import aiofiles
 import aiofiles.os
-
 from ...config.logging_setup import get_logger
 from ..common.atomic import FileOperationError
-
 logger = get_logger("xwsystem.io.async_operations")
 
 
 class AsyncAtomicFileWriter:
     """
     Provides asynchronous atomic file writing operations to prevent data corruption.
-    
     This class ensures that file writes are atomic by writing to a temporary
     file first and then moving it to the target location. All operations are
     non-blocking and async-compatible.
@@ -48,7 +43,6 @@ class AsyncAtomicFileWriter:
     ):
         """
         Initialize async atomic file writer.
-
         Args:
             target_path: Final path where file should be written
             mode: File open mode ('w', 'wb', 'w+', etc.)
@@ -61,7 +55,6 @@ class AsyncAtomicFileWriter:
         self.encoding = encoding if "b" not in mode else None
         self.backup = backup
         self.temp_dir = Path(temp_dir) if temp_dir else self.target_path.parent
-
         self.temp_path: Optional[Path] = None
         self.backup_path: Optional[Path] = None
         self.file_handle: Optional[Any] = None  # aiofiles handle
@@ -85,36 +78,27 @@ class AsyncAtomicFileWriter:
     async def start(self) -> Any:
         """
         Start the async atomic write operation.
-
         Returns:
             Async file handle for writing
         """
         # Lazy installation system will handle aiofiles if missing
-            
         if self._started:
             raise FileOperationError("Async atomic write operation already started")
-
         self._started = True
-
         try:
             # Ensure temp directory exists
             await aiofiles.os.makedirs(self.temp_dir, exist_ok=True)
-
             # Create backup if requested and target exists
             if self.backup and await aiofiles.os.path.exists(self.target_path):
                 await self._create_backup()
-
             # Create temporary file in same directory as target
             # This ensures they're on the same filesystem for atomic move
             fd, temp_path_str = tempfile.mkstemp(
                 prefix=f".{self.target_path.name}_", suffix=".tmp", dir=self.temp_dir
             )
-
             self.temp_path = Path(temp_path_str)
-
             # Close the file descriptor and reopen with aiofiles
             os.close(fd)
-
             # Open with aiofiles with the requested mode and encoding
             if self.encoding:
                 self.file_handle = await aiofiles.open(
@@ -122,12 +106,10 @@ class AsyncAtomicFileWriter:
                 )
             else:
                 self.file_handle = await aiofiles.open(self.temp_path, self.mode)
-
             logger.debug(
                 f"Started async atomic write: {self.target_path} via {self.temp_path}"
             )
             return self.file_handle
-
         except Exception as e:
             await self._cleanup()
             raise FileOperationError(f"Failed to start async atomic write: {e}") from e
@@ -135,29 +117,22 @@ class AsyncAtomicFileWriter:
     async def write(self, data: bytes | str) -> int:
         """
         Write data to the temporary file.
-        
         Automatically handles conversion between bytes and str based on file mode:
         - Text mode ("w", "w+", etc.): Accepts str or bytes (bytes are decoded with encoding)
         - Binary mode ("wb", "wb+", etc.): Accepts bytes only
-        
         Args:
             data: Data to write (bytes or str)
-            
         Returns:
             Number of bytes/characters written
-            
         Raises:
             FileOperationError: If write operation not started or write fails
         """
         if not self._started:
             raise FileOperationError("Async atomic write operation not started. Call start() first.")
-        
         if not self.file_handle:
             raise FileOperationError("File handle not available")
-        
         try:
             is_binary_mode = "b" in self.mode
-            
             if is_binary_mode:
                 # Binary mode: must write bytes
                 if isinstance(data, str):
@@ -180,45 +155,35 @@ class AsyncAtomicFileWriter:
     async def commit(self) -> None:
         """
         Commit the async atomic write operation.
-
         This closes the temporary file and atomically moves it to the target location.
         """
         if not self._started:
             raise FileOperationError("Async atomic write operation not started")
-
         if self._committed:
             return  # Already committed
-
         try:
             import os  # Import at the beginning of the method
-            
             # Close the file handle
             if self.file_handle:
                 await self.file_handle.close()
-
             # Verify temp file was written
             if not self.temp_path or not await aiofiles.os.path.exists(self.temp_path):
                 raise FileOperationError(
                     "Temporary file was not created or was deleted"
                 )
-
             # Get file stats for verification
             temp_stat = await aiofiles.os.stat(self.temp_path)
             if temp_stat.st_size == 0:
                 logger.warning(f"Temporary file is empty: {self.temp_path}")
-
             # Atomic move to target location
             # On Windows, need to remove target first if it exists (Windows filesystem limitation)
             if platform.system() == 'Windows' and await aiofiles.os.path.exists(self.target_path):
                 await aiofiles.os.remove(self.target_path)
-
             # Perform the atomic move (using sync operation as aiofiles doesn't have move)
             await asyncio.get_event_loop().run_in_executor(
                 None, shutil.move, str(self.temp_path), str(self.target_path)
             )
-
             self._committed = True
-
             # Set file permissions to match original if backup exists
             if self.backup_path and await aiofiles.os.path.exists(self.backup_path):
                 try:
@@ -227,9 +192,7 @@ class AsyncAtomicFileWriter:
                     os.chmod(self.target_path, backup_stat.st_mode)
                 except OSError:
                     pass  # Ignore permission errors
-
             logger.debug(f"Committed async atomic write: {self.target_path}")
-
         except Exception as e:
             # Try to rollback on commit failure
             await self.rollback()
@@ -238,21 +201,17 @@ class AsyncAtomicFileWriter:
     async def rollback(self) -> None:
         """
         Rollback the async atomic write operation.
-
         This removes the temporary file and restores backup if available.
         """
         if not self._started:
             return
-
         logger.debug(f"Rolling back async atomic write: {self.target_path}")
-
         # Close file handle
         if self.file_handle:
             try:
                 await self.file_handle.close()
             except Exception:
                 pass  # Ignore close errors during rollback
-
         # Remove temporary file
         if self.temp_path and await aiofiles.os.path.exists(self.temp_path):
             try:
@@ -260,7 +219,6 @@ class AsyncAtomicFileWriter:
                 logger.debug(f"Removed temporary file: {self.temp_path}")
             except Exception as e:
                 logger.warning(f"Could not remove temporary file {self.temp_path}: {e}")
-
         # Restore backup if needed and target was removed
         if (
             self.backup_path
@@ -276,18 +234,15 @@ class AsyncAtomicFileWriter:
                 )
             except Exception as e:
                 logger.error(f"Could not restore backup {self.backup_path}: {e}")
-
         await self._cleanup()
 
     async def _create_backup(self) -> None:
         """Create backup of existing target file."""
         if not await aiofiles.os.path.exists(self.target_path):
             return
-
         timestamp = int(time.time())
         backup_name = f"{self.target_path.name}.backup.{timestamp}"
         self.backup_path = self.target_path.parent / backup_name
-
         try:
             await asyncio.get_event_loop().run_in_executor(
                 None, shutil.copy2, str(self.target_path), str(self.backup_path)
@@ -306,13 +261,10 @@ class AsyncAtomicFileWriter:
                 logger.debug(f"Removed backup: {self.backup_path}")
             except Exception as e:
                 logger.warning(f"Could not remove backup {self.backup_path}: {e}")
-
         # Reset state
         self.temp_path = None
         self.backup_path = None
         self.file_handle = None
-
-
 @asynccontextmanager
 async def async_atomic_write(
     target_path: str | Path,
@@ -323,17 +275,14 @@ async def async_atomic_write(
 ) -> AsyncContextManager[Any]:
     """
     Async context manager for atomic file writing.
-
     Args:
         target_path: Final path where file should be written
         mode: File open mode
         encoding: Text encoding (for text modes)
         backup: Whether to create backup of existing file
         temp_dir: Directory for temporary files
-
     Yields:
         Async file handle for writing
-
     Example:
         async with async_atomic_write('data.json') as f:
             await f.write(json.dumps(data))
@@ -345,11 +294,8 @@ async def async_atomic_write(
         backup=backup,
         temp_dir=temp_dir,
     )
-
     async with writer as f:
         yield f
-
-
 async def async_safe_write_text(
     target_path: str | Path,
     content: str,
@@ -358,7 +304,6 @@ async def async_safe_write_text(
 ) -> None:
     """
     Safely write text content to a file atomically (async).
-
     Args:
         target_path: Path to write to
         content: Text content to write
@@ -367,14 +312,11 @@ async def async_safe_write_text(
     """
     async with async_atomic_write(target_path, "w", encoding=encoding, backup=backup) as f:
         await f.write(content)
-
-
 async def async_safe_write_bytes(
     target_path: str | Path, content: bytes, backup: bool = True
 ) -> None:
     """
     Safely write binary content to a file atomically (async).
-
     Args:
         target_path: Path to write to
         content: Binary content to write
@@ -382,50 +324,39 @@ async def async_safe_write_bytes(
     """
     async with async_atomic_write(target_path, "wb", encoding=None, backup=backup) as f:
         await f.write(content)
-
-
 async def async_safe_read_text(
     file_path: str | Path, encoding: str = "utf-8", max_size_mb: float = 100.0
 ) -> str:
     """
     Safely read text content from a file with size validation (async).
-
     Args:
         file_path: Path to read from
         encoding: Text encoding
         max_size_mb: Maximum file size in MB (default 100MB)
-
     Returns:
         Text content of the file
-
     Raises:
         FileOperationError: If file is too large, doesn't exist, or can't be read
     """
     file_path = Path(file_path)
-
     # Check if file exists
     if not await aiofiles.os.path.exists(file_path):
         raise FileOperationError(f"File does not exist: {file_path}")
-
     # Check file size
     try:
         file_stat = await aiofiles.os.stat(file_path)
         file_size_bytes = file_stat.st_size
         file_size_mb = file_size_bytes / (1024 * 1024)
-
         if file_size_mb > max_size_mb:
             raise FileOperationError(
                 f"File size ({file_size_mb:.1f}MB) exceeds maximum allowed "
                 f"({max_size_mb}MB): {file_path}"
             )
-
         logger.debug(f"Reading async text file {file_path} ({file_size_mb:.1f}MB)")
-
     except OSError as e:
         raise FileOperationError(
             f"Could not get file stats for {file_path}: {e}"
         ) from e
-
     # Read file content
     try:
         async with aiofiles.open(file_path, "r", encoding=encoding) as f:
@@ -436,55 +367,42 @@ async def async_safe_read_text(
         ) from e
     except IOError as e:
         raise FileOperationError(f"IOError reading file '{file_path}': {e}") from e
-
-
 async def async_safe_read_bytes(file_path: str | Path, max_size_mb: float = 100.0) -> bytes:
     """
     Safely read binary content from a file with size validation (async).
-
     Args:
         file_path: Path to read from
         max_size_mb: Maximum file size in MB (default 100MB)
-
     Returns:
         Binary content of the file
-
     Raises:
         FileOperationError: If file is too large, doesn't exist, or can't be read
     """
     file_path = Path(file_path)
-
     # Check if file exists
     if not await aiofiles.os.path.exists(file_path):
         raise FileOperationError(f"File does not exist: {file_path}")
-
     # Check file size
     try:
         file_stat = await aiofiles.os.stat(file_path)
         file_size_bytes = file_stat.st_size
         file_size_mb = file_size_bytes / (1024 * 1024)
-
         if file_size_mb > max_size_mb:
             raise FileOperationError(
                 f"File size ({file_size_mb:.1f}MB) exceeds maximum allowed "
                 f"({max_size_mb}MB): {file_path}"
             )
-
         logger.debug(f"Reading async binary file {file_path} ({file_size_mb:.1f}MB)")
-
     except OSError as e:
         raise FileOperationError(
             f"Could not get file stats for {file_path}: {e}"
         ) from e
-
     # Read file content
     try:
         async with aiofiles.open(file_path, "rb") as f:
             return await f.read()
     except IOError as e:
         raise FileOperationError(f"IOError reading file '{file_path}': {e}") from e
-
-
 async def async_safe_read_with_fallback(
     file_path: str | Path,
     preferred_encoding: str = "utf-8",
@@ -493,29 +411,24 @@ async def async_safe_read_with_fallback(
 ) -> str:
     """
     Safely read text file with encoding fallback for robustness (async).
-
     Args:
         file_path: Path to read from
         preferred_encoding: Primary encoding to try
         fallback_encodings: List of fallback encodings to try if primary fails
         max_size_mb: Maximum file size in MB
-
     Returns:
         Text content of the file
-
     Raises:
         FileOperationError: If file can't be read with any encoding
     """
     if fallback_encodings is None:
         fallback_encodings = ["latin1", "cp1252", "iso-8859-1"]
-
     # Try encoding first
     try:
         return await async_safe_read_text(file_path, preferred_encoding, max_size_mb)
     except FileOperationError as e:
         if "Encoding error" not in str(e):
             raise  # Re-raise non-encoding errors
-
     # Try fallback encodings
     for encoding in fallback_encodings:
         try:
@@ -525,7 +438,6 @@ async def async_safe_read_with_fallback(
             if "Encoding error" not in str(e):
                 raise  # Re-raise non-encoding errors
             continue  # Try next encoding
-
     # If all encodings failed, try binary read as last resort
     try:
         logger.warning(f"All text encodings failed for {file_path}, reading as binary")

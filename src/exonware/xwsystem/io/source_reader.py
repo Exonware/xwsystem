@@ -1,39 +1,33 @@
 #!/usr/bin/env python3
 """
 Source reader: load text content from a URI or local path.
-
 All logic for "read from path or URI" lives in xwsystem. Supports multiple
 schemes (file, http, https, ftp, etc.) with configurable security:
 - allowed_schemes: which protocols are allowed
 - allow_external: whether non-file (remote) sources are allowed
 - timeout_sec, max_size_mb: limits
-
 Callers (e.g. xwdata) pass SourceLoadConfig from their own config; xwsystem
 enforces it. No scheme or fetch logic in xwdata—single entry point here and
 via XWFile.
 """
 
 from __future__ import annotations
-
 import asyncio
 import urllib.parse
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
-
 from .common.atomic import FileOperationError
 from .stream.async_operations import async_safe_read_text
-
-
 # -----------------------------------------------------------------------------
 # Configuration (consumed by xwdata / xwschema; defined here for single source)
 # -----------------------------------------------------------------------------
-
 @dataclass
+
+
 class SourceLoadConfig:
     """
     Configuration for loading from a URI or path. Enforced by xwsystem.
-
     Callers (xwdata) set this from their SecurityConfig/ReferenceConfig;
     xwsystem validates scheme and size against these values.
     """
@@ -42,8 +36,8 @@ class SourceLoadConfig:
     timeout_sec: float = 30.0
     max_size_mb: float = 100.0
     encoding: str = 'utf-8'
-
     @classmethod
+
     def strict(cls) -> SourceLoadConfig:
         """Local files only, no external URIs."""
         return cls(
@@ -52,8 +46,8 @@ class SourceLoadConfig:
             timeout_sec=10.0,
             max_size_mb=10.0,
         )
-
     @classmethod
+
     def relaxed(cls) -> SourceLoadConfig:
         """Allow common external schemes."""
         return cls(
@@ -62,8 +56,6 @@ class SourceLoadConfig:
             timeout_sec=60.0,
             max_size_mb=500.0,
         )
-
-
 # -----------------------------------------------------------------------------
 # Scheme detection and validation
 # -----------------------------------------------------------------------------
@@ -71,10 +63,8 @@ class SourceLoadConfig:
 def get_scheme(uri_or_path: str) -> str:
     """
     Return the URI scheme, or 'file' for a bare path.
-
     Args:
         uri_or_path: URI (http://..., file://...) or local path
-
     Returns:
         Lowercase scheme (e.g. 'file', 'http', 'https', 'ftp') or 'file' for paths.
     """
@@ -108,12 +98,9 @@ def _validate_config(uri_or_path: str, config: SourceLoadConfig) -> None:
         raise FileOperationError(
             "External sources are disabled (allow_external=False)"
         )
-
-
 # -----------------------------------------------------------------------------
 # Async read: single entry point for xwsystem (and XWFile / xwdata)
 # -----------------------------------------------------------------------------
-
 async def read_source_text(
     uri_or_path: str,
     config: Optional[SourceLoadConfig] = None,
@@ -123,19 +110,16 @@ async def read_source_text(
 ) -> tuple[str, dict]:
     """
     Read text from a URI or local path (async). All scheme and fetch logic here.
-
     Security and behavior are driven by config (from xwdata). Supported schemes:
     - file: local path (existing async_safe_read_text)
     - http, https: aiohttp or urllib
     - ftp: urllib (ftp://)
-
     Args:
         uri_or_path: File path or URI (file://, http://, https://, ftp://)
         config: SourceLoadConfig (allowed_schemes, allow_external, limits). If None, relaxed defaults.
         timeout_sec: Override config timeout (optional)
         max_size_mb: Override config max size (optional)
         encoding: Override config encoding for file reads (optional)
-
     Returns:
         (content_str, metadata) with at least 'source' and 'content_type'.
     """
@@ -143,10 +127,8 @@ async def read_source_text(
     timeout = timeout_sec if timeout_sec is not None else cfg.timeout_sec
     max_mb = max_size_mb if max_size_mb is not None else cfg.max_size_mb
     enc = encoding or cfg.encoding
-
     _validate_config(uri_or_path, cfg)
     scheme = get_scheme(uri_or_path)
-
     if scheme == 'file':
         path = uri_or_path
         if path.startswith('file://'):
@@ -155,16 +137,11 @@ async def read_source_text(
             Path(path), encoding=enc, max_size_mb=max_mb
         )
         return content, {'source': uri_or_path, 'content_type': None}
-
     if scheme in ('http', 'https'):
         return await _read_http_text(uri_or_path, timeout, max_mb)
-
     if scheme == 'ftp':
         return await _read_ftp_text(uri_or_path, timeout, max_mb)
-
     raise FileOperationError(f"Unsupported scheme for reading: {scheme}")
-
-
 async def _read_http_text(
     url: str, timeout_sec: float, max_size_mb: float
 ) -> tuple[str, dict]:
@@ -185,12 +162,10 @@ async def _read_http_text(
                 with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
                     ct = resp.headers.get('Content-Type')
                     return resp.read(), ct if ct else None
-
             loop = asyncio.get_event_loop()
             raw, content_type = await loop.run_in_executor(None, _fetch)
     except Exception as e:
         raise FileOperationError(f"Failed to load from URL: {e}") from e
-
     size_mb = len(raw) / (1024 * 1024)
     if size_mb > max_size_mb:
         raise FileOperationError(
@@ -198,8 +173,6 @@ async def _read_http_text(
         )
     text = raw.decode('utf-8', errors='replace')
     return text, {'source': url, 'content_type': content_type}
-
-
 async def _read_ftp_text(
     url: str, timeout_sec: float, max_size_mb: float
 ) -> tuple[str, dict]:
@@ -207,13 +180,11 @@ async def _read_ftp_text(
     def _fetch() -> bytes:
         with urllib.request.urlopen(url, timeout=timeout_sec) as resp:
             return resp.read()
-
     loop = asyncio.get_event_loop()
     try:
         raw = await loop.run_in_executor(None, _fetch)
     except Exception as e:
         raise FileOperationError(f"Failed to load from FTP: {e}") from e
-
     size_mb = len(raw) / (1024 * 1024)
     if size_mb > max_size_mb:
         raise FileOperationError(

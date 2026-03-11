@@ -2,9 +2,7 @@
 #exonware/xwsystem/tests/0.core/shared/runner.py
 """
 Core Shared Test Runner
-
 Tests shared types, base classes, and contracts.
-
 Following GUIDE_TEST.md standards.
 """
 
@@ -17,7 +15,6 @@ def run_all_shared_tests() -> int:
     """Main entry point for shared core tests using pytest."""
     # Get test directory
     test_dir = Path(__file__).parent
-    
     # Run all core shared tests using pytest
     exit_code = pytest.main([
         "-v",
@@ -26,9 +23,6 @@ def run_all_shared_tests() -> int:
         str(test_dir),
         "-m", "xwsystem_core",
     ])
-    
     return exit_code
-
-
 if __name__ == "__main__":
     sys.exit(run_all_shared_tests())

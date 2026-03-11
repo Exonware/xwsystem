@@ -2,14 +2,11 @@
 """
 Inter-Process Communication (IPC) Module
 ========================================
-
 Production-grade IPC utilities for XSystem.
-
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Company: eXonware.com
 Generated: 2025-01-27
-
 This module provides:
 - Process management and communication
 - Shared memory abstractions
@@ -24,7 +21,6 @@ from .message_queue import MessageQueue, AsyncMessageQueue
 from .process_pool import ProcessPool, AsyncProcessPool
 from .pipes import Pipe, AsyncPipe
 from .async_fabric import AsyncProcessFabric
-
 __all__ = [
     "ProcessManager",
     "ProcessInfo",

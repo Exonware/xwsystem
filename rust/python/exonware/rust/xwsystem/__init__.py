@@ -1,20 +1,17 @@
 #exonware/xwsystem/rust/python/exonware/rust/xwsystem/__init__.py
 """
 eXonware Rust XWSystem Python bindings.
-
 This package provides Python bindings for the Rust implementation of XWSystem.
 """
 
 try:
     # Import the Python wrappers
     from exonware.rust.xwsystem import version
-    
     # Import caching module
     try:
         from exonware.rust.xwsystem import caching
     except ImportError:
         caching = None
-    
     __all__ = ["version", "caching"]
     if caching:
         __all__.append("caching")

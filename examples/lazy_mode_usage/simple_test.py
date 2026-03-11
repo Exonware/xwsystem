@@ -1,13 +1,11 @@
 #exonware/xwsystem/examples/lazy_mode_usage/simple_test.py
 """
 Super Simple Test: Verify xwlazy auto-installation
-
 This test:
 1. Uninstalls msgpack (if installed)
 2. Activates xwlazy directly (simulates what xwsystem does)
 3. Tries to import msgpack - xwlazy should auto-install it
 4. Verifies it works
-
 Usage:
     python simple_test.py
 """
@@ -15,7 +13,6 @@ Usage:
 import sys
 import subprocess
 import os
-
 # Fix encoding on Windows
 if sys.platform == "win32":
     try:
@@ -23,7 +20,6 @@ if sys.platform == "win32":
         sys.stderr.reconfigure(encoding="utf-8")
     except (AttributeError, ValueError):
         pass
-
 TEST_PACKAGE = "msgpack"
 
 def uninstall_package(package_name):
@@ -57,18 +53,14 @@ def activate_xwlazy():
     try:
         # Enable verbose mode to see what's happening
         os.environ["XWLAZY_VERBOSE"] = "1"
-        
         # Import and activate xwlazy - this is what xwsystem does
         from exonware.xwlazy import auto_enable_lazy, is_global_import_hook_installed
-        
         # Activate for xwsystem package (simulating what happens in __init__.py)
         result = auto_enable_lazy("xwsystem", mode="smart")
-        
         if result:
             print(f"   OK: xwlazy activated successfully")
         else:
             print(f"   WARNING: xwlazy activation returned None")
-        
         # Check if hook is installed
         if is_global_import_hook_installed():
             print(f"   OK: xwlazy global import hook is installed")
@@ -76,7 +68,6 @@ def activate_xwlazy():
         else:
             print(f"   ERROR: xwlazy hook is NOT installed")
             return False
-            
     except ImportError as e:
         print(f"   ERROR: xwlazy is not installed: {e}")
         print(f"   INFO: Install with: pip install exonware-xwsystem[lazy]")
@@ -93,19 +84,16 @@ def test_auto_install(package_name):
     print(f"   INFO: Trying to import {package_name}...")
     print(f"   INFO: xwlazy should auto-install it if missing")
     print()
-    
     try:
         # Clear any cached import first
         if package_name in sys.modules:
             del sys.modules[package_name]
-        
         # Try to import - xwlazy should install it automatically
         print(f"   Importing {package_name}...")
         module = __import__(package_name)
         print(f"   OK: {package_name} imported successfully!")
         print(f"   INFO: Location: {getattr(module, '__file__', 'built-in')}")
         print(f"   INFO: Version: {getattr(module, '__version__', 'unknown')}")
-        
         # Verify it's actually installed via pip
         print(f"   Verifying installation via pip...")
         result = subprocess.run(
@@ -142,22 +130,17 @@ def main():
     print("=" * 70)
     print(f"Testing package: {TEST_PACKAGE}")
     print("=" * 70)
-    
     # Step 1: Uninstall the test package
     uninstall_package(TEST_PACKAGE)
-    
     # Step 2: Verify it's uninstalled
     if not verify_uninstalled(TEST_PACKAGE):
         print("\nWARNING: Package is still installed, continuing anyway...")
-    
     # Step 3: Activate xwlazy (simulating what xwsystem.__init__.py does)
     if not activate_xwlazy():
         print("\nERROR: Failed to activate xwlazy")
         return False
-    
     # Step 4: Test auto-installation
     success = test_auto_install(TEST_PACKAGE)
-    
     print("\n" + "=" * 70)
     if success:
         print("SUCCESS: Auto-installation test completed!")
@@ -177,9 +160,7 @@ def main():
         print("  - Package might not be in xwlazy's mapping")
         print("  - Check verbose output above for installation details")
         print("  - Look for '[INSTALL]' or '[OK]' messages in the output")
-    
     return success
-
 if __name__ == "__main__":
     success = main()
     sys.exit(0 if success else 1)

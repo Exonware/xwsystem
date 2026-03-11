@@ -1,0 +1,140 @@
+{
+  "timestamp": "20260209_213650",
+  "campaign": "20260209-benchmark xwsystem caching vs others",
+  "capacity": 2000,
+  "prefill_keys": 1000,
+  "num_ops": 10000,
+  "mixed_get_ratio": 0.8,
+  "results": [
+    {
+      "name": "FunctoolsLRUCache (default)",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1885049.67,
+      "put_ops_per_sec": 1568799.71,
+      "mixed_ops_per_sec": 1931210.3
+    },
+    {
+      "name": "CacheboxCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 2802847.75,
+      "put_ops_per_sec": 1177398.65,
+      "mixed_ops_per_sec": 2049180.37
+    },
+    {
+      "name": "CachetoolsLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1549402.7,
+      "put_ops_per_sec": 774251.49,
+      "mixed_ops_per_sec": 1085010.58
+    },
+    {
+      "name": "CachetoolsLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1090203.43,
+      "put_ops_per_sec": 768669.05,
+      "mixed_ops_per_sec": 852347.8
+    },
+    {
+      "name": "CachetoolsTTLCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 628622.43,
+      "put_ops_per_sec": 353639.3,
+      "mixed_ops_per_sec": 451648.75
+    },
+    {
+      "name": "CachetoolsRRCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1874730.51,
+      "put_ops_per_sec": 1079400.72,
+      "mixed_ops_per_sec": 1682736.81
+    },
+    {
+      "name": "LRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 998073.71,
+      "put_ops_per_sec": 1072995.92,
+      "mixed_ops_per_sec": 833861.45
+    },
+    {
+      "name": "LFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1341975.65,
+      "put_ops_per_sec": 1741007.67,
+      "mixed_ops_per_sec": 1499407.75
+    },
+    {
+      "name": "OptimizedLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 741322.82,
+      "put_ops_per_sec": 900487.16,
+      "mixed_ops_per_sec": 749776.95
+    },
+    {
+      "name": "TTLCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1035486.1,
+      "put_ops_per_sec": 161116.73,
+      "mixed_ops_per_sec": 71258.31
+    },
+    {
+      "name": "MemoryBoundedLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 768161.25,
+      "put_ops_per_sec": 266118.82,
+      "mixed_ops_per_sec": 723081.48
+    },
+    {
+      "name": "MemoryBoundedLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 851136.27,
+      "put_ops_per_sec": 564831.34,
+      "mixed_ops_per_sec": 516558.27
+    },
+    {
+      "name": "FluentLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 845165.65,
+      "put_ops_per_sec": 938570.56,
+      "mixed_ops_per_sec": 821996.63
+    },
+    {
+      "name": "ObservableLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 601091.58,
+      "put_ops_per_sec": 590151.55,
+      "mixed_ops_per_sec": 524317.86
+    },
+    {
+      "name": "TwoTierCache",
+      "group": "xwsystem",
+      "error": "'TwoTierCache' object has no attribute 'put'"
+    },
+    {
+      "name": "diskcache",
+      "group": "external",
+      "get_ops_per_sec": 112733.6,
+      "put_ops_per_sec": 3115.85,
+      "mixed_ops_per_sec": 14710.18
+    },
+    {
+      "name": "cacheout.LRUCache",
+      "group": "external",
+      "get_ops_per_sec": 804421.1,
+      "put_ops_per_sec": 913984.88,
+      "mixed_ops_per_sec": 753539.75
+    },
+    {
+      "name": "pylru",
+      "group": "external",
+      "get_ops_per_sec": 2709439.74,
+      "put_ops_per_sec": 2401479.35,
+      "mixed_ops_per_sec": 2357767.7
+    },
+    {
+      "name": "Rust (Moka/QuickCache/DashMap)",
+      "group": "rust",
+      "error": "rust bindings not built (maturin develop --features external-caches,python)"
+    }
+  ],
+  "legacy_baseline_path": "D:\\OneDrive\\DEV\\exonware\\xwsystem\\benchmarks\\20260209-benchmark xwsystem caching vs others\\data\\baseline\\_legacy\\baseline_v0.0.1.387.json"
+}

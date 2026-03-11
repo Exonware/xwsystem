@@ -1,25 +1,21 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/file/file.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 XWFile - Concrete implementation of file operations.
-
 Handles reading from local paths and URIs (file, http, https, ftp, etc.)
 when source_config is provided. Security and allowed schemes are configured
 via SourceLoadConfig (from xwdata); xwsystem enforces it.
 """
 
 from __future__ import annotations
-
 import asyncio
 import os
 from pathlib import Path
 from typing import Any, Optional, BinaryIO, TextIO
-
 from ..base import AFile
 from ..contracts import FileMode, OperationResult, IFile
 from ..common.atomic import AtomicFileWriter
@@ -28,9 +24,7 @@ from ...config.logging_setup import get_logger
 from ...security.path_validator import PathValidator
 from ...validation.data_validator import DataValidator
 from ...monitoring.performance_monitor import performance_monitor
-
 logger = get_logger(__name__)
-
 # Import format conversion utilities
 from .conversion import FormatConverter
 
@@ -38,18 +32,16 @@ from .conversion import FormatConverter
 class XWFile(AFile):
     """
     Concrete implementation of file operations with both static and instance methods.
-    
     Handles local paths and URIs (http, https, ftp, etc.) when source_config is set.
     All read-from-URI logic and security checks live in xwsystem (source_reader);
     config is supplied by callers (e.g. xwdata).
-    
     Features:
     - File I/O operations (read, write, save, load)
     - URI loading (file, http, https, ftp) with SourceLoadConfig
     - File metadata operations (size, permissions, timestamps)
     - xwsystem integration (security, validation, monitoring)
     """
-    
+
     def __init__(
         self,
         file_path: str | Path,
@@ -58,19 +50,16 @@ class XWFile(AFile):
     ):
         """
         Initialize XWFile with xwsystem integration.
-        
         Args:
             file_path: Path to file or URI (http://..., ftp://..., etc.)
             source_config: If set, load() can read from URIs; security from this config.
             **config: Configuration options for file operations
         """
         super().__init__(file_path)
-        
         # Initialize xwsystem utilities
         self._path_validator = PathValidator()
         self._data_validator = DataValidator()
         self._source_config = source_config
-        
         # Configuration
         self.validate_paths = config.get('validate_paths', True)
         self.validate_data = config.get('validate_data', True)
@@ -78,60 +67,49 @@ class XWFile(AFile):
         self.use_atomic_operations = config.get('use_atomic_operations', True)
         self.auto_create_dirs = config.get('auto_create_dirs', True)
         self.auto_backup = config.get('auto_backup', True)
-        
         logger.debug(f"XWFile initialized for path: {file_path}")
-    
     # ============================================================================
     # INSTANCE METHODS
     # ============================================================================
-    
+
     def open(self, mode: FileMode = FileMode.READ) -> None:
         """Open file with validation and monitoring."""
         if self.validate_paths:
             for_writing = mode in [FileMode.WRITE, FileMode.APPEND, FileMode.WRITE_READ, FileMode.BINARY_WRITE, FileMode.BINARY_APPEND, FileMode.BINARY_WRITE_READ]
             self._path_validator.validate_path(self.file_path, for_writing=for_writing, create_dirs=self.auto_create_dirs)
-        
         with performance_monitor("file_open"):
             # Ensure parent directory exists
             if self.auto_create_dirs and mode in [FileMode.WRITE, FileMode.APPEND, FileMode.WRITE_READ]:
                 self.file_path.parent.mkdir(parents=True, exist_ok=True)
-            
             # Open file
             self._handle = open(self.file_path, mode.value)
             logger.debug(f"File opened: {self.file_path} in mode {mode.value}")
-    
+
     def read(self, size: Optional[int] = None) -> str | bytes:
         """Read from file with validation."""
         if not self._handle:
             raise ValueError("File not open")
-        
         with performance_monitor("file_read"):
             data = self._handle.read(size)
-            
             if self.validate_data and isinstance(data, (str, bytes)):
                 self._data_validator.validate_data(data)
-            
             return data
-    
+
     def write(self, data: str | bytes) -> int:
         """Write to file with validation."""
         if not self._handle:
             raise ValueError("File not open")
-        
         if self.validate_data:
             self._data_validator.validate_data(data)
-        
         with performance_monitor("file_write"):
             return self._handle.write(data)
-    
+
     def save(self, data: Any, **kwargs) -> bool:
         """Save data to file with atomic operations."""
         if self.validate_paths:
             self._path_validator.validate_path(self.file_path, for_writing=True, create_dirs=True)
-        
         if self.validate_data:
             self._data_validator.validate_data(data)
-        
         with performance_monitor("file_save"):
             try:
                 if self.use_atomic_operations:
@@ -147,17 +125,15 @@ class XWFile(AFile):
                     self.file_path.parent.mkdir(parents=True, exist_ok=True)
                     with open(self.file_path, 'wb' if isinstance(data, bytes) else 'w') as f:
                         f.write(data)
-                
                 return True
             except Exception as e:
                 logger.error(f"Save failed for {self.file_path}: {e}")
                 return False
-    
+
     def load(self, **kwargs) -> Any:
         """Load data from file or URI. For URIs uses source_reader (config-driven)."""
         uri_or_path = str(self.file_path)
         scheme = get_scheme(uri_or_path)
-        
         # URI (http, https, ftp): use source_reader with config (sync wrapper)
         if scheme != 'file' and self._source_config is not None:
             with performance_monitor("file_load"):
@@ -173,14 +149,11 @@ class XWFile(AFile):
                 finally:
                     loop.close()
                     asyncio.set_event_loop(None)
-        
         # Local file path
         if not self.file_path.exists():
             raise FileNotFoundError(f"File not found: {self.file_path}")
-        
         if self.validate_paths:
             self._path_validator.validate_path(self.file_path)
-        
         with performance_monitor("file_load"):
             try:
                 try:
@@ -189,25 +162,20 @@ class XWFile(AFile):
                 except UnicodeDecodeError:
                     with open(self.file_path, 'rb') as f:
                         data = f.read()
-                
                 if self.validate_data:
                     self._data_validator.validate_data(data)
-                
                 return data
             except Exception as e:
                 logger.error(f"Load failed for {self.file_path}: {e}")
                 raise
-    
+
     def save_as(self, path: str | Path, data: Any, **kwargs) -> bool:
         """Save data to specific path."""
         target_path = Path(path)
-        
         if self.validate_paths:
             self._path_validator.validate_path(target_path)
-        
         if self.validate_data:
             self._data_validator.validate_data(data)
-        
         with performance_monitor("file_save_as"):
             try:
                 if self.use_atomic_operations:
@@ -222,37 +190,35 @@ class XWFile(AFile):
                     target_path.parent.mkdir(parents=True, exist_ok=True)
                     with open(target_path, 'wb' if isinstance(data, bytes) else 'w') as f:
                         f.write(data)
-                
                 return True
             except Exception as e:
                 logger.error(f"Save as failed for {target_path}: {e}")
                 return False
-    
+
     def to_file(self, path: str | Path, **kwargs) -> bool:
         """Write current object to file."""
         # This would depend on the specific object being saved
         # For now, we'll use the file path as the data
         return self.save_as(path, str(self.file_path), **kwargs)
-    
+
     def from_file(self, path: str | Path, **kwargs) -> File:
         """Load object from file."""
         # Create new XWFile instance for the given path
         new_file = XWFile(path, **kwargs)
         new_file.load(**kwargs)
         return new_file
-    
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
-    
+
     def exists(self) -> bool:
         """Check if file exists (instance method)."""
         return AFile.exists(self.file_path)
-    
+
     def get_size(self) -> int:
         """Get file size (instance method)."""
         return AFile.size(self.file_path)
-    
+
     def get_info(self) -> dict[str, Any]:
         """Get comprehensive file information."""
         return {
@@ -272,20 +238,19 @@ class XWFile(AFile):
             'auto_create_dirs': self.auto_create_dirs,
             'auto_backup': self.auto_backup
         }
-    
+
     def __enter__(self):
         """Enter context manager."""
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit context manager."""
         self.close()
-    
     # ============================================================================
     # FORMAT CONVERSION METHODS
     # ============================================================================
-    
     @staticmethod
+
     def convert(
         source_path: str | Path,
         target_path: str | Path,
@@ -295,19 +260,16 @@ class XWFile(AFile):
     ) -> None:
         """
         Convert file from one format to another (static version).
-        
         Works for compatible formats in the same category:
         - ARCHIVE: zip ↔ 7z ↔ tar ↔ zst ✓
         - SERIALIZATION: json ↔ yaml ↔ xml ↔ toml ✓
         - ARCHIVE ↔ SERIALIZATION: ✗ (incompatible categories)
-        
         Args:
             source_path: Source file path
             target_path: Target file path
             source_format: Source format ID (auto-detected from extension if None)
             target_format: Target format ID (auto-detected from extension if None)
             **options: Format-specific conversion options
-        
         Examples:
             >>> # Archive conversion (both ARCHIVE category)
             >>> XWFile.convert("backup.zip", "backup.tar")
@@ -328,7 +290,7 @@ class XWFile(AFile):
             target_format,
             **options
         )
-    
+
     def save_as(
         self,
         target_path: str | Path,
@@ -337,14 +299,11 @@ class XWFile(AFile):
     ) -> None:
         """
         Save file in a different format (instance method).
-        
         Uses convert() internally: reads current file, converts format, saves to new path.
-        
         Args:
             target_path: Target file path
             target_format: Target format ID (auto-detected from extension if None)
             **options: Format-specific conversion options
-        
         Examples:
             >>> file = XWFile("backup.zip")
             >>> 

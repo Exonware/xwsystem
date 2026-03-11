@@ -1,0 +1,9 @@
+# Optional JSON libs for benchmark (install to compare against JsonSerializer)
+# pip install -r requirements-optional.txt
+orjson
+msgspec
+ujson
+python-rapidjson
+pysimdjson
+simplejson
+hyperlight-hyperjson

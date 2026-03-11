@@ -1,0 +1,181 @@
+{
+  "timestamp": "20260209_213731",
+  "campaign": "20260209-benchmark xwsystem json vs others",
+  "rounds": 5,
+  "iterations_per_round": 500,
+  "warmup": 50,
+  "results": [
+    {
+      "name": "JsonSerializer (small)",
+      "cold_decode_ops_per_sec": 1161170.41,
+      "warm_decode_ops_per_sec": 1287664.02,
+      "cold_encode_ops_per_sec": 1002405.86,
+      "warm_encode_ops_per_sec": 1019367.97
+    },
+    {
+      "name": "JsonSerializer (medium)",
+      "cold_decode_ops_per_sec": 30569.07,
+      "warm_decode_ops_per_sec": 27976.72,
+      "cold_encode_ops_per_sec": 77371.83,
+      "warm_encode_ops_per_sec": 76794.3
+    },
+    {
+      "name": "JsonSerializer (large)",
+      "cold_decode_ops_per_sec": 1024.03,
+      "warm_decode_ops_per_sec": 943.23,
+      "cold_encode_ops_per_sec": 5538.01,
+      "warm_encode_ops_per_sec": 5931.75
+    },
+    {
+      "name": "orjson (small)",
+      "cold_decode_ops_per_sec": 1886792.18,
+      "warm_decode_ops_per_sec": 2129471.51,
+      "cold_encode_ops_per_sec": 2895195.35,
+      "warm_encode_ops_per_sec": 2450979.91
+    },
+    {
+      "name": "orjson (medium)",
+      "cold_decode_ops_per_sec": 31927.26,
+      "warm_decode_ops_per_sec": 32933.74,
+      "cold_encode_ops_per_sec": 84702.69,
+      "warm_encode_ops_per_sec": 82147.67
+    },
+    {
+      "name": "orjson (large)",
+      "cold_decode_ops_per_sec": 1143.52,
+      "warm_decode_ops_per_sec": 1081.51,
+      "cold_encode_ops_per_sec": 6205.68,
+      "warm_encode_ops_per_sec": 6188.52
+    },
+    {
+      "name": "ujson (small)",
+      "cold_decode_ops_per_sec": 1141552.62,
+      "warm_decode_ops_per_sec": 1191327.32,
+      "cold_encode_ops_per_sec": 1222195.15,
+      "warm_encode_ops_per_sec": 1180080.34
+    },
+    {
+      "name": "ujson (medium)",
+      "cold_decode_ops_per_sec": 13548.26,
+      "warm_decode_ops_per_sec": 17340.88,
+      "cold_encode_ops_per_sec": 15456.05,
+      "warm_encode_ops_per_sec": 13925.64
+    },
+    {
+      "name": "ujson (large)",
+      "cold_decode_ops_per_sec": 990.81,
+      "warm_decode_ops_per_sec": 971.29,
+      "cold_encode_ops_per_sec": 918.98,
+      "warm_encode_ops_per_sec": 948.9
+    },
+    {
+      "name": "stdlib json (small)",
+      "cold_decode_ops_per_sec": 341950.47,
+      "warm_decode_ops_per_sec": 550297.13,
+      "cold_encode_ops_per_sec": 433500.98,
+      "warm_encode_ops_per_sec": 441774.16
+    },
+    {
+      "name": "stdlib json (medium)",
+      "cold_decode_ops_per_sec": 13253.78,
+      "warm_decode_ops_per_sec": 10188.9,
+      "cold_encode_ops_per_sec": 11328.44,
+      "warm_encode_ops_per_sec": 11726.9
+    },
+    {
+      "name": "stdlib json (large)",
+      "cold_decode_ops_per_sec": 515.22,
+      "warm_decode_ops_per_sec": 526.04,
+      "cold_encode_ops_per_sec": 610.54,
+      "warm_encode_ops_per_sec": 630.74
+    },
+    {
+      "name": "rapidjson (small)",
+      "cold_decode_ops_per_sec": 785422.61,
+      "warm_decode_ops_per_sec": 809323.34,
+      "cold_encode_ops_per_sec": 1137138.73,
+      "warm_encode_ops_per_sec": 1148105.78
+    },
+    {
+      "name": "rapidjson (medium)",
+      "cold_decode_ops_per_sec": 10608.21,
+      "warm_decode_ops_per_sec": 8824.3,
+      "cold_encode_ops_per_sec": 19724.33,
+      "warm_encode_ops_per_sec": 18906.81
+    },
+    {
+      "name": "rapidjson (large)",
+      "cold_decode_ops_per_sec": 329.08,
+      "warm_decode_ops_per_sec": 345.32,
+      "cold_encode_ops_per_sec": 777.79,
+      "warm_encode_ops_per_sec": 748.94
+    },
+    {
+      "name": "msgspec (small)",
+      "cold_decode_ops_per_sec": 1224889.86,
+      "warm_decode_ops_per_sec": 1275509.96,
+      "cold_encode_ops_per_sec": 1598465.2,
+      "warm_encode_ops_per_sec": 1711742.48
+    },
+    {
+      "name": "msgspec (medium)",
+      "cold_decode_ops_per_sec": 23422.82,
+      "warm_decode_ops_per_sec": 26055.51,
+      "cold_encode_ops_per_sec": 64733.3,
+      "warm_encode_ops_per_sec": 66557.51
+    },
+    {
+      "name": "msgspec (large)",
+      "cold_decode_ops_per_sec": 1029.19,
+      "warm_decode_ops_per_sec": 1042.84,
+      "cold_encode_ops_per_sec": 5774.67,
+      "warm_encode_ops_per_sec": 5357.87
+    },
+    {
+      "name": "simplejson (small)",
+      "cold_decode_ops_per_sec": 350091.01,
+      "warm_decode_ops_per_sec": 327225.13,
+      "cold_encode_ops_per_sec": 184706.32,
+      "warm_encode_ops_per_sec": 194159.68
+    },
+    {
+      "name": "simplejson (medium)",
+      "cold_decode_ops_per_sec": 9111.57,
+      "warm_decode_ops_per_sec": 9225.74,
+      "cold_encode_ops_per_sec": 4050.37,
+      "warm_encode_ops_per_sec": 4191.68
+    },
+    {
+      "name": "simplejson (large)",
+      "cold_decode_ops_per_sec": 350.89,
+      "warm_decode_ops_per_sec": 355.39,
+      "cold_encode_ops_per_sec": 291.29,
+      "warm_encode_ops_per_sec": 298.4
+    },
+    {
+      "name": "pysimdjson (small)",
+      "cold_decode_ops_per_sec": 1234263.32,
+      "warm_decode_ops_per_sec": 1395478.91,
+      "cold_encode_ops_per_sec": 424592.39,
+      "warm_encode_ops_per_sec": 424484.25
+    },
+    {
+      "name": "pysimdjson (medium)",
+      "cold_decode_ops_per_sec": 17196.08,
+      "warm_decode_ops_per_sec": 17201.34,
+      "cold_encode_ops_per_sec": 12800.75,
+      "warm_encode_ops_per_sec": 13673.46
+    },
+    {
+      "name": "pysimdjson (large)",
+      "cold_decode_ops_per_sec": 837.15,
+      "warm_decode_ops_per_sec": 972.8,
+      "cold_encode_ops_per_sec": 632.83,
+      "warm_encode_ops_per_sec": 738.84
+    },
+    {
+      "name": "hyperjson",
+      "error": "not installed"
+    }
+  ]
+}

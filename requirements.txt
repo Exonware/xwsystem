@@ -1,8 +1,8 @@
 # xSystem Requirements - 17 Core Lightweight Formats
 # Company: eXonware.com
-# Author: Eng. Muhammad AlShehri
+# Author: eXonware Backend Team
 # Email: connect@exonware.com
-# Version: 0.1.0.5
+# Version: 0.1.0.6
 # Generation Date: 02-Nov-2025
 #
 # This file contains dependencies for xSystem's 17 core lightweight serialization formats (~10 MB)
@@ -14,6 +14,12 @@
 #
 # For enterprise formats:
 #   pip install exonware-xwformats  # Adds 16 formats: Schema, Scientific, Database (enterprise)
+
+# =============================================================================
+# CORE DEPENDENCIES
+# =============================================================================
+# Source size (src/*): ~2.63 MB
+pip                     # Package installer (CI and lazy install)
 
 # =============================================================================
 # CORE TEXT FORMAT DEPENDENCIES (Full-Featured: JSON, YAML, TOML, XML)
@@ -103,7 +109,7 @@ mypy>=0.950                      # Static type checking
 # DEPENDENCY SIZE SUMMARY
 # =============================================================================
 #
-# Core Dependencies: ~10 MB (90% reduction!)
+# Core Dependencies (direct deps only): ~10 MB (90% reduction!)
 # ├─ JSON full features: ~2 MB (orjson, ijson, jsonschema, etc.)
 # ├─ YAML full features: ~3 MB (PyYAML, ruamel.yaml, pyyaml-include)
 # ├─ TOML full features: ~500 KB (tomli, tomli-w, rtoml)
@@ -112,13 +118,17 @@ mypy>=0.950                      # Static type checking
 # ├─ Binary formats: ~500 KB (msgpack, cbor2)
 # └─ Security & Infrastructure: ~1 MB (cryptography, bcrypt, httpx, etc.)
 #
-# Moved to exonware-xwformats: ~87 MB
+# Enterprise Formats (exonware-xwformats): ~87 MB
 # ├─ Schema formats: ~45 MB (protobuf, avro, parquet, thrift, orc, capnproto, flatbuffers)
 # ├─ Scientific formats: ~35 MB (numpy, pandas, pyarrow, h5py, scipy, netCDF4, zarr)
 # ├─ Database formats: ~6 MB (lmdb, neo4j, pydgraph, plyvel)
 # └─ Binary formats: ~100 KB (py-ubjson)
 #
-# Total savings: 90% smaller, 20-30x faster startup!
+# Lazy vs Full Modes (approximate, direct deps only):
+# ├─ [lazy]: ~10 MB base footprint (core JSON/YAML/TOML/XML/BSON + xwlazy engine; heavy formats installed on-demand)
+# └─ [full]: ~97 MB total (core ~10 MB + enterprise formats ~87 MB)
+#
+# Total savings vs full monolith: 90% smaller, 20–30x faster startup!
 #
 # =============================================================================
 # ENTERPRISE FORMATS (Install exonware-xwformats)
@@ -149,3 +159,20 @@ mypy>=0.950                      # Static type checking
 # - Confluent Schema Registry (requests)
 #
 # =============================================================================
+pyzpaq
+cachebox
+cachetools
+pylru
+msgspec
+hyperlight_hyperjson
+brotli
+zstandard
+rich
+attrs
+py7zr
+rarfile
+lz4
+pytz
+diskcache
+django
+cacheout

@@ -7,20 +7,17 @@ import logging
 import weakref
 from collections import defaultdict
 from typing import Any, Optional
-
 logger = logging.getLogger(__name__)
 
 
 class CircularReferenceError(Exception):
     """Raised when circular references are detected."""
-
     pass
 
 
 class CircularReferenceDetector:
     """
     Utility for detecting and managing circular references in data structures.
-
     This helps prevent infinite loops and memory leaks when traversing
     complex data structures that may contain circular references.
     """
@@ -28,7 +25,6 @@ class CircularReferenceDetector:
     def __init__(self, max_depth: int = 100):
         """
         Initialize circular reference detector.
-
         Args:
             max_depth: Maximum traversal depth before considering it circular
         """
@@ -42,11 +38,9 @@ class CircularReferenceDetector:
     def is_circular(self, obj: Any, path: Optional[list[str]] = None) -> bool:
         """
         Check if an object contains circular references.
-
         Args:
             obj: Object to check
             path: Current path for debugging (optional)
-
         Returns:
             True if circular references are detected
         """
@@ -57,14 +51,12 @@ class CircularReferenceDetector:
             return True
         finally:
             self.reset()
-    
+
     def has_circular_references(self, obj: Any) -> bool:
         """
         Check if an object has circular references (alias for is_circular).
-
         Args:
             obj: Object to check
-
         Returns:
             True if circular references are detected
         """
@@ -73,34 +65,28 @@ class CircularReferenceDetector:
     def traverse(self, obj: Any, path: list[str]) -> None:
         """
         Traverse an object checking for circular references.
-
         Args:
             obj: Object to traverse
             path: Current path in the object hierarchy
-
         Raises:
             CircularReferenceError: If circular reference is detected
         """
         # Skip basic types that can't contain references
         if obj is None or isinstance(obj, (str, int, float, bool, bytes)):
             return
-
         obj_id = id(obj)
         current_path = ".".join(path) if path else "root"
-
         # Check depth limit
         if self._current_depth > self.max_depth:
             raise CircularReferenceError(
                 f"Maximum traversal depth ({self.max_depth}) exceeded at path: {current_path}"
             )
-
         # Check if we're currently visiting this object (immediate circular reference)
         if obj_id in self._visiting:
             raise CircularReferenceError(
                 f"Circular reference detected at path: {current_path} "
                 f"(object {obj_id} already being visited)"
             )
-
         # Check if we've seen this object before at a different depth
         if obj_id in self._depth_map:
             previous_depth = self._depth_map[obj_id]
@@ -110,14 +96,11 @@ class CircularReferenceDetector:
                     f"at path {current_path} (previously at depth {previous_depth}, "
                     f"now at depth {self._current_depth})"
                 )
-
         # Mark as currently being visited
         self._visiting.add(obj_id)
         self._depth_map[obj_id] = self._current_depth
-
         try:
             self._current_depth += 1
-
             # Traverse based on object type
             if isinstance(obj, dict):
                 self._traverse_dict(obj, path)
@@ -125,10 +108,8 @@ class CircularReferenceDetector:
                 self._traverse_sequence(obj, path)
             elif hasattr(obj, "__dict__"):
                 self._traverse_object(obj, path)
-
             # Mark as completely visited
             self._visited.add(obj_id)
-
         finally:
             # Remove from currently visiting set
             self._visiting.discard(obj_id)
@@ -140,7 +121,6 @@ class CircularReferenceDetector:
             # Convert key to string for path tracking
             key_str = str(key) if not isinstance(key, str) else key
             new_path = path + [key_str]
-
             # Track reference relationship
             if hasattr(value, "__hash__"):
                 try:
@@ -149,14 +129,12 @@ class CircularReferenceDetector:
                     self._reference_graph[obj_id].add(value_id)
                 except (TypeError, AttributeError):
                     pass
-
             self.traverse(value, new_path)
 
     def _traverse_sequence(self, obj: list | tuple | set, path: list[str]) -> None:
         """Traverse sequence objects (list, tuple, set)."""
         for i, item in enumerate(obj):
             new_path = path + [f"[{i}]"]
-
             # Track reference relationship
             if hasattr(item, "__hash__"):
                 try:
@@ -165,7 +143,6 @@ class CircularReferenceDetector:
                     self._reference_graph[obj_id].add(item_id)
                 except (TypeError, AttributeError):
                     pass
-
             self.traverse(item, new_path)
 
     def _traverse_object(self, obj: Any, path: list[str]) -> None:
@@ -173,16 +150,13 @@ class CircularReferenceDetector:
         # Skip certain types that are known to be safe
         if isinstance(obj, (type, weakref.ref, weakref.ProxyType)):
             return
-
         try:
             obj_dict = obj.__dict__
             for attr_name, attr_value in obj_dict.items():
                 # Skip private attributes and known safe attributes
                 if attr_name.startswith("_"):
                     continue
-
                 new_path = path + [attr_name]
-
                 # Track reference relationship
                 if hasattr(attr_value, "__hash__"):
                     try:
@@ -191,9 +165,7 @@ class CircularReferenceDetector:
                         self._reference_graph[obj_id].add(attr_id)
                     except (TypeError, AttributeError):
                         pass
-
                 self.traverse(attr_value, new_path)
-
         except (AttributeError, TypeError):
             # Object doesn't have __dict__ or it's not accessible
             pass
@@ -209,7 +181,6 @@ class CircularReferenceDetector:
     def get_reference_graph(self) -> dict[int, set[int]]:
         """
         Get the reference graph discovered during traversal.
-
         Returns:
             Dictionary mapping object IDs to sets of referenced object IDs
         """
@@ -218,15 +189,12 @@ class CircularReferenceDetector:
     def find_circular_paths(self, obj: Any) -> list[list[str]]:
         """
         Find all circular reference paths in an object.
-
         Args:
             obj: Object to analyze
-
         Returns:
             List of paths that form circular references
         """
         circular_paths = []
-
         def traverse_with_path_tracking(
             current_obj: Any,
             current_path: list[str],
@@ -236,18 +204,14 @@ class CircularReferenceDetector:
                 current_obj, (str, int, float, bool, bytes)
             ):
                 return
-
             obj_id = id(current_obj)
-
             if obj_id in path_objects:
                 # Found circular reference
                 circular_path = path_objects[obj_id] + current_path
                 circular_paths.append(circular_path)
                 return
-
             # Add current object to path
             path_objects[obj_id] = current_path.copy()
-
             try:
                 if isinstance(current_obj, dict):
                     for key, value in current_obj.items():
@@ -271,18 +235,15 @@ class CircularReferenceDetector:
                             )
             except (AttributeError, TypeError, RuntimeError):
                 pass
-
         try:
             traverse_with_path_tracking(obj, [], {})
         except RecursionError:
             logger.warning("RecursionError during circular path analysis")
-
         return circular_paths
 
     def get_stats(self) -> dict:
         """
         Get statistics about the last traversal.
-
         Returns:
             Dictionary with traversal statistics
         """
@@ -301,17 +262,14 @@ class CircularReferenceDetector:
 def has_circular_references(obj: Any, max_depth: int = 100) -> bool:
     """
     Quick function to check if an object has circular references.
-
     Args:
         obj: Object to check
         max_depth: Maximum depth to traverse
-
     Returns:
         True if circular references are found
     """
     detector = CircularReferenceDetector(max_depth=max_depth)
     return detector.is_circular(obj)
-    
     def check(self, obj: Any) -> bool:
         """Check for circular references (alias for is_circular)."""
         return self.is_circular(obj)
@@ -320,17 +278,14 @@ def has_circular_references(obj: Any, max_depth: int = 100) -> bool:
 def safe_traverse(obj: Any, visitor_func: callable, max_depth: int = 100) -> Any:
     """
     Safely traverse an object while avoiding circular references.
-
     Args:
         obj: Object to traverse
         visitor_func: Function to call for each visited object
         max_depth: Maximum depth to traverse
-
     Returns:
         Result of traversal or None if circular references detected
     """
     detector = CircularReferenceDetector(max_depth=max_depth)
-
     def safe_visit(current_obj: Any, path: list[str]) -> Any:
         try:
             detector.traverse(current_obj, path)
@@ -340,5 +295,4 @@ def safe_traverse(obj: Any, visitor_func: callable, max_depth: int = 100) -> Any
                 f"Circular reference detected, skipping object at path: {'.'.join(path)}"
             )
             return None
-
     return safe_visit(obj, [])

@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/error_recovery.py
 """
 Error Recovery and Resilience Mechanisms for XWSystem Library.
-
 This module provides comprehensive error recovery, circuit breaker patterns,
 retry mechanisms, and graceful degradation for production deployment.
 """
@@ -12,28 +11,23 @@ import threading
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
-
 from .defs import CircuitState
-
 from ..config.logging_setup import get_logger
-
 logger = get_logger("xwsystem.error_recovery")
-
-
 @dataclass
+
+
 class CircuitBreakerConfig:
     """Configuration for circuit breaker behavior."""
-
     failure_threshold: int = 5
     recovery_timeout: float = 60.0  # seconds
     expected_exception: type[Exception] = Exception
     monitor_interval: float = 10.0  # seconds
-
-
 @dataclass
+
+
 class ErrorContext:
     """Context information for error tracking."""
-
     error_type: str
     error_message: str
     operation_name: str
@@ -46,7 +40,6 @@ class ErrorContext:
 class CircuitBreaker:
     """
     Circuit breaker pattern implementation.
-
     Prevents cascading failures by temporarily stopping requests
     when a service is failing repeatedly.
     """
@@ -59,30 +52,24 @@ class CircuitBreaker:
         self.failure_count = 0
         self.last_failure_time = 0.0
         self.last_success_time = time.time()
-
         # Thread safety
         self._lock = threading.RLock()
-
         logger.info(f"🔌 Circuit breaker '{name}' initialized")
 
     def call(self, func: Callable, *args, **kwargs) -> Any:
         """
         Execute function with circuit breaker protection.
-
         Args:
             func: Function to execute
             *args: Function arguments
             **kwargs: Function keyword arguments
-
         Returns:
             Function result
-
         Raises:
             Exception: If circuit is open or function fails
         """
         if not self._can_execute():
             raise Exception(f"Circuit breaker '{self.name}' is OPEN")
-
         try:
             result = func(*args, **kwargs)
             self._on_success()
@@ -96,7 +83,6 @@ class CircuitBreaker:
         with self._lock:
             if self.state == CircuitState.CLOSED:
                 return True
-
             if self.state == CircuitState.OPEN:
                 # Check if recovery timeout has passed
                 if time.time() - self.last_failure_time >= self.config.recovery_timeout:
@@ -104,7 +90,6 @@ class CircuitBreaker:
                     logger.info(f"🔄 Circuit breaker '{self.name}' moved to HALF_OPEN")
                     return True
                 return False
-
             # HALF_OPEN state - allow one test request
             return True
 
@@ -113,7 +98,6 @@ class CircuitBreaker:
         with self._lock:
             self.failure_count = 0
             self.last_success_time = time.time()
-
             if self.state == CircuitState.HALF_OPEN:
                 self.state = CircuitState.CLOSED
                 logger.info(f"✅ Circuit breaker '{self.name}' closed (recovered)")
@@ -123,7 +107,6 @@ class CircuitBreaker:
         with self._lock:
             self.failure_count += 1
             self.last_failure_time = time.time()
-
             if self.state == CircuitState.HALF_OPEN:
                 # Test request failed, back to open
                 self.state = CircuitState.OPEN
@@ -154,7 +137,6 @@ class CircuitBreaker:
 class ErrorRecoveryManager:
     """
     Comprehensive error recovery and resilience manager.
-
     Features:
     - Multiple circuit breakers
     - Retry mechanisms with exponential backoff
@@ -169,53 +151,41 @@ class ErrorRecoveryManager:
         self.error_contexts: list[ErrorContext] = []
         self.retry_configs: dict[str, dict[str, Any]] = {}
         self.degradation_strategies: dict[str, Callable] = {}
-
         # Thread safety
         self._lock = threading.RLock()
-
         # Setup default recovery strategies
         self._setup_default_strategies()
-
         logger.info("🛡️ Error recovery manager initialized")
 
     def _setup_default_strategies(self) -> None:
         """Setup default recovery strategies for common error types."""
         # Memory errors
         self.degradation_strategies["memory"] = self._handle_memory_error
-
         # Timeout errors
         self.degradation_strategies["timeout"] = self._handle_timeout_error
-
         # Connection errors
         self.degradation_strategies["connection"] = self._handle_connection_error
-
         # Validation errors
         self.degradation_strategies["validation"] = self._handle_validation_error
 
     def _handle_memory_error(self, error: Exception, context: dict[str, Any]) -> Any:
         """Handle memory-related errors."""
         logger.warning("🧠 Memory error detected, attempting cleanup")
-
         # Force garbage collection
         import gc
-
         collected = gc.collect()
-
         # Try to reduce memory usage
         if "memory_monitor" in context:
             context["memory_monitor"].force_cleanup()
-
         logger.info(f"🧹 Memory cleanup completed: {collected} objects collected")
         return None
 
     def _handle_timeout_error(self, error: Exception, context: dict[str, Any]) -> Any:
         """Handle timeout errors."""
         logger.warning("⏰ Timeout error detected, using cached result if available")
-
         # Return cached result if available
         if "cache" in context and context["cache"]:
             return context["cache"].get("last_result")
-
         return None
 
     def _handle_connection_error(
@@ -223,11 +193,9 @@ class ErrorRecoveryManager:
     ) -> Any:
         """Handle connection errors."""
         logger.warning("🔌 Connection error detected, using fallback")
-
         # Use fallback data if available
         if "fallback_data" in context:
             return context["fallback_data"]
-
         return None
 
     def _handle_validation_error(
@@ -235,17 +203,14 @@ class ErrorRecoveryManager:
     ) -> Any:
         """Handle validation errors."""
         logger.warning("✅ Validation error detected, using default values")
-
         # Return default values if available
         if "default_values" in context:
             return context["default_values"]
-
         return None
 
     def register_degradation_strategy(self, error_type: str, strategy: Callable) -> None:
         """
         Register a degradation strategy for a specific error type.
-        
         Args:
             error_type: Error type identifier (e.g., "security_errors", "memory")
             strategy: Callable that handles the error (error, context) -> Any
@@ -253,7 +218,7 @@ class ErrorRecoveryManager:
         with self._lock:
             self.degradation_strategies[error_type] = strategy
             logger.info(f"📋 Registered degradation strategy for: {error_type}")
-    
+
     def add_circuit_breaker(self, name: str, config: CircuitBreakerConfig) -> None:
         """Add a circuit breaker."""
         with self._lock:
@@ -278,7 +243,6 @@ class ErrorRecoveryManager:
     ) -> Any:
         """
         Execute function with exponential backoff retry.
-
         Args:
             func: Function to execute
             max_retries: Maximum number of retry attempts
@@ -288,38 +252,30 @@ class ErrorRecoveryManager:
             exceptions: Tuple of exceptions to retry on
             *args: Function arguments
             **kwargs: Function keyword arguments
-
         Returns:
             Function result
-
         Raises:
             Exception: If all retries are exhausted
         """
         last_exception = None
         delay = base_delay
-
         for attempt in range(max_retries + 1):
             try:
                 return func(*args, **kwargs)
             except exceptions as e:
                 last_exception = e
-
                 if attempt == max_retries:
                     # Final attempt failed
                     logger.error(f"❌ Function failed after {max_retries} retries: {e}")
                     raise
-
                 # Log retry attempt
                 logger.warning(
                     f"🔄 Retry {attempt + 1}/{max_retries} after {delay:.1f}s: {e}"
                 )
-
                 # Wait before retry
                 time.sleep(delay)
-
                 # Calculate next delay
                 delay = min(delay * backoff_factor, max_delay)
-
         # Unreachable code path
         raise last_exception
 
@@ -336,27 +292,22 @@ class ErrorRecoveryManager:
     ) -> Any:
         """
         Execute coroutine function with exponential backoff retry.
-
         Args mirror retry_with_backoff but operate asynchronously to avoid
         blocking the event loop while waiting between retries.
         """
         last_exception = None
         delay = base_delay
-
         for attempt in range(max_retries + 1):
             try:
                 return await func(*args, **kwargs)
             except exceptions as e:
                 last_exception = e
-
                 if attempt == max_retries:
                     logger.error(f"❌ Async function failed after {max_retries} retries: {e}")
                     raise
-
                 logger.warning(f"🔄 Async retry {attempt + 1}/{max_retries} after {delay:.1f}s: {e}")
                 await asyncio.sleep(delay)
                 delay = min(delay * backoff_factor, max_delay)
-
         # Unreachable code path
         raise last_exception
 
@@ -370,14 +321,12 @@ class ErrorRecoveryManager:
     ) -> Any:
         """
         Execute primary function with graceful degradation to fallback.
-
         Args:
             primary_func: Primary function to try first
             fallback_func: Fallback function if primary fails
             error_types: Types of errors that trigger fallback
             *args: Function arguments
             **kwargs: Function keyword arguments
-
         Returns:
             Result from primary or fallback function
         """
@@ -385,7 +334,6 @@ class ErrorRecoveryManager:
             return primary_func(*args, **kwargs)
         except error_types as e:
             logger.warning(f"⚠️ Primary function failed, using fallback: {e}")
-
             # Record error context
             self._record_error_context(
                 e,
@@ -395,7 +343,6 @@ class ErrorRecoveryManager:
                     "fallback_func": fallback_func.__name__,
                 },
             )
-
             try:
                 return fallback_func(*args, **kwargs)
             except Exception as fallback_error:
@@ -409,24 +356,19 @@ class ErrorRecoveryManager:
     ) -> Any:
         """
         Handle error using appropriate recovery strategy.
-
         Args:
             error: The error that occurred
             operation_name: Name of the operation that failed
             context: Additional context information
-
         Returns:
             Result from recovery strategy or None
         """
         if context is None:
             context = {}
-
         # Record error context
         self._record_error_context(error, operation_name, context)
-
         # Determine error type
         error_type = self._classify_error(error)
-
         # Get appropriate strategy
         strategy = self.degradation_strategies.get(error_type)
         if strategy:
@@ -434,7 +376,6 @@ class ErrorRecoveryManager:
                 return strategy(error, context)
             except Exception as strategy_error:
                 logger.error(f"❌ Recovery strategy failed: {strategy_error}")
-
         # No strategy available
         logger.error(f"❌ No recovery strategy for error type: {error_type}")
         return None
@@ -442,7 +383,6 @@ class ErrorRecoveryManager:
     def _classify_error(self, error: Exception) -> str:
         """Classify error type for strategy selection."""
         error_name = type(error).__name__.lower()
-
         if "memory" in error_name or "MemoryError" in str(type(error)):
             return "memory"
         elif "timeout" in error_name or "TimeoutError" in str(type(error)):
@@ -465,10 +405,8 @@ class ErrorRecoveryManager:
             timestamp=time.time(),
             additional_info=context,
         )
-
         with self._lock:
             self.error_contexts.append(error_context)
-
             # Keep only recent errors (last 100)
             if len(self.error_contexts) > 100:
                 self.error_contexts = self.error_contexts[-100:]
@@ -491,8 +429,6 @@ class ErrorRecoveryManager:
             for cb in self.circuit_breakers.values():
                 cb.reset()
             logger.info("🔄 All circuit breakers reset")
-
-
 # Global instance for easy access
 _error_recovery_manager: Optional[ErrorRecoveryManager] = None
 
@@ -508,29 +444,23 @@ def get_error_recovery_manager() -> ErrorRecoveryManager:
 def circuit_breaker(name: str, config: CircuitBreakerConfig = None):
     """
     Decorator for circuit breaker pattern.
-
     Args:
         name: Circuit breaker name
         config: Circuit breaker configuration
     """
     if config is None:
         config = CircuitBreakerConfig()
-
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             manager = get_error_recovery_manager()
-
             # Get or create circuit breaker
             cb = manager.get_circuit_breaker(name)
             if cb is None:
                 manager.add_circuit_breaker(name, config)
                 cb = manager.get_circuit_breaker(name)
-
             return cb.call(func, *args, **kwargs)
-
         return wrapper
-
     return decorator
 
 
@@ -543,7 +473,6 @@ def retry_with_backoff(
 ):
     """
     Decorator for retry with exponential backoff.
-
     Args:
         max_retries: Maximum number of retry attempts
         base_delay: Initial delay between retries (seconds)
@@ -551,12 +480,9 @@ def retry_with_backoff(
         backoff_factor: Factor to multiply delay by on each retry
         exceptions: Tuple of exceptions to retry on
     """
-
     def decorator(func: Callable) -> Callable:
         manager = get_error_recovery_manager()
-
         if asyncio.iscoroutinefunction(func):
-
             @functools.wraps(func)
             async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return await manager.async_retry_with_backoff(
@@ -569,9 +495,7 @@ def retry_with_backoff(
                     *args,
                     **kwargs,
                 )
-
             return async_wrapper
-
         @functools.wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             return manager.retry_with_backoff(
@@ -584,9 +508,7 @@ def retry_with_backoff(
                 *args,
                 **kwargs,
             )
-
         return sync_wrapper
-
     return decorator
 
 
@@ -595,13 +517,11 @@ def graceful_degradation(
 ):
     """
     Decorator for graceful degradation pattern.
-
     Args:
         primary_func: Primary function to try first
         fallback_func: Fallback function if primary fails
         error_types: Types of errors that trigger fallback
     """
-
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -609,23 +529,19 @@ def graceful_degradation(
             return manager.graceful_degradation(
                 primary_func, fallback_func, error_types, *args, **kwargs
             )
-
         return wrapper
-
     return decorator
 
 
 def handle_error(operation_name: str, context: dict[str, Any] = None):
     """
     Decorator for error handling with recovery strategies.
-
     Args:
         operation_name: Name of the operation
         context: Additional context information
     """
     if context is None:
         context = {}
-
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -634,7 +550,5 @@ def handle_error(operation_name: str, context: dict[str, Any] = None):
             except Exception as e:
                 manager = get_error_recovery_manager()
                 return manager.handle_error(e, operation_name, context)
-
         return wrapper
-
     return decorator

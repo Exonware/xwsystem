@@ -11,13 +11,11 @@ import sys
 import tempfile
 from pathlib import Path
 from typing import Optional
-
 logger = logging.getLogger(__name__)
 
 
 class PathSecurityError(Exception):
     """Raised when a path fails security validation."""
-
     pass
 
 
@@ -26,7 +24,6 @@ class PathValidator:
     Enhanced path validation with security checks to prevent directory traversal
     and other path-based attacks.
     """
-
     # Dangerous patterns that are blocked
     DANGEROUS_PATTERNS = [
         "..",  # Directory traversal
@@ -41,7 +38,6 @@ class PathValidator:
         "<",  # Redirects
         ">",  # Redirects
     ]
-
     # System paths that are protected
     PROTECTED_PATHS = [
         "/etc/",
@@ -69,7 +65,6 @@ class PathValidator:
     ):
         """
         Initialize path validator with xwsystem LRUCache for O(1) validation.
-
         Args:
             base_path: Base directory to restrict operations to
             allow_absolute: Whether to allow absolute paths
@@ -92,21 +87,18 @@ class PathValidator:
         else:
             self.max_path_length = max_path_length
         self.check_existence = check_existence
-        
         # OPTIMIZATION: Use xwsystem's production-grade LRUCache
         # Benefits: Automatic LRU eviction, thread-safe RLock, statistics, battle-tested
         self.enable_cache = enable_cache
         self.max_cache_size = max_cache_size
-        
         if enable_cache:
             # Lazy import to avoid circular dependencies
             from ..caching import create_cache
             # Use flexible create_cache() to allow configuration via environment/settings
-            # Defaults to FunctoolsLRUCache (fastest Python cache)
+            # Defaults to PylruCache when pylru installed (highest throughput), else FunctoolsLRUCache
             self._cache = create_cache(capacity=max_cache_size, namespace='xwsystem.security', name="PathValidator")
         else:
             self._cache = None
-        
         logger.debug(
             f"PathValidator initialized with "
             f"caching={'enabled (xwsystem LRUCache)' if enable_cache else 'disabled'}, "
@@ -121,47 +113,37 @@ class PathValidator:
     ) -> Path:
         """
         Validate a path for security and constraints with O(1) caching.
-        
         First call: validates and caches (10-50μs)
         Subsequent calls: cache lookup (< 1μs) ✅
-
         Args:
             path: Path to validate
             for_writing: Whether path will be used for writing
             create_dirs: Whether to create parent directories
-
         Returns:
             Validated and resolved Path object
-
         Raises:
             PathSecurityError: If path fails validation
             PermissionError: If path permissions are insufficient
         """
         if not path:
             raise PathSecurityError("Empty path provided")
-
         # FAST PATH: Check xwsystem LRUCache first (O(1) with automatic LRU eviction)
         if self.enable_cache:
             cache_key = f"{self.base_path}:{path}:{for_writing}:{create_dirs}"
-            
             # xwsystem LRUCache is thread-safe with RLock (reentrant)
             cached_result = self._cache.get(cache_key)
             if cached_result is not None:
                 return cached_result  # O(1) cache hit! ✅
-        
         # SLOW PATH: Validate and cache
         path_obj = Path(path)
         original_path = str(path)
-
         # Check path length
         if len(original_path) > self.max_path_length:
             raise PathSecurityError(
                 f"Path too long: {len(original_path)} > {self.max_path_length}"
             )
-
         # Check for dangerous patterns
         self._check_dangerous_patterns(original_path)
-
         # Handle absolute vs relative paths
         if path_obj.is_absolute():
             # Allow temporary directory paths for testing
@@ -172,7 +154,6 @@ class PathValidator:
                 is_temp_path = True
             except ValueError:
                 pass
-            
             if not self.allow_absolute and not is_temp_path:
                 raise PathSecurityError(f"Absolute paths not allowed: {path}")
             resolved_path = path_obj.resolve()
@@ -181,7 +162,6 @@ class PathValidator:
                 resolved_path = (self.base_path / path_obj).resolve()
             else:
                 resolved_path = path_obj.resolve()
-
         # Check if path is within base directory (prevent directory traversal)
         if self.base_path:
             try:
@@ -190,35 +170,28 @@ class PathValidator:
                 raise PathSecurityError(
                     f"Path outside base directory: {resolved_path} not in {self.base_path}"
                 )
-
         # Check against protected system paths
         self._check_protected_paths(resolved_path)
-
         # Check existence and permissions
         if self.check_existence or for_writing:
             self._check_permissions(resolved_path, for_writing, create_dirs)
-
         # CACHE RESULT: Store in xwsystem LRUCache (automatic eviction!)
         if self.enable_cache:
             # xwsystem LRUCache handles eviction automatically (no manual pruning needed!)
             self._cache.put(cache_key, resolved_path)
-
         return resolved_path
 
     def _check_dangerous_patterns(self, path: str) -> None:
         """Check for dangerous patterns in path."""
         path_lower = path.lower()
-
         for pattern in self.DANGEROUS_PATTERNS:
             if pattern in path_lower:
                 raise PathSecurityError(
                     f"Dangerous pattern '{pattern}' found in path: {path}"
                 )
-
         # Check for null bytes
         if "\x00" in path:
             raise PathSecurityError("Null byte found in path")
-
         # Check for excessive consecutive dots
         if "..." in path:
             raise PathSecurityError("Excessive consecutive dots found in path")
@@ -226,7 +199,6 @@ class PathValidator:
     def _check_protected_paths(self, path: Path) -> None:
         """Check if path is in protected system directories."""
         path_str = str(path).lower()
-
         for protected in self.PROTECTED_PATHS:
             if path_str.startswith(protected.lower()):
                 raise PathSecurityError(f"Access to protected path denied: {path}")
@@ -241,11 +213,9 @@ class PathValidator:
                 raise PathSecurityError(
                     f"Path is not a regular file or directory: {path}"
                 )
-
             # Check read permissions
             if not os.access(path, os.R_OK):
                 raise PermissionError(f"No read permission for: {path}")
-
             # Check write permissions if needed
             if for_writing and not os.access(path, os.W_OK):
                 raise PermissionError(f"No write permission for: {path}")
@@ -253,7 +223,6 @@ class PathValidator:
             # Path doesn't exist
             if self.check_existence and not for_writing:
                 raise FileNotFoundError(f"Path does not exist: {path}")
-
             # Check parent directory for writing
             parent = path.parent
             if for_writing:
@@ -270,7 +239,6 @@ class PathValidator:
                         raise FileNotFoundError(
                             f"Parent directory does not exist: {parent}"
                         )
-
                 if not os.access(parent, os.W_OK):
                     raise PermissionError(
                         f"No write permission for parent directory: {parent}"
@@ -279,18 +247,14 @@ class PathValidator:
     def is_safe_filename(self, filename: str) -> bool:
         """
         Check if a filename is safe (no path components).
-        
         Uses Python's native pathlib for cross-platform validation.
-
         Args:
             filename: Filename to check
-
         Returns:
             True if filename is safe
         """
         if not filename:
             return False
-
         # Use pathlib to check if it's a simple filename (no path components)
         # Path.parts will have more than 1 element if there are path separators
         try:
@@ -298,10 +262,8 @@ class PathValidator:
             # If filename contains path separators, parts will have multiple elements
             if len(path_obj.parts) > 1:
                 return False
-            
             # Get just the filename part (handles cross-platform separators automatically)
             name_only = path_obj.name
-            
             # Check for Windows reserved filenames using native pathlib
             # Python's pathlib doesn't validate reserved names, but we can check using native methods
             if platform.system() == 'Windows':
@@ -316,7 +278,6 @@ class PathValidator:
                 name_base = path_obj.stem.upper()
                 if name_base in WINDOWS_RESERVED_NAMES:
                     return False
-
             # Check for dangerous patterns
             try:
                 self._check_dangerous_patterns(name_only)
@@ -332,39 +293,30 @@ class PathValidator:
     ) -> Path:
         """
         Generate a safe path within a base directory.
-
         Args:
             base_dir: Base directory
             filename: Desired filename
             ensure_unique: Whether to ensure path is unique
-
         Returns:
             Safe path within base directory
-
         Raises:
             PathSecurityError: If inputs are unsafe
         """
         base_path = self.validate_path(base_dir)
-
         if not self.is_safe_filename(filename):
             raise PathSecurityError(f"Unsafe filename: {filename}")
-
         target_path = base_path / filename
-
         if ensure_unique and target_path.exists():
             # Generate unique filename
             stem = target_path.stem
             suffix = target_path.suffix
             counter = 1
-
             while target_path.exists():
                 new_name = f"{stem}_{counter}{suffix}"
                 target_path = base_path / new_name
                 counter += 1
-
                 if counter > 1000:  # Prevent infinite loop
                     raise PathSecurityError("Cannot generate unique filename")
-
         return target_path
 
     def create_temp_path(
@@ -375,17 +327,14 @@ class PathValidator:
     ) -> Path:
         """
         Create a safe temporary path.
-
         Args:
             prefix: Optional filename prefix
             suffix: Optional filename suffix
             as_file: Whether to create as file (True) or directory (False)
-
         Returns:
             Path to temporary location
         """
         base_dir = self.base_path or Path(tempfile.gettempdir())
-
         if as_file:
             fd, temp_path = tempfile.mkstemp(prefix=prefix, suffix=suffix, dir=base_dir)
             os.close(fd)  # Close file descriptor but keep file
@@ -393,33 +342,29 @@ class PathValidator:
         else:
             temp_dir = tempfile.mkdtemp(prefix=prefix, suffix=suffix, dir=base_dir)
             return Path(temp_dir)
-    
+
     def clear_cache(self) -> int:
         """
         Clear validation cache.
-        
         Returns:
             Number of cached items cleared
         """
         if not self.enable_cache:
             return 0
-        
         # xwsystem LRUCache provides size() method
         count = self._cache.size()
         self._cache.clear()
         logger.debug(f"PathValidator cache cleared ({count} items)")
         return count
-    
+
     def get_cache_stats(self) -> dict:
         """
         Get cache statistics from xwsystem LRUCache.
-        
         Returns:
             Dictionary with cache stats including hits/misses/evictions
         """
         if not self.enable_cache:
             return {'enabled': False}
-        
         # xwsystem LRUCache provides comprehensive stats!
         stats = self._cache.stats()
         return {

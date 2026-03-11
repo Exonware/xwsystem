@@ -1,11 +1,9 @@
 #exonware/xwsystem/examples/serialization_example/x0_common/data_generator.py
 """
 Data Generator for Serialization Examples
-
 Generates sample data for testing serialization formats.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.0.1
 Generation Date: October 12, 2025

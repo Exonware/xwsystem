@@ -8,13 +8,13 @@ import sys
 import time
 import threading
 from pathlib import Path
-
 # Path setup - navigate to project root then to src
 src_path = str(Path(__file__).parent.parent.parent.parent.parent.parent / "src")
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
-
 @pytest.fixture
+
+
 def performance_data():
     """Provide test data for performance benchmarks."""
     return {
@@ -29,25 +29,29 @@ def performance_data():
             }
         }
     }
-
 @pytest.fixture
+
+
 def circular_data():
     """Create data with circular references for testing."""
     data = {'root': {}}
     data['root']['parent'] = data
     return data
-
 @pytest.fixture
+
+
 def thread_count():
     """Provide thread count for concurrency tests."""
     return min(10, (threading.active_count() + 5))
-
 @pytest.fixture
+
+
 def benchmark_iterations():
     """Provide iteration count for benchmarks."""
     return 1000
-
 @pytest.fixture
+
+
 def performance_threshold():
     """Provide performance thresholds for validation."""
     return {

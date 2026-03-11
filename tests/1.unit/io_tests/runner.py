@@ -2,20 +2,16 @@
 #exonware/xwsystem/tests/1.unit/io_tests/runner.py
 """
 Test runner for io_tests module
-
 Runs all unit tests for the io module following GUIDELINES_TEST.md.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 """
 
 import sys
 import pytest
 from pathlib import Path
-
 from exonware.xwsystem.console.cli import ensure_utf8_console
-
 ensure_utf8_console()
 
 
@@ -24,7 +20,6 @@ def main():
     print("🧩 Unit Tests - IO Module")
     print(f"📂 Test Directory: {Path(__file__).parent}")
     print("=" * 80)
-
     exit_code = pytest.main([
         "-v",
         "--tb=short",
@@ -35,7 +30,5 @@ def main():
     status = "✅ IO unit tests PASSED" if exit_code == 0 else "❌ IO unit tests FAILED"
     print(f"\n{status}")
     sys.exit(exit_code)
-
-
 if __name__ == "__main__":
     main()

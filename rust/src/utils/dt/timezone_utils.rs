@@ -1,6 +1,6 @@
 // #exonware/xwsystem/rust/src/utils/dt/timezone_utils.rs
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: September 04, 2025
@@ -156,42 +156,42 @@ impl TimezoneUtils {
 
 }
 
-    /// Convert timezone - backward compatibility.
+    /// Convert timezone.
     pub fn convert_timezone(dt: &str, tz: &str) -> ()
     {
         // TODO: Implement
         todo!()
     }
 
-    /// Get timezone info - backward compatibility.
+    /// Get timezone info.
     pub fn get_timezone_info(tz: &str) -> ()
     {
         // TODO: Implement
         todo!()
     }
 
-    /// List timezones - backward compatibility.
+    /// List timezones.
     pub fn list_timezones() -> ()
     {
         // TODO: Implement
         todo!()
     }
 
-    /// Get local timezone - backward compatibility.
+    /// Get local timezone.
     pub fn get_local_timezone() -> ()
     {
         // TODO: Implement
         todo!()
     }
 
-    /// Get UTC now - backward compatibility.
+    /// Get UTC now.
     pub fn utc_now() -> ()
     {
         // TODO: Implement
         todo!()
     }
 
-    /// Get local now - backward compatibility.
+    /// Get local now.
     pub fn local_now() -> ()
     {
         // TODO: Implement

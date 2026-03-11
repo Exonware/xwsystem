@@ -1,11 +1,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/console/cli/console.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Console utilities for CLI operations.
 """
 
@@ -20,15 +19,13 @@ from ..writer import ConsoleWriter
 class CliConsole(ConsoleWriter, IConsole):
     """
     Console implementation for CLI operations.
-    
     Extends ConsoleWriter from console level and adds CLI-specific features
     like color support and IConsole interface compliance.
     """
-    
+
     def print(self, text: str, color: Optional[ColorType] = None, **kwargs) -> None:
         """
         Print text to console with optional color.
-        
         Args:
             text: Text to print
             color: Optional color type to apply
@@ -37,20 +34,17 @@ class CliConsole(ConsoleWriter, IConsole):
         try:
             if color and self.supports_color():
                 text = self._apply_color(text, color)
-            
             # Use parent's write_line method
             self.write_line(text, **kwargs)
         except Exception as e:
             raise ConsoleError(f"Failed to print to console: {e}")
-    
+
     def input(self, prompt: str, **kwargs) -> str:
         """
         Get input from user.
-        
         Args:
             prompt: Prompt text
-            **kwargs: Additional arguments (for compatibility)
-            
+            **kwargs: Additional arguments (e.g. for subclasses)
         Returns:
             User input string
         """
@@ -59,7 +53,7 @@ class CliConsole(ConsoleWriter, IConsole):
             return self.read(prompt)
         except Exception as e:
             raise ConsoleError(f"Failed to get input: {e}")
-    
+
     def _apply_color(self, text: str, color: ColorType) -> str:
         """Apply color to text."""
         color_codes = {
@@ -76,14 +70,12 @@ class CliConsole(ConsoleWriter, IConsole):
             ColorType.WHITE: '\033[37m',
             ColorType.GRAY: '\033[90m',
         }
-        
         code = color_codes.get(color, '')
         return f"{code}{text}\033[0m" if code else text
-    
+
     def get_size(self) -> tuple[int, int]:
         """
         Get console size.
-        
         Returns:
             Tuple of (columns, lines)
         """

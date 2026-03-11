@@ -1,13 +1,11 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/text/yaml.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: November 2, 2025
-
 YAML serialization - Human-readable data serialization format.
-
 Following I→A pattern:
 - I: ISerialization (interface)
 - A: ASerialization (abstract base)
@@ -16,27 +14,65 @@ Following I→A pattern:
 
 from typing import Any, Optional, Iterator
 from pathlib import Path
-
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
 from ....defs import CodecCapability
 from ....errors import SerializationError
-
 # Lazy import for yaml (PyYAML)
 # The lazy hook will automatically handle ImportError and install PyYAML if missing
 import yaml
+
+# Maximum decoded size (chars + container entries) to prevent YAML bomb (alias expansion).
+# Aligns with test_serialization_worst_case_scenarios.test_yaml_bomb_protection (len(str(result)) < 1e6).
+# Set high enough to allow legitimate large files (e.g. test_large_file_performance with 5k items) but
+# still reject bombs (billions of chars).
+_YAML_DECODE_SIZE_LIMIT = 10_000_000
+
+
+def _yaml_decoded_size_estimate(obj: Any, limit: int = _YAML_DECODE_SIZE_LIMIT) -> int:
+    """Estimate decoded size (string chars + container entries). Raises SerializationError if over limit."""
+    total = 0
+
+    def visit(o: Any) -> None:
+        nonlocal total
+        if total > limit:
+            raise SerializationError(
+                "YAML decoded structure exceeds size limit (possible YAML bomb with alias expansion).",
+                format_name="YAML",
+            )
+        if o is None or isinstance(o, bool):
+            total += 1
+            return
+        if isinstance(o, (int, float)):
+            total += 50  # rough
+            return
+        if isinstance(o, str):
+            total += len(o)
+            return
+        if isinstance(o, (list, tuple)):
+            total += 1
+            for item in o:
+                visit(item)
+            return
+        if isinstance(o, dict):
+            total += 1
+            for k, v in o.items():
+                total += len(k) if isinstance(k, str) else 50
+                visit(v)
+            return
+        total += 100  # other types
+
+    visit(obj)
+    return total
 
 
 class YamlSerializer(ASerialization):
     """
     YAML serializer - follows the I→A pattern.
-    
     I: ISerialization (interface)
     A: ASerialization (abstract base)
     Concrete: YamlSerializer
-    
     Uses PyYAML library for YAML handling.
-    
     Examples:
         >>> serializer = YamlSerializer()
         >>> 
@@ -52,83 +88,75 @@ class YamlSerializer(ASerialization):
         >>> # Load from file
         >>> config = serializer.load_file("config.yaml")
     """
-    
+
     def __init__(self):
         """Initialize YAML serializer."""
         super().__init__()
-    
     # ========================================================================
     # CODEC METADATA
     # ========================================================================
-    
     @property
+
     def codec_id(self) -> str:
         return "yaml"
-    
     @property
+
     def media_types(self) -> list[str]:
         return ["application/x-yaml", "text/yaml", "text/x-yaml"]
-    
     @property
+
     def file_extensions(self) -> list[str]:
         return [".yaml", ".yml", ".clang-format", ".travis.yml", ".gitlab-ci.yml"]
-    
     @property
+
     def format_name(self) -> str:
         return "YAML"
-    
     @property
+
     def mime_type(self) -> str:
         return "application/x-yaml"
-    
     @property
+
     def is_binary_format(self) -> bool:
         return False  # YAML is text-based
-    
     @property
+
     def supports_streaming(self) -> bool:
         return True  # YAML supports multiple documents
-    
     @property
+
     def supports_incremental_streaming(self) -> bool:
         return True  # YAML supports multi-document streaming
-    
     @property
+
     def capabilities(self) -> CodecCapability:
         return CodecCapability.BIDIRECTIONAL
-    
     @property
+
     def aliases(self) -> list[str]:
         return ["yaml", "YAML", "yml", "YML"]
-    
     # ========================================================================
     # CORE ENCODE/DECODE (Using PyYAML library)
     # ========================================================================
-    
+
     def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
         """
         Encode data to YAML string.
-        
         Uses PyYAML's yaml.dump().
-        
         Args:
             value: Data to serialize
             options: YAML options (default_flow_style, sort_keys, etc.)
-        
         Returns:
             YAML string
-        
         Raises:
             SerializationError: If encoding fails
         """
         try:
             opts = options or {}
-            
             # Common YAML options
             default_flow_style = opts.get('default_flow_style', False)
             sort_keys = opts.get('sort_keys', False)
             indent = opts.get('indent', 2)
-            
             # Encode to YAML string
             yaml_str = yaml.dump(
                 value,
@@ -138,29 +166,23 @@ class YamlSerializer(ASerialization):
                 allow_unicode=opts.get('allow_unicode', True),
                 Dumper=opts.get('Dumper', yaml.SafeDumper)
             )
-            
             return yaml_str
-            
         except (yaml.YAMLError, TypeError) as e:
             raise SerializationError(
                 f"Failed to encode YAML: {e}",
                 format_name=self.format_name,
                 original_error=e
             )
-    
+
     def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode YAML string to data.
-        
         Uses PyYAML's yaml.safe_load() for security.
-        
         Args:
             repr: YAML string (bytes or str)
             options: YAML options (Loader, etc.)
-        
         Returns:
             Decoded Python object
-        
         Raises:
             SerializationError: If decoding fails
         """
@@ -168,26 +190,24 @@ class YamlSerializer(ASerialization):
             # Convert bytes to str if needed
             if isinstance(repr, bytes):
                 repr = repr.decode('utf-8')
-            
             opts = options or {}
-            
             # Decode from YAML string (using safe_load for security)
             loader = opts.get('Loader', yaml.SafeLoader)
             data = yaml.load(repr, Loader=loader)
-            
+            # Reject YAML bombs: alias expansion can produce huge structures (GUIDE_53_FIX security).
+            if data is not None:
+                _yaml_decoded_size_estimate(data)
             return data
-            
         except (yaml.YAMLError, UnicodeDecodeError) as e:
             raise SerializationError(
                 f"Failed to decode YAML: {e}",
                 format_name=self.format_name,
                 original_error=e
             )
-    
     # ========================================================================
     # INCREMENTAL STREAMING
     # ========================================================================
-    
+
     def incremental_load(
         self,
         file_path: str | Path,
@@ -195,17 +215,13 @@ class YamlSerializer(ASerialization):
     ) -> Iterator[Any]:
         """
         Stream YAML documents one at a time (supports multi-document YAML).
-        
         Uses PyYAML's safe_load_all() for true streaming without loading
         entire file into memory.
-        
         Args:
             file_path: Path to the YAML file
             **options: YAML options (Loader, etc.)
-            
         Yields:
             Each document from the YAML file one at a time
-            
         Raises:
             FileNotFoundError: If file doesn't exist
             SerializationError: If parsing fails
@@ -213,10 +229,8 @@ class YamlSerializer(ASerialization):
         path = Path(file_path)
         if not path.exists():
             raise FileNotFoundError(f"File not found: {path}")
-        
         opts = options or {}
         loader = opts.get('Loader', yaml.SafeLoader)
-        
         try:
             with path.open("r", encoding="utf-8") as f:
                 # Use safe_load_all for multi-document streaming
@@ -229,5 +243,4 @@ class YamlSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             ) from e
-    
     # Note: File operations (save_file, load_file) are inherited from ASerialization base class

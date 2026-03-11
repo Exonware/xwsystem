@@ -5,23 +5,17 @@ Core serialization feature coverage aligning with GUIDE_TEST.md.
 """
 
 from dataclasses import dataclass
-
 import pytest
-
 from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
 from exonware.xwsystem.io.serialization.formats.text.yaml import YamlSerializer
 from exonware.xwsystem.io.serialization.formats.text.toml import TomlSerializer
 from exonware.xwsystem.io.serialization.formats.text.xml import XmlSerializer
-
-
 SERIALIZER_CASES = [
     ("JSON", JsonSerializer),
     ("XML", XmlSerializer),
     ("TOML", TomlSerializer),
     ("YAML", YamlSerializer),
 ]
-
-
 TEST_DATA = {
     "users": [
         {"id": 1, "name": "Alice", "age": 30, "active": True},
@@ -32,17 +26,17 @@ TEST_DATA = {
         "created": "2025-01-01T00:00:00Z",
     },
 }
-
-
 @dataclass
+
+
 class User:
     id: int
     name: str
     age: int
     active: bool
-
-
 @pytest.mark.parametrize("label, serializer_cls", SERIALIZER_CASES)
+
+
 def test_basic_round_trip(label, serializer_cls):
     """Ensure core serializers can round-trip structured data."""
     serializer = serializer_cls()
@@ -52,7 +46,6 @@ def test_basic_round_trip(label, serializer_cls):
     if isinstance(text_data, bytes):
         text_data = text_data.decode('utf-8')
     parsed = serializer.decode(text_data)
-    
     # XML infers types (e.g., "1.0" becomes 1.0) - this is expected XML behavior
     # For XML, we need to account for type inference
     if label == "XML":
@@ -65,9 +58,9 @@ def test_basic_round_trip(label, serializer_cls):
             f"{label} version mismatch (XML type inference)"
     else:
         assert parsed == TEST_DATA, f"{label} failed round-trip"
-
-
 @pytest.mark.parametrize("label, serializer_cls", SERIALIZER_CASES)
+
+
 def test_format_detection(label, serializer_cls):
     """Verify format detection works via file extension or content."""
     serializer = serializer_cls()
@@ -100,9 +93,9 @@ def test_format_detection(label, serializer_cls):
                 # On Windows, sometimes need to wait a bit longer
                 time.sleep(0.1)
                 os.unlink(temp_path)
-
-
 @pytest.mark.parametrize("label, serializer_cls", SERIALIZER_CASES)
+
+
 def test_partial_access_operations(label, serializer_cls):
     """Validate path-based operations using atomic_read_path/atomic_update_path."""
     serializer = serializer_cls()
@@ -115,12 +108,10 @@ def test_partial_access_operations(label, serializer_cls):
     os.close(temp_fd)  # Close the file descriptor immediately
     try:
         serializer.save_file(TEST_DATA, temp_path)
-        
         # Test atomic_read_path (actual API)
         if hasattr(serializer, 'atomic_read_path') and serializer.supports_path_based_updates:
             name = serializer.atomic_read_path(temp_path, "/users/0/name")
             assert name == "Alice", f"{label} atomic_read_path mismatch"
-            
             # Test atomic_update_path (actual API)
             serializer.atomic_update_path(temp_path, "/users/0/name", "Alice Updated")
             updated_name = serializer.atomic_read_path(temp_path, "/users/0/name")
@@ -137,9 +128,9 @@ def test_partial_access_operations(label, serializer_cls):
                 # On Windows, sometimes need to wait a bit longer
                 time.sleep(0.1)
                 os.unlink(temp_path)
-
-
 @pytest.mark.parametrize("label, serializer_cls", SERIALIZER_CASES)
+
+
 def test_patch_application(label, serializer_cls):
     """Confirm path-based updates work via atomic_update_path."""
     serializer = serializer_cls()
@@ -151,7 +142,6 @@ def test_patch_application(label, serializer_cls):
     os.close(temp_fd)  # Close the file descriptor immediately
     try:
         serializer.save_file(TEST_DATA, temp_path)
-        
         if hasattr(serializer, 'atomic_update_path') and serializer.supports_path_based_updates:
             # Use atomic_update_path (actual API)
             serializer.atomic_update_path(temp_path, "/users/0/name", "Alice Patched")
@@ -169,9 +159,9 @@ def test_patch_application(label, serializer_cls):
                 # On Windows, sometimes need to wait a bit longer
                 time.sleep(0.1)
                 os.unlink(temp_path)
-
-
 @pytest.mark.parametrize("label, serializer_cls", SERIALIZER_CASES)
+
+
 def test_schema_validation(label, serializer_cls):
     """Check data validation using validate_data method."""
     serializer = serializer_cls()
@@ -181,29 +171,27 @@ def test_schema_validation(label, serializer_cls):
         assert is_valid is True, f"{label} validate_data failed"
     else:
         pytest.skip(f"{label} does not support validate_data")
-
-
 @pytest.mark.parametrize("label, serializer_cls", SERIALIZER_CASES)
+
+
 def test_canonicalization_and_hashing(label, serializer_cls):
     """Test that encoding produces consistent output for same data."""
     serializer = serializer_cls()
     # Test that encoding same data produces consistent results
     encoded1 = serializer.encode(TEST_DATA)
     encoded2 = serializer.encode(TEST_DATA)
-    
     # Normalize to string for comparison
     if isinstance(encoded1, bytes):
         encoded1 = encoded1.decode('utf-8')
     if isinstance(encoded2, bytes):
         encoded2 = encoded2.decode('utf-8')
-    
     # For formats that support canonical encoding, results should be identical
     # For formats without canonical encoding, at least verify round-trip works
     assert encoded1 == encoded2 or serializer.decode(encoded1) == serializer.decode(encoded2), \
         f"{label} encoding not consistent"
-
-
 @pytest.mark.parametrize("label, serializer_cls", SERIALIZER_CASES)
+
+
 def test_batch_streaming(label, serializer_cls):
     """Test streaming serialization using iter_serialize."""
     serializer = serializer_cls()
@@ -214,12 +202,10 @@ def test_batch_streaming(label, serializer_cls):
     else:
         data = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]
         expected = data
-    
     # Use iter_serialize (actual API)
     if hasattr(serializer, 'iter_serialize'):
         chunks = list(serializer.iter_serialize(data))
         assert chunks, f"{label} iter_serialize returned no chunks"
-        
         # Use iter_deserialize (actual API)
         if hasattr(serializer, 'iter_deserialize'):
             deserialized = serializer.iter_deserialize(chunks)

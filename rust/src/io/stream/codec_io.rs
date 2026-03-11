@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/io/stream/codec_io.rs
 //exonware/xwsystem/src/exonware/xwsystem/io/stream/codec_io.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: 30-Oct-2025

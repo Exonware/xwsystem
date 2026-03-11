@@ -1,4 +1,4 @@
-﻿# Compliance Overview
+# Compliance Overview
 
 **Applies from:** Version 0.x (structure) � **Mandatory from:** Version 2.x (Mars Standard Draft)  
 **Owner:** Architecture & Compliance Group
@@ -33,7 +33,7 @@ Repositories derived from xwsystem must either mirror this structure or link bac
 | Standard Category | Status | Evidence Available | Notes |
 |-------------------|--------|--------------------|-------|
 | NASA (8719.13/8739.7/8739.8, NPR 7150.2D/8715.3) | ❌ Not compliant | Requirements register, GUIDE_DEV references | Safety case, IV&V evidence, and traceability to be produced. |
-| ECSS (E/Q/ST series) | ✅ Compliant | `docs/guides/GUIDE_PLAN.md`, `docs/REF_PLAN.md`, `docs/compliance/traceability/TRACE_MATRIX.md`, `docs/compliance/risk-assessment/README.md`, `docs/compliance/verification/README.md` | Lifecycle, traceability, dependability, and formal verification scopes documented. Workflow enforces trace matrix freshness. |
+| ECSS (E/Q/ST series) | ✅ Compliant | `docs/guides/GUIDE_PLAN.md`, `docs/REF_21_PLAN.md`, `docs/compliance/traceability/TRACE_MATRIX.md`, `docs/compliance/risk-assessment/README.md`, `docs/compliance/verification/README.md` | Lifecycle, traceability, dependability, and formal verification scopes documented. Workflow enforces trace matrix freshness. |
 | DO-178C Level A | ❌ Not compliant | None | DAL assignments, requirements-based testing, QA audits, and CM evidence not produced. |
 | ISO/IEC 27k / 9001 / lifecycle | ❌ Not started | None | Packages scaffolded but no controls, policies, or assessments documented. |
 | NIST SP 800 series | ❌ Not started | None | Control mapping and risk framework not yet authored. |

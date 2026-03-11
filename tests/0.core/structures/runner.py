@@ -2,7 +2,6 @@
 #exonware/xwsystem/tests/core/structures/runner.py
 """
 Structures Core Test Runner
-
 Runs comprehensive structures core tests for XSystem data structures.
 """
 
@@ -25,7 +24,6 @@ def apply_emojis(text: str) -> str:
     emoji_map = get_emoji_mapping()
     for text_equiv, emoji in emoji_map.items():
         text = text.replace(text_equiv, emoji)
-    
     # Handle encoding issues on Windows
     try:
         # Test if the text can be encoded
@@ -49,19 +47,15 @@ def main():
     """Run structures core tests."""
     print(apply_emojis("[TEST] Running CORE Structures Tests..."))
     print("=" * 50)
-    
     try:
         import sys
         from pathlib import Path
         test_basic_path = Path(__file__).parent / "test_core_xwsystem_structures.py"
         sys.path.insert(0, str(test_basic_path.parent))
-
         import test_core_xwsystem_structures
         return test_core_xwsystem_structures.main()
     except Exception as e:
         print(apply_emojis(f"[FAIL] Failed to run structures core tests: {e}"))
         return 1
-
-
 if __name__ == "__main__":
     sys.exit(main())

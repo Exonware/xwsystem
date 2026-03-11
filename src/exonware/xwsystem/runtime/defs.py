@@ -3,20 +3,18 @@
 #exonware/xwsystem/runtime/types.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 07-Sep-2025
-
 Runtime types and enums for XWSystem.
 """
 
 from enum import Enum
-
-
 # ============================================================================
 # RUNTIME ENUMS
 # ============================================================================
+
 
 class EnvironmentType(Enum):
     """Environment types."""

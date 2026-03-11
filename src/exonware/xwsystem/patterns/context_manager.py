@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/patterns/context_manager.py
 """
 Context manager utilities for combining and enhancing context managers.
-
 This module provides reusable context management functionality that was
 previously embedded in xData but is generally useful across xLib components.
 """
@@ -11,24 +10,19 @@ import logging
 import threading
 from contextlib import ExitStack, contextmanager
 from typing import Any, ContextManager, Generator, Optional
-
 logger = logging.getLogger(__name__)
-
-
 @contextmanager
+
+
 def combine_contexts(*contexts) -> "CombinedContextManager":
     """
     Combine multiple context managers into a single context manager.
-
     This utility allows you to enter multiple contexts simultaneously and
     ensures proper cleanup even if one of the contexts fails.
-
     Args:
         *contexts: Variable number of context managers to combine
-
     Yields:
         None (use the individual context managers directly)
-
     Example:
         with combine_contexts(lock.acquire(), performance_monitor(), error_handler()):
             # All contexts are active here
@@ -40,20 +34,18 @@ def combine_contexts(*contexts) -> "CombinedContextManager":
             if context is not None:
                 stack.enter_context(context)
         yield
-
-
 @contextmanager
+
+
 def safe_context(
     context_manager, default_value: Any = None, error_handler: Optional[callable] = None
 ):
     """
     Wrap a context manager to handle errors gracefully.
-
     Args:
         context_manager: The context manager to wrap
         default_value: Value to yield if context manager fails
         error_handler: Optional function to call on error
-
     Yields:
         Result of context manager or default_value on error
     """
@@ -66,26 +58,22 @@ def safe_context(
         else:
             logger.warning(f"Context manager failed: {e}")
         yield default_value
-
-
 @contextmanager
+
+
 def operation_context(operation_name: str, **context_data: Any):
     """
     Create a context for operation tracking and logging.
-
     Args:
         operation_name: Name of the operation being performed
         **context_data: Additional context data for logging
-
     Yields:
         Dictionary containing operation context
     """
     context = {"operation": operation_name, "data": context_data}
-
     logger.debug(f"Starting operation: {operation_name}")
     if context_data:
         logger.debug(f"Operation context: {context_data}")
-
     try:
         yield context
     except Exception as e:
@@ -93,24 +81,21 @@ def operation_context(operation_name: str, **context_data: Any):
         raise
     finally:
         logger.debug(f"Completed operation: {operation_name}")
-
-
 @contextmanager
+
+
 def enhanced_error_context(
     operation: str, **context_data: Any
 ) -> "EnhancedErrorContext":
     """
     Enhanced error context manager with detailed error information.
-
     Args:
         operation: Name of the operation
         **context_data: Additional context for error reporting
-
     Yields:
         Context dictionary
     """
     context = {"operation": operation, "context": context_data}
-
     try:
         yield context
     except Exception as e:
@@ -119,7 +104,6 @@ def enhanced_error_context(
         if context_data:
             context_str = ", ".join(f"{k}={v}" for k, v in context_data.items())
             error_msg += f" (Context: {context_str})"
-
         logger.error(error_msg)
         # Re-raise with enhanced context
         raise type(e)(error_msg) from e
@@ -128,7 +112,6 @@ def enhanced_error_context(
 class ContextualLogger:
     """
     Logger wrapper that adds contextual information to all log messages.
-
     This class was extracted from xData to provide reusable contextual logging
     across different components.
     """
@@ -136,7 +119,6 @@ class ContextualLogger:
     def __init__(self, base_logger, operation_name: str, **context: Any):
         """
         Initialize contextual logger.
-
         Args:
             base_logger: Base logger instance
             operation_name: Name of the operation for context
@@ -176,28 +158,24 @@ def create_operation_logger(
 ) -> ContextualLogger:
     """
     Create a contextual logger for consistent operation logging.
-
     Args:
         base_logger: Base logger instance
         operation_name: Name of the operation
         **context: Additional context to include in log messages
-
     Returns:
         ContextualLogger instance with operation context
     """
     return ContextualLogger(base_logger, operation_name, **context)
-
-
 @contextmanager
+
+
 def conditional_context(condition: bool, context_manager, fallback_context=None):
     """
     Conditionally enter a context manager based on a condition.
-
     Args:
         condition: Whether to use the primary context manager
         context_manager: Primary context manager to use if condition is True
         fallback_context: Optional fallback context if condition is False
-
     Yields:
         Result of active context manager or None
     """
@@ -209,26 +187,21 @@ def conditional_context(condition: bool, context_manager, fallback_context=None)
             yield value
     else:
         yield None
-
-
 @contextmanager
+
+
 def timeout_context(timeout_seconds: float):
     """
     Context manager that tracks operation timeout.
-
     Args:
         timeout_seconds: Maximum time allowed for operation
-
     Yields:
         Start time of the operation
-
     Raises:
         TimeoutError: If operation exceeds timeout
     """
     import time
-
     start_time = time.time()
-
     try:
         yield start_time
     finally:
@@ -237,18 +210,16 @@ def timeout_context(timeout_seconds: float):
             raise TimeoutError(
                 f"Operation timed out after {elapsed:.2f}s (limit: {timeout_seconds}s)"
             )
-
-
 @contextmanager
+
+
 def resource_context(acquire_func: Any, release_func: Any, *args: Any, **kwargs: Any) -> Generator[Any, None, None]:
     """
     Generic resource management context manager.
-
     Args:
         acquire_func: Function to acquire the resource
         release_func: Function to release the resource
         *args, **kwargs: Arguments for acquire function
-
     Yields:
         Resource returned by acquire_func
     """
@@ -267,7 +238,6 @@ def resource_context(acquire_func: Any, release_func: Any, *args: Any, **kwargs:
 class MultiContextManager:
     """
     Class-based approach to managing multiple context managers.
-
     This provides more control than the function-based approach and allows
     for dynamic addition/removal of contexts.
     """
@@ -288,7 +258,6 @@ class MultiContextManager:
         """Enter all managed contexts."""
         self.stack = ExitStack()
         self.entered_contexts = []
-
         try:
             for context in self.contexts:
                 result = self.stack.enter_context(context)
@@ -311,7 +280,6 @@ class ThreadSafeSingleton(type):
         class MyClass(metaclass=ThreadSafeSingleton):
             ...
     """
-
     _instances = {}
     _lock = threading.Lock()
 
@@ -324,43 +292,43 @@ class ThreadSafeSingleton(type):
 
 class ContextManager:
     """Context manager implementation for patterns."""
-    
+
     def __init__(self, name: str = "context"):
         """Initialize context manager."""
         self.name = name
         self._contexts: dict[str, Any] = {}
         self._active = False
-    
+
     def __enter__(self):
         """Enter context."""
         self._active = True
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit context."""
         self._active = False
         self._contexts.clear()
-    
+
     def add_context(self, key: str, value: Any) -> None:
         """Add context value."""
         self._contexts[key] = value
-    
+
     def get_context(self, key: str) -> Any:
         """Get context value."""
         return self._contexts.get(key)
-    
+
     def has_context(self, key: str) -> bool:
         """Check if context exists."""
         return key in self._contexts
-    
+
     def remove_context(self, key: str) -> bool:
         """Remove context."""
         return self._contexts.pop(key, None) is not None
-    
+
     def is_active(self) -> bool:
         """Check if context is active."""
         return self._active
-    
+
     def get_all_contexts(self) -> dict[str, Any]:
         """Get all contexts."""
         return self._contexts.copy()

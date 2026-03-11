@@ -2,20 +2,17 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/utils/path_ops.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: November 9, 2025
-
 Path operations utilities for serialization formats.
-
 Provides JSONPointer path parsing and manipulation utilities that serializers
 can use for path-based operations. Includes path validation for security.
 """
 
 from typing import Any
 from pathlib import Path
-
 from ...errors import SerializationError
 
 
@@ -27,18 +24,13 @@ class PathOperationError(SerializationError):
 def validate_json_pointer(path: str) -> bool:
     """
     Validate a JSONPointer path expression.
-    
     JSONPointer syntax: /path/to/key or /path/to/0 for arrays
-    
     Args:
         path: JSONPointer path to validate
-    
     Returns:
         True if path is valid
-    
     Raises:
         ValueError: If path is invalid
-    
     Example:
         >>> validate_json_pointer("/users/0/name")  # Valid
         True
@@ -47,37 +39,29 @@ def validate_json_pointer(path: str) -> bool:
     """
     if not isinstance(path, str):
         raise ValueError(f"Path must be a string, got {type(path)}")
-    
     if not path:
         raise ValueError("Path cannot be empty")
-    
     # JSONPointer starts with / for non-empty paths
     if path != "/" and not path.startswith("/"):
         raise ValueError(f"JSONPointer path must start with '/', got: {path}")
-    
     # Validate path segments (basic validation)
     if path != "/":
         segments = path.strip("/").split("/")
         for segment in segments:
             if not segment and segment != "0":  # Empty segments not allowed except for root
                 raise ValueError(f"Invalid path segment in JSONPointer: {path}")
-    
     return True
 
 
 def parse_json_pointer(path: str) -> list[str | int]:
     """
     Parse a JSONPointer path into a list of keys/indices.
-    
     Args:
         path: JSONPointer path (e.g., "/users/0/name")
-    
     Returns:
         List of path components (strings for keys, ints for array indices)
-    
     Raises:
         ValueError: If path is invalid
-    
     Example:
         >>> parse_json_pointer("/users/0/name")
         ['users', 0, 'name']
@@ -85,41 +69,32 @@ def parse_json_pointer(path: str) -> list[str | int]:
         []
     """
     validate_json_pointer(path)
-    
     if path == "/":
         return []
-    
     segments = path.strip("/").split("/")
     result = []
-    
     for segment in segments:
         # Handle escaped characters in JSONPointer
         segment = segment.replace("~1", "/").replace("~0", "~")
-        
         # Try to convert to int if it looks like a number (for array indices)
         if segment.isdigit():
             result.append(int(segment))
         else:
             result.append(segment)
-    
     return result
 
 
 def get_value_by_path(data: Any, path: str) -> Any:
     """
     Get value from data structure using JSONPointer path.
-    
     Args:
         data: Data structure (dict, list, etc.)
         path: JSONPointer path
-    
     Returns:
         Value at the specified path
-    
     Raises:
         KeyError: If path doesn't exist
         ValueError: If path is invalid or cannot navigate
-    
     Example:
         >>> data = {"users": [{"name": "John"}]}
         >>> get_value_by_path(data, "/users/0/name")
@@ -127,7 +102,6 @@ def get_value_by_path(data: Any, path: str) -> Any:
     """
     path_parts = parse_json_pointer(path)
     current = data
-    
     for part in path_parts:
         if isinstance(current, dict):
             if part not in current:
@@ -143,24 +117,20 @@ def get_value_by_path(data: Any, path: str) -> Any:
             raise ValueError(
                 f"Cannot navigate path {path}: reached non-container type {type(current)}"
             )
-    
     return current
 
 
 def set_value_by_path(data: Any, path: str, value: Any, create: bool = False) -> None:
     """
     Set value in data structure using JSONPointer path.
-    
     Args:
         data: Data structure (dict, list, etc.)
         path: JSONPointer path
         value: Value to set
         create: If True, create missing intermediate paths
-    
     Raises:
         KeyError: If path doesn't exist and create=False
         ValueError: If path is invalid or cannot navigate
-    
     Example:
         >>> data = {"users": [{"name": "John"}]}
         >>> set_value_by_path(data, "/users/0/name", "Jane")
@@ -168,12 +138,9 @@ def set_value_by_path(data: Any, path: str, value: Any, create: bool = False) ->
         'Jane'
     """
     path_parts = parse_json_pointer(path)
-    
     if not path_parts:
         raise ValueError("Cannot set value at root path '/'")
-    
     current = data
-    
     # Navigate to parent of target
     for i, part in enumerate(path_parts[:-1]):
         if isinstance(current, dict):
@@ -204,7 +171,6 @@ def set_value_by_path(data: Any, path: str, value: Any, create: bool = False) ->
             raise ValueError(
                 f"Cannot navigate path {path}: reached non-container type {type(current)}"
             )
-    
     # Set the value
     final_key = path_parts[-1]
     if isinstance(current, dict):
@@ -229,57 +195,44 @@ def set_value_by_path(data: Any, path: str, value: Any, create: bool = False) ->
 def validate_path_security(path: str, max_depth: int = 100) -> bool:
     """
     Validate path for security concerns (injection prevention).
-    
     Checks for:
     - Path traversal attempts (../, ..\\)
     - Excessive depth
     - Suspicious patterns
-    
     Args:
         path: Path to validate
         max_depth: Maximum allowed path depth
-    
     Returns:
         True if path is safe
-    
     Raises:
         ValueError: If path contains security issues
-    
     Note:
         This is a basic security check. Format-specific serializers should
         implement additional validation as needed.
     """
     if not isinstance(path, str):
         raise ValueError(f"Path must be a string, got {type(path)}")
-    
     # Check for path traversal
     if ".." in path or "..\\" in path or "../" in path:
         raise ValueError(f"Path traversal detected in path: {path}")
-    
     # Check depth
     depth = path.count("/")
     if depth > max_depth:
         raise ValueError(f"Path depth {depth} exceeds maximum {max_depth}: {path}")
-    
     # Check for null bytes
     if "\x00" in path:
         raise ValueError(f"Null byte detected in path: {path}")
-    
     return True
 
 
 def normalize_path(path: str) -> str:
     """
     Normalize a JSONPointer path.
-    
     Ensures path follows JSONPointer standard format.
-    
     Args:
         path: Path to normalize
-    
     Returns:
         Normalized path
-    
     Example:
         >>> normalize_path("users/0/name")
         '/users/0/name'
@@ -288,16 +241,12 @@ def normalize_path(path: str) -> str:
     """
     if not path:
         return "/"
-    
     # Ensure starts with /
     if not path.startswith("/"):
         path = "/" + path
-    
     # Remove trailing /
     path = path.rstrip("/")
-    
     # Handle root case
     if path == "":
         return "/"
-    
     return path

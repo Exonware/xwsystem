@@ -2,13 +2,11 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/archive/compression.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 30-Oct-2025
-
 Compression operations for gzip, bz2, and lzma.
-
 Priority 1 (Security): Safe compression/decompression
 Priority 2 (Usability): Auto-detect compression algorithm
 Priority 3 (Maintainability): Clean compression logic
@@ -20,23 +18,19 @@ import gzip
 import bz2
 from pathlib import Path
 from typing import Optional
-
 # lzma is standard library (Python 3.3+)
 import lzma
-
 from ..contracts import ICompression
 
 
 class Compression(ICompression):
     """
     Compression operations (gzip, bz2, lzma)
-    
     Use cases:
     - Compress large files
     - Network transfer
     - Storage optimization
     - Backup compression
-    
     Examples:
         >>> comp = Compression()
         >>> 
@@ -51,41 +45,34 @@ class Compression(ICompression):
         >>> comp.compress_file(Path("data.txt"))
         >>> # Creates data.txt.gz
     """
-    
+
     def compress(self, data: bytes, algorithm: str = 'gzip', level: int = 6) -> bytes:
         """
         Compress bytes.
-        
         Args:
             data: Data to compress
             algorithm: Compression algorithm (gzip, bz2, lzma)
             level: Compression level (1-9, higher = more compression)
-        
         Returns:
             Compressed bytes
         """
         if algorithm == 'gzip':
             return gzip.compress(data, compresslevel=level)
-        
         elif algorithm == 'bz2':
             return bz2.compress(data, compresslevel=level)
-        
         elif algorithm == 'lzma':
             if lzma is None:
                 raise ImportError("lzma module not available")
             return lzma.compress(data, preset=level)
-        
         else:
             raise ValueError(f"Unsupported compression algorithm: {algorithm}")
-    
+
     def decompress(self, data: bytes, algorithm: Optional[str] = None) -> bytes:
         """
         Decompress bytes.
-        
         Args:
             data: Compressed data
             algorithm: Algorithm (None = auto-detect)
-        
         Returns:
             Decompressed bytes
         """
@@ -104,31 +91,25 @@ class Compression(ICompression):
                 except Exception:
                     pass
                 raise ValueError("Cannot auto-detect compression algorithm")
-        
         if algorithm == 'gzip':
             return gzip.decompress(data)
-        
         elif algorithm == 'bz2':
             return bz2.decompress(data)
-        
         elif algorithm == 'lzma':
             if lzma is None:
                 raise ImportError("lzma module not available")
             return lzma.decompress(data)
-        
         else:
             raise ValueError(f"Unsupported compression algorithm: {algorithm}")
-    
+
     def compress_file(self, path: Path, algorithm: str = 'gzip', level: int = 6, **opts) -> Path:
         """
         Compress file.
-        
         Args:
             path: File to compress
             algorithm: Compression algorithm
             level: Compression level
             **opts: Algorithm-specific options (output path)
-        
         Returns:
             Path to compressed file (e.g., file.txt.gz)
         """
@@ -145,24 +126,19 @@ class Compression(ICompression):
                 output = Path(str(path) + f'.{algorithm}')
         else:
             output = Path(output)
-        
         # Read and compress
         data = path.read_bytes()
         compressed = self.compress(data, algorithm=algorithm, level=level)
-        
         # Write compressed data
         output.write_bytes(compressed)
-        
         return output
-    
+
     def decompress_file(self, path: Path, output: Optional[Path] = None) -> Path:
         """
         Decompress file.
-        
         Args:
             path: Compressed file
             output: Output path (None = auto-generate from input)
-        
         Returns:
             Path to decompressed file
         """
@@ -175,12 +151,9 @@ class Compression(ICompression):
                 output = Path(str(path) + '.decompressed')
         else:
             output = Path(output)
-        
         # Read and decompress
         data = path.read_bytes()
         decompressed = self.decompress(data)
-        
         # Write decompressed data
         output.write_bytes(decompressed)
-        
         return output

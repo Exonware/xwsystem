@@ -2,19 +2,16 @@
 #exonware/xwsystem/rust/examples/python_example.py
 """
 Example usage of exonware.rust.xwsystem from Python.
-
 This demonstrates how to use the Rust implementation of XWSystem
 from Python code.
 """
 
 try:
     from exonware.rust.xwsystem import version
-    
     print("=" * 60)
     print("XWSystem Rust - Python Bindings Example")
     print("=" * 60)
     print()
-    
     # Access version constants
     print("Version Constants:")
     print(f"  VERSION: {version.VERSION}")
@@ -25,7 +22,6 @@ try:
     print(f"  VERSION_SUFFIX: {version.VERSION_SUFFIX}")
     print(f"  VERSION_STRING: {version.VERSION_STRING}")
     print()
-    
     # Use version functions
     print("Version Functions:")
     print(f"  get_version(): {version.get_version()}")
@@ -34,7 +30,6 @@ try:
     print(f"  is_dev_version(): {version.is_dev_version()}")
     print(f"  is_release_version(): {version.is_release_version()}")
     print()
-    
     # Use VersionInfo class
     print("VersionInfo Class:")
     info = version.VersionInfo()
@@ -47,11 +42,9 @@ try:
     print(f"  info.suffix: {info.suffix}")
     print(f"  info.to_dict(): {info.to_dict()}")
     print()
-    
     print("=" * 60)
     print("Example completed successfully!")
     print("=" * 60)
-    
 except ImportError as e:
     print("ERROR: Failed to import Rust bindings")
     print(f"  {e}")

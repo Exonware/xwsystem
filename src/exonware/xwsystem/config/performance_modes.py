@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/config/performance_modes.py
 """
 Performance mode definitions for XWSystem framework.
-
 This module provides enums and utilities for managing performance optimization
 modes across different components of the XWSystem framework.
 """
@@ -13,48 +12,38 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Optional
 from .defs import AdvancedPerformanceMode
-
 import psutil
-
-
 # Use AdvancedPerformanceMode directly as PerformanceMode
 PerformanceMode = AdvancedPerformanceMode
 
 
 class PerformanceModes:
     """Performance mode constants."""
-    
     FAST = "fast"
     BALANCED = "balanced"
     MEMORY_OPTIMIZED = "memory_optimized"
-
-
 @dataclass
+
+
 class PerformanceProfile:
     """Configuration profile for different performance modes."""
-
     # Cache settings
     path_cache_size: int
     node_pool_size: int
     conversion_cache_size: int
-
     # Lazy loading thresholds
     lazy_threshold_dict: int
     lazy_threshold_list: int
-
     # Memory management
     enable_weak_refs: bool
     enable_object_pooling: bool
-
     # Performance features
     enable_path_caching: bool
     enable_conversion_caching: bool
     enable_optimized_iteration: bool
-
     # Threading
     enable_thread_safety: bool
     lock_timeout: float
-
     # Security limits (enforced)
     max_depth: int
     max_nodes: int
@@ -79,47 +68,41 @@ class PerformanceProfile:
             "max_nodes": self.max_nodes,
             "max_path_length": self.max_path_length,
         }
-
     @classmethod
+
     def from_dict(cls, data: dict[str, Any]) -> "PerformanceProfile":
         """Create profile from dictionary."""
         return cls(**data)
-
-
 @dataclass
+
+
 class AdaptiveProfile(PerformanceProfile):
     """Enhanced profile for ADAPTIVE mode with learning capabilities."""
-
     # Learning parameters
     learning_enabled: bool = True
     adaptation_threshold: float = 0.1  # 10% performance improvement threshold
     history_size: int = 1000  # Number of operations to remember
-
     # Monitoring settings
     monitor_interval: float = 1.0  # Check performance every second
     memory_pressure_threshold: float = 0.8  # 80% memory usage triggers adaptation
     cpu_usage_threshold: float = 0.7  # 70% CPU usage triggers adaptation
-
     # Hybrid strategy settings
     enable_hybrid_strategies: bool = True
     max_mode_switches_per_second: int = 10
     cooldown_period: float = 5.0  # Seconds between adaptations
-
     # Performance tracking
     operation_history: list[dict[str, Any]] = field(default_factory=list)
     mode_performance: dict[str, list[float]] = field(default_factory=dict)
     last_adaptation: float = field(default_factory=time.time)
-
-
 @dataclass
+
+
 class DualAdaptiveProfile(PerformanceProfile):
     """Smart dual-phase adaptive profile: fast cruise + intelligent deep-dive."""
-
     # Phase 1: CRUISE (Fast, low-overhead monitoring)
     cruise_sample_rate: int = 50  # Sample every 50th operation
     cruise_monitor_interval: float = 5.0  # Check system every 5 seconds
     cruise_history_size: int = 200  # Keep only 200 operations in cruise
-
     # Phase 2: DEEP_DIVE (Intensive learning)
     deep_dive_trigger_threshold: float = (
         0.15  # 15% performance degradation triggers deep-dive
@@ -127,33 +110,28 @@ class DualAdaptiveProfile(PerformanceProfile):
     deep_dive_duration: int = 500  # Deep-dive for 500 operations
     deep_dive_sample_rate: int = 1  # Sample every operation in deep-dive
     deep_dive_history_size: int = 1000  # Keep detailed history during deep-dive
-
     # Adaptive triggers
     memory_pressure_threshold: float = 0.8  # 80% memory usage triggers deep-dive
     cpu_pressure_threshold: float = 0.7  # 70% CPU usage triggers deep-dive
     performance_degradation_threshold: float = 0.2  # 20% degradation triggers deep-dive
-
     # Learning parameters
     learning_enabled: bool = True
     adaptation_threshold: float = 0.1  # 10% improvement threshold
     cooldown_period: float = 10.0  # 10 seconds between adaptations
-
     # Performance tracking
     operation_history: list[dict[str, Any]] = field(default_factory=list)
     mode_performance: dict[str, list[float]] = field(default_factory=dict)
     last_adaptation: float = field(default_factory=time.time)
-
     # Phase tracking
     current_phase: str = "CRUISE"  # CRUISE or DEEP_DIVE
     phase_start_time: float = field(default_factory=time.time)
     operations_in_phase: int = 0
     deep_dive_trigger_count: int = 0
-
-
 @dataclass
+
+
 class PerformanceMetrics:
     """Container for performance metrics and statistics."""
-
     operation_type: str
     mode_used: PerformanceMode
     execution_time: float
@@ -161,21 +139,20 @@ class PerformanceMetrics:
     cache_hits: int
     cache_misses: int
     timestamp: float = field(default_factory=time.time)
-
     @property
+
     def cache_hit_rate(self) -> float:
         """Calculate cache hit rate."""
         total = self.cache_hits + self.cache_misses
         return self.cache_hits / total if total > 0 else 0.0
-
     @property
+
     def performance_score(self) -> float:
         """Calculate overall performance score (higher is better)."""
         # Weighted combination of speed and efficiency
         speed_score = 1.0 / (1.0 + self.execution_time)  # Faster = higher score
         memory_score = 1.0 / (1.0 + self.memory_usage)  # Less memory = higher score
         cache_score = self.cache_hit_rate
-
         return 0.4 * speed_score + 0.3 * memory_score + 0.3 * cache_score
 
 
@@ -204,17 +181,14 @@ class AdaptiveLearningEngine:
         """Record performance metrics for learning."""
         with self._lock:
             self.metrics_history.append(metrics)
-
             # Keep history size manageable
             if len(self.metrics_history) > self.profile.history_size:
                 self.metrics_history.pop(0)
-
             # Track mode performance
             if metrics.mode_used != PerformanceMode.ADAPTIVE:
                 self.mode_performance[metrics.mode_used.name].append(
                     metrics.performance_score
                 )
-
                 # Keep only recent performance data
                 if len(self.mode_performance[metrics.mode_used.name]) > 100:
                     self.mode_performance[metrics.mode_used.name].pop(0)
@@ -222,29 +196,23 @@ class AdaptiveLearningEngine:
     def get_system_metrics(self) -> dict[str, float]:
         """Get current system metrics."""
         current_time = time.time()
-
         # Cache system metrics for a short period
         if current_time - self._last_system_check < self.profile.monitor_interval:
             return self.system_metrics[-1] if self.system_metrics else {}
-
         try:
             memory = psutil.virtual_memory()
             cpu = psutil.cpu_percent(interval=0.1)
-
             metrics = {
                 "memory_usage": memory.percent / 100.0,
                 "cpu_usage": cpu / 100.0,
                 "memory_available_mb": memory.available / (1024 * 1024),
                 "timestamp": current_time,
             }
-
             self.system_metrics.append(metrics)
             self._last_system_check = current_time
-
             # Keep only recent system metrics
             if len(self.system_metrics) > 100:
                 self.system_metrics.pop(0)
-
             return metrics
         except Exception:
             # Fallback if psutil is not available
@@ -258,11 +226,9 @@ class AdaptiveLearningEngine:
     def should_adapt(self) -> bool:
         """Determine if adaptation is needed."""
         current_time = time.time()
-
         # Check cooldown period
         if current_time - self.profile.last_adaptation < self.profile.cooldown_period:
             return False
-
         # Check system pressure
         system_metrics = self.get_system_metrics()
         if (
@@ -271,15 +237,12 @@ class AdaptiveLearningEngine:
             or system_metrics.get("cpu_usage", 0) > self.profile.cpu_usage_threshold
         ):
             return True
-
         # Check if we have enough data for learning
         if len(self.metrics_history) < 10:
             return False
-
         # Check for performance degradation
         recent_metrics = self.metrics_history[-10:]
         avg_performance = statistics.mean(m.performance_score for m in recent_metrics)
-
         # If recent performance is significantly worse than historical average
         if len(self.metrics_history) >= 50:
             historical_avg = statistics.mean(
@@ -289,29 +252,24 @@ class AdaptiveLearningEngine:
                 1 - self.profile.adaptation_threshold
             ):
                 return True
-
         return False
 
     def get_optimal_mode(self, operation_type: str = "general") -> PerformanceMode:
         """Determine the optimal performance mode based on learning."""
         if not self.profile.learning_enabled or len(self.metrics_history) < 5:
             return PerformanceMode.AUTO
-
         # Get system metrics
         system_metrics = self.get_system_metrics()
         memory_pressure = system_metrics.get("memory_usage", 0.5)
         cpu_pressure = system_metrics.get("cpu_usage", 0.3)
-
         # Filter metrics by operation type if specified
         relevant_metrics = [
             m
             for m in self.metrics_history
             if operation_type == "general" or m.operation_type == operation_type
         ]
-
         if not relevant_metrics:
             return PerformanceMode.AUTO
-
         # Calculate mode performance scores
         mode_scores = {}
         for mode_name in self.mode_performance.keys():
@@ -320,11 +278,9 @@ class AdaptiveLearningEngine:
             ]
             if not mode_metrics:
                 continue
-
             # Calculate weighted score based on recency and performance
             recent_metrics = mode_metrics[-20:]  # Last 20 operations
             avg_score = statistics.mean(m.performance_score for m in recent_metrics)
-
             # Adjust for system pressure
             if memory_pressure > 0.8:
                 # Prefer memory-efficient modes under memory pressure
@@ -338,12 +294,9 @@ class AdaptiveLearningEngine:
                     avg_score *= 1.2
                 elif mode_name == "OPTIMIZED":
                     avg_score *= 0.9
-
             mode_scores[mode_name] = avg_score
-
         if not mode_scores:
             return PerformanceMode.AUTO
-
         # Return the highest performing mode
         best_mode_name = max(mode_scores.items(), key=lambda x: x[1])[0]
         return PerformanceMode.from_string(best_mode_name)
@@ -351,15 +304,12 @@ class AdaptiveLearningEngine:
     def adapt_profile(self, new_mode: PerformanceMode) -> None:
         """Adapt the profile based on the new optimal mode."""
         self.profile.last_adaptation = time.time()
-
         # Get the base profile for the new mode
         base_profile = PerformanceProfiles.get_profile(new_mode)
-
         # Update the adaptive profile with base settings
         for field in base_profile.__dataclass_fields__:
             if field != "operation_history" and field != "mode_performance":
                 setattr(self.profile, field, getattr(base_profile, field))
-
         # Apply hybrid optimizations if enabled
         if self.profile.enable_hybrid_strategies:
             self._apply_hybrid_optimizations()
@@ -368,7 +318,6 @@ class AdaptiveLearningEngine:
         """Apply hybrid optimization strategies."""
         system_metrics = self.get_system_metrics()
         memory_pressure = system_metrics.get("memory_usage", 0.5)
-
         # Adjust cache sizes based on memory pressure
         if memory_pressure > 0.7:
             self.profile.path_cache_size = max(256, self.profile.path_cache_size // 2)
@@ -380,12 +329,10 @@ class AdaptiveLearningEngine:
             self.profile.conversion_cache_size = min(
                 1024, self.profile.conversion_cache_size * 2
             )
-
         # Adjust lazy loading thresholds based on performance history
         if len(self.metrics_history) >= 20:
             recent_metrics = self.metrics_history[-20:]
             avg_memory = statistics.mean(m.memory_usage for m in recent_metrics)
-
             if avg_memory > 100:  # High memory usage
                 self.profile.lazy_threshold_dict = max(
                     5, self.profile.lazy_threshold_dict // 2
@@ -428,7 +375,6 @@ class DualPhaseAdaptiveEngine:
         self._lock = threading.RLock()
         self._last_system_check = 0.0
         self._operation_counter = 0
-
         # Initialize mode performance tracking
         self.mode_performance: dict[str, list[float]] = {
             "AUTO": [],
@@ -445,13 +391,11 @@ class DualPhaseAdaptiveEngine:
         with self._lock:
             self._operation_counter += 1
             self.profile.operations_in_phase += 1
-
             # Phase 1: CRUISE - Lightweight sampling
             if self.profile.current_phase == "CRUISE":
                 if self._operation_counter % self.profile.cruise_sample_rate == 0:
                     self._record_cruise_metric(metrics)
                     self._check_cruise_triggers(metrics)
-
             # Phase 2: DEEP_DIVE - Intensive sampling
             elif self.profile.current_phase == "DEEP_DIVE":
                 if self._operation_counter % self.profile.deep_dive_sample_rate == 0:
@@ -461,18 +405,15 @@ class DualPhaseAdaptiveEngine:
     def _record_cruise_metric(self, metrics: PerformanceMetrics) -> None:
         """Record metric in cruise phase (lightweight)."""
         self.metrics_history.append(metrics)
-
         # Keep cruise history small
         if len(self.metrics_history) > self.profile.cruise_history_size:
             self.metrics_history.pop(0)
-
         # Track mode performance
         if metrics.mode_used != PerformanceMode.DUAL_ADAPTIVE:
             mode_name = metrics.mode_used.name
             if mode_name not in self.mode_performance:
                 self.mode_performance[mode_name] = []
             self.mode_performance[mode_name].append(metrics.performance_score)
-
             # Keep only recent data
             if len(self.mode_performance[mode_name]) > 50:
                 self.mode_performance[mode_name] = self.mode_performance[mode_name][
@@ -482,18 +423,15 @@ class DualPhaseAdaptiveEngine:
     def _record_deep_dive_metric(self, metrics: PerformanceMetrics) -> None:
         """Record metric in deep-dive phase (intensive)."""
         self.metrics_history.append(metrics)
-
         # Keep detailed history during deep-dive
         if len(self.metrics_history) > self.profile.deep_dive_history_size:
             self.metrics_history.pop(0)
-
         # Track mode performance with more detail
         if metrics.mode_used != PerformanceMode.DUAL_ADAPTIVE:
             mode_name = metrics.mode_used.name
             if mode_name not in self.mode_performance:
                 self.mode_performance[mode_name] = []
             self.mode_performance[mode_name].append(metrics.performance_score)
-
             # Keep more data during deep-dive
             if len(self.mode_performance[mode_name]) > 200:
                 self.mode_performance[mode_name] = self.mode_performance[mode_name][
@@ -506,17 +444,14 @@ class DualPhaseAdaptiveEngine:
         system_metrics = self.get_system_metrics()
         memory_pressure = system_metrics.get("memory_usage", 0.5)
         cpu_pressure = system_metrics.get("cpu_usage", 0.3)
-
         # Check performance degradation
         performance_degradation = self._calculate_performance_degradation()
-
         # Trigger deep-dive if any threshold is exceeded
         if (
             memory_pressure > self.profile.memory_pressure_threshold
             or cpu_pressure > self.profile.cpu_pressure_threshold
             or performance_degradation > self.profile.performance_degradation_threshold
         ):
-
             self._trigger_deep_dive(
                 f"System pressure or performance degradation detected"
             )
@@ -533,7 +468,6 @@ class DualPhaseAdaptiveEngine:
             self.profile.phase_start_time = time.time()
             self.profile.operations_in_phase = 0
             self.profile.deep_dive_trigger_count += 1
-
             # Log the transition
             print(f"🔬 DUAL_ADAPTIVE: Entering DEEP_DIVE phase - {reason}")
 
@@ -542,15 +476,12 @@ class DualPhaseAdaptiveEngine:
         with self._lock:
             # Analyze deep-dive data and find optimal mode
             optimal_mode = self._analyze_deep_dive_data()
-
             # Apply optimizations
             self._apply_deep_dive_optimizations(optimal_mode)
-
             # Return to cruise phase
             self.profile.current_phase = "CRUISE"
             self.profile.phase_start_time = time.time()
             self.profile.operations_in_phase = 0
-
             print(
                 f"🚗 DUAL_ADAPTIVE: Returning to CRUISE phase with {optimal_mode.name} optimizations"
             )
@@ -559,26 +490,21 @@ class DualPhaseAdaptiveEngine:
         """Calculate recent performance degradation."""
         if len(self.metrics_history) < 10:
             return 0.0
-
         recent_metrics = self.metrics_history[-10:]
         current_avg = statistics.mean(m.performance_score for m in recent_metrics)
-
         if len(self.metrics_history) >= 50:
             historical_metrics = self.metrics_history[-50:-10]
             historical_avg = statistics.mean(
                 m.performance_score for m in historical_metrics
             )
-
             if historical_avg > 0:
                 return (historical_avg - current_avg) / historical_avg
-
         return 0.0
 
     def _analyze_deep_dive_data(self) -> PerformanceMode:
         """Analyze deep-dive data to find optimal performance mode."""
         if len(self.metrics_history) < 20:
             return PerformanceMode.OPTIMIZED  # Default to fastest
-
         # Calculate mode performance scores
         mode_scores = {}
         for mode_name, scores in self.mode_performance.items():
@@ -587,10 +513,8 @@ class DualPhaseAdaptiveEngine:
                 recent_scores = scores[-20:]
                 avg_score = statistics.mean(recent_scores)
                 mode_scores[mode_name] = avg_score
-
         if not mode_scores:
             return PerformanceMode.OPTIMIZED
-
         # Return the highest performing mode
         best_mode_name = max(mode_scores.items(), key=lambda x: x[1])[0]
         return PerformanceMode.from_string(best_mode_name)
@@ -599,7 +523,6 @@ class DualPhaseAdaptiveEngine:
         """Apply optimizations based on deep-dive analysis."""
         # Get the optimal profile
         optimal_profile = PerformanceProfiles.get_profile(optimal_mode)
-
         # Apply optimal settings to current profile
         for field in optimal_profile.__dataclass_fields__:
             if field not in [
@@ -611,7 +534,6 @@ class DualPhaseAdaptiveEngine:
                 "deep_dive_trigger_count",
             ]:
                 setattr(self.profile, field, getattr(optimal_profile, field))
-
         # Apply hybrid optimizations
         self._apply_hybrid_optimizations()
 
@@ -619,7 +541,6 @@ class DualPhaseAdaptiveEngine:
         """Apply hybrid optimization strategies."""
         system_metrics = self.get_system_metrics()
         memory_pressure = system_metrics.get("memory_usage", 0.5)
-
         # Adjust cache sizes based on memory pressure
         if memory_pressure > 0.7:
             self.profile.path_cache_size = max(256, self.profile.path_cache_size // 2)
@@ -635,35 +556,28 @@ class DualPhaseAdaptiveEngine:
     def get_system_metrics(self) -> dict[str, float]:
         """Get current system metrics (cached for efficiency)."""
         current_time = time.time()
-
         # Cache system metrics based on current phase
         cache_duration = (
             self.profile.cruise_monitor_interval
             if self.profile.current_phase == "CRUISE"
             else 1.0
         )
-
         if current_time - self._last_system_check < cache_duration:
             return self.system_metrics[-1] if self.system_metrics else {}
-
         try:
             memory = psutil.virtual_memory()
             cpu = psutil.cpu_percent(interval=0.1)
-
             metrics = {
                 "memory_usage": memory.percent / 100.0,
                 "cpu_usage": cpu / 100.0,
                 "memory_available_mb": memory.available / (1024 * 1024),
                 "timestamp": current_time,
             }
-
             self.system_metrics.append(metrics)
             self._last_system_check = current_time
-
             # Keep only recent system metrics
             if len(self.system_metrics) > 50:
                 self.system_metrics.pop(0)
-
             return metrics
         except Exception:
             # Fallback if psutil is not available
@@ -689,13 +603,12 @@ class DualPhaseAdaptiveEngine:
 
 class PerformanceProfiles:
     """Predefined performance profiles for different optimization strategies."""
-
     @staticmethod
+
     def get_profile(
         mode: PerformanceMode, data_size: Optional[int] = None
     ) -> PerformanceProfile:
         """Get performance profile based on mode and data characteristics."""
-
         if mode == PerformanceMode.ADAPTIVE:
             # Start with DEFAULT profile and enhance with adaptive features
             # Avoid recursion by directly creating the base profile
@@ -728,7 +641,6 @@ class PerformanceProfiles:
                 max_mode_switches_per_second=10,
                 cooldown_period=5.0,
             )
-
         if mode == PerformanceMode.DUAL_ADAPTIVE:
             # Start with FAST profile for optimal cruise performance
             # Avoid recursion by directly creating the base profile
@@ -769,7 +681,6 @@ class PerformanceProfiles:
                 adaptation_threshold=0.15,  # 15% improvement threshold (was 0.1)
                 cooldown_period=15.0,  # 15 seconds between adaptations (was 10.0)
             )
-
         if mode == PerformanceMode.DEFAULT:
             return PerformanceProfile(
                 path_cache_size=1024,
@@ -788,7 +699,6 @@ class PerformanceProfiles:
                 max_nodes=1_000_000,
                 max_path_length=1000,
             )
-
         elif mode == PerformanceMode.FAST:
             return PerformanceProfile(
                 path_cache_size=2048,
@@ -807,7 +717,6 @@ class PerformanceProfiles:
                 max_nodes=1_000_000,
                 max_path_length=1000,
             )
-
         elif mode == PerformanceMode.OPTIMIZED:
             return PerformanceProfile(
                 path_cache_size=256,
@@ -826,11 +735,9 @@ class PerformanceProfiles:
                 max_nodes=1_000_000,
                 max_path_length=1000,
             )
-
         elif mode == PerformanceMode.AUTO:
             if data_size is None:
                 return PerformanceProfiles.get_profile(PerformanceMode.DEFAULT)
-
             # Auto-selection based on data size
             if data_size < 1000:
                 # For small data, use FAST mode but ensure thread safety is off
@@ -841,41 +748,33 @@ class PerformanceProfiles:
                 return PerformanceProfiles.get_profile(PerformanceMode.OPTIMIZED)
             else:
                 return PerformanceProfiles.get_profile(PerformanceMode.DEFAULT)
-
         elif mode == PerformanceMode.PARENT:
             # For PARENT mode, we'll need to get the parent's profile
             # This will be handled by the manager
             return PerformanceProfiles.get_profile(PerformanceMode.DEFAULT)
-
         elif mode == PerformanceMode.MANUAL:
             # MANUAL mode requires explicit configuration
             return PerformanceProfiles.get_profile(PerformanceMode.DEFAULT)
-
         else:
             return PerformanceProfiles.get_profile(PerformanceMode.DEFAULT)
-
     @staticmethod
+
     def estimate_data_size(data: Any) -> int:
         """Estimate the size/complexity of data for mode selection."""
         if data is None:
             return 0
-
         if isinstance(data, (str, bytes)):
             return len(data)
-
         if isinstance(data, (int, float, bool)):
             return 1
-
         if isinstance(data, (list, tuple)):
             return sum(PerformanceProfiles.estimate_data_size(item) for item in data)
-
         if isinstance(data, dict):
             return sum(
                 PerformanceProfiles.estimate_data_size(key)
                 + PerformanceProfiles.estimate_data_size(value)
                 for key, value in data.items()
             )
-
         # For other types, estimate based on string representation
         return len(str(data))
 
@@ -926,32 +825,27 @@ class PerformanceModeManager:
         with self._lock:
             effective_mode = self._get_effective_mode()
             profile = PerformanceProfiles.get_profile(effective_mode, data_size)
-
             # Apply manual overrides
             for key, value in self._manual_overrides.items():
                 if hasattr(profile, key):
                     setattr(profile, key, value)
-
             return profile
 
     def _get_effective_mode(self) -> PerformanceMode:
         """Get the effective mode considering inheritance and adaptation."""
         if self._mode == PerformanceMode.PARENT:
             return self._parent_mode or PerformanceMode.DEFAULT
-
         if self._mode == PerformanceMode.ADAPTIVE and self._adaptive_engine:
             # Check if adaptation is needed
             if self._adaptive_engine.should_adapt():
                 optimal_mode = self._adaptive_engine.get_optimal_mode()
                 self._adaptive_engine.adapt_profile(optimal_mode)
                 return optimal_mode
-
         if self._mode == PerformanceMode.DUAL_ADAPTIVE and self._dual_adaptive_engine:
             # Check if dual adaptive is needed
             # For now, we'll just return the current mode, as dual adaptive is a separate engine
             # The dual adaptive engine handles its own adaptation logic
             return self._mode
-
         return self._mode
 
     def record_operation(
@@ -974,7 +868,6 @@ class PerformanceModeManager:
                 cache_misses=cache_misses,
             )
             self._adaptive_engine.record_operation(metrics)
-
         if self._dual_adaptive_engine:
             metrics = PerformanceMetrics(
                 operation_type=operation_type,
@@ -989,13 +882,10 @@ class PerformanceModeManager:
     def get_adaptive_stats(self) -> dict[str, Any]:
         """Get adaptive learning statistics."""
         stats: dict[str, Any] = {}
-
         if self._adaptive_engine:
             stats.update(self._adaptive_engine.get_adaptive_stats())
-
         if self._dual_adaptive_engine:
             stats.update(self._dual_adaptive_engine.get_adaptive_stats())
-
         return stats
 
     def reset(self) -> None:

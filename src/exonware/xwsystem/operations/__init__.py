@@ -2,18 +2,15 @@
 #exonware/xwsystem/src/exonware/xwsystem/operations/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: October 26, 2025
-
 Universal operations library for data manipulation.
 """
 
 from ..config.logging_setup import get_logger
-
 logger = get_logger("xwsystem.operations")
-
 # Import from submodules
 from .defs import MergeStrategy, DiffMode, PatchOperation, DiffResult, PatchResult
 from .base import (
@@ -25,7 +22,6 @@ from .contracts import (
 from .merge import MergeOperation, deep_merge
 from .diff import DiffOperation, generate_diff
 from .patch import PatchOperationImpl, apply_patch
-
 __all__ = [
     # Enums and data classes
     "MergeStrategy",

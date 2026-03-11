@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/validation/data_validator.py
 """
 Data Validation Utilities for XSystem
-
 These utilities provide data structure validation, path validation, and memory estimation
 capabilities. They were previously embedded in xData and have been extracted for
 framework-wide reusability.
@@ -9,7 +8,6 @@ framework-wide reusability.
 
 import sys
 from typing import Any, Optional
-
 from ..config import (
     DEFAULT_MAX_DICT_DEPTH,
     DEFAULT_MAX_PATH_DEPTH,
@@ -17,10 +15,7 @@ from ..config import (
     DEFAULT_MAX_RESOLUTION_DEPTH,
 )
 from .errors import ValidationError, PathValidationError, DepthValidationError, MemoryValidationError
-
 # ======================
-
-
 # ======================
 # Data Structure Validation
 # ======================
@@ -31,32 +26,26 @@ def check_data_depth(
 ) -> None:
     """
     Check data structure depth to prevent excessive nesting.
-
     Args:
         data: Data structure to check
         current_depth: Current nesting depth
         max_depth: Maximum allowed depth (uses default if None)
-
     Raises:
         DepthValidationError: If data structure exceeds maximum depth
     """
     if max_depth is None:
         max_depth = DEFAULT_MAX_DICT_DEPTH
-
     if current_depth > max_depth:
         raise DepthValidationError(
             f"Data structure depth ({current_depth}) exceeds maximum allowed "
             f"({max_depth}). This may indicate malformed or malicious data."
         )
-
     if isinstance(data, dict):
         for key, value in data.items():
             check_data_depth(value, current_depth + 1, max_depth)
     elif isinstance(data, list):
         for item in data:
             check_data_depth(item, current_depth + 1, max_depth)
-
-
 # ======================
 # Path Validation
 # ======================
@@ -65,11 +54,9 @@ def check_data_depth(
 def validate_path_input(path: str, operation_name: str = "path_operation") -> None:
     """
     Validate path input for operations to prevent attacks and errors.
-
     Args:
         path: Path string to validate
         operation_name: Name of the operation for error context
-
     Raises:
         PathValidationError: If path is invalid or potentially malicious
         TypeError: If path is not a string
@@ -77,17 +64,14 @@ def validate_path_input(path: str, operation_name: str = "path_operation") -> No
     # Check for None/empty after string conversion
     if path is None:
         raise PathValidationError(f"{operation_name}: Path cannot be None")
-
     if not isinstance(path, str):
         raise TypeError(f"{operation_name}: Path must be a string, got {type(path)}")
-
     # Check path length to prevent memory exhaustion
     if len(path) > DEFAULT_MAX_PATH_LENGTH:
         raise PathValidationError(
             f"{operation_name}: Path length ({len(path)}) exceeds maximum allowed "
             f"({DEFAULT_MAX_PATH_LENGTH}). This may indicate malicious input."
         )
-
     # Check for potentially malicious patterns
     malicious_patterns = [
         "../" * 10,  # Directory traversal
@@ -95,7 +79,6 @@ def validate_path_input(path: str, operation_name: str = "path_operation") -> No
         "." * 100,  # Excessive dots
         "\\" * 100,  # Excessive backslashes
     ]
-
     for pattern in malicious_patterns:
         if pattern in path:
             raise PathValidationError(
@@ -108,11 +91,9 @@ def validate_path_depth(
 ) -> None:
     """
     Validate path depth to prevent excessive traversal.
-
     Args:
         path_parts: List of path segments
         operation_name: Name of the operation for error context
-
     Raises:
         PathValidationError: If path depth exceeds limits
     """
@@ -121,8 +102,6 @@ def validate_path_depth(
             f"{operation_name}: Path depth ({len(path_parts)}) exceeds maximum allowed "
             f"({DEFAULT_MAX_PATH_DEPTH}). This may indicate malicious input."
         )
-
-
 # ======================
 # Resolution Depth Validation
 # ======================
@@ -133,11 +112,9 @@ def validate_resolution_depth(
 ) -> None:
     """
     Validate reference resolution depth to prevent infinite recursion.
-
     Args:
         current_depth: Current resolution depth
         operation_name: Name of the operation for error context
-
     Raises:
         DepthValidationError: If depth limit exceeded
     """
@@ -146,8 +123,6 @@ def validate_resolution_depth(
             f"{operation_name}: Resolution depth ({current_depth}) exceeds maximum allowed "
             f"({DEFAULT_MAX_RESOLUTION_DEPTH}). This may indicate circular references or malicious data."
         )
-
-
 # ======================
 # Memory Estimation
 # ======================
@@ -156,10 +131,8 @@ def validate_resolution_depth(
 def estimate_memory_usage(data: Any) -> float:
     """
     Estimate memory usage of data structure in MB.
-
     Args:
         data: Data structure to estimate
-
     Returns:
         float: Estimated memory usage in MB
     """
@@ -183,8 +156,6 @@ def estimate_memory_usage(data: Any) -> float:
     except Exception:
         # If estimation fails, return conservative estimate
         return 1.0  # 1MB conservative estimate
-
-
 # ======================
 # DataValidator Class
 # ======================
@@ -193,7 +164,6 @@ def estimate_memory_usage(data: Any) -> float:
 class DataValidator:
     """
     Comprehensive data validator with configurable limits.
-
     This class provides a unified interface for all data validation
     operations with customizable limits and consistent error handling.
     """
@@ -207,7 +177,6 @@ class DataValidator:
     ):
         """
         Initialize validator with custom limits.
-
         Args:
             max_dict_depth: Maximum data structure nesting depth
             max_path_length: Maximum path string length
@@ -224,7 +193,6 @@ class DataValidator:
     ) -> None:
         """
         Validate data structure depth and complexity.
-        
         This is a convenience method that wraps validate_data_structure.
         """
         self.validate_data_structure(data, operation_name)
@@ -241,7 +209,6 @@ class DataValidator:
     def validate_path(self, path: str, operation_name: str = "path_validation") -> None:
         """Validate path string and depth."""
         validate_path_input(path, operation_name)
-
         # Also validate path depth if it's a delimited path
         if "." in path:
             path_parts = path.split(".")

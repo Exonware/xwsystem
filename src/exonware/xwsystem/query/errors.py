@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """
 #exonware/xwsystem/src/exonware/xwsystem/query/errors.py
-
 Query provider errors (foundation layer).
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 28-Dec-2025
 """
 

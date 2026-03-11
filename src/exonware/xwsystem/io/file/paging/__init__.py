@@ -2,15 +2,12 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/file/paging/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 30-Oct-2025
-
 Modular paging system with strategy pattern.
-
 Like codec system but for paging algorithms!
-
 Priority 1 (Security): Safe paging operations
 Priority 2 (Usability): Auto-detection of best strategy
 Priority 3 (Maintainability): Pluggable strategies
@@ -28,13 +25,11 @@ from .registry import (
     get_paging_strategy,
     auto_detect_paging_strategy,
 )
-
 __all__ = [
     # Strategies
     "BytePagingStrategy",
     "LinePagingStrategy",
     "RecordPagingStrategy",
-    
     # Registry
     "PagingStrategyRegistry",
     "get_global_paging_registry",

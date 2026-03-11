@@ -1,4 +1,4 @@
-﻿# ISO/IEC Lifecycle Standards
+# ISO/IEC Lifecycle Standards
 
 **Included Standards:**
 - **ISO/IEC 12207** � Software life cycle processes  
@@ -19,7 +19,7 @@
 
 ## Planned Deliverables
 
-- Process mapping document linking GUIDE_PLAN phases (documented in REF_PLAN.md) to ISO requirements.  
+- Process mapping document linking GUIDE_PLAN phases (documented in REF_21_PLAN.md) to ISO requirements.  
 - Assessment plan (SPICE maturity goals per process).  
 - Metrics catalogue (quality, delivery, compliance KPIs).  
 - Evidence repository for assessments and improvement actions.

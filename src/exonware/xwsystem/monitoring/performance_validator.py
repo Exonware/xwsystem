@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/performance_validator.py
 """
 Performance Validation and Monitoring for XSystem Library.
-
 This module provides comprehensive performance validation, statistical analysis,
 and regression detection for production deployment.
 """
@@ -12,40 +11,35 @@ import time
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
-
 from ..config.logging_setup import get_logger
-
 logger = get_logger("xwsystem.performance_validator")
-
-
 @dataclass
+
+
 class PerformanceMetric:
     """Performance metric data point."""
-
     operation_name: str
     duration: float  # seconds
     timestamp: float
     success: bool = True
     error_info: Optional[dict[str, Any]] = None
     additional_data: dict[str, Any] = field(default_factory=dict)
-
-
 @dataclass
+
+
 class PerformanceThreshold:
     """Performance threshold configuration."""
-
     operation_name: str
     max_duration: float  # seconds
     max_error_rate: float = 0.1  # 10%
     min_throughput: float = 0.0  # operations per second
     percentile_95: Optional[float] = None  # 95th percentile threshold
     percentile_99: Optional[float] = None  # 99th percentile threshold
-
-
 @dataclass
+
+
 class PerformanceReport:
     """Performance analysis report."""
-
     operation_name: str
     total_operations: int
     successful_operations: int
@@ -65,7 +59,6 @@ class PerformanceReport:
 class PerformanceValidator:
     """
     Comprehensive performance validation and monitoring system.
-
     Features:
     - Real-time performance monitoring
     - Statistical analysis (percentiles, averages)
@@ -85,28 +78,23 @@ class PerformanceValidator:
         self.max_metrics_per_operation = max_metrics_per_operation
         self.validation_interval = validation_interval
         self.enable_regression_detection = enable_regression_detection
-
         # Performance data storage
         self._metrics: dict[str, deque] = defaultdict(
             lambda: deque(maxlen=max_metrics_per_operation)
         )
         self._thresholds: dict[str, PerformanceThreshold] = {}
         self._baseline_performance: dict[str, dict[str, float]] = {}
-
         # Thread safety
         self._lock = threading.RLock()
         self._validation_thread: Optional[threading.Thread] = None
         self._stop_validation = threading.Event()
-
         # Statistics
         self._total_metrics_recorded = 0
         self._threshold_violations = 0
         self._regressions_detected = 0
-
         # Callbacks
         self._threshold_violation_callbacks: list[Callable] = []
         self._regression_detected_callbacks: list[Callable] = []
-
         logger.info("📊 Performance validator initialized")
 
     def register_threshold(self, threshold: PerformanceThreshold) -> None:
@@ -126,7 +114,6 @@ class PerformanceValidator:
         """Record a performance metric."""
         if additional_data is None:
             additional_data = {}
-
         metric = PerformanceMetric(
             operation_name=operation_name,
             duration=duration,
@@ -135,7 +122,6 @@ class PerformanceValidator:
             error_info=error_info,
             additional_data=additional_data,
         )
-
         with self._lock:
             self._metrics[operation_name].append(metric)
             self._total_metrics_recorded += 1
@@ -149,10 +135,8 @@ class PerformanceValidator:
         """Calculate percentiles for a list of durations."""
         if not durations:
             return {}
-
         sorted_durations = sorted(durations)
         n = len(sorted_durations)
-
         return {
             "min": sorted_durations[0],
             "max": sorted_durations[-1],
@@ -182,21 +166,17 @@ class PerformanceValidator:
                 error_rate=0.0,
                 throughput=0.0,
             )
-
         # Calculate basic statistics
         durations = [m.duration for m in metrics]
         successful = [m for m in metrics if m.success]
         failed = [m for m in metrics if not m.success]
-
         percentiles = self.calculate_percentiles(durations)
-
         # Calculate throughput (operations per second)
         if metrics:
             time_span = metrics[-1].timestamp - metrics[0].timestamp
             throughput = len(metrics) / time_span if time_span > 0 else 0.0
         else:
             throughput = 0.0
-
         # Create report
         report = PerformanceReport(
             operation_name=operation_name,
@@ -212,27 +192,22 @@ class PerformanceValidator:
             error_rate=len(failed) / len(metrics) if metrics else 0.0,
             throughput=throughput,
         )
-
         # Check thresholds
         threshold = self._thresholds.get(operation_name)
         if threshold:
             violations = []
-
             if report.average_duration > threshold.max_duration:
                 violations.append(
                     f"Average duration ({report.average_duration:.3f}s) exceeds threshold ({threshold.max_duration:.3f}s)"
                 )
-
             if report.error_rate > threshold.max_error_rate:
                 violations.append(
                     f"Error rate ({report.error_rate:.1%}) exceeds threshold ({threshold.max_error_rate:.1%})"
                 )
-
             if report.throughput < threshold.min_throughput:
                 violations.append(
                     f"Throughput ({report.throughput:.2f} ops/s) below threshold ({threshold.min_throughput:.2f} ops/s)"
                 )
-
             if (
                 threshold.percentile_95
                 and report.percentile_95 > threshold.percentile_95
@@ -240,7 +215,6 @@ class PerformanceValidator:
                 violations.append(
                     f"95th percentile ({report.percentile_95:.3f}s) exceeds threshold ({threshold.percentile_95:.3f}s)"
                 )
-
             if (
                 threshold.percentile_99
                 and report.percentile_99 > threshold.percentile_99
@@ -248,48 +222,39 @@ class PerformanceValidator:
                 violations.append(
                     f"99th percentile ({report.percentile_99:.3f}s) exceeds threshold ({threshold.percentile_99:.3f}s)"
                 )
-
             report.threshold_violations = violations
-
             if violations:
                 self._threshold_violations += 1
                 logger.warning(
                     f"⚠️ Performance threshold violations for '{operation_name}': {violations}"
                 )
-
                 # Trigger callbacks
                 for callback in self._threshold_violation_callbacks:
                     try:
                         callback(operation_name, violations, report)
                     except Exception as e:
                         logger.error(f"Error in threshold violation callback: {e}")
-
         return report
 
     def validate_all_operations(self) -> dict[str, PerformanceReport]:
         """Validate performance for all operations."""
         with self._lock:
             operation_names = set(self._metrics.keys())
-
         reports = {}
         for operation_name in operation_names:
             reports[operation_name] = self.validate_performance(operation_name)
-
         return reports
 
     def detect_regression(self, operation_name: str) -> Optional[dict[str, Any]]:
         """Detect performance regression compared to baseline."""
         if not self.enable_regression_detection:
             return None
-
         baseline = self._baseline_performance.get(operation_name)
         if not baseline:
             return None
-
         current_report = self.validate_performance(operation_name)
         if current_report.total_operations < 10:  # Need sufficient data
             return None
-
         regression_info = {
             "operation_name": operation_name,
             "baseline": baseline,
@@ -302,16 +267,13 @@ class PerformanceValidator:
             "changes": {},
             "is_regression": False,
         }
-
         # Calculate changes
         for metric in ["average_duration", "error_rate", "percentile_95"]:
             baseline_value = baseline.get(metric, 0.0)
             current_value = regression_info["current"][metric]
-
             if baseline_value > 0:
                 change_pct = ((current_value - baseline_value) / baseline_value) * 100
                 regression_info["changes"][metric] = change_pct
-
                 # Check for significant regression
                 if metric == "average_duration" and change_pct > 20:  # 20% slower
                     regression_info["is_regression"] = True
@@ -319,7 +281,6 @@ class PerformanceValidator:
                     regression_info["is_regression"] = True
                 elif metric == "percentile_95" and change_pct > 25:  # 25% slower p95
                     regression_info["is_regression"] = True
-
         # Check throughput regression
         baseline_throughput = baseline.get("throughput", 0.0)
         current_throughput = current_report.throughput
@@ -328,23 +289,19 @@ class PerformanceValidator:
                 (current_throughput - baseline_throughput) / baseline_throughput
             ) * 100
             regression_info["changes"]["throughput"] = throughput_change
-
             if throughput_change < -20:  # 20% lower throughput
                 regression_info["is_regression"] = True
-
         if regression_info["is_regression"]:
             self._regressions_detected += 1
             logger.warning(
                 f"📉 Performance regression detected for '{operation_name}': {regression_info['changes']}"
             )
-
             # Trigger callbacks
             for callback in self._regression_detected_callbacks:
                 try:
                     callback(regression_info)
                 except Exception as e:
                     logger.error(f"Error in regression detection callback: {e}")
-
         return regression_info
 
     def set_baseline(self, operation_name: str) -> None:
@@ -355,7 +312,6 @@ class PerformanceValidator:
                 f"⚠️ Insufficient data for baseline: {report.total_operations} operations"
             )
             return
-
         with self._lock:
             self._baseline_performance[operation_name] = {
                 "average_duration": report.average_duration,
@@ -364,7 +320,6 @@ class PerformanceValidator:
                 "percentile_95": report.percentile_95,
                 "timestamp": time.time(),
             }
-
         logger.info(
             f"📊 Baseline set for '{operation_name}': avg={report.average_duration:.3f}s, error_rate={report.error_rate:.1%}"
         )
@@ -374,7 +329,6 @@ class PerformanceValidator:
         if self._validation_thread is not None and self._validation_thread.is_alive():
             logger.warning("Performance validation already running")
             return
-
         self._stop_validation.clear()
         self._validation_thread = threading.Thread(
             target=self._validation_loop, name="PerformanceValidator", daemon=True
@@ -387,7 +341,6 @@ class PerformanceValidator:
         if self._validation_thread is None or not self._validation_thread.is_alive():
             logger.warning("Performance validation not running")
             return
-
         self._stop_validation.set()
         self._validation_thread.join(timeout=5.0)
         logger.info("⏹️ Performance validation stopped")
@@ -398,12 +351,10 @@ class PerformanceValidator:
             try:
                 # Validate all operations
                 reports = self.validate_all_operations()
-
                 # Detect regressions
                 if self.enable_regression_detection:
                     for operation_name in reports.keys():
                         self.detect_regression(operation_name)
-
                 # Wait for next interval
                 self._stop_validation.wait(self.validation_interval)
             except Exception as e:
@@ -416,7 +367,6 @@ class PerformanceValidator:
             total_operations = sum(len(metrics) for metrics in self._metrics.values())
             total_thresholds = len(self._thresholds)
             total_baselines = len(self._baseline_performance)
-
             return {
                 "total_metrics_recorded": self._total_metrics_recorded,
                 "total_operations": total_operations,
@@ -452,8 +402,6 @@ class PerformanceValidator:
             else:
                 self._metrics.clear()
                 logger.info("🧹 Cleared all performance metrics")
-
-
 # Global instance for easy access
 _performance_validator: Optional[PerformanceValidator] = None
 
@@ -508,17 +456,14 @@ def get_performance_statistics() -> dict[str, Any]:
 def performance_monitor(operation_name: str):
     """
     Decorator for automatic performance monitoring.
-
     Args:
         operation_name: Name of the operation to monitor
     """
-
     def decorator(func: Callable) -> Callable:
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             start_time = time.perf_counter()
             success = True
             error_info = None
-
             try:
                 result = func(*args, **kwargs)
                 return result
@@ -529,7 +474,5 @@ def performance_monitor(operation_name: str):
             finally:
                 duration = time.perf_counter() - start_time
                 record_performance_metric(operation_name, duration, success, error_info)
-
         return wrapper
-
     return decorator

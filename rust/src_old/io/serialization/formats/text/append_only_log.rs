@@ -2,7 +2,7 @@
 //! Append-only log for fast atomic updates in JSONL files.
 //!
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //!

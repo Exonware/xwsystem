@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/shared/defs.rs
 //exonware/xwsystem/shared/defs.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: 10-Sep-2025

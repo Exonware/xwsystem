@@ -1,4 +1,4 @@
-﻿# Risk Assessment & Management
+# Risk Assessment & Management
 
 **Purpose:** Maintain a harmonised risk management framework covering NASA NPR 8715.3, ECSS risk requirements, ISO/IEC 27001, and NIST RMF obligations.  
 **Applicability:** All eXonware products starting v2 (Mars Standard draft) with optional early adoption in v1.  
@@ -71,7 +71,7 @@ Scores ≥15 are **Critical**, 10–14 **High**, 6–9 **Medium**, and ≤5 **Lo
 - **Weekly:** Update the risk register table when new items are discovered.  
 - **Monthly:** Review mitigation progress and adjust probability/impact scores.  
 - **Quarterly:** Export the table to CSV (store in `docs/compliance/evidence/risk/`) and attach to CHANGE or PROJECT summaries.  
-- **On Release:** Verify that all Critical/High risks have mitigation plans recorded in the release checklist (see `REF_PLAN.md`).
+- **On Release:** Verify that all Critical/High risks have mitigation plans recorded in the release checklist (see `REF_21_PLAN.md`).
 
 Historical risk assessments from December 2023 remain in repository history for reference. Use them as input when seeding future risk entries.
 

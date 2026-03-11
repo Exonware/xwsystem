@@ -1,17 +1,13 @@
 // #exonware/xwsystem/rust/src/utils/dt/errors.rs
 //exonware/xwsystem/datetime/errors.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: September 04, 2025
 //! 
 //! DateTime module errors - exception classes for date/time functionality.
 
-
-// Aliases for backward compatibility
-
-// Aliases for backward compatibility
 
 /// Base exception for datetime errors.
 #[derive(Debug)]

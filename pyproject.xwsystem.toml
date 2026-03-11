@@ -1,3 +1,4 @@
+# Source size (src/*): ~2.63 MB
 [build-system]
 requires = [
     "hatchling",
@@ -52,13 +53,17 @@ dependencies = [
     "exonware-xwsystem",
 ]
 authors = [
-    { name = "Eng. Muhammad AlShehri", email = "connect@exonware.com" },
+    { name = "eXonware Backend Team", email = "connect@exonware.com" },
 ]
 
 [project.license]
 text = "MIT"
 
 [project.optional-dependencies]
+# Approximate direct dependency sizes (excluding transitive deps).
+# These numbers are intentionally rounded and based on typical wheel sizes.
+# - [lazy]: ~10 MB base footprint (xwlazy engine + core helpers; heavy libs installed on-demand)
+# - [full]: ~97 MB total (core ~10 MB + enterprise formats ~87 MB, see requirements.txt summary)
 windows = [
     "exonware-xwsystem[windows]",
 ]
@@ -85,7 +90,7 @@ profile = "black"
 line_length = 88
 
 [tool.mypy]
-python_version = "0.1.0.4"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true

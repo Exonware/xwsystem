@@ -1,11 +1,9 @@
 #exonware/xwsystem/tests/1.unit/test_helpers.py
 """
 Test Helper Functions for Serialization Examples
-
 Utility functions for testing and displaying results.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.0.1
 Generation Date: October 12, 2025
@@ -28,28 +26,24 @@ def print_result(title: str, result: Any, max_length: int = 100):
 def compare_performance(operations: dict[str, Callable], iterations: int = 100) -> dict[str, float]:
     """Compare performance of multiple operations"""
     results = {}
-    
     for name, operation in operations.items():
         start = time.perf_counter()
         for _ in range(iterations):
             operation()
         elapsed = (time.perf_counter() - start) * 1000  # Convert to ms
         results[name] = elapsed / iterations
-    
     return results
 
 
 def save_to_file(data: Any, filepath: Path, mode: str = 'w'):
     """Save data to file"""
     filepath.parent.mkdir(parents=True, exist_ok=True)
-    
     if mode == 'wb':
         with open(filepath, 'wb') as f:
             f.write(data if isinstance(data, bytes) else str(data).encode())
     else:
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(data if isinstance(data, str) else str(data))
-    
     print(f"✓ Saved to: {filepath}")
 
 

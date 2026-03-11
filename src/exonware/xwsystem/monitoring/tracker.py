@@ -2,11 +2,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/tracker.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: October 26, 2025
-
 Operation tracker for monitoring operations with context management.
 """
 
@@ -16,14 +15,12 @@ from contextlib import contextmanager
 from typing import Any, Optional, Callable
 from .metrics import OperationMetrics, MetricSnapshot
 from ..config.logging_setup import get_logger
-
 logger = get_logger("xwsystem.monitoring.tracker")
 
 
 class OperationTracker:
     """
     Operation tracker for monitoring operations with automatic timing.
-    
     Features:
     - Context manager for automatic timing
     - Success/error count tracking
@@ -32,11 +29,10 @@ class OperationTracker:
     - Operation type categorization
     - Custom callback support
     """
-    
+
     def __init__(self, max_recent_samples: int = 100):
         """
         Initialize operation tracker.
-        
         Args:
             max_recent_samples: Maximum number of recent samples to keep
         """
@@ -44,7 +40,7 @@ class OperationTracker:
         self._lock = threading.RLock()
         self._metrics: dict[str, OperationMetrics] = {}
         self._callbacks: list[Callable[[str, float, bool], None]] = []
-    
+
     def track_operation(
         self,
         operation_name: str,
@@ -54,7 +50,6 @@ class OperationTracker:
     ):
         """
         Track a completed operation.
-        
         Args:
             operation_name: Name of the operation
             duration: Operation duration in seconds
@@ -64,30 +59,25 @@ class OperationTracker:
         with self._lock:
             if operation_name not in self._metrics:
                 self._metrics[operation_name] = OperationMetrics()
-            
             metrics = self._metrics[operation_name]
             metrics.add_timing(duration)
-            
             if not success:
                 metrics.add_error()
                 if error:
                     logger.warning(f"Operation {operation_name} failed: {error}")
-            
             # Call registered callbacks
             for callback in self._callbacks:
                 try:
                     callback(operation_name, duration, success)
                 except Exception as e:
                     logger.error(f"Callback failed for operation {operation_name}: {e}")
-    
     @contextmanager
+
     def track(self, operation_name: str):
         """
         Context manager for tracking operations.
-        
         Args:
             operation_name: Name of the operation to track
-            
         Example:
             with tracker.track("database_query"):
                 # Perform operation
@@ -96,7 +86,6 @@ class OperationTracker:
         start_time = time.time()
         success = True
         error = None
-        
         try:
             yield
         except Exception as e:
@@ -106,17 +95,17 @@ class OperationTracker:
         finally:
             duration = time.time() - start_time
             self.track_operation(operation_name, duration, success, error)
-    
+
     def get_operation_stats(self, operation_name: str) -> Optional[OperationMetrics]:
         """Get statistics for a specific operation."""
         with self._lock:
             return self._metrics.get(operation_name)
-    
+
     def get_all_stats(self) -> dict[str, OperationMetrics]:
         """Get statistics for all operations."""
         with self._lock:
             return self._metrics.copy()
-    
+
     def get_summary_stats(self) -> dict[str, Any]:
         """Get summary statistics across all operations."""
         with self._lock:
@@ -128,11 +117,9 @@ class OperationTracker:
                     'total_errors': 0,
                     'operation_count': 0,
                 }
-            
             total_calls = sum(m.total_calls for m in self._metrics.values())
             total_time = sum(m.total_time for m in self._metrics.values())
             total_errors = sum(m.error_count for m in self._metrics.values())
-            
             return {
                 'total_operations': len(self._metrics),
                 'total_calls': total_calls,
@@ -142,21 +129,18 @@ class OperationTracker:
                 'average_time_per_call': total_time / max(1, total_calls),
                 'error_rate': total_errors / max(1, total_calls),
             }
-    
+
     def get_top_operations(self, limit: int = 10, sort_by: str = 'total_calls') -> list[dict[str, Any]]:
         """
         Get top operations by specified metric.
-        
         Args:
             limit: Maximum number of operations to return
             sort_by: Metric to sort by ('total_calls', 'total_time', 'average_time', 'error_count')
-            
         Returns:
             List of operation statistics sorted by specified metric
         """
         with self._lock:
             operations = []
-            
             for name, metrics in self._metrics.items():
                 operations.append({
                     'name': name,
@@ -169,7 +153,6 @@ class OperationTracker:
                     'error_rate': metrics.error_count / max(1, metrics.total_calls),
                     'recent_average': metrics.recent_average,
                 })
-            
             # Sort by specified metric
             if sort_by == 'total_calls':
                 operations.sort(key=lambda x: x['total_calls'], reverse=True)
@@ -181,29 +164,26 @@ class OperationTracker:
                 operations.sort(key=lambda x: x['error_count'], reverse=True)
             else:
                 operations.sort(key=lambda x: x['total_calls'], reverse=True)
-            
             return operations[:limit]
-    
+
     def add_callback(self, callback: Callable[[str, float, bool], None]):
         """
         Add a callback to be called for each tracked operation.
-        
         Args:
             callback: Function that takes (operation_name, duration, success)
         """
         with self._lock:
             self._callbacks.append(callback)
-    
+
     def remove_callback(self, callback: Callable[[str, float, bool], None]):
         """Remove a callback."""
         with self._lock:
             if callback in self._callbacks:
                 self._callbacks.remove(callback)
-    
+
     def clear_stats(self, operation_name: Optional[str] = None):
         """
         Clear statistics for an operation or all operations.
-        
         Args:
             operation_name: Specific operation to clear, or None to clear all
         """
@@ -213,7 +193,7 @@ class OperationTracker:
                     del self._metrics[operation_name]
             else:
                 self._metrics.clear()
-    
+
     def reset_stats(self):
         """Reset all statistics."""
         with self._lock:
@@ -224,12 +204,11 @@ class OperationTracker:
                 metrics.max_time = 0.0
                 metrics.recent_times.clear()
                 metrics.error_count = 0
-    
+
     def get_metric_snapshot(self) -> MetricSnapshot:
         """Get a snapshot of current metrics."""
         with self._lock:
             summary = self.get_summary_stats()
-            
             return MetricSnapshot(
                 timestamp=time.time(),
                 total_operations=summary['total_operations'],
@@ -240,8 +219,6 @@ class OperationTracker:
                 error_rate=summary['error_rate'],
                 operation_details=self._metrics.copy()
             )
-
-
 # Global operation tracker instance
 _global_tracker = OperationTracker()
 
@@ -254,10 +231,8 @@ def get_global_tracker() -> OperationTracker:
 def track_operation(operation_name: str):
     """
     Decorator for tracking operations.
-    
     Args:
         operation_name: Name of the operation to track
-        
     Example:
         @track_operation("expensive_calculation")
         def calculate_something():
@@ -270,8 +245,6 @@ def track_operation(operation_name: str):
                 return func(*args, **kwargs)
         return wrapper
     return decorator
-
-
 __all__ = [
     "OperationTracker",
     "get_global_tracker",

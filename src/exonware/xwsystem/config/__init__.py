@@ -1,17 +1,15 @@
 #exonware/xwsystem/src/exonware/xwsystem/config/__init__.py
 """
 Configuration module for xwsystem
-
 This module provides configuration management for various xwsystem features.
-
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Company: eXonware.com
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generated: 2025-01-27
 """
-
 # Import all default constants
+
 from .defaults import (
     DEFAULT_ENCODING,
     DEFAULT_PATH_DELIMITER,
@@ -37,20 +35,16 @@ from .defaults import (
     LOGGING_LEVEL,
     DefaultConfig,
 )
-
 # Import performance configuration
 from .performance import (
     PerformanceConfig,
     get_performance_config,
     set_performance_config,
 )
-
 # Import logging setup
 from .logging_setup import get_logger, setup_logging
-
 # Import console event logger (moved to console module)
 from ..console import ConsoleEventLogger, ConsoleEvent
-
 __all__ = [
     # Default constants
     'DEFAULT_ENCODING',
@@ -76,16 +70,13 @@ __all__ = [
     'LOGGING_ENABLED',
     'LOGGING_LEVEL',
     'DefaultConfig',
-    
     # Performance configuration
     'PerformanceConfig',
     'get_performance_config',
     'set_performance_config',
-    
     # Logging
     'setup_logging',
     'get_logger',
-    
     # Console Event Logger
     'ConsoleEventLogger',
     'ConsoleEvent',

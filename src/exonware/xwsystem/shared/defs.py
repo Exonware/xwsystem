@@ -3,20 +3,18 @@
 #exonware/xwsystem/shared/defs.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 10-Sep-2025
-
 Shared types and enums for XWSystem modules.
 """
 
 from enum import Enum
-
-
 # ============================================================================
 # SHARED ENUMS
 # ============================================================================
+
 
 class ValidationLevel(Enum):
     """Standard validation levels used across XWSystem modules."""
@@ -34,7 +32,6 @@ class PerformanceLevel(Enum):
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
-    
     # Monitoring module levels
     EXCELLENT = "excellent"
     GOOD = "good"
@@ -59,7 +56,6 @@ class LockType(Enum):
     SHARED = "shared"
     EXCLUSIVE = "exclusive"
     NON_BLOCKING = "non_blocking"
-    
     # Threading module lock types
     MUTEX = "mutex"
     RWLOCK = "rwlock"
@@ -79,7 +75,6 @@ class PathType(Enum):
     SOCKET = "socket"
     PIPE = "pipe"
     DEVICE = "device"
-    
     # Utils module path types
     ABSOLUTE = "absolute"
     RELATIVE = "relative"
@@ -105,8 +100,6 @@ class OperationResult(Enum):
     TIMEOUT = "timeout"
     ERROR = "error"
     WARNING = "warning"
-
-
 # ============================================================================
 # CORE ENUMS (merged from former xwsystem.core)
 # ============================================================================
@@ -114,7 +107,6 @@ class OperationResult(Enum):
 
 class DataType(Enum):
     """Core data types supported by XWSystem."""
-
     STRING = "string"
     INTEGER = "integer"
     FLOAT = "float"
@@ -128,7 +120,6 @@ class DataType(Enum):
 
 class CloneMode(Enum):
     """Cloning modes for object duplication."""
-
     SHALLOW = "shallow"
     DEEP = "deep"
     REFERENCE = "reference"
@@ -136,7 +127,6 @@ class CloneMode(Enum):
 
 class CoreState(Enum):
     """Core system states."""
-
     UNINITIALIZED = "uninitialized"
     INITIALIZING = "initializing"
     INITIALIZED = "initialized"
@@ -151,7 +141,6 @@ class CoreState(Enum):
 
 class CoreMode(Enum):
     """Core system modes."""
-
     DEVELOPMENT = "development"
     TESTING = "testing"
     STAGING = "staging"
@@ -162,7 +151,6 @@ class CoreMode(Enum):
 
 class CorePriority(Enum):
     """Core system priorities."""
-
     LOW = "low"
     NORMAL = "normal"
     HIGH = "high"

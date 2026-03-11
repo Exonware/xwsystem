@@ -1,0 +1,147 @@
+{
+  "timestamp": "20260209_225242",
+  "campaign": "20260209-benchmark xwsystem caching vs others",
+  "capacity": 2000,
+  "prefill_keys": 1000,
+  "num_ops": 10000,
+  "mixed_get_ratio": 0.8,
+  "results": [
+    {
+      "name": "PylruCache (default)",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1953697.38,
+      "put_ops_per_sec": 2201237.14,
+      "mixed_ops_per_sec": 1856251.84
+    },
+    {
+      "name": "FunctoolsLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1084516.36,
+      "put_ops_per_sec": 1205240.37,
+      "mixed_ops_per_sec": 1458938.18
+    },
+    {
+      "name": "CacheboxCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 2988911.05,
+      "put_ops_per_sec": 925386.11,
+      "mixed_ops_per_sec": 1685345.91
+    },
+    {
+      "name": "CachetoolsLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 954936.55,
+      "put_ops_per_sec": 441949.88,
+      "mixed_ops_per_sec": 596477.2
+    },
+    {
+      "name": "CachetoolsLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 480392.77,
+      "put_ops_per_sec": 407118.05,
+      "mixed_ops_per_sec": 493454.33
+    },
+    {
+      "name": "CachetoolsTTLCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 347480.42,
+      "put_ops_per_sec": 201603.96,
+      "mixed_ops_per_sec": 276212.57
+    },
+    {
+      "name": "CachetoolsRRCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1292507.33,
+      "put_ops_per_sec": 447954.42,
+      "mixed_ops_per_sec": 785836.1
+    },
+    {
+      "name": "LRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 483718.05,
+      "put_ops_per_sec": 482739.64,
+      "mixed_ops_per_sec": 480459.71
+    },
+    {
+      "name": "LFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 770665.39,
+      "put_ops_per_sec": 838771.37,
+      "mixed_ops_per_sec": 928212.08
+    },
+    {
+      "name": "OptimizedLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 466324.39,
+      "put_ops_per_sec": 428654.71,
+      "mixed_ops_per_sec": 434776.94
+    },
+    {
+      "name": "TTLCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 631556.35,
+      "put_ops_per_sec": 125712.32,
+      "mixed_ops_per_sec": 40633.77
+    },
+    {
+      "name": "MemoryBoundedLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 705243.49,
+      "put_ops_per_sec": 209707.35,
+      "mixed_ops_per_sec": 463430.69
+    },
+    {
+      "name": "MemoryBoundedLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 478082.32,
+      "put_ops_per_sec": 280358.63,
+      "mixed_ops_per_sec": 385405.47
+    },
+    {
+      "name": "FluentLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 571810.87,
+      "put_ops_per_sec": 495329.05,
+      "mixed_ops_per_sec": 568886.46
+    },
+    {
+      "name": "ObservableLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 366536.67,
+      "put_ops_per_sec": 318215.95,
+      "mixed_ops_per_sec": 288230.95
+    },
+    {
+      "name": "TwoTierCache",
+      "group": "xwsystem",
+      "error": "'TwoTierCache' object has no attribute 'put'"
+    },
+    {
+      "name": "diskcache",
+      "group": "external",
+      "get_ops_per_sec": 85049.49,
+      "put_ops_per_sec": 1408.18,
+      "mixed_ops_per_sec": 7948.14
+    },
+    {
+      "name": "cacheout.LRUCache",
+      "group": "external",
+      "get_ops_per_sec": 530197.39,
+      "put_ops_per_sec": 710878.58,
+      "mixed_ops_per_sec": 730636.31
+    },
+    {
+      "name": "pylru",
+      "group": "external",
+      "get_ops_per_sec": 1457364.8,
+      "put_ops_per_sec": 1524041.78,
+      "mixed_ops_per_sec": 1518879.66
+    },
+    {
+      "name": "Rust (Moka/QuickCache/DashMap)",
+      "group": "rust",
+      "error": "rust bindings not built (maturin develop --features external-caches,python)"
+    }
+  ],
+  "legacy_baseline_path": "D:\\OneDrive\\DEV\\exonware\\xwsystem\\benchmarks\\20260209-benchmark xwsystem caching vs others\\data\\baseline\\_legacy\\baseline_v0.0.1.387.json"
+}

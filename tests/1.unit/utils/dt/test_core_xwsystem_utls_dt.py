@@ -1,30 +1,23 @@
 #exonware/xwsystem/tests/1.unit/utils/dt/test_core_xwsystem_utls_dt.py
 """
 XSystem DateTime Unit Tests
-
 Validates the public datetime utility APIs including formatting, parsing,
 humanization, timezone helpers, and the legacy base datetime facade.
 """
 
 from __future__ import annotations
-
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-
 import pytest
-
 # Add the src directory to the path for local runs
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 SRC_PATH = PROJECT_ROOT / "src"
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
-
 # Pytest marker enforcement (pytest.ini uses --strict-markers)
 pytestmark = pytest.mark.xwsystem_unit
-
 pytz = pytest.importorskip("pytz", reason="xwsystem datetime utilities rely on pytz")
-
 from exonware.xwsystem.utils.dt.base import BaseDateTime
 from exonware.xwsystem.utils.dt.contracts import TimeFormat
 from exonware.xwsystem.utils.dt.errors import DateTimeError, DateTimeFormatError, DateTimeParseError
@@ -32,39 +25,37 @@ from exonware.xwsystem.utils.dt.formatting import DateTimeFormatter
 from exonware.xwsystem.utils.dt.humanize import DateTimeHumanizer
 from exonware.xwsystem.utils.dt.parsing import DateTimeParser
 from exonware.xwsystem.utils.dt.timezone_utils import TimezoneUtils
-
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
-
 @pytest.fixture
+
+
 def sample_datetime() -> datetime:
     """Stable reference datetime for deterministic assertions."""
     return datetime(2025, 1, 2, 15, 45, 30, tzinfo=timezone.utc)
-
-
 @pytest.fixture
+
+
 def formatter() -> DateTimeFormatter:
     return DateTimeFormatter()
-
-
 @pytest.fixture
+
+
 def parser() -> DateTimeParser:
     return DateTimeParser(default_timezone=timezone.utc)
-
-
 @pytest.fixture
+
+
 def humanizer() -> DateTimeHumanizer:
     return DateTimeHumanizer()
-
-
 # ---------------------------------------------------------------------------
 # Formatter Tests
 # ---------------------------------------------------------------------------
 
 
 class TestDateTimeFormatter:
+
     def test_format_datetime_iso(self, formatter: DateTimeFormatter, sample_datetime: datetime) -> None:
         """Formatter should produce ISO output identical to datetime.isoformat."""
         result = formatter.format_datetime(sample_datetime, TimeFormat.ISO)
@@ -75,8 +66,8 @@ class TestDateTimeFormatter:
         result = formatter.format_datetime(sample_datetime, TimeFormat.RFC3339)
         assert result.endswith("+00:00")
         assert "T" in result
-
     @pytest.mark.parametrize("pattern,expected", [("%Y-%m-%d", "2025-01-02"), ("%H:%M", "15:45")])
+
     def test_format_custom_patterns(
         self,
         formatter: DateTimeFormatter,
@@ -92,14 +83,13 @@ class TestDateTimeFormatter:
         """Documented human descriptions should be present for supported formats."""
         available = formatter.get_available_formats()
         assert {"ISO", "US", "EU"}.issubset(available.keys())
-
-
 # ---------------------------------------------------------------------------
 # Parser Tests
 # ---------------------------------------------------------------------------
 
 
 class TestDateTimeParser:
+
     def test_parse_iso_string(self, parser: DateTimeParser, sample_datetime: datetime) -> None:
         """ISO strings should round-trip through the parser."""
         iso_text = sample_datetime.isoformat()
@@ -121,14 +111,13 @@ class TestDateTimeParser:
         result = parser.parse_timestamp(timestamp_ms)
         assert result is not None
         assert abs(result.timestamp() - sample_datetime.timestamp()) < 1
-
-
 # ---------------------------------------------------------------------------
 # Humanizer Tests
 # ---------------------------------------------------------------------------
 
 
 class TestDateTimeHumanizer:
+
     def test_humanize_timedelta_multicomponent(self, humanizer: DateTimeHumanizer) -> None:
         """Humanizer should include multiple units when requested."""
         delta = timedelta(days=1, hours=2, minutes=30)
@@ -150,14 +139,13 @@ class TestDateTimeHumanizer:
         result = humanizer.natural_time_range(start, end)
         assert "AM" in result or "am" in result
         assert "-" in result
-
-
 # ---------------------------------------------------------------------------
 # Timezone Utility Tests
 # ---------------------------------------------------------------------------
 
 
 class TestTimezoneUtils:
+
     def test_convert_timezone_changes_offset(self, sample_datetime: datetime) -> None:
         """Conversion to a new timezone should update tzinfo and offset."""
         target_tz = "Asia/Riyadh"
@@ -170,14 +158,13 @@ class TestTimezoneUtils:
         """Metadata lookup should expose offset, dst, and zone fields."""
         info = TimezoneUtils.get_timezone_info("UTC")
         assert set(info.keys()) == {"name", "offset", "dst", "zone"}
-
-
 # ---------------------------------------------------------------------------
 # Base DateTime Facade Tests
 # ---------------------------------------------------------------------------
 
 
 class TestBaseDateTime:
+
     def test_parse_and_format_roundtrip(self) -> None:
         """Parsing and formatting should round-trip cleanly."""
         base = BaseDateTime()
@@ -193,22 +180,19 @@ class TestBaseDateTime:
         ts = base.to_timestamp(dt)
         restored = base.from_timestamp(ts)
         assert abs(restored.timestamp() - dt.timestamp()) < 1e-6
-
-
 # ---------------------------------------------------------------------------
 # Error Hierarchy Tests
 # ---------------------------------------------------------------------------
 
 
 class TestErrorHierarchy:
+
     def test_datetime_errors_are_distinct(self) -> None:
         """Ensure the custom error hierarchy carries the expected types."""
         assert issubclass(DateTimeFormatError, DateTimeError)
         assert issubclass(DateTimeParseError, DateTimeError)
         with pytest.raises(DateTimeFormatError):
             raise DateTimeFormatError("format failure")
-
-
 # ---------------------------------------------------------------------------
 # Legacy Runner Entry Point
 # ---------------------------------------------------------------------------
@@ -217,13 +201,10 @@ class TestErrorHierarchy:
 def main() -> int:
     """
     Allow the module to be executed directly via `python test_core_xwsystem_utls_dt.py`.
-
     Returns:
         Process exit code compatible with legacy runners.
     """
     exit_code = pytest.main([str(Path(__file__).resolve())])
     return int(exit_code)
-
-
 if __name__ == "__main__":
     sys.exit(main())

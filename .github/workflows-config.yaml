@@ -1,0 +1,9 @@
+projects:
+  xwsystem:
+    repo: xwsystem
+    package_main: exonware-xwsystem
+    package_wrapper: xwsystem
+    python_version: "3.8"
+    has_wrapper: true
+    uses_check_versions: true
+

@@ -1,21 +1,18 @@
 #exonware/xwsystem/tests/1.unit/threading_tests/conftest.py
 """
 Pytest configuration for xSystem threading tests.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.0.1
 """
 
 from __future__ import annotations
-
 import pytest
 import sys
 import time
 import threading as std_threading
 from pathlib import Path
-
 # Path setup - navigate to project root then to src
 # From tests/1.unit/threading_tests/conftest.py:
 # - parent = threading_tests/
@@ -26,8 +23,9 @@ from pathlib import Path
 src_path = str(Path(__file__).parent.parent.parent.parent / "src")
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
-
 @pytest.fixture
+
+
 def locks_module():
     """Provide locks module for testing."""
     try:
@@ -35,8 +33,9 @@ def locks_module():
         return locks
     except ImportError as e:
         pytest.skip(f"Threading locks import failed: {e}")
-
 @pytest.fixture
+
+
 def safe_factory_module():
     """Provide safe_factory module for testing."""
     try:
@@ -44,8 +43,9 @@ def safe_factory_module():
         return SafeFactory
     except ImportError as e:
         pytest.skip(f"SafeFactory import failed: {e}")
-
 @pytest.fixture
+
+
 def thread_test_data():
     """Provide data for thread testing."""
     return {

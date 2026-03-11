@@ -1,0 +1,149 @@
+{
+  "timestamp": "20260210_203231",
+  "campaign": "20260209-benchmark xwsystem caching vs others",
+  "capacity": 2000,
+  "prefill_keys": 1000,
+  "num_ops": 10000,
+  "mixed_get_ratio": 0.8,
+  "results": [
+    {
+      "name": "PylruCache (default)",
+      "group": "xwsystem",
+      "get_ops_per_sec": 2988196.62,
+      "put_ops_per_sec": 2833583.64,
+      "mixed_ops_per_sec": 2490101.84
+    },
+    {
+      "name": "FunctoolsLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 3184003.56,
+      "put_ops_per_sec": 3145742.23,
+      "mixed_ops_per_sec": 2689690.42
+    },
+    {
+      "name": "CacheboxCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 3718854.59,
+      "put_ops_per_sec": 1661902.55,
+      "mixed_ops_per_sec": 2539102.17
+    },
+    {
+      "name": "CachetoolsLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 2191060.47,
+      "put_ops_per_sec": 1494343.91,
+      "mixed_ops_per_sec": 1924150.01
+    },
+    {
+      "name": "CachetoolsLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1908469.79,
+      "put_ops_per_sec": 1196172.25,
+      "mixed_ops_per_sec": 1261209.0
+    },
+    {
+      "name": "CachetoolsTTLCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 914620.2,
+      "put_ops_per_sec": 587582.04,
+      "mixed_ops_per_sec": 847931.89
+    },
+    {
+      "name": "CachetoolsRRCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 3456261.02,
+      "put_ops_per_sec": 1603386.35,
+      "mixed_ops_per_sec": 2641798.54
+    },
+    {
+      "name": "LRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1410457.13,
+      "put_ops_per_sec": 1420212.46,
+      "mixed_ops_per_sec": 1394233.45
+    },
+    {
+      "name": "LFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 2347472.94,
+      "put_ops_per_sec": 2446363.48,
+      "mixed_ops_per_sec": 2288905.67
+    },
+    {
+      "name": "OptimizedLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1277694.02,
+      "put_ops_per_sec": 1385790.11,
+      "mixed_ops_per_sec": 1166738.62
+    },
+    {
+      "name": "TTLCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1476755.86,
+      "put_ops_per_sec": 210304.06,
+      "mixed_ops_per_sec": 94447.61
+    },
+    {
+      "name": "MemoryBoundedLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1316846.42,
+      "put_ops_per_sec": 481319.97,
+      "mixed_ops_per_sec": 1068022.34
+    },
+    {
+      "name": "MemoryBoundedLFUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1239357.02,
+      "put_ops_per_sec": 805756.32,
+      "mixed_ops_per_sec": 1093912.38
+    },
+    {
+      "name": "FluentLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1611915.28,
+      "put_ops_per_sec": 1510163.4,
+      "mixed_ops_per_sec": 1381081.94
+    },
+    {
+      "name": "ObservableLRUCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 793808.3,
+      "put_ops_per_sec": 881127.14,
+      "mixed_ops_per_sec": 770238.0
+    },
+    {
+      "name": "TwoTierCache",
+      "group": "xwsystem",
+      "get_ops_per_sec": 1534919.42,
+      "put_ops_per_sec": 1270.26,
+      "mixed_ops_per_sec": 6260.66
+    },
+    {
+      "name": "diskcache",
+      "group": "external",
+      "get_ops_per_sec": 180807.63,
+      "put_ops_per_sec": 9360.4,
+      "mixed_ops_per_sec": 45142.98
+    },
+    {
+      "name": "cacheout.LRUCache",
+      "group": "external",
+      "get_ops_per_sec": 1073560.36,
+      "put_ops_per_sec": 1121189.36,
+      "mixed_ops_per_sec": 904396.27
+    },
+    {
+      "name": "pylru",
+      "group": "external",
+      "get_ops_per_sec": 2378404.09,
+      "put_ops_per_sec": 2911462.42,
+      "mixed_ops_per_sec": 2507711.22
+    },
+    {
+      "name": "Rust (Moka/QuickCache/DashMap)",
+      "group": "rust",
+      "error": "rust bindings not built (maturin develop --features external-caches,python)"
+    }
+  ],
+  "legacy_baseline_path": "D:\\OneDrive\\DEV\\exonware\\xwsystem\\benchmarks\\20260209-benchmark xwsystem caching vs others\\data\\baseline\\_legacy\\baseline_v0.0.1.387.json"
+}

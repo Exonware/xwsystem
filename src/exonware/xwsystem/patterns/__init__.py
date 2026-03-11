@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/patterns/__init__.py
 """
 XSystem Patterns Package
-
 Provides design patterns and utilities for common programming patterns.
 """
 
@@ -25,7 +24,6 @@ from .object_pool import (
     get_all_pool_stats,
     get_object_pool,
 )
-
 __all__ = [
     # Handler Factory
     "GenericHandlerFactory",

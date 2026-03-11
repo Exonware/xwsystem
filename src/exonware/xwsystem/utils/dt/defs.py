@@ -3,20 +3,18 @@
 #exonware/xwsystem/datetime/types.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 07-Sep-2025
-
 DateTime types and enums for XWSystem.
 """
 
 from enum import Enum
-
-
 # ============================================================================
 # DATETIME ENUMS
 # ============================================================================
+
 
 class TimeFormat(Enum):
     """Time format types."""

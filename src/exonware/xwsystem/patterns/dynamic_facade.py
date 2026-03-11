@@ -1,4 +1,5 @@
 #exonware/xwsystem/src/exonware/xwsystem/patterns/dynamic_facade.py
+
 import re
 from typing import Any, Callable
 
@@ -6,7 +7,6 @@ from typing import Any, Callable
 class _FormatProxy:
     """
     A descriptor that acts as a proxy for a specific format handler.
-
     This class is intended for internal use by DynamicFacade. It allows for
     the creation of a fluent API like `xData.json.load(...)`.
     """
@@ -18,15 +18,12 @@ class _FormatProxy:
     def load(self, source: Any, **kwargs: Any) -> Any:
         """
         Loads data using the associated handler.
-
         This method delegates the loading operation to the parent facade's
         `_load_with_handler` method, passing the specific handler class
         it is proxying for.
-
         Args:
             source: The data source to load (e.g., file path, string, dict).
             **kwargs: Additional keyword arguments for the handler.
-
         Returns:
             An instance of the parent facade's data container.
         """
@@ -37,10 +34,8 @@ class _FormatProxy:
     def save(self, data_container: Any, file_path: str, **kwargs: Any) -> None:
         """
         Saves data using the associated handler.
-
         This method delegates the saving operation to the parent facade's
         `_save_with_handler` method.
-
         Args:
             data_container: The data object to save.
             file_path: The path to save the file to.
@@ -57,10 +52,8 @@ class _FormatProxy:
 class DynamicFacade:
     """
     A base class for creating facades with format-specific methods.
-
     This class dynamically discovers handler classes and attaches proxy objects
     (like `json`, `xml`) to itself at runtime. This allows for an intuitive,
-
     discoverable API for loading data in different formats.
     """
 
@@ -69,7 +62,6 @@ class DynamicFacade:
     ):
         """
         Initializes the DynamicFacade.
-
         Args:
             handler_base_class: The base class that all format handlers inherit from.
             handler_discovery_func: A function that returns a list of all handler classes.
@@ -118,10 +110,8 @@ class DynamicFacade:
     ) -> Any:
         """
         Placeholder for the actual data loading logic.
-
         Subclasses must override this method to define how to create a data
         container instance using the provided source and handler.
-
         Raises:
             NotImplementedError: If the subclass does not implement this method.
         """
@@ -134,10 +124,8 @@ class DynamicFacade:
     ) -> None:
         """
         Placeholder for the actual data saving logic.
-
         Subclasses must override this method to define how to save a data
         container instance using the provided handler and file path.
-
         Raises:
             NotImplementedError: If the subclass does not implement this method.
         """

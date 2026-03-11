@@ -3,20 +3,18 @@
 #exonware/xwsystem/patterns/types.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 07-Sep-2025
-
 Pattern types and enums for XWSystem design patterns.
 """
 
 from enum import Enum
-
-
 # ============================================================================
 # PATTERN ENUMS
 # ============================================================================
+
 
 class PatternType(Enum):
     """Types of design patterns supported."""

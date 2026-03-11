@@ -3,11 +3,9 @@
 """Test script to verify external Rust caches are working."""
 
 import sys
-
 print("="*60)
 print("Testing External Rust Cache Dependencies")
 print("="*60)
-
 # Test 1: Check Python dependencies
 print("\n1. Checking Python dependencies...")
 python_deps = {
@@ -17,7 +15,6 @@ python_deps = {
     'cachetools': 'cachetools',
     'cachebox': 'cachebox',
 }
-
 missing_python = []
 for name, module in python_deps.items():
     try:
@@ -26,19 +23,16 @@ for name, module in python_deps.items():
     except ImportError:
         print(f"  [FAIL] {name} NOT installed")
         missing_python.append(name)
-
 if missing_python:
     print(f"\n  Install missing packages: pip install {' '.join(missing_python)}")
 else:
     print("  [OK] All Python dependencies installed")
-
 # Test 2: Check Rust dependencies in Cargo.toml
 print("\n2. Checking Rust dependencies in Cargo.toml...")
 try:
     import tomli
     with open('../../rust/Cargo.toml', 'rb') as f:
         cargo = tomli.load(f)
-    
     rust_deps = ['mini-moka', 'quick_cache', 'dashmap']
     for dep in rust_deps:
         if dep in cargo.get('dependencies', {}):
@@ -47,7 +41,6 @@ try:
             print(f"  [FAIL] {dep} NOT in Cargo.toml")
 except Exception as e:
     print(f"  ⚠ Could not check Cargo.toml: {e}")
-
 # Test 3: Try importing external Rust caches
 print("\n3. Testing external Rust cache imports...")
 try:
@@ -66,7 +59,6 @@ except ImportError as e:
     print(f"  [FAIL] External Rust caches not available: {e}")
     print("  -> Build with: cd ../../rust && maturin develop --release --features external-caches,python")
     HAS_EXTERNAL_RUST = False
-
 # Test 4: Test cache instantiation and basic operations
 if HAS_EXTERNAL_RUST:
     print("\n4. Testing cache instantiation and operations...")
@@ -79,7 +71,6 @@ if HAS_EXTERNAL_RUST:
         ("DashMapCache", lambda: DashMapCache(100)),
         ("DashMapTTLCache", lambda: DashMapTTLCache(100, 60.0)),
     ]
-    
     for name, factory in test_caches:
         try:
             cache = factory()
@@ -97,7 +88,6 @@ if HAS_EXTERNAL_RUST:
             cache.clear()
         except Exception as e:
             print(f"  [FAIL] {name} - error: {e}")
-
 # Test 5: Check benchmark script imports
 print("\n5. Testing benchmark script imports...")
 try:
@@ -114,7 +104,6 @@ except Exception as e:
     print(f"  [FAIL] Benchmark script import error: {e}")
     import traceback
     traceback.print_exc()
-
 print("\n" + "="*60)
 print("Summary")
 print("="*60)

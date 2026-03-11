@@ -2,11 +2,10 @@
 #exonware/xwsystem/http/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 HTTP module errors - exception classes for HTTP client functionality.
 """
 
@@ -15,7 +14,7 @@ from typing import Any, Optional
 
 class HttpError(Exception):
     """Base exception for HTTP client errors."""
-    
+
     def __init__(self, message: str, status_code: Optional[int] = None, response_data: Optional[Any] = None):
         super().__init__(message)
         self.status_code = status_code

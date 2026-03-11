@@ -2,11 +2,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/caching/two_tier_cache.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: October 26, 2025
-
 Two-tier cache implementation combining memory and disk caching.
 """
 
@@ -17,14 +16,12 @@ from .disk_cache import DiskCache
 from .contracts import ICache
 from .errors import CacheError
 from ..config.logging_setup import get_logger
-
 logger = get_logger("xwsystem.caching.two_tier_cache")
 
 
 class TwoTierCache(ICache):
     """
     Two-tier cache combining memory LRU cache with disk persistence.
-    
     Features:
     - Memory tier: Fast LRU cache for hot data
     - Disk tier: Persistent storage for cold data
@@ -33,7 +30,7 @@ class TwoTierCache(ICache):
     - Namespace support for multiple cache instances
     - Comprehensive statistics for both tiers
     """
-    
+
     def __init__(
         self,
         namespace: str = "default",
@@ -44,7 +41,6 @@ class TwoTierCache(ICache):
     ):
         """
         Initialize two-tier cache.
-        
         Args:
             namespace: Cache namespace for organization
             memory_size: Maximum entries in memory tier
@@ -53,10 +49,9 @@ class TwoTierCache(ICache):
             max_file_size: Maximum size per disk cache file
         """
         self.namespace = namespace
-        
         # Initialize tiers
         # Use flexible create_cache() to allow configuration via environment/settings
-        # Defaults to FunctoolsLRUCache (fastest Python cache)
+        # Defaults to PylruCache when pylru installed, else FunctoolsLRUCache
         from .factory import create_cache
         self.memory_cache = create_cache(capacity=memory_size, namespace=namespace, name=f"{namespace}-TwoTier-Memory")
         self.disk_cache = DiskCache(
@@ -65,10 +60,8 @@ class TwoTierCache(ICache):
             max_size=disk_size,
             max_file_size=max_file_size,
         )
-        
         # Thread safety
         self._lock = threading.RLock()
-        
         # Statistics
         self._stats = {
             'memory_hits': 0,
@@ -78,17 +71,20 @@ class TwoTierCache(ICache):
             'deletes': 0,
             'promotions': 0,  # Disk to memory promotions
         }
-    
-    def get(self, key: str) -> Optional[Any]:
-        """Get value from cache (memory first, then disk)."""
+
+    def get(self, key: str, default: Optional[Any] = None) -> Optional[Any]:
+        """Get value from cache (memory first, then disk). Returns default if key missing."""
         with self._lock:
             try:
-                # Try memory tier first
-                value = self.memory_cache.get(key)
-                if value is not None:
+                # Try memory tier first (sentinel distinguishes miss vs stored value)
+                _sentinel = object()
+                try:
+                    value = self.memory_cache.get(key, _sentinel)
+                except TypeError:
+                    value = self.memory_cache.get(key)
+                if value is not _sentinel:
                     self._stats['memory_hits'] += 1
                     return value
-                
                 # Try disk tier
                 value = self.disk_cache.get(key)
                 if value is not None:
@@ -97,91 +93,81 @@ class TwoTierCache(ICache):
                     self._stats['disk_hits'] += 1
                     self._stats['promotions'] += 1
                     return value
-                
                 # Miss in both tiers
                 self._stats['misses'] += 1
-                return None
-                
+                return default
             except Exception as e:
                 logger.error(f"Two-tier cache get failed for key {key}: {e}")
                 self._stats['misses'] += 1
-                return None
-    
+                return default
+
+    def put(self, key: str, value: Any) -> None:
+        """Set value in both tiers (ICache/ACache contract; delegates to set)."""
+        self.set(key, value)
+
     def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
         """Set value in both memory and disk tiers."""
         with self._lock:
             try:
                 # Set in memory tier
                 memory_success = self.memory_cache.set(key, value)
-                
                 # Set in disk tier
                 disk_success = self.disk_cache.set(key, value, ttl)
-                
                 if memory_success or disk_success:
                     self._stats['sets'] += 1
                     return True
-                
                 return False
-                
             except Exception as e:
                 logger.error(f"Two-tier cache set failed for key {key}: {e}")
                 return False
-    
+
     def delete(self, key: str) -> bool:
         """Delete value from both tiers."""
         with self._lock:
             try:
                 memory_deleted = self.memory_cache.delete(key)
                 disk_deleted = self.disk_cache.delete(key)
-                
                 if memory_deleted or disk_deleted:
                     self._stats['deletes'] += 1
                     return True
-                
                 return False
-                
             except Exception as e:
                 logger.error(f"Two-tier cache delete failed for key {key}: {e}")
                 return False
-    
+
     def clear(self) -> bool:
         """Clear both tiers."""
         with self._lock:
             try:
                 memory_cleared = self.memory_cache.clear()
                 disk_cleared = self.disk_cache.clear()
-                
                 return memory_cleared and disk_cleared
-                
             except Exception as e:
                 logger.error(f"Two-tier cache clear failed: {e}")
                 return False
-    
+
     def exists(self, key: str) -> bool:
         """Check if key exists in either tier."""
         with self._lock:
             try:
                 return self.memory_cache.exists(key) or self.disk_cache.exists(key)
-                
             except Exception as e:
                 logger.error(f"Two-tier cache exists check failed for key {key}: {e}")
                 return False
-    
+
     def size(self) -> int:
         """Get total size across both tiers."""
         with self._lock:
             return self.memory_cache.size() + self.disk_cache.size()
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get comprehensive statistics for both tiers."""
         with self._lock:
             memory_stats = self.memory_cache.get_stats()
             disk_stats = self.disk_cache.get_stats()
-            
             total_hits = self._stats['memory_hits'] + self._stats['disk_hits']
             total_requests = total_hits + self._stats['misses']
             overall_hit_rate = total_hits / total_requests if total_requests > 0 else 0
-            
             return {
                 'namespace': self.namespace,
                 'total_size': self.size(),
@@ -199,28 +185,25 @@ class TwoTierCache(ICache):
                 'memory_stats': memory_stats,
                 'disk_stats': disk_stats,
             }
-    
+
     def get_memory_stats(self) -> dict[str, Any]:
         """Get memory tier statistics."""
         return self.memory_cache.get_stats()
-    
+
     def get_disk_stats(self) -> dict[str, Any]:
         """Get disk tier statistics."""
         return self.disk_cache.get_stats()
-    
+
     def preload_from_disk(self, keys: list) -> int:
         """
         Preload specified keys from disk to memory.
-        
         Args:
             keys: List of keys to preload
-            
         Returns:
             Number of keys successfully preloaded
         """
         with self._lock:
             preloaded = 0
-            
             for key in keys:
                 try:
                     value = self.disk_cache.get(key)
@@ -229,32 +212,25 @@ class TwoTierCache(ICache):
                         preloaded += 1
                 except Exception as e:
                     logger.warning(f"Failed to preload key {key}: {e}")
-            
             return preloaded
-    
+
     def evict_from_memory(self, keys: list) -> int:
         """
         Evict specified keys from memory tier.
-        
         Args:
             keys: List of keys to evict from memory
-            
         Returns:
             Number of keys successfully evicted
         """
         with self._lock:
             evicted = 0
-            
             for key in keys:
                 try:
                     if self.memory_cache.delete(key):
                         evicted += 1
                 except Exception as e:
                     logger.warning(f"Failed to evict key {key} from memory: {e}")
-            
             return evicted
-
-
 __all__ = [
     "TwoTierCache",
 ]

@@ -1,10 +1,8 @@
 #exonware/xwsystem/examples/lazy_mode_usage/json_run.py
 """
 Example: Lazy Mode Usage with BSON Serialization
-
 Usage:
     python json_run.py
-
 Behavior:
     - Uninstalls serialization dependencies first to test lazy installation
     - Enables lazy mode for xwsystem via exonware.conf with "smart" mode
@@ -34,7 +32,6 @@ def clean_libs():
         "h5py",              # HDF5
         "tables",            # PyTables
     ]
-
     for package in serialization_packages:
         try:
             subprocess.run(
@@ -46,13 +43,9 @@ def clean_libs():
         except Exception:
             print(f"❌ Failed to uninstall {package}")
             pass
-
     print("✅ Cleanup complete\n")
-
 clean_libs()
-
 from exonware.xwsystem.io.serialization.formats.binary import BsonSerializer as serializer
-
 data = {"name": "John", "age": 30}
 serializer_obj = serializer()
 result = serializer_obj.encode(data)

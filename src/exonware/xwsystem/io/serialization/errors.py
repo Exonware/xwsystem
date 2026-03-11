@@ -2,11 +2,10 @@
 #exonware/xwsystem/serialization/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Error classes for XWSystem serialization module.
 """
 
@@ -15,7 +14,7 @@ from typing import Optional
 
 class SerializationError(Exception):
     """Base exception for serialization errors."""
-    
+
     def __init__(self, message: str, format_name: str = "", original_error: Optional[Exception] = None):
         super().__init__(message)
         self.format_name = format_name
@@ -44,7 +43,7 @@ class CborError(Exception):
 
 class JsonError(SerializationError):
     """JSON-specific serialization error."""
-    
+
     def __init__(self, message: str, original_error: Optional[Exception] = None):
         super().__init__(message, "JSON", original_error)
 
@@ -147,8 +146,6 @@ class PlistlibError(SerializationError):
 class TomlError(SerializationError):
     """TOML serialization error."""
     pass
-
-
 # ============================================================================
 # SCHEMA REGISTRY ERRORS (Moved from enterprise)
 # ============================================================================

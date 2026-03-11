@@ -1,20 +1,17 @@
 #exonware/xwsystem/src/exonware/__init__.py
 """
 exonware package - Enterprise-grade Python framework ecosystem
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 This is a namespace package allowing multiple exonware subpackages
 to coexist (xwsystem, xwnode, xwdata, etc.)
 """
-
 # Make this a namespace package FIRST
-__path__ = __import__('pkgutil').extend_path(__path__, __name__)
 
+__path__ = __import__('pkgutil').extend_path(__path__, __name__)
 import importlib.metadata
 from pathlib import Path
 
@@ -32,10 +29,7 @@ def _load_version() -> str:
                 f"Version metadata unavailable at {version_path}."
             ) from exc
         return ns["__version__"]
-
-
 __version__ = _load_version()
-
-__author__ = 'Eng. Muhammad AlShehri'
+__author__ = 'eXonware Backend Team'
 __email__ = 'connect@exonware.com'
 __company__ = 'eXonware.com'

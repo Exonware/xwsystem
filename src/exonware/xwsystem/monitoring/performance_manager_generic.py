@@ -3,15 +3,13 @@
 #exonware/xwsystem/monitoring/performance_manager_generic.py
 """
 Generic Performance Management for XSystem (Moved from performance/ module)
-
 This module provides a generic performance management framework that can be used
 by any library in the eXonware ecosystem. It handles performance mode management,
 health monitoring, and recommendations without being tied to specific implementations.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: November 04, 2025
 """
 
@@ -20,28 +18,22 @@ import time
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
-
 from ..config.performance_modes import PerformanceMode
 from ..config.logging_setup import get_logger
-
 logger = get_logger("xwsystem.monitoring.performance_manager_generic")
-
-
 @dataclass
+
 class PerformanceRecommendation:
     """A performance recommendation with priority and action."""
-
     type: str
     priority: str  # 'low', 'medium', 'high', 'critical'
     message: str
     action: str
     details: dict[str, Any] = field(default_factory=dict)
-
-
 @dataclass
+
 class HealthStatus:
     """Performance health status information."""
-
     status: str  # 'excellent', 'good', 'fair', 'poor', 'critical'
     health_score: int  # 0-100
     warnings: dict[str, bool] = field(default_factory=dict)
@@ -51,7 +43,6 @@ class HealthStatus:
 class GenericPerformanceManager:
     """
     Generic performance management framework.
-
     This class provides reusable performance management functionality that can be
     inherited by library-specific performance managers (like xNode's PerformanceModes).
     """
@@ -65,9 +56,7 @@ class GenericPerformanceManager:
         self._last_mode_change = time.time()
         self._local_mode = None
         self._local_config = None
-
         logger.info(f"🔧 Generic performance manager initialized for {component_name}")
-
     # ============================================================================
     # GENERIC PERFORMANCE MODE MANAGEMENT
     # ============================================================================
@@ -87,7 +76,6 @@ class GenericPerformanceManager:
                     # Use local settings
                     self._local_mode = mode
                     self._local_config = self._create_local_config(mode)
-
                 self._mode_history.append(
                     {
                         "timestamp": time.time(),
@@ -100,7 +88,6 @@ class GenericPerformanceManager:
                 logger.info(
                     f"Performance mode changed from {old_mode} to {mode} for {self.component_name}"
                 )
-
         return self
 
     def get_performance_mode(self) -> PerformanceMode:
@@ -132,7 +119,6 @@ class GenericPerformanceManager:
         with self._lock:
             self._mode_history.clear()
         return self
-
     # ============================================================================
     # GENERIC PERFORMANCE STATISTICS
     # ============================================================================
@@ -141,7 +127,6 @@ class GenericPerformanceManager:
         """Get comprehensive performance statistics."""
         with self._lock:
             current_mode = self.get_performance_mode()
-
             stats = {
                 "component_name": self.component_name,
                 "current_mode": current_mode.name,
@@ -156,51 +141,42 @@ class GenericPerformanceManager:
                 "memory_stats": self._get_memory_stats(),
                 "operation_stats": self._get_operation_stats(),
             }
-
             # Add adaptive learning statistics if in ADAPTIVE mode
             if current_mode == PerformanceMode.ADAPTIVE:
                 stats["adaptive_learning"] = self._get_adaptive_stats()
-
             # Add dual adaptive learning statistics if in DUAL_ADAPTIVE mode
             if current_mode == PerformanceMode.DUAL_ADAPTIVE:
                 stats["dual_adaptive_learning"] = self._get_adaptive_stats()
-
             return stats
 
     def get_health_status(self) -> HealthStatus:
         """Get performance health status."""
         stats = self.get_performance_stats()
-
         # Determine health based on various metrics
         health_score = 100
         warnings = {}
-
         # Check cache hit rate
         cache_stats = stats.get("cache_stats", {})
         cache_hit_rate = cache_stats.get("hit_rate", 0)
         if cache_hit_rate < 0.5:
             health_score -= 20
             warnings["low_cache_hit_rate"] = True
-
         # Check memory usage
         memory_stats = stats.get("memory_stats", {})
         memory_percent = memory_stats.get("memory_percent", 0)
         if memory_percent > 80:
             health_score -= 30
             warnings["high_memory_usage"] = True
-
         # Check error rates
         error_rate = stats.get("error_rate", 0)
         if error_rate > 5:
             health_score -= 25
             warnings["high_error_rate"] = True
-
         # Check mode changes
         mode_history_count = stats.get("mode_history_count", 0)
         if mode_history_count > 10:
             health_score -= 10
             warnings["frequent_mode_changes"] = True
-
         # Determine status
         if health_score >= 90:
             status = "excellent"
@@ -212,7 +188,6 @@ class GenericPerformanceManager:
             status = "poor"
         else:
             status = "critical"
-
         return HealthStatus(
             status=status, health_score=health_score, warnings=warnings, details=stats
         )
@@ -229,7 +204,6 @@ class GenericPerformanceManager:
             "real_time": PerformanceMode.FAST,
             "batch_processing": PerformanceMode.OPTIMIZED,
         }
-
         if workload_type in workload_configs:
             mode = workload_configs[workload_type]
             self.set_performance_mode(mode)
@@ -238,19 +212,15 @@ class GenericPerformanceManager:
             )
         else:
             logger.warning(f"Unknown workload type: {workload_type}")
-
         return self
 
     def auto_optimize(self) -> "GenericPerformanceManager":
         """Automatically optimize performance based on current usage patterns."""
         stats = self.get_performance_stats()
-
         # Simple auto-optimization logic
         memory_percent = stats.get("memory_stats", {}).get("memory_percent", 0)
         cache_hit_rate = stats.get("cache_stats", {}).get("hit_rate", 0)
-
         current_mode = self.get_performance_mode()
-
         if memory_percent > 80:
             # High memory usage - switch to optimized mode
             if current_mode != PerformanceMode.OPTIMIZED:
@@ -266,9 +236,7 @@ class GenericPerformanceManager:
             # Conditions allow fast mode
             if current_mode != PerformanceMode.FAST:
                 self.set_performance_mode(PerformanceMode.FAST)
-
         return self
-
     # ============================================================================
     # GENERIC PERFORMANCE MONITORING
     # ============================================================================
@@ -287,7 +255,6 @@ class GenericPerformanceManager:
         """Generate a comprehensive performance report."""
         stats = self.get_performance_stats()
         health = self.get_health_status()
-
         return {
             "component_name": self.component_name,
             "timestamp": time.time(),
@@ -302,9 +269,7 @@ class GenericPerformanceManager:
         """Run performance benchmarks."""
         if test_operations is None:
             test_operations = []
-
         results = {}
-
         # Test different modes
         for mode in [
             PerformanceMode.FAST,
@@ -313,7 +278,6 @@ class GenericPerformanceManager:
         ]:
             self.set_performance_mode(mode)
             time.sleep(0.1)  # Let mode settle
-
             start_time = time.time()
             # Run test operations
             for operation in test_operations:
@@ -322,7 +286,6 @@ class GenericPerformanceManager:
                 except Exception as e:
                     logger.warning(f"Benchmark operation failed: {e}")
             end_time = time.time()
-
             results[mode.name] = {
                 "execution_time": end_time - start_time,
                 "operations_per_second": (
@@ -331,9 +294,7 @@ class GenericPerformanceManager:
                     else 0
                 ),
             }
-
         return results
-
     # ============================================================================
     # GENERIC HELPER METHODS (to be overridden by subclasses)
     # ============================================================================
@@ -346,12 +307,9 @@ class GenericPerformanceManager:
         """Get memory usage statistics."""
         try:
             import os
-
             import psutil
-
             process = psutil.Process(os.getpid())
             memory_info = process.memory_info()
-
             return {
                 "rss": memory_info.rss,
                 "vms": memory_info.vms,
@@ -380,7 +338,6 @@ class GenericPerformanceManager:
     ) -> list[PerformanceRecommendation]:
         """Generate performance recommendations."""
         recommendations = []
-
         # Check cache performance
         cache_hit_rate = stats.get("cache_stats", {}).get("hit_rate", 0)
         if cache_hit_rate < 0.5:
@@ -393,7 +350,6 @@ class GenericPerformanceManager:
                     details={"current_hit_rate": cache_hit_rate},
                 )
             )
-
         # Check memory usage
         memory_percent = stats.get("memory_stats", {}).get("memory_percent", 0)
         if memory_percent > 80:
@@ -406,7 +362,6 @@ class GenericPerformanceManager:
                     details={"current_memory_percent": memory_percent},
                 )
             )
-
         # Check error rates
         error_rate = stats.get("error_rate", 0)
         if error_rate > 5:
@@ -419,7 +374,6 @@ class GenericPerformanceManager:
                     details={"current_error_rate": error_rate},
                 )
             )
-
         # Check mode changes
         mode_history_count = stats.get("mode_history_count", 0)
         if mode_history_count > 10:
@@ -432,9 +386,7 @@ class GenericPerformanceManager:
                     details={"mode_changes": mode_history_count},
                 )
             )
-
         return recommendations
-
     # ============================================================================
     # GENERIC PERFORMANCE MODE ALIASES
     # ============================================================================
@@ -458,10 +410,8 @@ class GenericPerformanceManager:
     def manual_mode(self, **config_overrides) -> "GenericPerformanceManager":
         """Switch to manual performance mode with custom configuration."""
         self.set_performance_mode(PerformanceMode.MANUAL)
-
         # Apply overrides - to be implemented by subclasses
         self._apply_manual_overrides(config_overrides)
-
         return self
 
     def _apply_manual_overrides(self, config_overrides: dict[str, Any]) -> None:

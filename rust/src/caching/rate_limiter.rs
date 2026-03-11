@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/caching/rate_limiter.rs
 //exonware/xwsystem/caching/rate_limiter.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: 01-Nov-2025

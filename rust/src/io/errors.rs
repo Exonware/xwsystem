@@ -1,6 +1,6 @@
 // #exonware/xwsystem/rust/src/io/errors.rs
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: 30-Oct-2025

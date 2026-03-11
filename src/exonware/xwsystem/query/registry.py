@@ -1,21 +1,17 @@
 #!/usr/bin/env python3
 """
 #exonware/xwsystem/src/exonware/xwsystem/query/registry.py
-
 Global query provider registry (foundation layer).
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 28-Dec-2025
 """
 
 from __future__ import annotations
-
 from threading import RLock
 from typing import Optional
-
 from .contracts import IQueryProvider
 from .errors import QueryProviderNotRegisteredError
 
@@ -23,7 +19,6 @@ from .errors import QueryProviderNotRegisteredError
 class QueryProviderRegistry:
     """
     Thread-safe registry for query providers.
-
     Design notes:
     - Multiple providers may be registered (future-proofing).
     - A default provider may be selected; consumers typically use the default.
@@ -38,7 +33,6 @@ class QueryProviderRegistry:
         provider_id = provider.provider_id.strip().lower()
         if not provider_id:
             raise ValueError("provider.provider_id must be a non-empty string")
-
         with self._lock:
             if provider_id in self._providers and not overwrite:
                 return
@@ -84,8 +78,6 @@ class QueryProviderRegistry:
         with self._lock:
             self._providers.clear()
             self._default_provider_id = None
-
-
 _global_registry: Optional[QueryProviderRegistry] = None
 _global_lock = RLock()
 

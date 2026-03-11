@@ -1,30 +1,35 @@
 #!/usr/bin/env python3
 """
 #exonware/xwsystem/src/exonware/xwsystem/utils/test_runner.py
-
 Reusable pytest runner utilities for all eXonware libraries.
-
 Implements the hierarchical runner utilities described in:
 - docs/guides/GUIDE_DEV.md
 - docs/guides/GUIDE_TEST.md
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 28-Dec-2025
 """
 
 from __future__ import annotations
-
 import sys
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
-
 from exonware.xwsystem.console.cli import ensure_utf8_console
+
+
+def timestamp_for_filename() -> str:
+    """
+    Return timestamp for time-sensitive log/test/review file names.
+    Format: YYYYMMDD_HHMMSS_mmm (hour, minute, second, millisecond).
+    Per GUIDE_00_MASTER to avoid duplicate names when multiple runs occur the same day.
+    """
+    now = datetime.now()
+    return now.strftime("%Y%m%d_%H%M%S") + "_" + f"{now.microsecond // 1000:03d}"
 
 
 def format_path(path: Path) -> str:
@@ -49,11 +54,12 @@ class DualOutput:
 
     def save(self, header_info: Optional[dict[str, Any]] = None) -> None:
         header_info = header_info or {}
+        now = datetime.now()
         header = (
             "# Test Runner Output\n\n"
             f"**Library:** {header_info.get('library', '')}  \n"
             f"**Layer:** {header_info.get('layer', '')}  \n"
-            f"**Generated:** {datetime.now().strftime('%d-%b-%Y %H:%M:%S')}  \n"
+            f"**Generated:** {now.strftime('%d-%b-%Y %H:%M:%S')}.{now.microsecond // 1000:03d}  \n"
             f"**Runner:** {header_info.get('runner', 'TestRunner')}  \n\n"
             "---\n\n"
         )
@@ -85,9 +91,8 @@ def print_status(success: bool, message: str, output: Optional[DualOutput] = Non
         print(f"{emoji} {message}")
         return
     output.print(message, f"**Result:** {emoji} {message}", emoji=emoji)
-
-
 @dataclass(frozen=True)
+
 class PytestRunResult:
     exit_code: int
 
@@ -105,7 +110,6 @@ def run_pytest(
     markers = markers or []
     extra_args = extra_args or []
     cwd = cwd or test_dir
-
     args: list[str] = [
         sys.executable,
         "-m",
@@ -119,7 +123,6 @@ def run_pytest(
     if markers:
         args.extend(["-m", " and ".join(markers)])
     args.extend(extra_args)
-
     completed = subprocess.run(args, cwd=str(cwd))
     return PytestRunResult(exit_code=int(completed.returncode))
 
@@ -144,7 +147,6 @@ class TestRunner:
         self.description = description
         self.test_dir = test_dir
         self.markers = markers or []
-
         # Layer runners should pass output_file=None to not write files
         # Only main runner writes to docs/logs/tests/
         self.output_file = output_file
@@ -161,18 +163,15 @@ class TestRunner:
 
     def run(self) -> int:
         ensure_utf8_console()
-
         print_header(self.description, self.output)
         self.output.print(
             f"Directory: {format_path(self.test_dir)}",
             f"**Directory:** `{format_path(self.test_dir)}`",
             emoji="📂",
         )
-
         result = run_pytest(test_dir=self.test_dir, markers=self.markers)
         ok = result.exit_code == 0
         print_status(ok, "PASSED" if ok else "FAILED", self.output)
-
         # Layer runners don't write files - only main runner writes to docs/logs/tests/
         if not self._is_layer_runner:
             self.output.save(

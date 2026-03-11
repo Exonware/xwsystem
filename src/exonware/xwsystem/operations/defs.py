@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """
 #exonware/xwsystem/src/exonware/xwsystem/operations/defs.py
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: October 27, 2025
-
 Operations definitions and data structures.
 """
 
@@ -40,26 +38,22 @@ class PatchOperation(Enum):
     MOVE = "move"
     COPY = "copy"
     TEST = "test"
-
-
 @dataclass
+
 class DiffResult:
     """Result of a diff operation."""
     operations: list[dict[str, Any]]
     mode: DiffMode
     paths_changed: list[str]
     total_changes: int
-
-
 @dataclass
+
 class PatchResult:
     """Result of a patch operation."""
     success: bool
     operations_applied: int
     errors: list[str]
     result: Any
-
-
 __all__ = [
     "MergeStrategy",
     "DiffMode",

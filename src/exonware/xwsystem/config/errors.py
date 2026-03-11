@@ -2,11 +2,10 @@
 #exonware/xwsystem/config/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Configuration module errors - exception classes for configuration functionality.
 """
 
@@ -74,4 +73,3 @@ class LoggingConfigError(ConfigError):
 class PerformanceConfigError(ConfigError):
     """Raised when performance configuration fails."""
     pass
-

@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/__init__.py
 """
 XSystem Monitoring Package
-
 Provides performance monitoring, metrics collection, system observation utilities,
 memory monitoring, error recovery, resilience mechanisms, and distributed tracing.
 """
@@ -18,7 +17,6 @@ from .error_recovery import (
     handle_error,
     retry_with_backoff,
 )
-
 # Production-ready monitoring and recovery modules
 from .memory_monitor import (
     MemoryLeakReport,
@@ -79,7 +77,6 @@ from .performance_manager_generic import (
     PerformanceRecommendation,
     HealthStatus,
 )
-
 __all__ = [
     # Performance Monitor
     "PerformanceMonitor",
@@ -148,10 +145,8 @@ __all__ = [
     "GenericPerformanceManager",
     "PerformanceRecommendation",
     "HealthStatus",
-    
     # Unified Facade
     "XWMonitor",
 ]
-
 # Import unified facade
 from .facade import XWMonitor

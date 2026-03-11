@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/security/__init__.py
 """
 XSystem Security Package
-
 Provides security utilities including:
 - Path validation and resource limits
 - Security contracts and interfaces (IAuthenticatable, IAuthorization, ISecurityToken)
@@ -41,7 +40,6 @@ from .base import (
 )
 # Unified Facades
 from .facade import XWSecurity, XWCrypto
-
 from .errors import (
     AuthenticationError,
     AuthorizationError,
@@ -61,8 +59,26 @@ from .contracts import (
     ISecurityValidator,
     ISecurityMonitor,
     ISecurityPolicy,
+    IAtRestEncryption,
 )
-
+# Key derivation (PBKDF2 + optional Argon2id)
+from .kdf import (
+    derive_key_pbkdf2,
+    derive_key_argon2id,
+    derive_key_from_password,
+)
+# At-rest encryption (unified interface for serialization/XWJSON)
+from .at_rest import (
+    AAtRestEncryption,
+    AES256GCMAtRest,
+    XChaCha20Poly1305AtRest,
+    FernetAtRest,
+    get_at_rest_encryption,
+    build_envelope,
+    parse_envelope,
+    is_envelope,
+    XWJE_MAGIC,
+)
 __all__ = [
     # Unified Facades
     "XWSecurity",
@@ -115,4 +131,19 @@ __all__ = [
     "ISecurityValidator",
     "ISecurityMonitor",
     "ISecurityPolicy",
+    "IAtRestEncryption",
+    # Key derivation
+    "derive_key_pbkdf2",
+    "derive_key_argon2id",
+    "derive_key_from_password",
+    # At-rest encryption
+    "AAtRestEncryption",
+    "AES256GCMAtRest",
+    "XChaCha20Poly1305AtRest",
+    "FernetAtRest",
+    "get_at_rest_encryption",
+    "build_envelope",
+    "parse_envelope",
+    "is_envelope",
+    "XWJE_MAGIC",
 ]

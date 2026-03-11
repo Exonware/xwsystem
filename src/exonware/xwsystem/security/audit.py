@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 """
 #exonware/xwsystem/src/exonware/xwsystem/security/audit.py
-
 Generic Security Audit Utilities for xwsystem.
-
 Provides generic security auditing that can be used by any library:
 - Security issue detection
 - Security audit reporting
 - Generic security level definitions
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 26-Jan-2025
 """
 
@@ -20,7 +17,6 @@ from typing import Any, Optional
 from dataclasses import dataclass
 from enum import Enum
 from exonware.xwsystem import get_logger
-
 logger = get_logger(__name__)
 
 
@@ -31,9 +27,8 @@ class SecurityLevel(Enum):
     MEDIUM = "medium"
     LOW = "low"
     INFO = "info"
-
-
 @dataclass
+
 class SecurityIssue:
     """A security issue found during audit."""
     level: SecurityLevel
@@ -46,25 +41,21 @@ class SecurityIssue:
 class SecurityAuditor:
     """
     Generic security audit utilities.
-    
     Can be used by any library to audit security issues.
     """
-    
     @staticmethod
+
     def audit_object(obj: Any, object_type: str = "object") -> list[SecurityIssue]:
         """
         Audit an object for security issues.
-        
         Args:
             obj: Object instance to audit
             object_type: Type name of the object (e.g., "strategy", "node", "component")
-            
         Returns:
             List of SecurityIssue objects
         """
         issues = []
         obj_name = getattr(obj, '__class__', {}).__name__ if hasattr(obj, '__class__') else 'Unknown'
-        
         # Check for input validation
         if not hasattr(obj, 'validate_input'):
             issues.append(SecurityIssue(
@@ -74,7 +65,6 @@ class SecurityAuditor:
                 recommendation="Add validate_input method to check inputs before processing",
                 location=f"{obj_name}.validate_input"
             ))
-        
         # Check for bounds checking (if applicable)
         if hasattr(obj, 'get') and not hasattr(obj, '_check_bounds'):
             issues.append(SecurityIssue(
@@ -84,7 +74,6 @@ class SecurityAuditor:
                 recommendation="Ensure all index/key access operations validate bounds",
                 location=f"{obj_name}.get"
             ))
-        
         # Check for error handling
         methods = [m for m in dir(obj) if not m.startswith('_') and callable(getattr(obj, m, None))]
         error_handling_count = sum(1 for m in methods if 'error' in m.lower() or 'exception' in m.lower())
@@ -96,7 +85,6 @@ class SecurityAuditor:
                 recommendation="Add explicit error handling for edge cases and invalid inputs",
                 location=f"{obj_name}"
             ))
-        
         # Check for data sanitization (if applicable)
         if hasattr(obj, 'put') or hasattr(obj, 'set'):
             issues.append(SecurityIssue(
@@ -106,35 +94,29 @@ class SecurityAuditor:
                 recommendation="Consider adding data sanitization for user-provided inputs",
                 location=f"{obj_name}.put/set"
             ))
-        
         return issues
-    
     @staticmethod
+
     def generate_report(issues: list[SecurityIssue]) -> dict[str, Any]:
         """
         Generate a security audit report.
-        
         Args:
             issues: List of security issues
-            
         Returns:
             Dictionary with report data
         """
         by_level = {}
         by_category = {}
-        
         for issue in issues:
             # Group by level
             level = issue.level.value
             if level not in by_level:
                 by_level[level] = []
             by_level[level].append(issue)
-            
             # Group by category
             if issue.category not in by_category:
                 by_category[issue.category] = []
             by_category[issue.category].append(issue)
-        
         return {
             'total_issues': len(issues),
             'by_level': {k: len(v) for k, v in by_level.items()},
@@ -155,11 +137,9 @@ class SecurityAuditor:
 def audit_security(obj: Any, object_type: str = "object") -> dict[str, Any]:
     """
     Convenience function to audit an object's security.
-    
     Args:
         obj: Object instance to audit
         object_type: Type name of the object
-        
     Returns:
         Security audit report
     """

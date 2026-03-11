@@ -1,19 +1,16 @@
 #exonware/xwsystem/src/exonware/xwsystem/security/resource_limits.py
 """
 Generic resource limits and DoS protection.
-
 This module provides resource limit enforcement to prevent DoS attacks
 and resource exhaustion in any application.
 """
 
 from typing import Any
-
 from ..config.logging_setup import get_logger
 
 
 class GenericLimitError(Exception):
     """Exception raised when resource limits are exceeded."""
-
     pass
 
 
@@ -38,10 +35,8 @@ class ResourceLimits:
     def check_depth(self, depth: int) -> None:
         """
         Check if depth exceeds maximum allowed.
-
         Args:
             depth: Current depth to check
-
         Raises:
             GenericLimitError: If depth exceeds limit
         """
@@ -52,10 +47,8 @@ class ResourceLimits:
     def check_resource_count(self, count: int) -> None:
         """
         Check if resource count exceeds maximum allowed.
-
         Args:
             count: Current resource count to check
-
         Raises:
             GenericLimitError: If count exceeds limit
         """
@@ -68,10 +61,8 @@ class ResourceLimits:
     def check_path_length(self, path: str) -> None:
         """
         Check if path length exceeds maximum allowed.
-
         Args:
             path: Path to check
-
         Raises:
             GenericLimitError: If path exceeds limit
         """
@@ -97,8 +88,6 @@ class ResourceLimits:
                 "max_path_length": self.max_path_length,
             },
         }
-
-
 # Global resource limits registry
 _limits_registry = {}
 

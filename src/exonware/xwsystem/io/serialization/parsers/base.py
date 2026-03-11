@@ -7,42 +7,38 @@ from typing import Any
 
 class AJsonParser(ABC):
     """Abstract JSON parser base class for pluggable implementations."""
-    
     @abstractmethod
+
     def loads(self, s: str | bytes) -> Any:
         """
         Parse JSON string/bytes to Python object.
-        
         Args:
             s: JSON string or bytes
-            
         Returns:
             Parsed Python object
         """
         pass
-    
     @abstractmethod
+
     def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """
         Serialize Python object to JSON.
-        
         Args:
             obj: Python object to serialize
             **kwargs: Serialization options (ensure_ascii, indent, etc.)
-            
         Returns:
             JSON string or bytes
         """
         pass
-    
     @property
     @abstractmethod
+
     def parser_name(self) -> str:
         """Parser identifier (e.g., 'standard', 'orjson')."""
         pass
-    
     @property
     @abstractmethod
+
     def tier(self) -> int:
         """
         Performance tier:
@@ -52,9 +48,9 @@ class AJsonParser(ABC):
         3 = Pure Rust core (6-8x faster, future)
         """
         pass
-    
     @property
     @abstractmethod
+
     def is_available(self) -> bool:
         """Check if parser is available (dependencies installed)."""
         pass

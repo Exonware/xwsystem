@@ -1,0 +1,155 @@
+{
+  "timestamp": "20260209_230855",
+  "campaign": "20260210-benchmark xwsystem serialization msgpack yaml pickle",
+  "iterations_per_round": 100,
+  "warmup": 20,
+  "results": [
+    {
+      "name": "MsgPackSerializer (small)",
+      "cold_decode_ops_per_sec": 550357.42,
+      "warm_decode_ops_per_sec": 689654.9,
+      "cold_encode_ops_per_sec": 303582.32,
+      "warm_encode_ops_per_sec": 407830.34
+    },
+    {
+      "name": "MsgPackSerializer (medium)",
+      "cold_decode_ops_per_sec": 14862.37,
+      "warm_decode_ops_per_sec": 9001.71,
+      "cold_encode_ops_per_sec": 11490.55,
+      "warm_encode_ops_per_sec": 13488.36
+    },
+    {
+      "name": "MsgPackSerializer (large)",
+      "cold_decode_ops_per_sec": 896.09,
+      "warm_decode_ops_per_sec": 963.8,
+      "cold_encode_ops_per_sec": 783.77,
+      "warm_encode_ops_per_sec": 756.22
+    },
+    {
+      "name": "msgpack (small)",
+      "cold_decode_ops_per_sec": 944287.14,
+      "warm_decode_ops_per_sec": 1044931.75,
+      "cold_encode_ops_per_sec": 448833.13,
+      "warm_encode_ops_per_sec": 458085.38
+    },
+    {
+      "name": "msgpack (medium)",
+      "cold_decode_ops_per_sec": 10759.51,
+      "warm_decode_ops_per_sec": 12264.52,
+      "cold_encode_ops_per_sec": 11659.63,
+      "warm_encode_ops_per_sec": 11863.66
+    },
+    {
+      "name": "msgpack (large)",
+      "cold_decode_ops_per_sec": 1133.24,
+      "warm_decode_ops_per_sec": 838.73,
+      "cold_encode_ops_per_sec": 751.89,
+      "warm_encode_ops_per_sec": 723.8
+    },
+    {
+      "name": "YamlSerializer (small)",
+      "cold_decode_ops_per_sec": 1783.54,
+      "warm_decode_ops_per_sec": 2656.08,
+      "cold_encode_ops_per_sec": 4877.62,
+      "warm_encode_ops_per_sec": 5508.43
+    },
+    {
+      "name": "YamlSerializer (medium)",
+      "cold_decode_ops_per_sec": 22.85,
+      "warm_decode_ops_per_sec": 21.12,
+      "cold_encode_ops_per_sec": 49.5,
+      "warm_encode_ops_per_sec": 47.72
+    },
+    {
+      "name": "YamlSerializer (large)",
+      "cold_decode_ops_per_sec": 0.78,
+      "warm_decode_ops_per_sec": 0.66,
+      "cold_encode_ops_per_sec": 1.9,
+      "warm_encode_ops_per_sec": 2.41
+    },
+    {
+      "name": "PyYAML (small)",
+      "cold_decode_ops_per_sec": 2205.58,
+      "warm_decode_ops_per_sec": 2076.57,
+      "cold_encode_ops_per_sec": 3499.1,
+      "warm_encode_ops_per_sec": 3689.76
+    },
+    {
+      "name": "PyYAML (medium)",
+      "cold_decode_ops_per_sec": 26.98,
+      "warm_decode_ops_per_sec": 20.84,
+      "cold_encode_ops_per_sec": 60.23,
+      "warm_encode_ops_per_sec": 40.71
+    },
+    {
+      "name": "PyYAML (large)",
+      "cold_decode_ops_per_sec": 0.87,
+      "warm_decode_ops_per_sec": 0.76,
+      "cold_encode_ops_per_sec": 2.86,
+      "warm_encode_ops_per_sec": 2.28
+    },
+    {
+      "name": "ruamel.yaml (small)",
+      "cold_decode_ops_per_sec": 690.8,
+      "warm_decode_ops_per_sec": 698.73,
+      "cold_encode_ops_per_sec": 1190.87,
+      "warm_encode_ops_per_sec": 1295.92
+    },
+    {
+      "name": "ruamel.yaml (medium)",
+      "cold_decode_ops_per_sec": 6.94,
+      "warm_decode_ops_per_sec": 12.78,
+      "cold_encode_ops_per_sec": 17.88,
+      "warm_encode_ops_per_sec": 18.8
+    },
+    {
+      "name": "ruamel.yaml (large)",
+      "cold_decode_ops_per_sec": 0.46,
+      "warm_decode_ops_per_sec": 0.45,
+      "cold_encode_ops_per_sec": 1.04,
+      "warm_encode_ops_per_sec": 0.81
+    },
+    {
+      "name": "PickleSerializer (small)",
+      "cold_decode_ops_per_sec": 439367.34,
+      "warm_decode_ops_per_sec": 478927.29,
+      "cold_encode_ops_per_sec": 419287.09,
+      "warm_encode_ops_per_sec": 448832.9
+    },
+    {
+      "name": "PickleSerializer (medium)",
+      "cold_decode_ops_per_sec": 17031.13,
+      "warm_decode_ops_per_sec": 16423.87,
+      "cold_encode_ops_per_sec": 13779.23,
+      "warm_encode_ops_per_sec": 19748.8
+    },
+    {
+      "name": "PickleSerializer (large)",
+      "cold_decode_ops_per_sec": 711.06,
+      "warm_decode_ops_per_sec": 1066.99,
+      "cold_encode_ops_per_sec": 737.43,
+      "warm_encode_ops_per_sec": 1051.17
+    },
+    {
+      "name": "stdlib pickle (small)",
+      "cold_decode_ops_per_sec": 499999.98,
+      "warm_decode_ops_per_sec": 511770.79,
+      "cold_encode_ops_per_sec": 429184.5,
+      "warm_encode_ops_per_sec": 385059.69
+    },
+    {
+      "name": "stdlib pickle (medium)",
+      "cold_decode_ops_per_sec": 18345.26,
+      "warm_decode_ops_per_sec": 20820.32,
+      "cold_encode_ops_per_sec": 18021.27,
+      "warm_encode_ops_per_sec": 15103.46
+    },
+    {
+      "name": "stdlib pickle (large)",
+      "cold_decode_ops_per_sec": 663.87,
+      "warm_decode_ops_per_sec": 730.84,
+      "cold_encode_ops_per_sec": 957.35,
+      "warm_encode_ops_per_sec": 949.1
+    }
+  ]
+}

@@ -2,7 +2,6 @@
 #exonware/xwsystem/tests/core/plugins/runner.py
 """
 Plugins Core Test Runner
-
 Runs comprehensive plugins core tests for XSystem plugin system.
 """
 
@@ -25,7 +24,6 @@ def apply_emojis(text: str) -> str:
     emoji_map = get_emoji_mapping()
     for text_equiv, emoji in emoji_map.items():
         text = text.replace(text_equiv, emoji)
-    
     # Handle encoding issues on Windows
     try:
         # Test if the text can be encoded
@@ -49,19 +47,15 @@ def main():
     """Run plugins core tests."""
     print(apply_emojis("[TEST] Running CORE Plugins Tests..."))
     print("=" * 50)
-    
     try:
         import sys
         from pathlib import Path
         test_basic_path = Path(__file__).parent / "test_core_xwsystem_plugins.py"
         sys.path.insert(0, str(test_basic_path.parent))
-
         import test_core_xwsystem_plugins
         return test_core_xwsystem_plugins.main()
     except Exception as e:
         print(apply_emojis(f"[FAIL] Failed to run plugins core tests: {e}"))
         return 1
-
-
 if __name__ == "__main__":
     sys.exit(main())

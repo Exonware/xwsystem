@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/http_client/defs.rs
 //exonware/xwsystem/http_client/defs.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: 07-Sep-2025

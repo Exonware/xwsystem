@@ -5,7 +5,6 @@ Unit tests for archive format metadata and discovery.
 """
 
 import pytest
-
 from exonware.xwsystem.io.archive.formats import (
     ZipArchiver,
     TarArchiver,
@@ -20,7 +19,6 @@ from exonware.xwsystem.io.archive.formats import (
     get_archiver_for_file,
     get_archiver_by_id,
 )
-
 ARCHIVER_MODULE_PATHS = [
     "exonware.xwsystem.io.archive.formats.zip",
     "exonware.xwsystem.io.archive.formats.tar",
@@ -33,8 +31,6 @@ ARCHIVER_MODULE_PATHS = [
     "exonware.xwsystem.io.archive.formats.wim_format",
     "exonware.xwsystem.io.archive.formats.squashfs_format",
 ]
-
-
 ARCHIVER_CASES = [
     (ZipArchiver, "zip", [".zip"]),
     (TarArchiver, "tar", [".tar"]),
@@ -47,21 +43,19 @@ ARCHIVER_CASES = [
     (WimArchiver, "wim", [".wim"]),
     (SquashfsArchiver, "squashfs", [".squashfs"]),
 ]
-
-
 @pytest.mark.parametrize("module_path", ARCHIVER_MODULE_PATHS)
+
+
 def test_archiver_modules_importable(module_path):
     """Ensure each archive format module is importable directly."""
     __import__(module_path)
-
-
 @pytest.mark.parametrize("archiver_cls, expected_id, _", ARCHIVER_CASES)
+
+
 def test_archiver_classes_importable(archiver_cls, expected_id, _):
     """Verify each archiver class is importable and exposes expected id."""
     archiver = archiver_cls()
     assert archiver.format_id == expected_id
-
-
 @pytest.mark.parametrize(
     "filename, expected_cls",
     [
@@ -77,12 +71,12 @@ def test_archiver_classes_importable(archiver_cls, expected_id, _):
         ("rootfs.squashfs", SquashfsArchiver),
     ],
 )
+
+
 def test_get_archiver_for_file(filename, expected_cls):
     """Ensure get_archiver_for_file resolves the correct archiver class."""
     archiver = get_archiver_for_file(filename)
     assert isinstance(archiver, expected_cls)
-
-
 @pytest.mark.parametrize(
     "format_id, expected_cls",
     [
@@ -98,13 +92,15 @@ def test_get_archiver_for_file(filename, expected_cls):
         ("squashfs", SquashfsArchiver),
     ],
 )
+
+
 def test_get_archiver_by_id(format_id, expected_cls):
     """Ensure get_archiver_by_id returns the correct archiver instance."""
     archiver = get_archiver_by_id(format_id)
     assert isinstance(archiver, expected_cls)
-
-
 @pytest.mark.parametrize("archiver_cls, expected_id, expected_exts", ARCHIVER_CASES)
+
+
 def test_archiver_metadata(archiver_cls, expected_id, expected_exts):
     """Validate format metadata for each archiver."""
     archiver = archiver_cls()

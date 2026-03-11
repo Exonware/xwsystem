@@ -3,11 +3,10 @@
 #exonware/xwsystem/console/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 2025-01-27
-
 Console module for structured logging and user interaction.
 """
 
@@ -31,7 +30,6 @@ from .errors import (
     EventLoggerError,
     ConsoleWriterError,
 )
-
 __all__ = [
     # Type definitions
     'LogLevel',

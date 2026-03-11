@@ -12,7 +12,6 @@ from .tree_walker import (
     resolve_proxies_in_dict,
     walk_and_replace,
 )
-
 __all__ = [
     "CircularReferenceDetector",
     "CircularReferenceError",

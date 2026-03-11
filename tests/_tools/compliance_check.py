@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 """
 #exonware/xwsystem/tests/_tools/compliance_check.py
-
 Compliance checker for xwsystem against the eXonware guide suite.
-
 Goal: fail fast if `xwsystem/` drifts from required structure/docs/evidence.
 """
 
 from __future__ import annotations
-
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-
-
 ALLOWED_ROOT_ENTRIES = {
     ".github",
     ".gitignore",
@@ -30,7 +25,6 @@ ALLOWED_ROOT_ENTRIES = {
     "tests",
     "rust",
 }
-
 REQUIRED_DOCS = [
     "docs/REF_IDEA.md",
     "docs/REF_PROJECT.md",
@@ -43,7 +37,6 @@ REQUIRED_DOCS = [
     "docs/GUIDE_USAGE.md",
     "docs/REPORT_TEST.md",
 ]
-
 REQUIRED_LOGS = [
     "docs/logs/tests/INDEX.md",
     "docs/logs/benchmarks/INDEX.md",
@@ -53,14 +46,13 @@ REQUIRED_LOGS = [
     "docs/logs/SUMMARY_CHANGE.md",
     "docs/logs/SUMMARY_PROJECT.md",
 ]
-
 REQUIRED_COMPLIANCE = [
     "docs/compliance/traceability/TRACE_MATRIX.md",
     "docs/compliance/traceability/TRACE_MATRIX.json",
 ]
-
-
 @dataclass(frozen=True)
+
+
 class Failure:
     code: str
     message: str
@@ -107,10 +99,8 @@ def _check_traceability_regenerates_clean(root: Path) -> list[Failure]:
     generator = tools_root / "tools" / "ci" / "python_scripts" / "generate_trace_matrix.py"
     if not generator.exists():
         return [Failure("traceability.missing_generator", f"Missing generator script: {generator.as_posix()}")]
-
     # Regenerate in-place (expected to be deterministic).
     import subprocess
-
     result = subprocess.run(
         [sys.executable, str(generator), "--package", "xwsystem"],
         cwd=str(tools_root),
@@ -122,7 +112,6 @@ def _check_traceability_regenerates_clean(root: Path) -> list[Failure]:
     if result.returncode != 0:
         failures.append(Failure("traceability.generate_failed", f"Traceability generation failed:\n{result.stderr}"))
         return failures
-
     # Check that regeneration did not introduce unstaged changes in the artefacts.
     diff = subprocess.run(
         ["git", "diff", "--name-only", "xwsystem/docs/compliance/traceability/TRACE_MATRIX.md", "xwsystem/docs/compliance/traceability/TRACE_MATRIX.json"],
@@ -173,24 +162,18 @@ def _check_file_headers(root: Path) -> list[Failure]:
 def main() -> int:
     root = _repo_root()
     failures: list[Failure] = []
-
     failures.extend(_check_root_structure(root))
     failures.extend(_check_required_files(root, REQUIRED_DOCS, "docs.missing"))
     failures.extend(_check_required_files(root, REQUIRED_LOGS, "logs.missing"))
     failures.extend(_check_required_files(root, REQUIRED_COMPLIANCE, "compliance.missing"))
     failures.extend(_check_file_headers(root))
     failures.extend(_check_traceability_regenerates_clean(root))
-
     if failures:
         print("xwsystem compliance check FAILED")
         for f in failures:
             print(f"- [{f.code}] {f.message}")
         return 1
-
     print("xwsystem compliance check PASSED")
     return 0
-
-
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -1,0 +1,131 @@
+{
+  "timestamp": 1761992613.086322,
+  "num_operations": 10000,
+  "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "results": [
+    {
+      "name": "LRU_PUT",
+      "operations_per_second": 1196458.2382473757,
+      "latency_p50_ms": 0.000700005330145359,
+      "latency_p95_ms": 0.000800006091594696,
+      "latency_p99_ms": 0.00100000761449337,
+      "memory_bytes": 85176,
+      "duration_seconds": 0.008358001708984375,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "LRU_GET",
+      "operations_per_second": 1601307.2194861223,
+      "latency_p50_ms": 0.000600004568696022,
+      "latency_p95_ms": 0.000700005330145359,
+      "latency_p99_ms": 0.0011999509297311306,
+      "memory_bytes": 85176,
+      "duration_seconds": 0.0062448978424072266,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "LRU_DELETE",
+      "operations_per_second": 1413032.37543375,
+      "latency_p50_ms": 0.000400003045797348,
+      "latency_p95_ms": 0.000700005330145359,
+      "latency_p99_ms": 0.000800006091594696,
+      "memory_bytes": 85176,
+      "duration_seconds": 0.00707697868347168,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "LRU_EVICTION",
+      "operations_per_second": 995562.3071445526,
+      "latency_p50_ms": 0.00100000761449337,
+      "latency_p95_ms": 0.0011999509297311306,
+      "latency_p99_ms": 0.001300009898841381,
+      "memory_bytes": 8856,
+      "duration_seconds": 0.0010044574737548828,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "LFU_PUT",
+      "operations_per_second": 1857777.3840634273,
+      "latency_p50_ms": 0.000500003807246685,
+      "latency_p95_ms": 0.000600004568696022,
+      "latency_p99_ms": 0.000700005330145359,
+      "memory_bytes": 85176,
+      "duration_seconds": 0.0053827762603759766,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "LFU_GET",
+      "operations_per_second": 1888390.4371707712,
+      "latency_p50_ms": 0.000400003045797348,
+      "latency_p95_ms": 0.000500003807246685,
+      "latency_p99_ms": 0.000600004568696022,
+      "memory_bytes": 85176,
+      "duration_seconds": 0.005295515060424805,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "LFU_EVICTION",
+      "operations_per_second": 356537.23223393405,
+      "latency_p50_ms": 0.002100015990436077,
+      "latency_p95_ms": 0.002400018274784088,
+      "latency_p99_ms": 0.002800021320581436,
+      "memory_bytes": 8856,
+      "duration_seconds": 0.0028047561645507812,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "TTL_PUT",
+      "operations_per_second": 670916.885277369,
+      "latency_p50_ms": 0.001100008375942707,
+      "latency_p95_ms": 0.004099973011761904,
+      "latency_p99_ms": 0.006699992809444666,
+      "memory_bytes": 85176,
+      "duration_seconds": 0.014904975891113281,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "TTL_GET",
+      "operations_per_second": 1472563.9855352317,
+      "latency_p50_ms": 0.000600004568696022,
+      "latency_p95_ms": 0.000700005330145359,
+      "latency_p99_ms": 0.0007999478839337826,
+      "memory_bytes": 85176,
+      "duration_seconds": 0.006790876388549805,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "CONCURRENT_ACCESS",
+      "operations_per_second": 1345427.8336460888,
+      "latency_p50_ms": 0,
+      "latency_p95_ms": 0,
+      "latency_p99_ms": 0,
+      "memory_bytes": 0,
+      "duration_seconds": 0.01486515998840332,
+      "success": true,
+      "error": ""
+    },
+    {
+      "name": "ASYNC_LRU",
+      "operations_per_second": 887018.6963036514,
+      "latency_p50_ms": 0,
+      "latency_p95_ms": 0,
+      "latency_p99_ms": 0,
+      "memory_bytes": 0,
+      "duration_seconds": 0.002318799961358309,
+      "success": true,
+      "error": ""
+    }
+  ],
+  "benchmark_date": "2025-11-01T13:23:33.086322",
+  "version": "0.0.1.387",
+  "phase": "baseline"
+}

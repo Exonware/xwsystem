@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/memory_monitor.py
 """
 Memory Monitoring and Leak Detection for XSystem Library.
-
 This module provides comprehensive memory monitoring, leak detection,
 and automatic cleanup mechanisms for production deployment.
 """
@@ -14,18 +13,14 @@ import weakref
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
-
 import psutil
-
 from ..config.logging_setup import get_logger
-
 logger = get_logger("xwsystem.memory_monitor")
-
-
 @dataclass
+
+
 class MemorySnapshot:
     """Memory usage snapshot for tracking."""
-
     timestamp: float
     memory_usage: int  # bytes
     object_count: int
@@ -34,12 +29,11 @@ class MemorySnapshot:
     edge_count: int
     cache_size: int
     pool_size: int
-
-
 @dataclass
+
+
 class MemoryLeakReport:
     """Report of detected memory leaks."""
-
     leak_type: str
     severity: str  # 'low', 'medium', 'high', 'critical'
     description: str
@@ -52,7 +46,6 @@ class MemoryLeakReport:
 class MemoryMonitor:
     """
     Comprehensive memory monitoring and leak detection system.
-
     Features:
     - Real-time memory usage tracking
     - Automatic leak detection
@@ -74,28 +67,23 @@ class MemoryMonitor:
         self.leak_detection_threshold = leak_detection_threshold
         self.max_memory_usage = max_memory_usage
         self.enable_auto_cleanup = enable_auto_cleanup
-
         # Monitoring state
         self._snapshots: deque = deque(maxlen=100)  # Keep last 100 snapshots
         self._object_registry: dict[int, dict[str, Any]] = {}
         self._weak_refs: set[weakref.ReferenceType] = set()
         self._leak_reports: list[MemoryLeakReport] = []
-
         # Thread safety
         self._lock = threading.RLock()
         self._monitoring_thread: Optional[threading.Thread] = None
         self._stop_monitoring = threading.Event()
-
         # Statistics
         self._total_objects_created = 0
         self._total_objects_destroyed = 0
         self._peak_memory_usage = 0
         self._cleanup_count = 0
-
         # Callbacks for external systems
         self._memory_pressure_callbacks: list[Callable] = []
         self._leak_detected_callbacks: list[Callable] = []
-
         logger.info("🔍 Memory monitor initialized")
 
     def start_monitoring(self) -> None:
@@ -103,7 +91,6 @@ class MemoryMonitor:
         if self._monitoring_thread is not None and self._monitoring_thread.is_alive():
             logger.warning("Memory monitoring already running")
             return
-
         self._stop_monitoring.clear()
         self._monitoring_thread = threading.Thread(
             target=self._monitoring_loop, name="MemoryMonitor", daemon=True
@@ -116,7 +103,6 @@ class MemoryMonitor:
         if self._monitoring_thread is None or not self._monitoring_thread.is_alive():
             logger.warning("Memory monitoring not running")
             return
-
         self._stop_monitoring.set()
         self._monitoring_thread.join(timeout=5.0)
         logger.info("⏹️ Memory monitoring stopped")
@@ -128,7 +114,6 @@ class MemoryMonitor:
                 self._take_snapshot()
                 self._detect_leaks()
                 self._check_memory_pressure()
-
                 # Wait for next interval
                 self._stop_monitoring.wait(self.monitoring_interval)
             except Exception as e:
@@ -141,14 +126,12 @@ class MemoryMonitor:
             # Get current memory usage
             process = psutil.Process()
             memory_info = process.memory_info()
-
             # Get garbage collection stats
             gc_stats = {
                 "collections": gc.get_stats(),
                 "counts": gc.get_count(),
                 "objects": len(gc.get_objects()),
             }
-
             # Create snapshot
             snapshot = MemorySnapshot(
                 timestamp=time.time(),
@@ -160,11 +143,9 @@ class MemoryMonitor:
                 cache_size=0,  # Will be updated by specific implementations
                 pool_size=0,  # Will be updated by specific implementations
             )
-
             with self._lock:
                 self._snapshots.append(snapshot)
                 self._peak_memory_usage = max(self._peak_memory_usage, memory_info.rss)
-
         except Exception as e:
             logger.error(f"Error taking memory snapshot: {e}")
 
@@ -172,28 +153,22 @@ class MemoryMonitor:
         """Detect potential memory leaks."""
         if len(self._snapshots) < 3:
             return  # Need at least 3 snapshots for trend analysis
-
         try:
             recent_snapshots = list(self._snapshots)[-10:]  # Last 10 snapshots
             if len(recent_snapshots) < 3:
                 return
-
             # Calculate memory growth trend
             memory_values = [s.memory_usage for s in recent_snapshots]
             time_values = [s.timestamp for s in recent_snapshots]
-
             # Simple linear regression for trend
             n = len(memory_values)
             if n < 3:
                 return
-
             sum_x = sum(time_values)
             sum_y = sum(memory_values)
             sum_xy = sum(x * y for x, y in zip(time_values, memory_values))
             sum_x2 = sum(x * x for x in time_values)
-
             slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x)
-
             # Check for significant growth
             if slope > self.leak_detection_threshold * memory_values[0]:
                 leak_report = MemoryLeakReport(
@@ -209,21 +184,17 @@ class MemoryMonitor:
                         "Consider implementing object pooling",
                     ],
                 )
-
                 with self._lock:
                     self._leak_reports.append(leak_report)
-
                 logger.warning(
                     f"🚨 Potential memory leak detected: {leak_report.description}"
                 )
-
                 # Trigger callbacks
                 for callback in self._leak_detected_callbacks:
                     try:
                         callback(leak_report)
                     except Exception as e:
                         logger.error(f"Error in leak detection callback: {e}")
-
         except Exception as e:
             logger.error(f"Error detecting memory leaks: {e}")
 
@@ -231,16 +202,12 @@ class MemoryMonitor:
         """Check for memory pressure and trigger cleanup if needed."""
         if not self._snapshots:
             return
-
         current_memory = self._snapshots[-1].memory_usage
-
         # Check if memory usage is high
         if current_memory > self.max_memory_usage:
             logger.warning(f"⚠️ High memory usage: {current_memory / 1024 / 1024:.1f}MB")
-
             if self.enable_auto_cleanup:
                 self._auto_cleanup_if_needed()
-
             # Trigger callbacks
             for callback in self._memory_pressure_callbacks:
                 try:
@@ -253,19 +220,15 @@ class MemoryMonitor:
         try:
             # Force garbage collection
             collected = gc.collect()
-
             # Clear weak references
             self._weak_refs.clear()
-
             # Clear old snapshots if too many
             if len(self._snapshots) > 50:
                 with self._lock:
                     # Keep only the most recent 25 snapshots
                     self._snapshots = deque(list(self._snapshots)[-25:], maxlen=100)
-
             self._cleanup_count += 1
             logger.info(f"🧹 Auto-cleanup performed: {collected} objects collected")
-
         except Exception as e:
             logger.error(f"Error during auto-cleanup: {e}")
 
@@ -274,41 +237,33 @@ class MemoryMonitor:
         try:
             # Force garbage collection
             collected = gc.collect()
-
             # Clear all weak references
             self._weak_refs.clear()
-
             # Clear old leak reports
             with self._lock:
                 if len(self._leak_reports) > 20:
                     self._leak_reports = self._leak_reports[-10:]
-
             logger.info(f"🧹 Force cleanup completed: {collected} objects collected")
-
         except Exception as e:
             logger.error(f"Error during force cleanup: {e}")
 
     def register_object(self, obj: Any, obj_type: str = "unknown") -> None:
         """Register an object for lifecycle monitoring."""
         obj_id = id(obj)
-
         with self._lock:
             self._object_registry[obj_id] = {
                 "type": obj_type,
                 "created_at": time.time(),
                 "memory_usage": sys.getsizeof(obj),
             }
-
             # Create weak reference for cleanup detection
             weak_ref = weakref.ref(obj, self._object_cleanup_callback)
             self._weak_refs.add(weak_ref)
-
             self._total_objects_created += 1
 
     def unregister_object(self, obj: Any) -> None:
         """Unregister an object from lifecycle monitoring."""
         obj_id = id(obj)
-
         with self._lock:
             if obj_id in self._object_registry:
                 del self._object_registry[obj_id]
@@ -323,9 +278,7 @@ class MemoryMonitor:
         """Get current memory statistics."""
         if not self._snapshots:
             return {}
-
         latest = self._snapshots[-1]
-
         return {
             "current_memory_mb": latest.memory_usage / 1024 / 1024,
             "peak_memory_mb": self._peak_memory_usage / 1024 / 1024,
@@ -356,8 +309,6 @@ class MemoryMonitor:
         return (
             self._monitoring_thread is not None and self._monitoring_thread.is_alive()
         )
-
-
 # Global instance for easy access
 _memory_monitor: Optional[MemoryMonitor] = None
 

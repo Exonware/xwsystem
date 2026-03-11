@@ -2,11 +2,10 @@
 #exonware/xwsystem/tests/1.unit/serialization_tests/test_final_optimization.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.0.1
 Generation Date: January 31, 2025
-
 Final test to verify all serializers are working after optimization.
 """
 
@@ -14,7 +13,6 @@ import sys
 import os
 import tempfile
 from pathlib import Path
-
 # Add xwsystem to path - adjusted for new location
 current_dir = Path(__file__).parent
 src_dir = current_dir.parent.parent.parent.parent / 'src'
@@ -24,12 +22,9 @@ def test_optimized_serializers():
     """Test all serializers after optimization to ensure they work correctly."""
     print("🧪 TESTING OPTIMIZED SERIALIZERS")
     print("=" * 50)
-    
     # Simple test data to avoid validation issues
     test_data = {"test": "working", "number": 42}
-    
     results = []
-    
     # Core serializers to test
     serializer_configs = [
         ("JSON", "json", "JsonSerializer", False, test_data),
@@ -46,11 +41,9 @@ def test_optimized_serializers():
         ("DBM", "dbm", "DbmSerializer", True, test_data),
         ("Shelve", "shelve", "ShelveSerializer", True, test_data),
     ]
-    
     for name, module, class_name, is_binary, data in serializer_configs:
         try:
             print(f"\n🔄 Testing {name}...")
-            
             # Import serializer from correct module
             from exonware.xwsystem.io.serialization import (
                 JsonSerializer, XmlSerializer, YamlSerializer, TomlSerializer,
@@ -65,15 +58,12 @@ def test_optimized_serializers():
             }.get(name)
             if serializer_class is None:
                 raise ImportError(f"Serializer {name} not found in import map")
-            
             # Create serializer (ASerialization accepts max_depth and max_size_mb only)
             # Note: Shelve security warnings are expected - they inform users about security risks
             serializer = serializer_class(max_depth=10)
-            
             # Verify properties
             assert serializer.format_name == name, f"{name} format name mismatch"
             assert serializer.is_binary_format == is_binary, f"{name} binary flag mismatch"
-            
             # Test 1: Basic serialization
             try:
                 serialized = serializer.dumps(data)
@@ -83,38 +73,29 @@ def test_optimized_serializers():
                 print(f"  ❌ dumps/loads failed: {e}")
                 results.append((name, "FAILED", f"serialization: {e}"))
                 continue
-            
             # Test 2: File operations with relative path
             test_file = Path(f"test_{name.lower()}{serializer.file_extensions[0]}")
-            
             try:
                 # Clean up any existing file
                 if test_file.exists():
                     test_file.unlink()
-                
                 # Test save_file
                 serializer.save_file(data, test_file)
                 assert test_file.exists(), f"{name} save_file didn't create file"
-                
                 # Test load_file
                 loaded = serializer.load_file(test_file)
                 assert loaded is not None, f"{name} load_file returned None"
-                
                 print(f"  ✅ save_file/load_file working")
-                
                 # Check if using inherited or custom file operations
                 has_custom_save = 'save_file' in serializer.__class__.__dict__
                 has_custom_load = 'load_file' in serializer.__class__.__dict__
-                
                 if has_custom_save and has_custom_load:
                     print(f"  🗄️  Custom database file operations")
                 elif has_custom_save or has_custom_load:
                     print(f"  ⚠️  Partially custom file operations")  
                 else:
                     print(f"  🎯 Inherited optimized file operations")
-                
                 results.append((name, "WORKING", "All tests passed"))
-                
             except Exception as e:
                 print(f"  ❌ File operations failed: {e}")
                 results.append((name, "FAILED", f"file ops: {e}"))
@@ -122,23 +103,19 @@ def test_optimized_serializers():
                 # Clean up
                 if test_file.exists():
                     test_file.unlink()
-                    
         except ImportError as e:
             print(f"  ⚠️  {name} not available: {e}")
             results.append((name, "MISSING", str(e)))
         except Exception as e:
             print(f"  ❌ {name} failed: {e}")
             results.append((name, "FAILED", str(e)))
-    
     # Summary
     print(f"\n" + "=" * 50)
     print("📊 OPTIMIZATION TEST RESULTS")
     print("=" * 50)
-    
     working = sum(1 for _, status, _ in results if status == "WORKING")
     failed = sum(1 for _, status, _ in results if status == "FAILED")
     missing = sum(1 for _, status, _ in results if status == "MISSING")
-    
     for name, status, details in results:
         if status == "WORKING":
             print(f"✅ {name:12} - WORKING")
@@ -146,16 +123,13 @@ def test_optimized_serializers():
             print(f"❌ {name:12} - FAILED: {details[:50]}...")
         else:  # MISSING
             print(f"⚠️  {name:12} - MISSING DEPS")
-    
     print(f"\n📈 SUMMARY:")
     print(f"  ✅ Working: {working}")
     print(f"  ❌ Failed: {failed}")
     print(f"  ⚠️  Missing: {missing}")
-    
     if working > 0:
         success_rate = working / (working + failed) * 100 if (working + failed) > 0 else 0
         print(f"  📊 Success Rate: {success_rate:.1f}%")
-        
         if failed == 0:
             print(f"\n🎉 ALL AVAILABLE SERIALIZERS WORKING!")
             print("✅ Optimization successful!")
@@ -166,7 +140,6 @@ def test_optimized_serializers():
     else:
         print(f"\n❌ NO SERIALIZERS WORKING!")
         return False
-
 if __name__ == "__main__":
     success = test_optimized_serializers()
     print(f"\n{'🎉 OPTIMIZATION SUCCESS' if success else '❌ OPTIMIZATION FAILED'}")

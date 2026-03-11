@@ -2,11 +2,10 @@
 #exonware/xwsystem/validation/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Validation module errors - exception classes for validation functionality.
 """
 

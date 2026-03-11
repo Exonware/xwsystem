@@ -1,19 +1,16 @@
 #exonware/xwsystem/src/exonware/xwsystem/config/logging.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Logging configuration for XSystem.
-
 Provides simple logging control functions and configuration management.
 """
 
 import logging
 import os
-
 from .defaults import LOGGING_ENABLED, LOGGING_LEVEL
 
 
@@ -46,25 +43,24 @@ class LoggingConfig:
             logging_level = getattr(logging, level_upper)
         except AttributeError:
             raise AttributeError(f"Invalid logging level: {level}. Valid levels are: DEBUG, INFO, WARNING, ERROR, CRITICAL")
-        
         self._level = level_upper
         if self._enabled:
             logging.getLogger().setLevel(logging_level)
-
     @property
+
     def enabled(self) -> bool:
         """Check if logging is enabled."""
         return self._enabled
-
     @property
+
     def level(self) -> str:
         """Get current logging level."""
         return self._level
-    
+
     def get_level(self) -> str:
         """Get current logging level."""
         return self._level
-    
+
     def add_handler(self, handler) -> None:
         """Add a logging handler."""
         if self._enabled:
@@ -72,13 +68,10 @@ class LoggingConfig:
             from unittest.mock import MagicMock
             if not isinstance(handler, MagicMock):
                 logging.getLogger().addHandler(handler)
-
-
 # Global logging config instance
 logging_config = LoggingConfig()
-
-
 # Convenience functions
+
 def logging_disable() -> None:
     """Disable all logging."""
     os.environ["XSYSTEM_LOGGING_DISABLE"] = "true"

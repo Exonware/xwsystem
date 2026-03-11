@@ -2,14 +2,12 @@
 #exonware/xwsystem/ipc/async_fabric.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 09-Nov-2025
-
 Async Process Fabric
 ====================
-
 High-level async orchestration facade that coordinates the IPC building blocks:
 process pools, message queues, and shared memory managers.  The fabric exposes a
 single context-managed session that provides consistent lifecycle management and
@@ -18,7 +16,6 @@ shared-memory provisioning.
 """
 
 from __future__ import annotations
-
 import asyncio
 import importlib
 import logging
@@ -33,13 +30,10 @@ from typing import (
     Sequence,
     Union,
 )
-
 from .process_pool import AsyncProcessPool
 from .message_queue import AsyncMessageQueue
 from .shared_memory import SharedData, SharedMemoryManager
-
 logger = logging.getLogger("xwsystem.ipc.async_fabric")
-
 CallableRef = str | Callable[..., Any]
 TaskId = str
 
@@ -47,35 +41,27 @@ TaskId = str
 def _resolve_callable(callable_or_path: CallableRef) -> Callable[..., Any]:
     """
     Resolve a dotted-path string to a callable, or return the callable directly.
-
     Args:
         callable_or_path: Callable object or dotted import path.
-
     Returns:
         A callable ready to be executed inside the process pool.
     """
     if callable(callable_or_path):
         return callable_or_path
-
     if not isinstance(callable_or_path, str) or "." not in callable_or_path:
         raise ValueError(f"Callable reference must be a dotted path string: {callable_or_path!r}")
-
     module_path, _, attr_name = callable_or_path.rpartition(".")
     if not module_path or not attr_name:
         raise ValueError(f"Invalid callable path: {callable_or_path!r}")
-
     module = importlib.import_module(module_path)
     target = getattr(module, attr_name, None)
     if target is None or not callable(target):
         raise TypeError(f"Resolved attribute is not callable: {callable_or_path!r}")
-
     return target
-
-
 @dataclass
+
 class FabricConfig:
     """Configuration used when provisioning a fabric session."""
-
     pool_factory: Callable[..., AsyncProcessPool] = AsyncProcessPool
     queue_factory: Callable[..., AsyncMessageQueue] = AsyncMessageQueue
     shared_memory_factory: Callable[..., SharedMemoryManager] = SharedMemoryManager
@@ -87,11 +73,8 @@ class FabricConfig:
 class AsyncProcessFabric:
     """
     High-level orchestration facade for IPC subsystems.
-
     Example:
-
         fabric = AsyncProcessFabric()
-
         async with fabric.session() as session:
             task_id = await session.submit("myapp.jobs.transform", payload)
             async for result in session.iter_results(task_id):
@@ -120,12 +103,11 @@ class AsyncProcessFabric:
             shared_memory_kwargs=shared_memory_kwargs or {},
         )
         self._logger = logger_instance or logger
-
     @asynccontextmanager
+
     async def session(self) -> AsyncIterator["AsyncProcessFabricSession"]:
         """
         Provision an async session that owns the pooled IPC resources.
-
         Yields:
             AsyncProcessFabricSession that manages pool, queue, and shared memory within
             an async context block.
@@ -167,7 +149,6 @@ class AsyncProcessFabricSession:
             if self._shared_memory is not None:
                 self._shared_memory.cleanup_all()
         self._active_task_ids.clear()
-
     # --------------------------------------------------------------------- #
     # Process pool orchestration
     # --------------------------------------------------------------------- #
@@ -181,19 +162,16 @@ class AsyncProcessFabricSession:
     ) -> TaskId:
         """
         Submit a callable (or dotted-path string) to the process pool.
-
         Args:
             fn: Callable reference or dotted-path string.
             *args: Positional arguments forwarded to the callable.
             task_id: Optional explicit task identifier.
             **kwargs: Keyword arguments forwarded to the callable.
-
         Returns:
             Task identifier issued by the async process pool.
         """
         if self._pool is None:
             raise RuntimeError("Process pool not available. Did you forget to use the session context?")
-
         callable_fn = _resolve_callable(fn)
         task_identifier = await self._pool.submit(callable_fn, *args, task_id=task_id, **kwargs)
         self._active_task_ids.add(task_identifier)
@@ -208,17 +186,14 @@ class AsyncProcessFabricSession:
     ) -> Sequence[Any]:
         """
         Collect results for the provided task identifiers.
-
         Args:
             task_ids: Optional explicit list of task IDs. Defaults to all active tasks.
             timeout: Optional timeout in seconds applied per task.
-
         Returns:
             List of task results (order follows the provided task_ids).
         """
         if self._pool is None:
             raise RuntimeError("Process pool not available")
-
         ids = list(task_ids or self._active_task_ids)
         results = []
         for task_id in ids:
@@ -237,7 +212,6 @@ class AsyncProcessFabricSession:
     ) -> AsyncIterator[Any]:
         """
         Async iterator yielding results as they are retrieved from the pool.
-
         Args:
             task_ids: Single task ID or sequence of IDs to stream.
             timeout: Optional timeout per task.
@@ -246,7 +220,6 @@ class AsyncProcessFabricSession:
             task_id_list: Iterable[TaskId] = [task_ids]  # type: ignore[assignment]
         else:
             task_id_list = task_ids
-
         for task_id in task_id_list:
             result = await self._pool.get_result(task_id, timeout=timeout)  # type: ignore[arg-type]
             self._active_task_ids.discard(task_id)
@@ -256,12 +229,10 @@ class AsyncProcessFabricSession:
         """Attempt to cancel an active task."""
         if self._pool is None:
             raise RuntimeError("Process pool not available")
-
         cancelled = self._pool.cancel_task(task_id)
         if cancelled:
             self._active_task_ids.discard(task_id)
         return cancelled
-
     # --------------------------------------------------------------------- #
     # Message queue facade
     # --------------------------------------------------------------------- #
@@ -269,7 +240,6 @@ class AsyncProcessFabricSession:
     async def publish(self, channel: str, message: Any, *, timeout: Optional[float] = None) -> bool:
         """
         Publish a message to the async queue.
-
         Args:
             channel: Logical channel name (currently informational, reserved for sharding).
             message: Payload to enqueue.
@@ -277,14 +247,12 @@ class AsyncProcessFabricSession:
         """
         if self._queue is None:
             raise RuntimeError("Message queue not available")
-
         # Channel support reserved for future sharding, currently single queue.
         return await self._queue.put({"channel": channel, "payload": message}, timeout=timeout)
 
     async def consume(self, channel: Optional[str] = None, *, timeout: Optional[float] = None) -> Optional[Any]:
         """
         Consume a message from the async queue.
-
         Args:
             channel: Currently informational. When provided, only messages from the
                      matching channel are returned (others are re-queued).
@@ -292,13 +260,11 @@ class AsyncProcessFabricSession:
         """
         if self._queue is None:
             raise RuntimeError("Message queue not available")
-
         # Simple implementation for single-queue usage. When a channel is provided we
         # loop until matching payload is found or timeout elapses.
         if channel is None:
             envelope = await self._queue.get(timeout=timeout)
             return None if envelope is None else envelope.get("payload")
-
         deadline = None if timeout is None else (asyncio.get_event_loop().time() + timeout)
         buffer: list[dict[str, Any]] = []
         while True:
@@ -315,7 +281,6 @@ class AsyncProcessFabricSession:
                 return envelope.get("payload")
             # Mismatch: requeue without channel filtering to avoid drops.
             buffer.append(envelope)
-
     # --------------------------------------------------------------------- #
     # Shared memory helpers
     # --------------------------------------------------------------------- #
@@ -323,24 +288,20 @@ class AsyncProcessFabricSession:
     def share(self, name: str, *, size: int = 1024 * 1024, create_if_missing: bool = True) -> SharedData:
         """
         Create or retrieve a shared memory segment.
-
         Args:
             name: Unique segment name.
             size: Default size when creating a new segment.
             create_if_missing: Whether to create the segment when absent.
-
         Returns:
             SharedData handle.
         """
         if self._shared_memory is None:
             raise RuntimeError("Shared memory manager not available")
-
         segment = self._shared_memory.get_segment(name)
         if segment or not create_if_missing:
             if segment is None:
                 raise ValueError(f"Shared memory segment '{name}' not found")
             return segment
-
         return self._shared_memory.create_segment(name, size=size)
 
     def release_shared(self, name: str) -> bool:
@@ -348,7 +309,6 @@ class AsyncProcessFabricSession:
         if self._shared_memory is None:
             raise RuntimeError("Shared memory manager not available")
         return self._shared_memory.remove_segment(name)
-
     # --------------------------------------------------------------------- #
     # Introspection
     # --------------------------------------------------------------------- #

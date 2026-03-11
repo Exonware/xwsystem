@@ -2,18 +2,15 @@
 """
 Table Formatting Utilities
 ==========================
-
 Production-grade table formatting for XWSystem.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 05, 2025
 """
 
 from __future__ import annotations
-
 import sys
 from typing import Any, Optional, TextIO, Callable
 from dataclasses import dataclass
@@ -21,20 +18,17 @@ from dataclasses import dataclass
 from ..defs import Alignment, BorderStyle, Colors, Style
 # Import CLI-specific color utilities
 from .colors import colorize
-
-
 @dataclass
+
 class CliColumn:
     """
     Table column definition.
-    
     Features:
     - Custom alignment and width
     - Header and data formatting
     - Color and style customization
     - Data validation and transformation
     """
-    
     header: str
     width: Optional[int] = None
     alignment: Alignment = Alignment.LEFT
@@ -45,7 +39,7 @@ class CliColumn:
     formatter: Optional[Callable[[Any], str]] = None
     min_width: int = 1
     max_width: Optional[int] = None
-    
+
     def __post_init__(self):
         """Initialize column defaults."""
         if self.width is not None:
@@ -57,7 +51,6 @@ class CliColumn:
 class CliTableFormatter:
     """
     Production-grade table formatter.
-    
     Features:
     - Multiple border styles
     - Custom column formatting
@@ -66,7 +59,6 @@ class CliTableFormatter:
     - Header and footer support
     - Export to different formats
     """
-    
     BORDER_CHARS = {
         BorderStyle.NONE: {
             'top_left': '', 'top_right': '', 'bottom_left': '', 'bottom_right': '',
@@ -84,7 +76,7 @@ class CliTableFormatter:
             'top_cross': '┬', 'bottom_cross': '┴', 'left_cross': '├', 'right_cross': '┤'
         }
     }
-    
+
     def __init__(self, 
                  border_style: BorderStyle = BorderStyle.ROUNDED,
                  padding: int = 1):
@@ -92,7 +84,7 @@ class CliTableFormatter:
         self.border_style = border_style
         self.padding = padding
         self.border_chars = self.BORDER_CHARS.get(border_style, self.BORDER_CHARS[BorderStyle.ROUNDED])
-    
+
     def format_cell(self, value: Any, column: CliColumn, width: int) -> str:
         """Format a cell value according to column specifications."""
         # Apply custom formatter if provided
@@ -100,11 +92,9 @@ class CliTableFormatter:
             text = column.formatter(value)
         else:
             text = str(value) if value is not None else ""
-        
         # Truncate if too long
         if len(text) > width:
             text = text[:width-3] + "..."
-        
         # Apply alignment
         if column.alignment == Alignment.LEFT:
             text = text.ljust(width)
@@ -112,17 +102,14 @@ class CliTableFormatter:
             text = text.rjust(width)
         else:  # CENTER
             text = text.center(width)
-        
         # Apply color and style
         if column.color or column.style:
             text = colorize(text, column.color, column.style)
-        
         return text
-    
+
     def calculate_widths(self, columns: list[CliColumn], data: list[list[Any]]) -> list[int]:
         """Calculate optimal column widths."""
         widths = []
-        
         for i, column in enumerate(columns):
             if column.width is not None:
                 width = column.width
@@ -135,23 +122,20 @@ class CliTableFormatter:
                 width = max(width, column.min_width)
                 if column.max_width is not None:
                     width = min(width, column.max_width)
-            
             widths.append(width)
-        
         return widths
 
 
 class CliTable:
     """
     Production-grade table with advanced formatting capabilities.
-    
     Features:
     - Flexible column definitions
     - Multiple output formats
     - Sorting and filtering
     - Export capabilities
     """
-    
+
     def __init__(self, 
                  columns: list[str | CliColumn] = None,
                  formatter: CliTableFormatter = None,
@@ -159,7 +143,6 @@ class CliTable:
         """Initialize table."""
         self.title = title
         self.formatter = formatter or CliTableFormatter()
-        
         # Process columns
         self.columns = []
         if columns:
@@ -168,10 +151,9 @@ class CliTable:
                     self.columns.append(CliColumn(header=col))
                 else:
                     self.columns.append(col)
-        
         # Data storage
         self.rows = []
-    
+
     def add_column(self, column: str | CliColumn) -> CliTable:
         """Add a column to the table."""
         if isinstance(column, str):
@@ -179,33 +161,29 @@ class CliTable:
         else:
             self.columns.append(column)
         return self
-    
+
     def add_row(self, *values) -> CliTable:
         """Add a row to the table."""
         self.rows.append(list(values))
         return self
-    
+
     def add_rows(self, rows: list[list[Any]]) -> CliTable:
         """Add multiple rows to the table."""
         self.rows.extend(rows)
         return self
-    
+
     def to_string(self) -> str:
         """Convert table to string representation."""
         if not self.columns:
             return ""
-        
         # Calculate column widths
         widths = self.formatter.calculate_widths(self.columns, self.rows)
-        
         lines = []
-        
         # Title
         if self.title:
             title_line = colorize(self.title, Colors.CYAN, Style.BOLD)
             lines.append(title_line)
             lines.append("")
-        
         # Header row
         header_values = [col.header for col in self.columns]
         header_parts = []
@@ -213,11 +191,9 @@ class CliTable:
             formatted_header = colorize(header.ljust(width), Colors.BLUE, Style.BOLD)
             header_parts.append(formatted_header)
         lines.append(" | ".join(header_parts))
-        
         # Separator
         separator_parts = ["-" * width for width in widths]
         lines.append("-|-".join(separator_parts))
-        
         # Data rows
         for row in self.rows:
             row_parts = []
@@ -227,18 +203,16 @@ class CliTable:
                 formatted_cell = self.formatter.format_cell(value, column, width)
                 row_parts.append(formatted_cell)
             lines.append(" | ".join(row_parts))
-        
         return '\n'.join(lines)
-    
+
     def print(self, file: TextIO = None):
         """Print table to file or stdout."""
         output = file or sys.stdout
         output.write(self.to_string())
         output.write('\n')
         output.flush()
-
-
 # Utility functions
+
 def create_simple_table(headers: list[str], rows: list[list[Any]]) -> CliTable:
     """Create a simple table with basic formatting."""
     table = CliTable(headers)
@@ -252,8 +226,6 @@ def print_key_value_table(data: dict[str, Any], title: str = ""):
         CliColumn("Property", header_color=Colors.BLUE, header_style=Style.BOLD),
         CliColumn("Value", header_color=Colors.GREEN, header_style=Style.BOLD)
     ], title=title)
-    
     for key, value in data.items():
         table.add_row(key, value)
-    
     table.print()

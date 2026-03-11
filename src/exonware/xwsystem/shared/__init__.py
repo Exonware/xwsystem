@@ -3,11 +3,10 @@
 #exonware/xwsystem/shared/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 10-Sep-2025
-
 Shared types and utilities for XWSystem modules.
 """
 
@@ -65,7 +64,6 @@ from .errors import (
     CoreTimeoutError,
     CoreValidationError,
 )
-
 __all__ = [
     # Shared enums
     "ValidationLevel",

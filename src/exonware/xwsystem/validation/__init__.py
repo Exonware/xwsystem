@@ -1,13 +1,11 @@
 #exonware/xwsystem/src/exonware/xwsystem/validation/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 XSystem Validation Package
-
 Declarative validation with type hints, automatic coercion, and Pydantic-style models.
 """
 
@@ -22,10 +20,8 @@ from .schema_discovery import (
     set_schema_validator,
     available_schema_validators,
 )
-
 # Unified Facade
 from .facade import XWValidator
-
 __all__ = [
     # Unified Facade
     "XWValidator",

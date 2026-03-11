@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/io/folder/mod.rs
 //exonware/xwsystem/src/exonware/xwsystem/io/folder/__init__.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: 30-Oct-2025

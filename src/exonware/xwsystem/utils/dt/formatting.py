@@ -1,11 +1,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/utils/dt/formatting.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 DateTime formatting utilities for XSystem.
 """
 
@@ -17,7 +16,7 @@ from .errors import DateTimeFormatError
 
 class DateTimeFormatter(IDateTimeFormatter):
     """DateTime formatter implementation."""
-    
+
     def __init__(self):
         """Initialize formatter."""
         self._formats = {
@@ -28,7 +27,7 @@ class DateTimeFormatter(IDateTimeFormatter):
             DateFormat.US: "%m/%d/%Y",
             DateFormat.EU: "%d/%m/%Y"
         }
-    
+
     def format_datetime(self, dt: datetime, format_type: TimeFormat) -> str:
         """Format datetime object."""
         try:
@@ -43,7 +42,7 @@ class DateTimeFormatter(IDateTimeFormatter):
                 return dt.strftime(format_string)
         except Exception as e:
             raise DateTimeFormatError(f"Failed to format datetime: {e}")
-    
+
     def format_date(self, d: date, format_type: DateFormat) -> str:
         """Format date object."""
         try:
@@ -54,7 +53,7 @@ class DateTimeFormatter(IDateTimeFormatter):
                 return d.strftime(format_string)
         except Exception as e:
             raise DateTimeFormatError(f"Failed to format date: {e}")
-    
+
     def format_time(self, t: time, format_type: TimeFormat) -> str:
         """Format time object."""
         try:
@@ -64,14 +63,14 @@ class DateTimeFormatter(IDateTimeFormatter):
                 return t.strftime("%H:%M:%S")
         except Exception as e:
             raise DateTimeFormatError(f"Failed to format time: {e}")
-    
+
     def format_custom(self, dt: datetime, format_string: str) -> str:
         """Format with custom format string."""
         try:
             return dt.strftime(format_string)
         except Exception as e:
             raise DateTimeFormatError(f"Failed to format with custom format: {e}")
-    
+
     def get_available_formats(self) -> dict[str, str]:
         """Get available format types."""
         return {
@@ -81,9 +80,8 @@ class DateTimeFormatter(IDateTimeFormatter):
             "US": "US date format (MM/DD/YYYY)",
             "EU": "European date format (DD/MM/YYYY)"
         }
-
-
 # Utility functions
+
 def format_datetime(dt: datetime, format_type: str = "iso") -> str:
     """Format datetime with specified type."""
     formatter = DateTimeFormatter()
@@ -125,7 +123,6 @@ def format_relative(dt: datetime) -> str:
     """Format datetime as relative time."""
     now = datetime.now()
     diff = now - dt
-    
     if diff.days > 0:
         return f"{diff.days} days ago"
     elif diff.seconds > 3600:
@@ -141,10 +138,8 @@ def format_relative(dt: datetime) -> str:
 def get_datetime() -> str:
     """
     Get current datetime as formatted string.
-    
     Returns:
         Current datetime in "YYYY-MM-DD HH:MM:SS" format
-    
     Examples:
         >>> dt_str = get_datetime()
         >>> len(dt_str) == 19
@@ -156,10 +151,8 @@ def get_datetime() -> str:
 def get_date() -> str:
     """
     Get current date as formatted string.
-    
     Returns:
         Current date in "YYYY-MM-DD" format
-    
     Examples:
         >>> date_str = get_date()
         >>> len(date_str) == 10
@@ -171,13 +164,10 @@ def get_date() -> str:
 def get_date_from_to_month(year_month: str) -> tuple[str, str]:
     """
     Get start and end dates for a month.
-    
     Args:
         year_month: Format "YYYY-MM"
-    
     Returns:
         Tuple of (start_date, end_date) in "YYYY-MM-DD" format
-    
     Examples:
         >>> start, end = get_date_from_to_month("2025-01")
         >>> start
@@ -186,30 +176,23 @@ def get_date_from_to_month(year_month: str) -> tuple[str, str]:
         '2025-01-31'
     """
     import calendar
-    
     year, month = map(int, year_month.split('-'))
-    
     # Start of the month is day 1
     start_of_month = f"{year}-{month:02d}-01"
-    
     # Get the last day of the month
     _, last_day = calendar.monthrange(year, month)
     end_of_month = f"{year}-{month:02d}-{last_day:02d}"
-    
     return start_of_month, end_of_month
 
 
 def calculate_duration_days(date_from: datetime, date_to: datetime) -> float:
     """
     Calculate duration between two dates in days.
-    
     Args:
         date_from: Start date
         date_to: End date
-    
     Returns:
         Duration in days (rounded to 2 decimal places)
-    
     Examples:
         >>> from datetime import datetime, timedelta
         >>> start = datetime(2025, 1, 1)

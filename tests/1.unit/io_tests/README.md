@@ -152,9 +152,9 @@ These tests validate the **I→A→XW pattern**:
 - **A (Abstract)** - `ACodec`, `ASerialization`, `AArchiver`, `AArchiveFile`
 - **XW (Concrete)** - `XWJsonSerializer`, `XWZipArchiver`, etc.
 
-## Backward Compatibility
+## Name aliases
 
-Tests verify backward compatibility aliases:
+Tests verify that these aliases are available and work as expected:
 
 - `JsonSerializer` → `XWJsonSerializer`
 - `ZipArchiver` → `XWZipArchiver`
@@ -173,6 +173,6 @@ When adding new tests:
 ---
 
 **Company:** eXonware.com  
-**Author:** Eng. Muhammad AlShehri  
+**Author:** eXonware Backend Team  
 **Email:** connect@exonware.com
 

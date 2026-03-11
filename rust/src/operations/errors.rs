@@ -1,6 +1,6 @@
 // #exonware/xwsystem/rust/src/operations/errors.rs
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! 
 //! Operations Errors

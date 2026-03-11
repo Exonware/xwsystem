@@ -1,13 +1,11 @@
 #exonware/xwsystem/src/exonware/xwsystem/config/logging_setup.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 05, 2025
-
 Logging configuration setup for XSystem.
-
 Provides centralized logging setup functions and logger factory.
 This module handles the implementation details of logging configuration.
 """
@@ -15,7 +13,6 @@ This module handles the implementation details of logging configuration.
 import logging
 import os
 from logging.handlers import RotatingFileHandler
-
 from .defaults import LOGGING_ENABLED, LOGGING_LEVEL
 
 
@@ -36,28 +33,22 @@ def setup_logging(
     if os.getenv("XSYSTEM_LOGGING_DISABLE", "false").lower() == "true":
         logging.disable(logging.CRITICAL)
         return
-
     # Also check if logging is already disabled
     if logging.getLogger().disabled:
         return
-
     # Try to check XSystem config if available
     # Import is explicit - internal package import
     from .logging import logging_config
-
     if not logging_config.enabled:
         logging.disable(logging.CRITICAL)
         return
-
     logger = logging.getLogger()
     logger.setLevel(level)
     formatter = logging.Formatter(fmt)
-
     # Console handler
     ch = logging.StreamHandler()
     ch.setFormatter(formatter)
     logger.addHandler(ch)
-
     # Rotating file handler
     log_dir = os.path.dirname(log_file)
     if log_dir and not os.path.exists(log_dir):
@@ -67,22 +58,18 @@ def setup_logging(
     )
     fh.setFormatter(formatter)
     logger.addHandler(fh)
-
     # Reduce noise from common external libraries
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("httpcore").setLevel(logging.WARNING)
     logging.getLogger("uvicorn").setLevel(logging.WARNING)
-
     logger.info("✅ Logging system initialized (console + file)")
 
 
 def get_logger(name=None) -> logging.Logger:
     """
     Get a logger instance with the specified name.
-
     Args:
         name: Logger name (defaults to __name__ if not provided)
-
     Returns:
         logging.Logger: Configured logger instance
     """
@@ -92,26 +79,25 @@ def get_logger(name=None) -> logging.Logger:
         logger = logging.getLogger(name)
         logger.disabled = True
         return logger
-
     return logging.getLogger(name)
 
 
 class LoggingSetup:
     """Logging setup manager for XSystem framework."""
-    
+
     def __init__(self):
         """Initialize logging setup."""
         self._configured = False
-    
+
     def setup_logging(self, level=logging.INFO, **kwargs):
         """Setup logging configuration."""
         setup_logging(level=level, **kwargs)
         self._configured = True
-    
+
     def configure_logger(self, name: str) -> logging.Logger:
         """Configure a logger with the specified name."""
         return get_logger(name)
-    
+
     def is_configured(self) -> bool:
         """Check if logging is configured."""
         return self._configured

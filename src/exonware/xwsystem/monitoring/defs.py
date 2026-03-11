@@ -3,21 +3,19 @@
 #exonware/xwsystem/monitoring/types.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 07-Sep-2025
-
 Monitoring types and enums for XWSystem.
 """
 
 from enum import Enum
 from ..shared.defs import PerformanceLevel
-
-
 # ============================================================================
 # MONITORING ENUMS
 # ============================================================================
+
 
 class MetricType(Enum):
     """Metric types."""

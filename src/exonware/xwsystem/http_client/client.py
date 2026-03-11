@@ -1,39 +1,31 @@
 #exonware/xwsystem/src/exonware/xwsystem/http_client/client.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 HTTP client with retry mechanisms, connection pooling, and error handling.
 """
 
 from __future__ import annotations
-
 import asyncio
 import os
 import time
 from dataclasses import dataclass, field
 from typing import Any, Optional
 from urllib.parse import urljoin
-
 # Prevent httpx from importing rich (Python 3.8+ only, no legacy deps)
 os.environ.setdefault("HTTPX_NO_RICH", "1")
-
 import httpx
-
 from ..config.logging_setup import get_logger
 from ..monitoring.error_recovery import retry_with_backoff
 from .errors import HttpError
-
 logger = get_logger("xwsystem.http_client.client")
-
-
 @dataclass
+
 class RetryConfig:
     """Configuration for HTTP request retries."""
-    
     max_retries: int = 3
     base_delay: float = 1.0
     max_delay: float = 60.0
@@ -59,7 +51,6 @@ class HttpClient:
     ) -> None:
         """
         Initialize HTTP client.
-
         Args:
             base_url: Base URL for all requests
             timeout: Request timeout in seconds
@@ -69,24 +60,20 @@ class HttpClient:
             default_headers: Default headers for all requests
         """
         # httpx is now required
-            
         self.base_url = base_url
         self.retry_config = retry_config or RetryConfig()
         self.default_headers = default_headers or {}
-        
         # Configure httpx client
         limits = httpx.Limits(
             max_connections=max_connections,
             max_keepalive_connections=max_keepalive_connections
         )
-        
         self._client = httpx.Client(
             base_url=base_url,
             timeout=timeout,
             limits=limits,
             headers=self.default_headers
         )
-        
         self._async_client = httpx.AsyncClient(
             base_url=base_url,
             timeout=timeout,
@@ -124,10 +111,8 @@ class HttpClient:
         """Determine if a request should be retried."""
         if exception:
             return any(isinstance(exception, exc_type) for exc_type in self.retry_config.retry_on_exceptions)
-        
         if response:
             return response.status_code in self.retry_config.retry_on_status
-            
         return False
 
     def _make_request(
@@ -141,12 +126,10 @@ class HttpClient:
         files: Optional[dict[str, Any]] = None,
     ) -> httpx.Response:
         """Make HTTP request with retry logic."""
-        
         # Combine headers
         request_headers = {**self.default_headers}
         if headers:
             request_headers.update(headers)
-
         # Prepare request arguments
         request_kwargs = {
             'method': method,
@@ -155,12 +138,10 @@ class HttpClient:
             'params': params,
             'files': files,
         }
-        
         if json_data is not None:
             request_kwargs['json'] = json_data
         elif data is not None:
             request_kwargs['data'] = data
-
         @retry_with_backoff(
             max_retries=self.retry_config.max_retries,
             base_delay=self.retry_config.base_delay,
@@ -170,21 +151,17 @@ class HttpClient:
         def _request() -> httpx.Response:
             try:
                 response = self._client.request(**request_kwargs)
-                
                 if self._should_retry(response, None):
                     raise HttpError(
                         f"HTTP {response.status_code}: {response.text}",
                         status_code=response.status_code,
                         response_data=response.text
                     )
-                
                 return response
-                
             except Exception as e:
                 if self._should_retry(None, e):
                     raise HttpError(f"Request failed: {e}") from e
                 raise
-
         return _request()
 
     def get(
@@ -265,8 +242,8 @@ class HttpClient:
     ) -> httpx.Response:
         """Make OPTIONS request."""
         return self._make_request('OPTIONS', url, headers=headers, params=params)
-
     # Convenience methods for JSON responses
+
     def get_json(self, url: str, **kwargs: Any) -> Any:
         """GET request returning JSON data."""
         response = self.get(url, **kwargs)
@@ -282,8 +259,8 @@ class HttpClient:
             return response.json()
         except Exception as e:
             raise HttpError(f"Failed to parse JSON response: {e}") from e
-
     # Health check methods
+
     def health_check(self, endpoint: str = "/health") -> bool:
         """Perform health check on the service."""
         try:
@@ -300,9 +277,8 @@ class HttpClient:
             return time.perf_counter() - start_time
         except Exception as e:
             raise HttpError(f"Ping failed: {e}") from e
-
-
 # Async HTTP Client
+
 class AsyncHttpClient:
     """
     High-performance async HTTP client with retry mechanisms, connection pooling,
@@ -320,7 +296,6 @@ class AsyncHttpClient:
     ) -> None:
         """
         Initialize async HTTP client.
-
         Args:
             base_url: Base URL for all requests
             timeout: Request timeout in seconds
@@ -330,17 +305,14 @@ class AsyncHttpClient:
             default_headers: Default headers for all requests
         """
         # httpx is now required
-            
         self.base_url = base_url
         self.retry_config = retry_config or RetryConfig()
         self.default_headers = default_headers or {}
-        
         # Configure httpx async client
         limits = httpx.Limits(
             max_connections=max_connections,
             max_keepalive_connections=max_keepalive_connections
         )
-        
         self._client = httpx.AsyncClient(
             base_url=base_url,
             timeout=timeout,
@@ -367,10 +339,8 @@ class AsyncHttpClient:
         """Determine if a request should be retried."""
         if exception:
             return any(isinstance(exception, exc_type) for exc_type in self.retry_config.retry_on_exceptions)
-        
         if response:
             return response.status_code in self.retry_config.retry_on_status
-            
         return False
 
     async def _make_request(
@@ -384,12 +354,10 @@ class AsyncHttpClient:
         files: Optional[dict[str, Any]] = None,
     ) -> httpx.Response:
         """Make async HTTP request with retry logic."""
-        
         # Combine headers
         request_headers = {**self.default_headers}
         if headers:
             request_headers.update(headers)
-
         # Prepare request arguments
         request_kwargs = {
             'method': method,
@@ -398,12 +366,10 @@ class AsyncHttpClient:
             'params': params,
             'files': files,
         }
-        
         if json_data is not None:
             request_kwargs['json'] = json_data
         elif data is not None:
             request_kwargs['data'] = data
-
         @retry_with_backoff(
             max_retries=self.retry_config.max_retries,
             base_delay=self.retry_config.base_delay,
@@ -413,21 +379,17 @@ class AsyncHttpClient:
         async def _request() -> httpx.Response:
             try:
                 response = await self._client.request(**request_kwargs)
-                
                 if self._should_retry(response, None):
                     raise HttpError(
                         f"HTTP {response.status_code}: {response.text}",
                         status_code=response.status_code,
                         response_data=response.text
                     )
-                
                 return response
-                
             except Exception as e:
                 if self._should_retry(None, e):
                     raise HttpError(f"Request failed: {e}") from e
                 raise
-
         return await _request()
 
     async def get(
@@ -508,8 +470,8 @@ class AsyncHttpClient:
     ) -> httpx.Response:
         """Make async OPTIONS request."""
         return await self._make_request('OPTIONS', url, headers=headers, params=params)
-
     # Convenience methods for JSON responses
+
     async def get_json(self, url: str, **kwargs: Any) -> Any:
         """Async GET request returning JSON data."""
         response = await self.get(url, **kwargs)
@@ -525,8 +487,8 @@ class AsyncHttpClient:
             return response.json()
         except Exception as e:
             raise HttpError(f"Failed to parse JSON response: {e}") from e
-
     # Health check methods
+
     async def health_check(self, endpoint: str = "/health") -> bool:
         """Perform async health check on the service."""
         try:
@@ -543,9 +505,8 @@ class AsyncHttpClient:
             return time.perf_counter() - start_time
         except Exception as e:
             raise HttpError(f"Ping failed: {e}") from e
-
-
 # Convenience functions
+
 def get(url: str, **kwargs: Any) -> httpx.Response:
     """Quick GET request with default client."""
     with HttpClient() as client:

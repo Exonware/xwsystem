@@ -3,11 +3,10 @@
 #exonware/xwsystem/caching/secure_cache.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 01-Nov-2025
-
 Secure cache implementations with validation, integrity checks, and rate limiting.
 Security Priority #1 - Production-grade security features.
 """
@@ -31,14 +30,13 @@ from .errors import CacheValidationError, CacheIntegrityError, CacheRateLimitErr
 class SecureLRUCache(LRUCache):
     """
     LRU Cache with security features.
-    
     Additional security features:
         - Input validation (keys and values)
         - Integrity verification with checksums
         - Rate limiting to prevent DoS
         - Optional mode for performance vs security tradeoff
     """
-    
+
     def __init__(
         self,
         capacity: int = 128,
@@ -52,7 +50,6 @@ class SecureLRUCache(LRUCache):
     ):
         """
         Initialize secure LRU cache.
-        
         Args:
             capacity: Maximum cache size
             ttl: Optional TTL in seconds
@@ -64,12 +61,10 @@ class SecureLRUCache(LRUCache):
             max_value_size_mb: Maximum value size in MB
         """
         super().__init__(capacity, ttl, name)
-        
         self.enable_integrity = enable_integrity
         self.enable_rate_limit = enable_rate_limit
         self.max_key_size = max_key_size
         self.max_value_size_mb = max_value_size_mb
-        
         # Security components
         # Only create rate limiter if explicitly enabled
         # This ensures rate limiting is truly disabled when enable_rate_limit=False
@@ -80,17 +75,14 @@ class SecureLRUCache(LRUCache):
             # This prevents any accidental access
             if hasattr(self, 'rate_limiter'):
                 delattr(self, 'rate_limiter')
-        
         # Track integrity violations
         self._integrity_violations = 0
-    
+
     def _check_rate_limit(self) -> None:
         """
         Check rate limit if enabled.
-        
         Raises:
             CacheRateLimitError: If rate limit is exceeded
-            
         Note:
             This method follows GUIDE_TEST.md by explicitly raising
             errors rather than silently ignoring them. Rate limiting
@@ -102,22 +94,18 @@ class SecureLRUCache(LRUCache):
         # This ensures rate limiting is truly disabled when enable_rate_limit=False
         if not self.enable_rate_limit:
             return  # Early return if rate limiting is disabled
-        
         if not hasattr(self, 'rate_limiter'):
             return  # Early return if rate limiter doesn't exist
-        
         # Rate limiter will raise CacheRateLimitError if limit exceeded
         # We let it propagate to caller for proper error handling
         self.rate_limiter.acquire()
-    
+
     def put(self, key: Hashable, value: Any) -> None:
         """
         Put value with security checks.
-        
         Args:
             key: Cache key
             value: Value to cache
-            
         Raises:
             CacheValidationError: If validation fails
             CacheRateLimitError: If rate limit exceeded
@@ -126,13 +114,10 @@ class SecureLRUCache(LRUCache):
         # This ensures rate limiting is truly disabled when enable_rate_limit=False
         if self.enable_rate_limit:
             self._check_rate_limit()
-        
         # Validate key
         validate_cache_key(key, max_size=self.max_key_size)
-        
         # Validate value
         validate_cache_value(value, max_size_mb=self.max_value_size_mb)
-        
         # Store with integrity if enabled
         if self.enable_integrity:
             # Wrap value in secure entry
@@ -144,18 +129,15 @@ class SecureLRUCache(LRUCache):
             super().put(key, entry)
         else:
             super().put(key, value)
-    
+
     def get(self, key: Hashable, default: Any = None) -> Any:
         """
         Get value with integrity verification.
-        
         Args:
             key: Cache key
             default: Default value if not found
-            
         Returns:
             Cached value or default
-            
         Raises:
             CacheIntegrityError: If integrity check fails
         """
@@ -163,31 +145,25 @@ class SecureLRUCache(LRUCache):
         # This ensures rate limiting is truly disabled when enable_rate_limit=False
         if self.enable_rate_limit:
             self._check_rate_limit()
-        
         # Check if key exists in cache first to handle None values correctly
         # The parent's get() method treats None as "not found", so we need to
         # check existence directly to distinguish between "key not found" and "value is None"
         with self._lock:
             if key not in self._cache:
                 return default
-            
             # Key exists - get the node to access the value
             node = self._cache[key]
-            
             # Check TTL if enabled
             if self.ttl and time.time() - node.access_time > self.ttl:
                 self._remove_node(node)
                 del self._cache[key]
                 return default
-            
             # Move to head (most recently used) - use parent's method
             self._move_to_head(node)
             node.access_time = time.time()
             self._hits += 1
-            
             # Get the actual value from the node
             result = node.value
-        
         # Verify integrity if enabled
         if self.enable_integrity:
             # If result is a CacheEntry, verify and extract value
@@ -205,14 +181,12 @@ class SecureLRUCache(LRUCache):
                 # If integrity is enabled but result is not a CacheEntry,
                 # this might be a legacy entry or corruption - return as-is
                 return result
-        
         # Integrity disabled - return value directly (including None)
         return result
-    
+
     def get_security_stats(self) -> dict:
         """
         Get security-related statistics.
-        
         Returns:
             Dictionary with security stats
         """
@@ -223,22 +197,19 @@ class SecureLRUCache(LRUCache):
             'max_key_size': self.max_key_size,
             'max_value_size_mb': self.max_value_size_mb,
         }
-        
         if self.enable_rate_limit:
             stats['rate_limiter'] = self.rate_limiter.get_stats()
-        
         return stats
 
 
 class SecureLFUCache(LFUCache):
     """
     LFU Cache with security features.
-    
     Additional security features:
         - Input validation (keys and values)
         - Rate limiting to prevent DoS
     """
-    
+
     def __init__(
         self,
         capacity: int = 128,
@@ -250,7 +221,6 @@ class SecureLFUCache(LFUCache):
     ):
         """
         Initialize secure LFU cache.
-        
         Args:
             capacity: Maximum cache size
             name: Cache name for debugging
@@ -260,26 +230,24 @@ class SecureLFUCache(LFUCache):
             max_value_size_mb: Maximum value size in MB
         """
         super().__init__(capacity, name)
-        
         self.enable_rate_limit = enable_rate_limit
         self.max_key_size = max_key_size
         self.max_value_size_mb = max_value_size_mb
-        
         if self.enable_rate_limit:
             self.rate_limiter = RateLimiter(max_ops_per_second=max_ops_per_second)
-    
+
     def _check_rate_limit(self) -> None:
         """Check rate limit if enabled."""
         if self.enable_rate_limit:
             self.rate_limiter.acquire()
-    
+
     def put(self, key: Hashable, value: Any) -> None:
         """Put value with security checks."""
         self._check_rate_limit()
         validate_cache_key(key, max_size=self.max_key_size)
         validate_cache_value(value, max_size_mb=self.max_value_size_mb)
         super().put(key, value)
-    
+
     def get(self, key: Hashable, default: Any = None) -> Any:
         """Get value with rate limiting."""
         self._check_rate_limit()
@@ -289,12 +257,11 @@ class SecureLFUCache(LFUCache):
 class SecureTTLCache(TTLCache):
     """
     TTL Cache with security features.
-    
     Additional security features:
         - Input validation (keys and values)
         - Rate limiting to prevent DoS
     """
-    
+
     def __init__(
         self,
         capacity: int = 128,
@@ -308,7 +275,6 @@ class SecureTTLCache(TTLCache):
     ):
         """
         Initialize secure TTL cache.
-        
         Args:
             capacity: Maximum cache size
             ttl: Time to live in seconds
@@ -320,32 +286,28 @@ class SecureTTLCache(TTLCache):
             max_value_size_mb: Maximum value size in MB
         """
         super().__init__(capacity, ttl, cleanup_interval, name)
-        
         self.enable_rate_limit = enable_rate_limit
         self.max_key_size = max_key_size
         self.max_value_size_mb = max_value_size_mb
-        
         if self.enable_rate_limit:
             self.rate_limiter = RateLimiter(max_ops_per_second=max_ops_per_second)
-    
+
     def _check_rate_limit(self) -> None:
         """Check rate limit if enabled."""
         if self.enable_rate_limit:
             self.rate_limiter.acquire()
-    
+
     def put(self, key: str, value: Any, ttl: Optional[float] = None) -> bool:
         """Put value with security checks."""
         self._check_rate_limit()
         validate_cache_key(key, max_size=self.max_key_size)
         validate_cache_value(value, max_size_mb=self.max_value_size_mb)
         return super().put(key, value, ttl)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get value with rate limiting."""
         self._check_rate_limit()
         return super().get(key, default)
-
-
 __all__ = [
     'SecureLRUCache',
     'SecureLFUCache',

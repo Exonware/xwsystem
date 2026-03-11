@@ -2,11 +2,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/utils/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: November 9, 2025
-
 Serialization utilities module.
 """
 
@@ -19,7 +18,6 @@ from .path_ops import (
     validate_path_security,
     normalize_path,
 )
-
 __all__ = [
     "PathOperationError",
     "validate_json_pointer",

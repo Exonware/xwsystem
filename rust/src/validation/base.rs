@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/validation/base.rs
 //exonware/xwsystem/validation/base.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: September 04, 2025

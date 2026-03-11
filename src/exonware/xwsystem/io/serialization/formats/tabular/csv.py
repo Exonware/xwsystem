@@ -1,19 +1,16 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/tabular/csv.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: January 2025
-
 CSV serialization - Comma-separated values format.
-
 Following I→A→ATabular pattern:
 - I: ISerialization (interface)
 - A: ASerialization (abstract base)
 - ATabular: ATabularSerialization (tabular base)
 - Concrete: CsvSerializer
-
 Moved from text/csv.py and updated to extend ATabularSerialization.
 """
 
@@ -21,9 +18,7 @@ import csv
 import io
 from typing import Any, Optional
 from pathlib import Path
-
 import pandas as pd
-
 from .base import ATabularSerialization
 from ....contracts import EncodeOptions, DecodeOptions
 from ....defs import CodecCapability
@@ -33,14 +28,11 @@ from ....errors import SerializationError
 class CsvSerializer(ATabularSerialization):
     """
     CSV serializer - follows the I→A→ATabular pattern.
-    
     I: ISerialization (interface)
     A: ASerialization (abstract base)
     ATabular: ATabularSerialization (tabular base)
     Concrete: CsvSerializer
-    
     Uses Python's built-in csv module and pandas for DataFrame operations.
-    
     Examples:
         >>> serializer = CsvSerializer()
         >>> 
@@ -65,69 +57,63 @@ class CsvSerializer(ATabularSerialization):
         >>> # Load from file
         >>> rows = serializer.load_file("data.csv")
     """
-    
     # ========================================================================
     # CODEC METADATA
     # ========================================================================
-    
     @property
+
     def codec_id(self) -> str:
         return "csv"
-    
     @property
+
     def media_types(self) -> list[str]:
         return ["text/csv", "application/csv"]
-    
     @property
+
     def file_extensions(self) -> list[str]:
         return [".csv", ".tsv", ".psv"]
-    
     @property
+
     def format_name(self) -> str:
         return "CSV"
-    
     @property
+
     def mime_type(self) -> str:
         return "text/csv"
-    
     @property
+
     def is_binary_format(self) -> bool:
         return False  # CSV is text-based
-    
     @property
+
     def supports_streaming(self) -> bool:
         return True  # CSV naturally supports streaming (row by row)
-    
     @property
+
     def capabilities(self) -> CodecCapability:
         return CodecCapability.BIDIRECTIONAL
-    
     @property
+
     def aliases(self) -> list[str]:
         return ["csv", "CSV", "tsv", "TSV"]
-    
     @property
+
     def codec_types(self) -> list[str]:
         """CSV is primarily a data exchange format."""
         return ["data", "tabular"]
-    
     # ========================================================================
     # CORE ENCODE/DECODE (Using csv module)
     # ========================================================================
-    
+
     def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> str:
         """
         Encode data to CSV string.
-        
         Uses csv.DictWriter or csv.writer.
-        
         Args:
             value: Data to serialize (list of dicts, list of lists, or DataFrame)
             options: CSV options (delimiter, quoting, etc.)
-        
         Returns:
             CSV string
-        
         Raises:
             SerializationError: If encoding fails
         """
@@ -135,16 +121,12 @@ class CsvSerializer(ATabularSerialization):
             # If DataFrame, use from_df
             if isinstance(value, pd.DataFrame):
                 return self.from_df(value, **(options or {}))
-            
             opts = options or {}
-            
             # Get CSV options
             delimiter = opts.get('delimiter', ',')
             quoting = opts.get('quoting', csv.QUOTE_MINIMAL)
-            
             # Create string buffer
             output = io.StringIO()
-            
             if isinstance(value, list) and value:
                 if isinstance(value[0], dict):
                     # List of dicts - use DictWriter
@@ -155,11 +137,9 @@ class CsvSerializer(ATabularSerialization):
                         delimiter=delimiter,
                         quoting=quoting
                     )
-                    
                     # Write header
                     if opts.get('header', True):
                         writer.writeheader()
-                    
                     # Write rows
                     writer.writerows(value)
                 else:
@@ -170,29 +150,23 @@ class CsvSerializer(ATabularSerialization):
                         quoting=quoting
                     )
                     writer.writerows(value)
-            
             return output.getvalue()
-            
         except Exception as e:
             raise SerializationError(
                 f"Failed to encode CSV: {e}",
                 format_name=self.format_name,
                 original_error=e
             )
-    
+
     def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
         """
         Decode CSV string to data.
-        
         Uses csv.DictReader or csv.reader.
-        
         Args:
             repr: CSV string (bytes or str)
             options: CSV options (delimiter, has_header, etc.)
-        
         Returns:
             List of dicts (if header) or list of lists
-        
         Raises:
             SerializationError: If decoding fails
         """
@@ -200,16 +174,12 @@ class CsvSerializer(ATabularSerialization):
             # Convert bytes to str if needed
             if isinstance(repr, bytes):
                 repr = repr.decode('utf-8')
-            
             opts = options or {}
-            
             # Get CSV options
             delimiter = opts.get('delimiter', ',')
             has_header = opts.get('header', True)
-            
             # Create string buffer
             input_stream = io.StringIO(repr)
-            
             if has_header:
                 # Use DictReader for header-based CSV
                 reader = csv.DictReader(input_stream, delimiter=delimiter)
@@ -218,20 +188,17 @@ class CsvSerializer(ATabularSerialization):
                 # Use regular reader for headerless CSV
                 reader = csv.reader(input_stream, delimiter=delimiter)
                 data = list(reader)
-            
             return data
-            
         except (Exception, UnicodeDecodeError) as e:
             raise SerializationError(
                 f"Failed to decode CSV: {e}",
                 format_name=self.format_name,
                 original_error=e
             )
-    
     # ========================================================================
     # TABULAR METHODS (to_df/from_df)
     # ========================================================================
-    
+
     def to_df(
         self, 
         csv_content: bytes | str | Path, 
@@ -240,17 +207,13 @@ class CsvSerializer(ATabularSerialization):
     ) -> pd.DataFrame:
         """
         Convert CSV content to DataFrame.
-        
         Note: CSV doesn't support multiple sheets, so sheet_name is ignored.
-        
         Args:
             csv_content: CSV content as bytes, string, or file path
             sheet_name: Ignored (CSV doesn't support multiple sheets)
             **options: Additional pandas read_csv options (delimiter, header, etc.)
-        
         Returns:
             DataFrame
-        
         Examples:
             >>> serializer = CsvSerializer()
             >>> df = serializer.to_df(csv_str)
@@ -261,22 +224,19 @@ class CsvSerializer(ATabularSerialization):
             if isinstance(csv_content, (str, Path)):
                 file_path = str(csv_content)
                 return pd.read_csv(file_path, **options)
-            
             # Handle bytes or string
             if isinstance(csv_content, bytes):
                 csv_content = csv_content.decode('utf-8')
-            
             # Use StringIO for in-memory CSV
             csv_io = io.StringIO(csv_content)
             return pd.read_csv(csv_io, **options)
-            
         except Exception as e:
             raise SerializationError(
                 f"Failed to convert CSV to DataFrame: {e}",
                 format_name=self.format_name,
                 original_error=e
             )
-    
+
     def from_df(
         self, 
         df: pd.DataFrame, 
@@ -284,16 +244,12 @@ class CsvSerializer(ATabularSerialization):
     ) -> str:
         """
         Convert DataFrame to CSV string.
-        
         Note: CSV doesn't support multiple sheets, so dict input is not supported.
-        
         Args:
             df: Single DataFrame
             **options: Additional pandas to_csv options (index, delimiter, etc.)
-        
         Returns:
             CSV string
-        
         Examples:
             >>> serializer = CsvSerializer()
             >>> csv_str = serializer.from_df(df)
@@ -301,7 +257,6 @@ class CsvSerializer(ATabularSerialization):
         try:
             if isinstance(df, dict):
                 raise ValueError("CSV format does not support multiple sheets. Use a single DataFrame.")
-            
             # Use StringIO to capture CSV output
             output = io.StringIO()
             df.to_csv(
@@ -310,7 +265,6 @@ class CsvSerializer(ATabularSerialization):
                 **{k: v for k, v in options.items() if k != 'index'}
             )
             return output.getvalue()
-            
         except Exception as e:
             raise SerializationError(
                 f"Failed to convert DataFrame to CSV: {e}",

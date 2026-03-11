@@ -2,25 +2,23 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/filesystem/base.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 30-Oct-2025
-
 Base classes for virtual filesystem.
 """
 
 from abc import ABC, abstractmethod
 from ..contracts import IVirtualFS
-
 __all__ = ['AFileSystem']
 
 
 class AFileSystem(IVirtualFS, ABC):
     """Abstract base for filesystem implementations."""
-    
     @property
     @abstractmethod
+
     def scheme(self) -> str:
         """URI scheme."""
         pass

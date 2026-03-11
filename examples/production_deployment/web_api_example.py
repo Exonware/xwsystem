@@ -2,12 +2,10 @@
 #exonware/xwsystem/examples/production_deployment/web_api_example.py
 """
 Production Web API Example with xwsystem
-
 This example demonstrates a production-ready REST API using xwsystem
 for serialization, security, and monitoring.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 """
 
@@ -17,7 +15,6 @@ from fastapi.responses import JSONResponse
 from typing import Dict, Any, Optional
 import logging
 from contextlib import asynccontextmanager
-
 from exonware.xwsystem import (
     JsonSerializer,
     YamlSerializer,
@@ -30,11 +27,9 @@ from exonware.xwsystem import (
     ThreadSafeFactory,
     AtomicFileWriter,
 )
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 # Initialize xwsystem components
 json_serializer = JsonSerializer()
 yaml_serializer = YamlSerializer()
@@ -42,18 +37,14 @@ msgpack_serializer = MsgPackSerializer()
 path_validator = PathValidator(base_path="/safe/api/data")
 performance_monitor = PerformanceMonitor()
 memory_monitor = MemoryMonitor(enable_auto_cleanup=True)
-
 # Circuit breaker for external API calls
 external_api_breaker = CircuitBreaker(
     failure_threshold=5,
     recovery_timeout=30,
     expected_exception=HTTPException
 )
-
 # Thread-safe factory for handlers
 handler_factory = ThreadSafeFactory()
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager."""
@@ -66,15 +57,12 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down API server...")
     memory_monitor.stop_monitoring()
     performance_monitor.stop()
-
-
 app = FastAPI(
     title="Production API with xwsystem",
     description="Example production API demonstrating xwsystem features",
     version="1.0.0",
     lifespan=lifespan
 )
-
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -83,9 +71,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 # Dependency for format selection
+
+
 def get_serializer(format_type: str = "json"):
     """Get serializer based on format type."""
     serializers = {
@@ -94,8 +82,6 @@ def get_serializer(format_type: str = "json"):
         "msgpack": msgpack_serializer,
     }
     return serializers.get(format_type, json_serializer)
-
-
 @app.get("/")
 async def root():
     """Root endpoint."""
@@ -110,8 +96,6 @@ async def root():
             "Memory leak prevention"
         ]
     }
-
-
 @app.get("/health")
 async def health_check():
     """Health check endpoint with monitoring."""
@@ -121,8 +105,6 @@ async def health_check():
         "performance": performance_monitor.get_stats(),
     }
     return health_status
-
-
 @app.post("/data/{format_type}")
 async def create_data(
     data: Dict[str, Any],
@@ -131,23 +113,19 @@ async def create_data(
 ):
     """
     Create data endpoint with format selection.
-    
     Supports: json, yaml, msgpack
     """
     try:
         # Validate input data
         if not isinstance(data, dict):
             raise HTTPException(status_code=400, detail="Data must be a dictionary")
-        
         # Serialize based on format
         with performance_monitor.measure("serialization"):
             serialized = serializer.dumps(data)
-        
         # Secure storage with atomic write
         safe_path = path_validator.validate_path(f"data/{format_type}/output")
         with AtomicFileWriter(safe_path) as writer:
             writer.write(serialized)
-        
         return {
             "status": "success",
             "format": format_type,
@@ -157,8 +135,6 @@ async def create_data(
     except Exception as e:
         logger.error(f"Error creating data: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.get("/data/{format_type}/{data_id}")
 async def get_data(
     data_id: str,
@@ -168,12 +144,10 @@ async def get_data(
     """Get data endpoint."""
     try:
         safe_path = path_validator.validate_path(f"data/{format_type}/{data_id}")
-        
         with performance_monitor.measure("deserialization"):
             with open(safe_path, 'rb' if format_type == "msgpack" else 'r') as f:
                 content = f.read()
                 data = serializer.loads(content)
-        
         return {
             "status": "success",
             "data": data
@@ -183,18 +157,14 @@ async def get_data(
     except Exception as e:
         logger.error(f"Error getting data: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.post("/hash")
 async def hash_data(data: Dict[str, Any]):
     """Hash data endpoint with secure hashing."""
     try:
         # Serialize data first
         data_str = json_serializer.dumps(data)
-        
         # Create secure hash
         hash_value = SecureHash.sha256(data_str)
-        
         return {
             "status": "success",
             "hash": hash_value,
@@ -203,8 +173,6 @@ async def hash_data(data: Dict[str, Any]):
     except Exception as e:
         logger.error(f"Error hashing data: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-
 @external_api_breaker
 async def call_external_api(url: str):
     """External API call with circuit breaker."""
@@ -213,8 +181,6 @@ async def call_external_api(url: str):
         response = await client.get(url, timeout=5.0)
         response.raise_for_status()
         return response.json()
-
-
 @app.get("/external/{resource}")
 async def proxy_external(resource: str):
     """Proxy external API with circuit breaker protection."""
@@ -231,8 +197,6 @@ async def proxy_external(resource: str):
             status_code=503,
             detail="External service unavailable (circuit breaker)"
         )
-
-
 @app.get("/metrics")
 async def get_metrics():
     """Get performance metrics."""
@@ -244,8 +208,6 @@ async def get_metrics():
             "failures": external_api_breaker.failure_count,
         }
     }
-
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

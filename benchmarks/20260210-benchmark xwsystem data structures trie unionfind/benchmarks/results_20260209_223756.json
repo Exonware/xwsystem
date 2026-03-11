@@ -1,0 +1,26 @@
+{
+  "timestamp": "20260209_223756",
+  "campaign": "20260210-benchmark xwsystem data structures trie unionfind",
+  "num_ops": 5000,
+  "trie_keys": 500,
+  "uf_size": 1000,
+  "uf_ops": 2000,
+  "results": [
+    {
+      "name": "trie_lookup (TrieNode)",
+      "ops_per_sec": 727727.88
+    },
+    {
+      "name": "dict_lookup",
+      "ops_per_sec": 17574688.07
+    },
+    {
+      "name": "trie_insert (TrieNode batch)",
+      "ops_per_sec": 46558.06
+    },
+    {
+      "name": "UnionFind (make_set+union+find)",
+      "ops_per_sec": 582.1
+    }
+  ]
+}

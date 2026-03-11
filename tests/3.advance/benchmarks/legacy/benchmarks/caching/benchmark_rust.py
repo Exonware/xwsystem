@@ -2,9 +2,8 @@
 #exonware/xwsystem/tests/3.advance/benchmarks/legacy/benchmarks/caching/benchmark_rust.py
 """
 Caching benchmark comparing Rust bindings vs Python implementation.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.1.0.1
 """
@@ -15,7 +14,6 @@ from pathlib import Path
 from typing import Any, Callable
 from dataclasses import dataclass
 import statistics
-
 from exonware.xwsystem.caching import (
         LRUCache as PythonLRUCache,
         LFUCache as PythonLFUCache,
@@ -24,7 +22,6 @@ from exonware.xwsystem.caching import (
         MemoryBoundedLRUCache as PythonMemoryBoundedLRUCache,
         SecureLRUCache as PythonSecureLRUCache,
 )
-
 # Try to import Rust implementations
 # Add rust/python to path if needed
 import sys
@@ -32,7 +29,6 @@ from pathlib import Path
 rust_python_path = Path(__file__).parent.parent.parent / "rust" / "python"
 if rust_python_path.exists() and str(rust_python_path) not in sys.path:
     sys.path.insert(0, str(rust_python_path))
-
 try:
     from exonware.rust.xwsystem.caching import (
             LRUCache as RUSTLRUCache,
@@ -52,7 +48,6 @@ except ImportError as e:
     RUSTMemoryBoundedLRUCache = None
     RUSTSecureLRUCache = None
     print(f"Warning: Rust implementations not available: {e}")
-
 # Try to import external Rust caches
 try:
     from exonware.rust.xwsystem.caching import (
@@ -75,7 +70,6 @@ except ImportError as e:
     RUSTDashMapCache = None
     RUSTDashMapTTLCache = None
     print(f"Warning: External Rust caches not available: {e}")
-
 # Import external Python caches - use new proper implementations first
 try:
     from exonware.xwsystem.caching.external_caching_python import (
@@ -88,13 +82,6 @@ try:
             HAS_CACHEBOX,
             HAS_CACHETOOLS,
     )
-    # Map to old names for backward compatibility
-    CacheboxWrapper = CacheboxCache
-    FunctoolsLRUWrapper = FunctoolsLRUCache
-    CachetoolsLRUWrapper = CachetoolsLRUCache
-    CachetoolsLFUWrapper = CachetoolsLFUCache
-    CachetoolsTTLWrapper = CachetoolsTTLCache
-    CachetoolsRRWrapper = CachetoolsRRCache
 except ImportError:
     # Fallback to old wrappers if new implementations not available
     try:
@@ -108,6 +95,12 @@ except ImportError:
                 HAS_CACHEBOX,
                 HAS_CACHETOOLS,
         )
+        CacheboxCache = CacheboxWrapper
+        FunctoolsLRUCache = FunctoolsLRUWrapper
+        CachetoolsLRUCache = CachetoolsLRUWrapper
+        CachetoolsLFUCache = CachetoolsLFUWrapper
+        CachetoolsTTLCache = CachetoolsTTLWrapper
+        CachetoolsRRCache = CachetoolsRRWrapper
     except ImportError:
         # Fallback if running from different directory
         import sys
@@ -123,7 +116,12 @@ except ImportError:
                 HAS_CACHEBOX,
                 HAS_CACHETOOLS,
         )
-
+        CacheboxCache = CacheboxWrapper
+        FunctoolsLRUCache = FunctoolsLRUWrapper
+        CachetoolsLRUCache = CachetoolsLRUWrapper
+        CachetoolsLFUCache = CachetoolsLFUWrapper
+        CachetoolsTTLCache = CachetoolsTTLWrapper
+        CachetoolsRRCache = CachetoolsRRWrapper
 # Import other external caches (diskcache, cacheout, pylru) from old module
 try:
     from .external_python_caches import (
@@ -165,9 +163,9 @@ except ImportError:
         HAS_DISKCACHE = False
         HAS_CACHEOUT = False
         HAS_PYLRU = False
-
-
 @dataclass
+
+
 class BenchmarkResult:
     """Result of a single benchmark."""
     name: str
@@ -183,27 +181,21 @@ class BenchmarkResult:
 def benchmark_operation(name: str, operation: Callable, iterations: int = 10000) -> BenchmarkResult:
     """Benchmark a single operation."""
     latencies = []
-    
     try:
         start_time = time.time()
-        
         for _ in range(iterations):
             op_start = time.perf_counter()
             operation()
             op_end = time.perf_counter()
             latencies.append((op_end - op_start) * 1000)  # Convert to ms
-        
         end_time = time.time()
         duration = end_time - start_time
-        
         # Calculate statistics
         ops_per_sec = iterations / duration if duration > 0 else 0
         latencies.sort()
-        
         p50 = latencies[len(latencies) // 2] if latencies else 0
         p95 = latencies[int(len(latencies) * 0.95)] if latencies else 0
         p99 = latencies[int(len(latencies) * 0.99)] if latencies else 0
-        
         return BenchmarkResult(
             name=name,
             operations_per_second=ops_per_sec,
@@ -265,7 +257,6 @@ def benchmark_cache_mixed(cache, num_operations: int = 10000):
 def benchmark_cache_class(cache_class, cache_name, capacity=1000, python_impl=True):
     """Benchmark a specific cache class."""
     results = []
-    
     try:
         # Initialize cache with appropriate parameters
         if cache_name in ['TTLCache', 'PythonTTLCache', 'RustTTLCache', 'CachetoolsTTL']:
@@ -322,7 +313,6 @@ def benchmark_cache_class(cache_class, cache_name, capacity=1000, python_impl=Tr
             cache = cache_class(capacity=capacity)
         else:
             cache = cache_class(capacity=capacity)
-        
         # Warm up
         try:
             # For SecureLRUCache, ensure rate limiting is truly disabled
@@ -339,7 +329,6 @@ def benchmark_cache_class(cache_class, cache_name, capacity=1000, python_impl=Tr
             import traceback
             traceback.print_exc()
             return results
-        
         # Benchmark PUT operations
         try:
             result = benchmark_operation(
@@ -352,7 +341,6 @@ def benchmark_cache_class(cache_class, cache_name, capacity=1000, python_impl=Tr
                   f"p50: {result.latency_p50_ms:.3f}ms")
         except Exception as e:
             print(f"  Error benchmarking PUT for {cache_name}: {e}")
-        
         # Benchmark GET operations
         try:
             # Verify cache configuration for SecureLRUCache - force disable rate limiting
@@ -376,7 +364,6 @@ def benchmark_cache_class(cache_class, cache_name, capacity=1000, python_impl=Tr
                       f"p50: {result.latency_p50_ms:.3f}ms")
         except Exception as e:
             print(f"  Error benchmarking GET for {cache_name}: {e}")
-        
         # Benchmark mixed operations
         try:
             cache.clear()
@@ -399,19 +386,15 @@ def benchmark_cache_class(cache_class, cache_name, capacity=1000, python_impl=Tr
                       f"p50: {result.latency_p50_ms:.3f}ms")
         except Exception as e:
             print(f"  Error benchmarking MIXED for {cache_name}: {e}")
-            
     except Exception as e:
         print(f"  Error initializing {cache_name}: {e}")
-    
     return results
 
 
 def run_benchmarks():
     """Run benchmarks for both Python and Rust implementations."""
     results = []
-    
     capacity = 1000
-    
     # Define cache classes to benchmark
     python_caches = [
         (PythonLRUCache, "Python LRUCache"),
@@ -421,7 +404,6 @@ def run_benchmarks():
         (PythonMemoryBoundedLRUCache, "Python MemoryBoundedLRUCache"),
         (PythonSecureLRUCache, "Python SecureLRUCache"),
     ]
-    
     rust_caches = []
     if HAS_RUST:
         rust_caches.extend([
@@ -432,7 +414,6 @@ def run_benchmarks():
             (RUSTMemoryBoundedLRUCache, "Rust MemoryBoundedLRUCache"),
             (RUSTSecureLRUCache, "Rust SecureLRUCache"),
         ])
-    
     # External Rust caches
     external_rust_caches = []
     if HAS_EXTERNAL_RUST:
@@ -445,7 +426,6 @@ def run_benchmarks():
             (RUSTDashMapCache, "Rust DashMapCache"),
             (RUSTDashMapTTLCache, "Rust DashMapTTLCache"),
         ])
-    
     # External Python caches - use new proper implementations
     external_python_caches = []
     try:
@@ -472,14 +452,14 @@ def run_benchmarks():
     except ImportError:
         # Fallback to wrapper names if direct import fails
         if HAS_CACHEBOX:
-            external_python_caches.append((CacheboxWrapper, "Python Cachebox"))
-        external_python_caches.append((FunctoolsLRUWrapper, "Python FunctoolsLRU"))
+            external_python_caches.append((CacheboxCache, "Python Cachebox"))
+        external_python_caches.append((FunctoolsLRUCache, "Python FunctoolsLRU"))
         if HAS_CACHETOOLS:
             external_python_caches.extend([
-                (CachetoolsLRUWrapper, "Python CachetoolsLRU"),
-                (CachetoolsLFUWrapper, "Python CachetoolsLFU"),
-                (CachetoolsTTLWrapper, "Python CachetoolsTTL"),
-                (CachetoolsRRWrapper, "Python CachetoolsRR"),
+                (CachetoolsLRUCache, "Python CachetoolsLRU"),
+                (CachetoolsLFUCache, "Python CachetoolsLFU"),
+                (CachetoolsTTLCache, "Python CachetoolsTTL"),
+                (CachetoolsRRCache, "Python CachetoolsRR"),
             ])
     if HAS_DISKCACHE:
         external_python_caches.append((DiskcacheWrapper, "Python Diskcache"))
@@ -492,12 +472,10 @@ def run_benchmarks():
         ])
     if HAS_PYLRU:
         external_python_caches.append((PylruWrapper, "Python Pylru"))
-    
     # Benchmark Python implementations
     print("\n" + "="*60)
     print("Benchmarking Python Cache Implementations")
     print("="*60)
-    
     for cache_class, cache_name in python_caches:
         if cache_class:
             print(f"\n{cache_name}:")
@@ -505,13 +483,11 @@ def run_benchmarks():
             results.extend(cache_results)
         else:
             print(f"\n{cache_name}: Not available")
-    
     # Benchmark Rust implementations
     if rust_caches:
         print("\n" + "="*60)
         print("Benchmarking Rust Cache Implementations")
         print("="*60)
-        
         for cache_class, cache_name in rust_caches:
             if cache_class:
                 print(f"\n{cache_name}:")
@@ -519,13 +495,11 @@ def run_benchmarks():
                 results.extend(cache_results)
             else:
                 print(f"\n{cache_name}: Not available")
-    
     # Benchmark External Rust caches
     if external_rust_caches:
         print("\n" + "="*60)
         print("Benchmarking External Rust Cache Libraries")
         print("="*60)
-        
         for cache_class, cache_name in external_rust_caches:
             if cache_class:
                 print(f"\n{cache_name}:")
@@ -533,13 +507,11 @@ def run_benchmarks():
                 results.extend(cache_results)
             else:
                 print(f"\n{cache_name}: Not available")
-    
     # Benchmark External Python caches
     if external_python_caches:
         print("\n" + "="*60)
         print("Benchmarking External Python Cache Libraries")
         print("="*60)
-        
         for cache_class, cache_name in external_python_caches:
             try:
                 print(f"\n{cache_name}:")
@@ -547,12 +519,10 @@ def run_benchmarks():
                 results.extend(cache_results)
             except Exception as e:
                 print(f"\n{cache_name}: Not available ({e})")
-    
     # Print comparison summary
     print("\n" + "="*60)
     print("Comparison Summary")
     print("="*60)
-    
     # Group results by cache type and operation
     cache_types = set()
     for result in results:
@@ -561,7 +531,6 @@ def run_benchmarks():
         if len(parts) >= 2:
             cache_type = parts[1]  # e.g., "LRUCache"
             cache_types.add(cache_type)
-    
     # Compare each cache type
     for cache_type in sorted(cache_types):
         python_put = next((r for r in results if f"Python {cache_type} PUT" == r.name), None)
@@ -570,10 +539,8 @@ def run_benchmarks():
         rust_get = next((r for r in results if f"Rust {cache_type} GET" == r.name), None)
         python_mixed = next((r for r in results if f"Python {cache_type} MIXED" == r.name), None)
         rust_mixed = next((r for r in results if f"Rust {cache_type} MIXED" == r.name), None)
-        
         if python_put or rust_put or python_get or rust_get or python_mixed or rust_mixed:
             print(f"\n{cache_type}:")
-            
             if python_put and rust_put:
                 speedup = rust_put.operations_per_second / python_put.operations_per_second if python_put.operations_per_second > 0 else 0
                 print(f"  PUT:   Python={python_put.operations_per_second:.2f}, Rust={rust_put.operations_per_second:.2f}, Speedup={speedup:.2f}x")
@@ -581,7 +548,6 @@ def run_benchmarks():
                 print(f"  PUT:   Python={python_put.operations_per_second:.2f}, Rust=N/A")
             elif rust_put:
                 print(f"  PUT:   Python=N/A, Rust={rust_put.operations_per_second:.2f}")
-            
             if python_get and rust_get:
                 speedup = rust_get.operations_per_second / python_get.operations_per_second if python_get.operations_per_second > 0 else 0
                 print(f"  GET:   Python={python_get.operations_per_second:.2f}, Rust={rust_get.operations_per_second:.2f}, Speedup={speedup:.2f}x")
@@ -589,7 +555,6 @@ def run_benchmarks():
                 print(f"  GET:   Python={python_get.operations_per_second:.2f}, Rust=N/A")
             elif rust_get:
                 print(f"  GET:   Python=N/A, Rust={rust_get.operations_per_second:.2f}")
-            
             if python_mixed and rust_mixed:
                 speedup = rust_mixed.operations_per_second / python_mixed.operations_per_second if python_mixed.operations_per_second > 0 else 0
                 print(f"  MIXED: Python={python_mixed.operations_per_second:.2f}, Rust={rust_mixed.operations_per_second:.2f}, Speedup={speedup:.2f}x")
@@ -597,14 +562,12 @@ def run_benchmarks():
                 print(f"  MIXED: Python={python_mixed.operations_per_second:.2f}, Rust=N/A")
             elif rust_mixed:
                 print(f"  MIXED: Python=N/A, Rust={rust_mixed.operations_per_second:.2f}")
-    
     # Show external Rust cache results separately
     external_rust_results = [r for r in results if "Rust Moka" in r.name or "Rust QuickCache" in r.name or "Rust DashMap" in r.name]
     if external_rust_results:
         print("\n" + "="*60)
         print("External Rust Cache Libraries Summary")
         print("="*60)
-        
         # Group by cache name
         external_cache_names = set()
         for result in external_rust_results:
@@ -613,12 +576,10 @@ def run_benchmarks():
             if len(parts) >= 3:
                 cache_name = parts[1] + parts[2] if len(parts) > 2 else parts[1]
                 external_cache_names.add(cache_name)
-        
         for cache_name in sorted(external_cache_names):
             put_result = next((r for r in external_rust_results if f"Rust {cache_name} PUT" == r.name), None)
             get_result = next((r for r in external_rust_results if f"Rust {cache_name} GET" == r.name), None)
             mixed_result = next((r for r in external_rust_results if f"Rust {cache_name} MIXED" == r.name), None)
-            
             if put_result or get_result or mixed_result:
                 print(f"\n{cache_name}:")
                 if put_result:
@@ -627,59 +588,43 @@ def run_benchmarks():
                     print(f"  GET:   {get_result.operations_per_second:.2f} ops/sec, p50: {get_result.latency_p50_ms:.3f}ms")
                 if mixed_result:
                     print(f"  MIXED: {mixed_result.operations_per_second:.2f} ops/sec, p50: {mixed_result.latency_p50_ms:.3f}ms")
-    
     # Show message if implementations are missing
     rust_caches_available = HAS_RUST and any(cache_class for cache_class, _ in rust_caches)
     external_rust_available = HAS_EXTERNAL_RUST and any(cache_class for cache_class, _ in external_rust_caches)
-    
     if not rust_caches_available:
         print("\nNote: Rust implementations not available. To enable Rust benchmarks:")
         print("  cd xwsystem/rust && maturin develop --release")
-    
     if not external_rust_available:
         print("\nNote: External Rust caches not available. To enable:")
         print("  cd xwsystem/rust && maturin develop --release --features external-caches")
-    
     if not HAS_CACHEBOX:
         print("\nNote: Cachebox not available. Install with: pip install cachebox")
-    
     if not HAS_CACHETOOLS:
         print("\nNote: Cachetools not available. Install with: pip install cachetools")
-    
     if not HAS_DISKCACHE:
         print("\nNote: Diskcache not available. Install with: pip install diskcache")
-    
     if not HAS_CACHEOUT:
         print("\nNote: Cacheout not available. Install with: pip install cacheout")
-    
     if not HAS_PYLRU:
         print("\nNote: Pylru not available. Install with: pip install pylru")
-    
     return results
-
-
 if __name__ == "__main__":
     print("Caching Benchmark: Rust vs Python")
     print("="*60)
     print("Testing all available cache implementations")
     print("="*60)
-    
     # Check if at least one implementation is available
     python_available = any([
         PythonLRUCache, PythonLFUCache, PythonTTLCache,
         PythonOptimizedLFUCache, PythonMemoryBoundedLRUCache, PythonSecureLRUCache
     ])
     rust_available = RUSTLRUCache is not None
-    
     if not python_available and not rust_available:
         print("Error: Neither Python nor Rust implementations available!")
         sys.exit(1)
-    
     if not python_available:
         print("Warning: No Python cache implementations available!")
-    
     if not rust_available:
         print("Warning: No Rust cache implementations available!")
         print("  To enable Rust benchmarks: cd xwsystem/rust && maturin develop --release")
-    
     run_benchmarks()

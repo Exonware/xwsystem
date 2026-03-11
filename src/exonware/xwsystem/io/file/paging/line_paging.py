@@ -2,13 +2,11 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/file/paging/line_paging.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 30-Oct-2025
-
 Line-based paging strategy.
-
 Priority 1 (Security): Safe line-level operations
 Priority 2 (Usability): Simple line paging
 Priority 3 (Maintainability): Clean strategy implementation
@@ -18,27 +16,24 @@ Priority 5 (Extensibility): Pluggable via registry
 
 from pathlib import Path
 from typing import Optional, Iterator
-
 from ...contracts import IPagingStrategy
 
 
 class LinePagingStrategy:
     """
     Page by line counts - best for text files.
-    
     Page size = number of lines per page.
-    
     Best for:
     - Text files
     - Log files
     - Line-oriented formats
     """
-    
     @property
+
     def strategy_id(self) -> str:
         """Unique strategy identifier."""
         return "line"
-    
+
     def read_page(
         self,
         file_path: Path,
@@ -51,13 +46,11 @@ class LinePagingStrategy:
         """Read page by line count."""
         skip_lines = page * page_size
         encoding = encoding or 'utf-8'
-        
         with open(file_path, mode, encoding=encoding) as f:
             # Skip to start of page
             for _ in range(skip_lines):
                 if not f.readline():
                     return ""  # EOF
-            
             # Read page_size lines
             lines = []
             for _ in range(page_size):
@@ -65,9 +58,8 @@ class LinePagingStrategy:
                 if not line:
                     break
                 lines.append(line)
-            
             return "".join(lines)
-    
+
     def iter_pages(
         self,
         file_path: Path,

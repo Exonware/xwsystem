@@ -12,11 +12,11 @@ from pathlib import Path
 
 class TestOptimizedSerializers:
     """Test all currently optimized serializers."""
-    
     @pytest.fixture
+
     def test_data(self):
         return {"test": "data", "number": 42, "list": [1, 2, 3]}
-    
+
     def test_optimized_text_formats(self, test_data):
         """Test optimized text format serializers."""
         # Test XML
@@ -30,7 +30,6 @@ class TestOptimizedSerializers:
             print("✅ XML optimized serializer working")
         except ImportError:
             print("⚠️  XML not available")
-        
         # Test JSON
         try:
             from exonware.xwsystem.io.serialization import JsonSerializer
@@ -42,7 +41,6 @@ class TestOptimizedSerializers:
             print("✅ JSON optimized serializer working")
         except ImportError:
             print("⚠️  JSON not available")
-        
         # Test CSV
         try:
             from exonware.xwsystem.io.serialization import CsvSerializer
@@ -56,7 +54,7 @@ class TestOptimizedSerializers:
             print("✅ CSV optimized serializer working")
         except ImportError:
             print("⚠️  CSV not available")
-    
+
     def test_optimized_binary_formats(self, test_data):
         """Test optimized binary format serializers."""
         # Test BSON
@@ -70,7 +68,6 @@ class TestOptimizedSerializers:
             print("✅ BSON optimized serializer working")
         except ImportError:
             print("⚠️  BSON not available")
-        
         # Test Pickle
         try:
             from exonware.xwsystem.io.serialization import PickleSerializer
@@ -82,7 +79,6 @@ class TestOptimizedSerializers:
             print("✅ Pickle optimized serializer working")
         except ImportError:
             print("⚠️  Pickle not available")
-        
         # Test Marshal
         try:
             from exonware.xwsystem.io.serialization import MarshalSerializer
@@ -94,7 +90,6 @@ class TestOptimizedSerializers:
             print("✅ Marshal optimized serializer working")
         except ImportError:
             print("⚠️  Marshal not available")
-        
         # Test MessagePack
         try:
             from exonware.xwsystem.io.serialization import MsgPackSerializer
@@ -106,7 +101,6 @@ class TestOptimizedSerializers:
             print("✅ MessagePack optimized serializer working")
         except ImportError:
             print("⚠️  MessagePack not available")
-        
         # Test CBOR
         try:
             from exonware.xwsystem.io.serialization import CborSerializer
@@ -118,57 +112,45 @@ class TestOptimizedSerializers:
             print("✅ CBOR optimized serializer working")
         except ImportError:
             print("⚠️  CBOR not available")
-    
+
     def test_inherited_file_operations(self, test_data):
         """Test that optimized serializers use inherited file operations."""
         serializers = []
-        
         # Collect available optimized serializers
         try:
             from exonware.xwsystem.io.serialization import JsonSerializer
             serializers.append(("JSON", JsonSerializer(), ".json"))
         except ImportError:
             pass
-        
         try:
             from exonware.xwsystem.io.serialization import PickleSerializer
             serializers.append(("Pickle", PickleSerializer(), ".pkl"))
         except ImportError:
             pass
-        
         for name, serializer, ext in serializers:
             # Test file operations
             fd, temp_path = tempfile.mkstemp(suffix=ext)
             os.close(fd)
             temp_path = Path(temp_path)
-            
             try:
                 # Test inherited save_file
                 serializer.save_file(test_data, temp_path)
                 assert temp_path.exists()
-                
                 # Test inherited load_file
                 loaded = serializer.load_file(temp_path)
                 assert isinstance(loaded, dict)
-                
                 print(f"✅ {name} inherited file operations working")
-                
             finally:
                 if temp_path.exists():
                     temp_path.unlink()
-
-
 if __name__ == "__main__":
     print("🧪 Testing Optimization Progress")
     print("=" * 40)
-    
     test_data = {"test": "data", "number": 42, "list": [1, 2, 3]}
-    
     tester = TestOptimizedSerializers()
     tester.test_optimized_text_formats(test_data)
     tester.test_optimized_binary_formats(test_data)
     tester.test_inherited_file_operations(test_data)
-    
     print("\n🎉 Optimization progress test completed!")
     print("✅ 8 of 17 serializers optimized")
     print("✅ 352+ lines saved so far")

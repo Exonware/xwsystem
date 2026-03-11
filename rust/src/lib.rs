@@ -1,7 +1,7 @@
 // #exonware/xwsystem/rust/src/lib.rs
 //exonware/xwsystem/__init__.py
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: October 10, 2025

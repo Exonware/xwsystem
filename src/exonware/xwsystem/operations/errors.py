@@ -1,11 +1,9 @@
 #exonware/xwsystem/src/exonware/xwsystem/operations/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-
 Operations Errors
-
 Exception classes for data operations.
 """
 

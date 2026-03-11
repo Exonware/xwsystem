@@ -3,11 +3,10 @@
 #exonware/xwsystem/console/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 2025-01-27
-
 Console module errors - exception classes for console functionality.
 """
 
@@ -25,8 +24,6 @@ class EventLoggerError(ConsoleError):
 class ConsoleWriterError(ConsoleError):
     """Raised when console writer operation fails."""
     pass
-
-
 __all__ = [
     'ConsoleError',
     'EventLoggerError',

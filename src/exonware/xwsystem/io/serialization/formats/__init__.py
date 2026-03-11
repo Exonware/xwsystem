@@ -1,13 +1,11 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/formats/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: November 2, 2025
-
 Serialization formats - Format subpackages.
-
 Subpackages: .text, .binary, .database, .tabular (pandas). Tabular is not
 imported here so that .text / .binary / .database load without pandas.
 Import tabular explicitly: from ...formats.tabular import ExcelSerializer, ...

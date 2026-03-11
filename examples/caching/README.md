@@ -134,7 +134,7 @@ user = cache.get('user:123')
 ---
 
 **Company:** eXonware.com  
-**Author:** Eng. Muhammad AlShehri  
+**Author:** eXonware Backend Team  
 **Email:** connect@exonware.com  
 **Version:** 0.0.1.388
 

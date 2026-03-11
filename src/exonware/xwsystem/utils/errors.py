@@ -2,11 +2,10 @@
 #exonware/xwsystem/utils/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 Utils module errors - exception classes for utility functionality.
 """
 
@@ -124,4 +123,3 @@ class ResourceNotFoundError(ResourceManagerError):
 class ResourceExhaustionError(ResourceManagerError):
     """Raised when resources are exhausted."""
     pass
-

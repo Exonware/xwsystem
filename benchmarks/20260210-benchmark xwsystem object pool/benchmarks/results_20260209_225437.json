@@ -1,0 +1,20 @@
+{
+  "timestamp": "20260209_225437",
+  "campaign": "20260210-benchmark xwsystem object pool",
+  "max_size": 1000,
+  "num_ops": 10000,
+  "results": [
+    {
+      "name": "ObjectPool get+release (thread_safe=True)",
+      "ops_per_sec": 350094.7
+    },
+    {
+      "name": "ObjectPool get+release (thread_safe=False)",
+      "ops_per_sec": 287462.05
+    },
+    {
+      "name": "direct SimpleObj()",
+      "ops_per_sec": 2932121.38
+    }
+  ]
+}

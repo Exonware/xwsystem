@@ -1,0 +1,18 @@
+{
+  "timestamp": "20260210_203221",
+  "campaign": "20260210-benchmark xwsystem async fabric",
+  "results": {
+    "submit_throughput": {
+      "ops_per_sec": 3274.08,
+      "num_tasks": 1000
+    },
+    "queue_latency": {
+      "latency_ms": 0.019,
+      "samples": 50
+    },
+    "shared_memory": {
+      "create_write_ms": 160.093,
+      "reuse_read_ms": 0.006
+    }
+  }
+}

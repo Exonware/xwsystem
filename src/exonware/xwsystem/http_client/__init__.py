@@ -1,13 +1,11 @@
 #exonware/xwsystem/src/exonware/xwsystem/http_client/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 XSystem HTTP Package
-
 Provides high-performance HTTP client with retry mechanisms, 
 connection pooling, and comprehensive error handling.
 """
@@ -21,10 +19,8 @@ from .advanced_client import (
     MockTransport,
     MockResponse,
 )
-
 # Unified Facade
 from .facade import XWHTTP
-
 __all__ = [
     # Unified Facade
     "XWHTTP",

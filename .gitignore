@@ -262,9 +262,9 @@ Temporary Items
 *.tmp
 *.temp
 
-# Log files
+# Log files (top-level only; docs/logs/ is tracked per GUIDE_00_MASTER)
 *.log
-logs/
+/logs/
 
 # Database files
 *.sqlite

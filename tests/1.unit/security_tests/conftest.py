@@ -6,13 +6,13 @@ Pytest configuration for xSystem security tests.
 import pytest
 import sys
 from pathlib import Path
-
 # Path setup - navigate to project root then to src
 src_path = str(Path(__file__).parent.parent.parent.parent.parent.parent / "src")
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
-
 @pytest.fixture
+
+
 def path_validator_module():
     """Provide PathValidator module for testing."""
     try:
@@ -20,8 +20,9 @@ def path_validator_module():
         return PathValidator
     except ImportError as e:
         pytest.skip(f"PathValidator import failed: {e}")
-
 @pytest.fixture
+
+
 def malicious_paths():
     """Provide malicious path examples for testing."""
     return [
@@ -35,8 +36,9 @@ def malicious_paths():
         "`malicious command`",
         "path; rm -rf /",
     ]
-
 @pytest.fixture
+
+
 def safe_paths():
     """Provide safe path examples for testing."""
     return [

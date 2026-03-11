@@ -1,0 +1,15 @@
+{
+  "timestamp": "20260209_225439",
+  "campaign": "20260210-benchmark xwsystem threading locks",
+  "num_ops": 100000,
+  "results": [
+    {
+      "name": "EnhancedRLock (with)",
+      "ops_per_sec": 553408.33
+    },
+    {
+      "name": "threading.RLock (with)",
+      "ops_per_sec": 1036176.01
+    }
+  ]
+}

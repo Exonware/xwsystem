@@ -1,11 +1,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/caching/distributed.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 01-Nov-2025
-
 Distributed cache implementations - Coming in v1.0.
 """
 
@@ -13,16 +12,14 @@ Distributed cache implementations - Coming in v1.0.
 class DistributedCache:
     """
     Distributed cache implementation (Coming in v1.0).
-    
     Future features:
     - Redis backend integration
     - Consistent hashing for distribution
     - Replication and failover
     - Cluster management
-    
     For now, use local caches or implement Redis manually.
     """
-    
+
     def __init__(self, *args, **kwargs):
         raise NotImplementedError(
             "DistributedCache is not yet implemented (coming in v1.0). "
@@ -35,16 +32,14 @@ class DistributedCache:
 class RedisCache:
     """
     Redis-backed cache implementation (Coming in v1.0).
-    
     Future features:
     - Redis connection pooling
     - Automatic serialization
     - TTL support via Redis EXPIRE
     - Pub/sub for cache invalidation
-    
     For now, use redis-py directly or local caches.
     """
-    
+
     def __init__(self, *args, **kwargs):
         raise NotImplementedError(
             "RedisCache is not yet implemented (coming in v1.0). "

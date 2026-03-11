@@ -5,7 +5,7 @@
 //! Production-grade CLI argument parsing for XWSystem.
 //! 
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generated: 2025-01-27

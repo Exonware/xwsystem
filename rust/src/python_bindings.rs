@@ -2,7 +2,7 @@
 //! Python bindings for xwsystem_rust using PyO3
 //!
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 

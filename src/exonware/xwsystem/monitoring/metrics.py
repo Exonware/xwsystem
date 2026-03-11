@@ -1,7 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/metrics.py
 """
 Generic performance metrics and monitoring system.
-
 This module provides comprehensive performance tracking and reporting
 for any library or application that needs performance monitoring.
 """
@@ -12,14 +11,12 @@ from collections import defaultdict, deque
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
-
 from ..config.logging_setup import get_logger
-
-
 @dataclass
+
+
 class OperationMetrics:
     """Metrics for a single operation type."""
-
     total_calls: int = 0
     total_time: float = 0.0
     min_time: float = float("inf")
@@ -38,20 +35,20 @@ class OperationMetrics:
     def add_error(self) -> None:
         """Record an error occurrence."""
         self.error_count += 1
-
     @property
+
     def average_time(self) -> float:
         """Get average operation time."""
         return self.total_time / max(1, self.total_calls)
-
     @property
+
     def recent_average(self) -> float:
         """Get recent average operation time."""
         if not self.recent_times:
             return 0.0
         return sum(self.recent_times) / len(self.recent_times)
-
     @property
+
     def error_rate(self) -> float:
         """Get error rate as percentage."""
         return (self.error_count / max(1, self.total_calls)) * 100
@@ -81,29 +78,24 @@ class GenericMetrics:
         self._gauges: dict[str, float] = {}
         self._start_time = time.time()
         self._lock = threading.RLock()
-
         # Cache metrics
         self._cache_hits = 0
         self._cache_misses = 0
         self._cache_evictions = 0
-
         # Resource creation metrics
         self._resources_created = 0
         self._pool_hits = 0
         self._pool_misses = 0
-
         # Memory metrics
         self._peak_memory_usage = 0.0
         self._current_memory_usage = 0.0
-
         self._logger.debug(f"Initialized {component_name} metrics collection")
-
     @contextmanager
+
     def measure_operation(self, operation_name: str):
         """Context manager to measure operation duration."""
         start_time = time.perf_counter()
         success = True
-
         try:
             yield
         except Exception:
@@ -111,7 +103,6 @@ class GenericMetrics:
             raise
         finally:
             duration = time.perf_counter() - start_time
-
             with self._lock:
                 if success:
                     self._operations[operation_name].add_timing(duration)
@@ -162,20 +153,20 @@ class GenericMetrics:
         with self._lock:
             self._current_memory_usage = current
             self._peak_memory_usage = max(self._peak_memory_usage, current)
-
     @property
+
     def cache_hit_rate(self) -> float:
         """Get cache hit rate as percentage."""
         total = self._cache_hits + self._cache_misses
         return (self._cache_hits / max(1, total)) * 100
-
     @property
+
     def pool_efficiency(self) -> float:
         """Get pool efficiency as percentage."""
         total = self._pool_hits + self._pool_misses
         return (self._pool_hits / max(1, total)) * 100
-
     @property
+
     def uptime(self) -> float:
         """Get uptime in seconds."""
         return time.time() - self._start_time
@@ -193,7 +184,6 @@ class GenericMetrics:
             operations_summary = {}
             for op_name, metrics in self._operations.items():
                 operations_summary[op_name] = metrics.to_dict()
-
             return {
                 "component": self.component_name,
                 "uptime_seconds": self.uptime,
@@ -221,7 +211,6 @@ class GenericMetrics:
     def get_performance_report(self) -> str:
         """Generate a human-readable performance report."""
         summary = self.get_summary()
-
         lines = [
             f"🎯 {self.component_name.title()} Performance Report",
             "=" * 50,
@@ -245,7 +234,6 @@ class GenericMetrics:
             "",
             "⚡ Operation Performance:",
         ]
-
         for op_name, op_metrics in summary["operations"].items():
             if op_metrics["total_calls"] > 0:
                 lines.extend(
@@ -258,17 +246,14 @@ class GenericMetrics:
                         f"    Error Rate: {op_metrics['error_rate']:.1f}%",
                     ]
                 )
-
         if summary["counters"]:
             lines.extend(["", "📈 Counters:"])
             for name, value in summary["counters"].items():
                 lines.append(f"  {name}: {value}")
-
         if summary["gauges"]:
             lines.extend(["", "📏 Gauges:"])
             for name, value in summary["gauges"].items():
                 lines.append(f"  {name}: {value}")
-
         return "\n".join(lines)
 
     def reset(self) -> None:
@@ -287,8 +272,6 @@ class GenericMetrics:
             self._current_memory_usage = 0.0
             self._start_time = time.time()
             self._logger.info(f"Reset all {self.component_name} metrics")
-
-
 # Global metrics registry
 _metrics_registry: dict[str, GenericMetrics] = {}
 _registry_lock = threading.Lock()
@@ -314,31 +297,24 @@ def reset_metrics(component_name: str = None) -> None:
         else:
             for metrics in _metrics_registry.values():
                 metrics.reset()
-
-
 # Convenience functions for component-specific usage
+
+
 def create_component_metrics(component_name: str):
     """Create convenience functions for a specific component."""
     metrics = get_metrics(component_name)
-
     def measure_operation(operation_name: str):
         return metrics.measure_operation(operation_name)
-
     def record_timing(operation_name: str, duration: float) -> None:
         metrics.record_timing(operation_name, duration)
-
     def increment_counter(counter_name: str, value: int = 1) -> None:
         metrics.increment_counter(counter_name, value)
-
     def record_cache_hit() -> None:
         metrics.record_cache_hit()
-
     def record_cache_miss() -> None:
         metrics.record_cache_miss()
-
     def record_resource_creation(from_pool: bool = False) -> None:
         metrics.record_resource_creation(from_pool)
-
     return {
         "measure_operation": measure_operation,
         "record_timing": record_timing,

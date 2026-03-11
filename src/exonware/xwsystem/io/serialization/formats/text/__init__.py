@@ -11,7 +11,6 @@ from .csv import CsvSerializer
 from .configparser import ConfigParserSerializer
 from .formdata import FormDataSerializer
 from .multipart import MultipartSerializer
-
 __all__ = [
     # Primary serializers
     "JsonSerializer",

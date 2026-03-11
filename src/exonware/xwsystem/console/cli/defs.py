@@ -3,22 +3,20 @@
 #exonware/xwsystem/console/cli/cli_defs.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 07-Sep-2025
-
 CLI-specific types and enums for XWSystem.
 """
 
 from enum import Enum
 # Import general console enums from console level (priority)
 from ..defs import Alignment, BorderStyle, Colors, Style
-
-
 # ============================================================================
 # CLI-SPECIFIC ENUMS
 # ============================================================================
+
 
 class ColorType(Enum):
     """Color types for CLI output."""
@@ -70,8 +68,6 @@ class ArgumentType(Enum):
     FILE = "file"
     DIRECTORY = "dir"
     CHOICE = "choice"
-
-
 __all__ = [
     # Re-export general console enums
     'Alignment',

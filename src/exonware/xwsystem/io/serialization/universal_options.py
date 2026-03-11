@@ -1,14 +1,12 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/universal_options.py
 """
 Universal Serialization Options
-
 This module provides universal option mapping across different serialization formats.
 Options like pretty, compact, sorted, canonical can be mapped to format-specific options.
-
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 """
 
 from typing import Dict, List, Set, Any, Optional
@@ -28,8 +26,6 @@ class UniversalOption(Enum):
     PRESERVE_QUOTES = "preserve_quotes"
     LINE_SEPARATOR = "line_separator"
     ITEM_SEPARATOR = "item_separator"
-
-
 # Format-specific option mappings
 _FORMAT_OPTION_MAPS: Dict[str, Dict[str, str]] = {
     "json": {
@@ -73,8 +69,6 @@ _FORMAT_OPTION_MAPS: Dict[str, Dict[str, str]] = {
         "item_separator": "delimiter",
     },
 }
-
-
 # Supported options per format
 _FORMAT_SUPPORTED_OPTIONS: Dict[str, Set[str]] = {
     "json": {
@@ -114,15 +108,12 @@ def map_universal_options(
 ) -> Dict[str, Any]:
     """
     Map universal options to format-specific options.
-    
     Args:
         format_name: Serialization format name (json, yaml, xml, etc.)
         universal_options: Optional dictionary of universal options
         **kwargs: Universal options as keyword arguments (pretty, compact, sorted, etc.)
-        
     Returns:
         Dictionary of format-specific options
-        
     Example:
         >>> # Using dict
         >>> options = map_universal_options("json", {"pretty": True, "sorted": True})
@@ -135,27 +126,21 @@ def map_universal_options(
     # Merge dict and kwargs
     if universal_options is None:
         universal_options = {}
-    
     # Merge kwargs into universal_options (kwargs override dict values)
     merged_options = {**universal_options, **kwargs}
-    
     format_lower = format_name.lower()
     option_map = _FORMAT_OPTION_MAPS.get(format_lower, {})
     format_options = {}
-    
     # Handle canonical first (it implies sorted)
     if merged_options.get("canonical"):
         merged_options["sorted"] = True
-    
     # Handle compact overriding pretty
     if merged_options.get("compact") and merged_options.get("pretty"):
         # Compact wins
         merged_options.pop("pretty", None)
-    
     for universal_key, universal_value in merged_options.items():
         if universal_key in option_map:
             format_key = option_map[universal_key]
-            
             # Handle special mappings
             if universal_key == "pretty" and format_lower == "json":
                 format_options[format_key] = 2 if universal_value else None
@@ -180,21 +165,17 @@ def map_universal_options(
                 format_options["canonical"] = True
             else:
                 format_options[format_key] = universal_value
-    
     return format_options
 
 
 def get_supported_universal_options(format_name: Optional[str] = None) -> Set[str] | Dict[str, Any]:
     """
     Get list of supported universal options for a format, or all universal options info.
-    
     Args:
         format_name: Optional serialization format name. If None, returns all universal options info.
-        
     Returns:
         If format_name provided: Set of supported universal option names for that format
         If format_name is None: Dictionary with all universal options metadata
-        
     Example:
         >>> # Get options for a specific format
         >>> options = get_supported_universal_options("json")
@@ -237,12 +218,10 @@ def get_supported_universal_options(format_name: Optional[str] = None) -> Set[st
             "line_separator": "\n",
             "item_separator": None,
         }
-        
         # Collect all options across all formats
         all_option_names = set()
         for format_opts in _FORMAT_SUPPORTED_OPTIONS.values():
             all_option_names.update(format_opts)
-        
         # Build option info
         for option_name in all_option_names:
             # Find formats that support this option
@@ -250,15 +229,12 @@ def get_supported_universal_options(format_name: Optional[str] = None) -> Set[st
                 fmt.upper() for fmt, opts in _FORMAT_SUPPORTED_OPTIONS.items()
                 if option_name in opts
             ]
-            
             option_info[option_name] = {
                 "type": type_map.get(option_name, Any),
                 "default": default_map.get(option_name, None),
                 "formats": supporting_formats,
             }
-        
         return option_info
-    
     format_lower = format_name.lower()
     return _FORMAT_SUPPORTED_OPTIONS.get(format_lower, set())
 
@@ -270,15 +246,12 @@ def validate_universal_options(
 ) -> tuple[bool, Optional[str]]:
     """
     Validate universal options for a format.
-    
     Args:
         format_name: Serialization format name
         universal_options: Optional dictionary of universal options to validate
         **kwargs: Universal options as keyword arguments
-        
     Returns:
         Tuple of (is_valid, error_message)
-        
     Example:
         >>> # Using dict
         >>> is_valid, error = validate_universal_options(
@@ -293,18 +266,14 @@ def validate_universal_options(
     # Merge dict and kwargs
     if universal_options is None:
         universal_options = {}
-    
     # Merge kwargs into universal_options (kwargs override dict values)
     merged_options = {**universal_options, **kwargs}
-    
     format_lower = format_name.lower()
     supported = get_supported_universal_options(format_lower)
-    
     # Check for unsupported options
     unsupported = set(merged_options.keys()) - supported
     if unsupported:
         return False, f"Unsupported options for {format_name}: {', '.join(unsupported)}"
-    
     # Validate option types
     type_map = {
         "pretty": bool,
@@ -321,24 +290,20 @@ def validate_universal_options(
         "line_separator": str,
         "item_separator": str,
     }
-    
     for key, value in merged_options.items():
         expected_type = type_map.get(key)
         if expected_type and not isinstance(value, expected_type):
             return False, f"Option '{key}' expects type {expected_type.__name__}, got {type(value).__name__}"
-    
     # Check for conflicting options
     if merged_options.get("pretty") and merged_options.get("compact"):
         if merged_options["pretty"] and merged_options["compact"]:
             return False, "Cannot use both 'pretty' and 'compact' options together"
-    
     return True, None
 
 
 def get_all_supported_formats() -> List[str]:
     """
     Get list of all formats that support universal options.
-    
     Returns:
         List of format names
     """
@@ -348,17 +313,14 @@ def get_all_supported_formats() -> List[str]:
 def get_format_option_info(format_name: str) -> Dict[str, Any]:
     """
     Get detailed information about format option support.
-    
     Args:
         format_name: Serialization format name
-        
     Returns:
         Dictionary with option information
     """
     format_lower = format_name.lower()
     supported = get_supported_universal_options(format_lower)
     option_map = _FORMAT_OPTION_MAPS.get(format_lower, {})
-    
     return {
         "format": format_name,
         "supported_options": list(supported),

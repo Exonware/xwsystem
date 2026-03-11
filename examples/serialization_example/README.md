@@ -190,7 +190,7 @@ All dependencies are handled automatically by xwsystem.
 ---
 
 **Company**: eXonware.com  
-**Author**: Eng. Muhammad AlShehri  
+**Author**: eXonware Backend Team  
 **Email**: connect@exonware.com  
 **Version**: 0.0.1  
 **Date**: October 12, 2025

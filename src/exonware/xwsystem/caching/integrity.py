@@ -3,11 +3,10 @@
 #exonware/xwsystem/caching/integrity.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 01-Nov-2025
-
 Cache integrity verification - Security Priority #1.
 Protects against cache poisoning and tampering.
 """
@@ -16,13 +15,11 @@ from typing import Any, Optional
 from dataclasses import dataclass
 from .errors import CacheIntegrityError
 from .utils import compute_checksum
-
-
 @dataclass
+
 class CacheEntry:
     """
     Cache entry with integrity verification.
-    
     Attributes:
         key: Cache key
         value: Cached value
@@ -35,14 +32,12 @@ class CacheEntry:
     checksum: str
     created_at: float
     access_count: int = 0
-    
+
     def verify_integrity(self) -> bool:
         """
         Verify entry integrity.
-        
         Returns:
             True if integrity check passes
-            
         Raises:
             CacheIntegrityError: If integrity check fails
         """
@@ -87,13 +82,11 @@ def create_secure_entry(
 ) -> CacheEntry:
     """
     Create cache entry with integrity checksum.
-    
     Args:
         key: Cache key
         value: Value to cache
         created_at: Creation timestamp
         algorithm: Hash algorithm for checksum
-        
     Returns:
         CacheEntry with integrity checksum
     """
@@ -110,13 +103,10 @@ def create_secure_entry(
 def verify_entry_integrity(entry: CacheEntry) -> bool:
     """
     Verify cache entry integrity.
-    
     Args:
         entry: Cache entry to verify
-        
     Returns:
         True if integrity check passes
-        
     Raises:
         CacheIntegrityError: If integrity check fails
     """
@@ -126,16 +116,12 @@ def verify_entry_integrity(entry: CacheEntry) -> bool:
 def update_entry_checksum(entry: CacheEntry) -> None:
     """
     Update entry checksum after value modification.
-    
     Args:
         entry: Cache entry to update
-        
     Note:
         Call this after modifying the entry value.
     """
     entry.checksum = compute_checksum(entry.value)
-
-
 __all__ = [
     'CacheEntry',
     'create_secure_entry',

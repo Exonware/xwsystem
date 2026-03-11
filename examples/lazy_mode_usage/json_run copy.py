@@ -1,10 +1,8 @@
 #exonware/xwsystem/examples/lazy_mode_usage/json_run copy.py
 """
 Example: Lazy Mode Usage with BSON Serialization
-
 Usage:
     python json_run.py
-
 Behavior:
     - Optionally uninstalls xwlazy if it is installed (moves beyond xwlazy)
     - Uninstalls serialization dependencies first to test lazy installation
@@ -39,7 +37,6 @@ def uninstall_xwlazy_if_installed():
     if not is_xwlazy_installed():
         print("ℹ️  xwlazy is not installed, skipping uninstall")
         return
-    
     print("🧹 Uninstalling xwlazy...")
     try:
         subprocess.run(
@@ -50,12 +47,9 @@ def uninstall_xwlazy_if_installed():
         print("✅ Uninstalled xwlazy\n")
     except Exception as exc:
         print(f"❌ Failed to uninstall xwlazy: {exc}\n")
-
 # Optionally uninstall xwlazy if installed
 #uninstall_xwlazy_if_installed()
-
 from exonware.xwsystem.io.serialization.formats.binary import BsonSerializer as serializer
-
 data = {"name": "John", "age": 30}
 serializer_obj = serializer()
 result = serializer_obj.encode(data)

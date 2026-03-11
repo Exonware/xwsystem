@@ -1,0 +1,44 @@
+# Benchmark Documents Index
+
+This directory contains active benchmark experiment records for exonware-xwsystem.
+
+---
+
+## Structure
+
+- TEMPLATE.md – standardized format for new benchmark reports
+- BENCH_YYYYMMDD_HHMM_<NAME>.md – individual benchmark execution records
+- baseline/ – fixed baselines and datasets referenced by benchmark reports
+- ../INDEX.md – centralized history of benchmark outcomes
+
+---
+
+## Getting Started
+
+1. Review performance targets in [../../REF_BENCH.md](../../REF_BENCH.md).
+2. Follow methodology in [../../../../docs/guides/GUIDE_54_BENCH.md](../../../../docs/guides/GUIDE_54_BENCH.md).
+3. Use [TEMPLATE.md](TEMPLATE.md) when authoring a new benchmark entry.
+4. After publishing a benchmark, log a concise summary in [../INDEX.md](../INDEX.md).
+
+---
+
+## Related Resources
+
+- [../../../../docs/guides/GUIDE_21_PLAN.md](../../../../docs/guides/GUIDE_21_PLAN.md) – Where benchmarking fits in the development flow
+- [../INDEX.md](../INDEX.md) – Consolidated benchmark log
+- [../SUMMARY_TEST.md](../SUMMARY_TEST.md) – Complementary quality metrics
+
+---
+
+---
+
+## Benchmark Runs
+
+| Date | Time | Result | Description | File |
+|------|------|--------|-------------|------|
+| (No BENCH_* reports recorded yet) | | | | |
+
+---
+
+*Last updated: 29-Jan-2026*
+

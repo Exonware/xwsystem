@@ -2,13 +2,11 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/file/paging/byte_paging.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: 30-Oct-2025
-
 Byte-based paging strategy.
-
 Priority 1 (Security): Safe byte-level operations
 Priority 2 (Usability): Simple byte paging
 Priority 3 (Maintainability): Clean strategy implementation
@@ -18,27 +16,24 @@ Priority 5 (Extensibility): Pluggable via registry
 
 from pathlib import Path
 from typing import Optional, Iterator
-
 from ...contracts import IPagingStrategy
 
 
 class BytePagingStrategy:
     """
     Page by byte offsets - most efficient for binary files.
-    
     Page size = number of bytes per page.
-    
     Best for:
     - Binary files
     - Fixed-width records
     - Raw data streams
     """
-    
     @property
+
     def strategy_id(self) -> str:
         """Unique strategy identifier."""
         return "byte"
-    
+
     def read_page(
         self,
         file_path: Path,
@@ -50,11 +45,10 @@ class BytePagingStrategy:
     ) -> bytes | str:
         """Read page by byte offset."""
         offset = page * page_size
-        
         with open(file_path, mode, encoding=encoding) as f:
             f.seek(offset)
             return f.read(page_size)
-    
+
     def iter_pages(
         self,
         file_path: Path,

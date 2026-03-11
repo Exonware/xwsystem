@@ -1,14 +1,12 @@
 #exonware/xwsystem/rust/python/exonware/rust/xwsystem/caching/__init__.py
 """
 eXonware Rust XWSystem Caching Python bindings.
-
 This package provides Python bindings for the Rust implementation of XWSystem caching.
 """
 
 import sys
 import os
 from pathlib import Path
-
 # Try to import the module, with fallback paths if needed
 try:
     import _xwsystem_rust as rust_module
@@ -42,7 +40,6 @@ except ImportError:
             f"Please ensure the module is built and installed. "
             f"Run: cd {rust_dir} && python -m maturin develop --release --features python,external-caches"
         )
-
 # Core cache implementations (always available)
 LRUCache = rust_module.caching.LRUCache
 LFUCache = rust_module.caching.LFUCache
@@ -50,7 +47,6 @@ TTLCache = rust_module.caching.TTLCache
 OptimizedLFUCache = rust_module.caching.OptimizedLFUCache
 MemoryBoundedLRUCache = rust_module.caching.MemoryBoundedLRUCache
 SecureLRUCache = rust_module.caching.SecureLRUCache
-
 __all__ = [
     "LRUCache",
     "LFUCache",
@@ -59,7 +55,6 @@ __all__ = [
     "MemoryBoundedLRUCache",
     "SecureLRUCache",
 ]
-
 # External Rust caches (available when built with --features external-caches)
 MokaCache = rust_module.caching.MokaCache
 MokaTTLCache = rust_module.caching.MokaTTLCache
@@ -68,7 +63,6 @@ QuickCache = rust_module.caching.QuickCache
 QuickCacheTTL = rust_module.caching.QuickCacheTTL
 DashMapCache = rust_module.caching.DashMapCache
 DashMapTTLCache = rust_module.caching.DashMapTTLCache
-
 __all__.extend([
     "MokaCache",
     "MokaTTLCache",

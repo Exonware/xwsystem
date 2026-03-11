@@ -1,0 +1,83 @@
+{
+  "timestamp": "20260209_225415",
+  "campaign": "20260210-benchmark xwsystem operations diff merge patch",
+  "num_ops": 500,
+  "results": [
+    {
+      "name": "diff_structural (small)",
+      "ops_per_sec": 35561.37
+    },
+    {
+      "name": "diff_content (small)",
+      "ops_per_sec": 48212.29
+    },
+    {
+      "name": "diff_full (small)",
+      "ops_per_sec": 45365.05
+    },
+    {
+      "name": "merge_deep (small)",
+      "ops_per_sec": 69720.42
+    },
+    {
+      "name": "merge_shallow (small)",
+      "ops_per_sec": 58813.84
+    },
+    {
+      "name": "merge_overwrite (small)",
+      "ops_per_sec": 66399.3
+    },
+    {
+      "name": "diff_structural (medium)",
+      "ops_per_sec": 1178.28
+    },
+    {
+      "name": "diff_content (medium)",
+      "ops_per_sec": 975.4
+    },
+    {
+      "name": "diff_full (medium)",
+      "ops_per_sec": 1323.69
+    },
+    {
+      "name": "merge_deep (medium)",
+      "ops_per_sec": 1286.39
+    },
+    {
+      "name": "merge_shallow (medium)",
+      "ops_per_sec": 1012.35
+    },
+    {
+      "name": "merge_overwrite (medium)",
+      "ops_per_sec": 1145.54
+    },
+    {
+      "name": "diff_structural (large)",
+      "ops_per_sec": 59.95
+    },
+    {
+      "name": "diff_content (large)",
+      "ops_per_sec": 75.07
+    },
+    {
+      "name": "diff_full (large)",
+      "ops_per_sec": 73.34
+    },
+    {
+      "name": "merge_deep (large)",
+      "ops_per_sec": 81.52
+    },
+    {
+      "name": "merge_shallow (large)",
+      "ops_per_sec": 71.83
+    },
+    {
+      "name": "merge_overwrite (large)",
+      "ops_per_sec": 66.97
+    },
+    {
+      "name": "patch_apply (small)",
+      "ops_per_sec": 63872.46
+    }
+  ]
+}

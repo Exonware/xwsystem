@@ -1,6 +1,6 @@
 // #exonware/xwsystem/rust/src/monitoring/tracker.rs
 //! Company: eXonware.com
-//! Author: Eng. Muhammad AlShehri
+//! Author: eXonware Backend Team
 //! Email: connect@exonware.com
 //! Version: 0.1.0.1
 //! Generation Date: October 26, 2025

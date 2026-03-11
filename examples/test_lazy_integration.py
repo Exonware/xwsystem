@@ -1,12 +1,10 @@
 #exonware/xwsystem/examples/test_lazy_integration.py
 """
 Simple test to verify xwlazy integration into xwsystem.
-
 This test:
 1. Imports xwsystem (which should trigger auto_enable_lazy)
 2. Verifies that xwlazy was activated
 3. Tests that missing dependencies can be auto-installed
-
 Usage:
     python examples/test_lazy_integration.py
 """
@@ -14,7 +12,6 @@ Usage:
 import sys
 import os
 from pathlib import Path
-
 # Fix Unicode encoding on Windows
 if sys.platform == "win32":
     try:
@@ -22,7 +19,6 @@ if sys.platform == "win32":
         sys.stderr.reconfigure(encoding="utf-8")
     except (AttributeError, ValueError):
         pass
-
 # Add parent directory to path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
@@ -31,7 +27,6 @@ def test_xwlazy_integration():
     print("=" * 70)
     print("🧪 Testing xwlazy integration into xwsystem")
     print("=" * 70)
-    
     # Step 1: Check if xwlazy is installed
     print("\n📦 Step 1: Checking if xwlazy is installed...")
     try:
@@ -43,7 +38,6 @@ def test_xwlazy_integration():
         print("   💡 Install with: pip install exonware-xwsystem[lazy]")
         xwlazy_available = False
         return False
-    
     # Step 2: Import xwsystem (this should trigger auto_enable_lazy)
     print("\n📦 Step 2: Importing xwsystem (should trigger auto_enable_lazy)...")
     try:
@@ -56,12 +50,10 @@ def test_xwlazy_integration():
         import traceback
         traceback.print_exc()
         return False
-    
     # Step 3: Check if xwlazy was activated
     print("\n📦 Step 3: Verifying xwlazy activation...")
     try:
         from exonware.xwlazy import is_global_import_hook_installed, get_all_stats
-        
         # Check if the global import hook is installed
         hook_installed = is_global_import_hook_installed()
         if hook_installed:
@@ -69,17 +61,14 @@ def test_xwlazy_integration():
         else:
             print("   ⚠️  Global import hook is NOT installed")
             print("   💡 This might be normal if xwlazy auto-enable didn't trigger")
-        
         # Get stats
         try:
             stats = get_all_stats()
             print(f"   📊 xwlazy stats: {stats}")
         except Exception as e:
             print(f"   ⚠️  Could not get stats: {e}")
-            
     except ImportError as e:
         print(f"   ⚠️  Could not check xwlazy status: {e}")
-    
     # Step 4: Test importing a module that might need external dependencies
     print("\n📦 Step 4: Testing import of a module with optional dependencies...")
     try:
@@ -91,7 +80,6 @@ def test_xwlazy_integration():
         print(f"   ⚠️  Could not import BsonSerializer: {e}")
         print("   💡 This is expected if pymongo is not installed")
         print("   💡 With lazy mode, xwlazy should install it automatically")
-    
     print("\n" + "=" * 70)
     print("✅ Integration test completed!")
     print("=" * 70)
@@ -100,10 +88,7 @@ def test_xwlazy_integration():
     print("   • Missing dependencies will be automatically installed when imported")
     print("   • To see verbose output, set: export XWLAZY_VERBOSE=1")
     print()
-    
     return True
-
-
 if __name__ == "__main__":
     success = test_xwlazy_integration()
     sys.exit(0 if success else 1)

@@ -1,15 +1,14 @@
 #exonware/xwsystem/src/exonware/xwsystem/console/cli/errors.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.5
+Version: 0.1.0.6
 Generation Date: September 04, 2025
-
 CLI module errors - exception classes for command-line interface functionality.
 """
-
 # Import base console errors from console level (priority)
+
 from ..errors import ConsoleError as BaseConsoleError
 
 
@@ -26,9 +25,8 @@ class ArgumentError(CLIError):
 class CommandError(CLIError):
     """Raised when command execution fails."""
     pass
-
-
 # ConsoleError extends base ConsoleError from console level
+
 class ConsoleError(BaseConsoleError):
     """Raised when console operation fails (CLI-specific)."""
     pass
