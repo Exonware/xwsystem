@@ -53,9 +53,9 @@ ensure_utf8_console()
 | Area | What’s in it |
 |------|----------------|
 | **One dependency** | Replaces dozens of imports (json, yaml, msgpack, crypto, requests, path validation, caching, …) with one API surface. |
-| **24+ serialization formats** | Text (JSON, YAML, TOML, XML, CSV, …), binary (MsgPack, BSON, CBOR, Pickle, …), database (Sqlite3, Dbm, Shelve), tabular (DataFrame, Excel, …). Enterprise/scientific (Avro, Protobuf, Parquet, …) integrate via xwformats. |
-| **Caching** | LRU, LFU, TTL (sync + async), read-through/write-through/write-behind, tiered, secure caches, Prometheus export. |
-| **Security** | Path validation, file security, audit, crypto, validators, policies. |
+| **24+ serialization formats** | Text (JSON, YAML, TOML, XML, CSV, INI, properties, .env), binary (MsgPack, BSON, CBOR, Pickle), database (Sqlite3, Dbm, Shelve), tabular (DataFrame, Excel, CSV dialects). Enterprise/scientific (~10 formats: Avro, Protobuf, Parquet, ORC, Arrow, etc.) integrate via xwformats. |
+| **20+ caching variants** | LRU, LFU, TTL (sync + async), read-through/write-through/write-behind, two-tier (memory+disk), secure/encrypted caches, observable caches, Prometheus export. |
+| **Security** | Path validation, file security, audit helpers, crypto utilities, validators, policies. |
 | **Validation** | Pydantic-style XModel, schema discovery. |
 | **Runtime** | Config (performance modes, logging), console (CLI, colors, progress, tables), monitoring (memory, performance, tracing), IPC (process fabric, queues, pipes, shared memory), HTTP client (HTTP/2, retries, streaming). |
 | **Patterns** | Circuit breakers, retry, object pool, context managers. Plus: operations (diff, merge, patch), structures (tree walker, circular ref detection), threading (locks, thread-safe factory), utils (datetime, paths, string, web), data structures (trie, union-find), grammar/syntax (50+ languages, Monaco), plugins, query registry. |
@@ -146,20 +146,19 @@ Content in this README is aligned with the project REFs and [docs/GUIDE_01_USAGE
 
 ---
 
-## 🔬 Innovation: Where does xwsystem fit?
+## 🔬 Where xwsystem fits
 
-**Tier 2 — Significant innovation (novel combination)**
+`xwsystem` provides the shared infrastructure layer for other eXonware packages (xwstorage, xwformats, xwjson, xwnode, xwdata, xwauth, xwquery, xwchat, xwui, *-server). They depend on its serializers, caches, security helpers, IPC layer, and runtime services instead of re-implementing them.
 
-**`xwsystem` — Infrastructure-as-Architecture Foundation**
+Approximate surface area (as of 2026-02-07, see REFs and benchmarks for exact lists):
 
-25+ cache implementations (LRU, LFU, TTL, Bloom, Read-Through, Write-Behind, Observable, Secure, Distributed...), 10+ JSON parser implementations with hybrid auto-selection, unified IPC (pipes/shared-memory/queues), monitoring with SLA validation — all as **first-class architectural concerns**, not afterthoughts.
+- **Formats:** 24+ core serialization formats in this package, plus ~10 enterprise/scientific formats via xwformats.
+- **Caching:** 20+ cache variants built from core implementations and wrappers (LRU/LFU/TTL, two-tier, observable, secure, async, read-through/write-through/write-behind).
+- **Grammar/syntax:** 50+ language grammars with Monaco integration (see `grammar/` and [REF_13_ARCH](docs/REF_13_ARCH.md)).
+- **IPC:** 4+ IPC primitives (process pool, message queue, shared memory, async fabric facade) wired into a single Async Process Fabric.
+- **Benchmarks:** 10+ benchmark campaigns (JSON, caching, serialization, atomic I/O, operations, data structures, object pool, validation, locks, async fabric) tracked in `benchmarks/` and [REF_54_BENCH](docs/REF_54_BENCH.md).
 
-- Python stdlib = `lru_cache` only. This has 25+ cache types
-- 10 JSON parsers (orjson, msgspec, simdjson, rapidjson, ujson...) with auto-benchmarking to pick the fastest for your data
-- Cross-platform IPC abstraction (Windows/Unix unified)
-- Performance modes: `lite`, `smart`, `full`, `clean`, `warn`
-
-**Verdict:** 🟡 No single Python library treats ALL system infrastructure as one cohesive package with this depth. Part of the eXonware story: xwsyntax → xwquery → xwstorage → xwbase, all on xwnode with **xwsystem** infrastructure — vertical integration across 20+ packages.
+Downstream libraries consume these services via stable APIs exported from `exonware.xwsystem`, so fixes and performance improvements in xwsystem flow through the rest of the ecosystem.
 
 ---
 

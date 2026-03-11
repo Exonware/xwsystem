@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.6
+Version: 0.1.0.10
 Generation Date: September 04, 2025
 Hazardous Materials (Hazmat) Layer - Low-level cryptographic primitives.
 ⚠️  WARNING: This module provides direct access to cryptographic primitives.

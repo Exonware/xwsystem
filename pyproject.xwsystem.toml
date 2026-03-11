@@ -60,18 +60,17 @@ authors = [
 text = "MIT"
 
 [project.optional-dependencies]
-# Approximate direct dependency sizes (excluding transitive deps).
-# These numbers are intentionally rounded and based on typical wheel sizes.
-# - [lazy]: ~10 MB base footprint (xwlazy engine + core helpers; heavy libs installed on-demand)
-# - [full]: ~97 MB total (core ~10 MB + enterprise formats ~87 MB, see requirements.txt summary)
-windows = [
-    "exonware-xwsystem[windows]",
-]
 lazy = [
     "exonware-xwsystem[lazy]",
 ]
+dev = [
+    "exonware-xwsystem[dev]",
+]
 full = [
     "exonware-xwsystem[full]",
+]
+windows = [
+    "exonware-xwsystem[windows]",
 ]
 
 [project.urls]

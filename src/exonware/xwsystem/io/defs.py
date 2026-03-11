@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.6
+Version: 0.1.0.10
 Generation Date: 30-Oct-2025
 IO module definitions - ALL enums and types in ONE place.
 Consolidated from all submodules for maintainability.

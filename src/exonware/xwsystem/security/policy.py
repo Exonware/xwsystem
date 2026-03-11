@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.6
+Version: 0.1.0.10
 Generation Date: 07-Jan-2025
 Security policy implementation for XWSystem.
 Implements ISecurityPolicy protocol for security policy management and enforcement.

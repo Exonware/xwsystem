@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.6
+Version: 0.1.0.10
 Generation Date: November 2, 2025
 Serialization Registry - Delegates to UniversalCodecRegistry.
 Provides serialization-specific convenience methods for format discovery.

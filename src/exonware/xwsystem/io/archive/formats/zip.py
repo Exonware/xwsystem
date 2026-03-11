@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.6
+Version: 0.1.0.10
 Generation Date: 30-Oct-2025
 ZIP archive format implementation.
 Priority 1 (Security): Safe ZIP operations

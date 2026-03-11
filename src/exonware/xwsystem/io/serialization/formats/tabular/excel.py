@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.6
+Version: 0.1.0.10
 Generation Date: January 2025
 Excel serialization - .xlsx, .xls format.
 Following I→A→XW pattern:

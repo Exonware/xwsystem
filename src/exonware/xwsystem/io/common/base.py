@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.1.0.6
+Version: 0.1.0.10
 Generation Date: 30-Oct-2025
 Base classes and utilities for common IO operations.
 Like codec/base.py, this contains:
