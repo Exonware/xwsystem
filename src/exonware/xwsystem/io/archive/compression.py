@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.5
+Version: 0.9.0.6
 Generation Date: 30-Oct-2025
 Compression operations for gzip, bz2, and lzma.
 Priority 1 (Security): Safe compression/decompression
