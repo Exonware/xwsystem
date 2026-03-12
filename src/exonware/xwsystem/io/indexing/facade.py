@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.1
+Version: 0.9.0.2
 Generation Date: January 2026
 XWIndex - Unified Indexing Facade
 Simplified API for indexing line-oriented files (JSONL/NDJSON):
