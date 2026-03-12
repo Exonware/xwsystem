@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.4
+Version: 0.9.0.5
 Generation Date: 01-Nov-2025
 Conditional eviction policies for caching.
 Extensibility Priority #5 - Customizable eviction behavior.

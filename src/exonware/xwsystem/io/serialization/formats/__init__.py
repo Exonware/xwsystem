@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.4
+Version: 0.9.0.5
 Generation Date: November 2, 2025
 Serialization formats - Format subpackages.
 Subpackages: .text, .binary, .database, .tabular (pandas). Tabular is not
