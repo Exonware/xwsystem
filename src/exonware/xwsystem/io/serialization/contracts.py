@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.3
+Version: 0.9.0.4
 Generation Date: November 2, 2025
 Serialization contracts - ISerialization interface extending ICodec.
 Following I→A→XW pattern:

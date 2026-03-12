@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.3
+Version: 0.9.0.4
 Generation Date: 30-Oct-2025
 TAR archive format implementation.
 Priority 1 (Security): Safe TAR operations

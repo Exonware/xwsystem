@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.3
+Version: 0.9.0.4
 Generation Date: November 2, 2025
 Serialization module - 29+ serialization formats with I→A→XW pattern.
 This module provides comprehensive serialization support following the

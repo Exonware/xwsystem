@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.3
+Version: 0.9.0.4
 Generation Date: January 2026
 XWSecurity & XWCrypto - Unified Security Facades
 Simplified API for security operations:
