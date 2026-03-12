@@ -6,7 +6,7 @@ Production-grade datetime utilities for XSystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.2
+Version: 0.9.0.3
 Generated: 2025-01-27
 """
 

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.2
+Version: 0.9.0.3
 Generation Date: 30-Oct-2025
 Archive codecs - In-memory archive processors.
 Following FormatAction naming: ZipArchiver, TarArchiver, 7zArchiver

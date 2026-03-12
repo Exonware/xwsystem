@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.2
+Version: 0.9.0.3
 Generation Date: 2025-01-27
 Console module for structured logging and user interaction.
 """
