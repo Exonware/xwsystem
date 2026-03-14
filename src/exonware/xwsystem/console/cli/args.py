@@ -6,14 +6,16 @@ Production-grade CLI argument parsing for XWSystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generated: 2025-01-27
 """
 
 from __future__ import annotations
 import argparse
 import sys
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 from dataclasses import dataclass
 import logging
 from .defs import ArgumentType
@@ -35,11 +37,11 @@ class CliArgument:
     required: bool = False
     default: Any = None
     help_text: str = ""
-    short_name: Optional[str] = None
-    choices: Optional[list[str]] = None
-    validator: Optional[Callable[[Any], bool]] = None
+    short_name: str | None = None
+    choices: list[str] | None = None
+    validator: Callable[[Any], bool] | None = None
     action: str = "store"  # store, store_true, store_false, append, count
-    nargs: Optional[int | str] = None  # Number of arguments
+    nargs: int | str | None = None  # Number of arguments
 
     def __post_init__(self):
         """Validate argument configuration."""

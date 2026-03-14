@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 1, 2025
 ZPAQ journaled compression format - RANK #8 EXTREME COMPRESSION.
 **Extreme compression ratio, slow, archival only**
@@ -16,7 +16,6 @@ Priority 5 (Extensibility): Lazy installation of zpaq
 """
 
 from pathlib import Path
-from typing import Optional, Tuple
 import subprocess
 import shutil
 from ...contracts import IArchiveFormat
@@ -62,7 +61,7 @@ class ZpaqArchiver(IArchiveFormat):
         """MIME types."""
         return ["application/x-zpaq"]
 
-    def _get_zpaq_backend(self) -> Tuple[str, Optional[Path]]:
+    def _get_zpaq_backend(self) -> tuple[str, Path | None]:
         """Return ('pyzpaq', None) when pyzpaq is available, else ('binary', Path)."""
         if _pyzpaq is not None:
             return ("pyzpaq", None)
@@ -105,7 +104,7 @@ class ZpaqArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create zpaq archive: {e}")
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """Extract ZPAQ archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
         backend, zpaq_path = self._get_zpaq_backend()
@@ -151,7 +150,7 @@ class ZpaqArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to list zpaq contents: {e}")
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """Add file to ZPAQ archive (incremental)."""
         backend, zpaq_path = self._get_zpaq_backend()
         if backend == "pyzpaq":

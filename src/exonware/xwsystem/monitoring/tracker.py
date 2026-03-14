@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 26, 2025
 Operation tracker for monitoring operations with context management.
 """
@@ -12,7 +12,9 @@ Operation tracker for monitoring operations with context management.
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 from .metrics import OperationMetrics, MetricSnapshot
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.monitoring.tracker")
@@ -46,7 +48,7 @@ class OperationTracker:
         operation_name: str,
         duration: float,
         success: bool = True,
-        error: Optional[Exception] = None
+        error: Exception | None = None
     ):
         """
         Track a completed operation.
@@ -96,7 +98,7 @@ class OperationTracker:
             duration = time.time() - start_time
             self.track_operation(operation_name, duration, success, error)
 
-    def get_operation_stats(self, operation_name: str) -> Optional[OperationMetrics]:
+    def get_operation_stats(self, operation_name: str) -> OperationMetrics | None:
         """Get statistics for a specific operation."""
         with self._lock:
             return self._metrics.get(operation_name)
@@ -181,7 +183,7 @@ class OperationTracker:
             if callback in self._callbacks:
                 self._callbacks.remove(callback)
 
-    def clear_stats(self, operation_name: Optional[str] = None):
+    def clear_stats(self, operation_name: str | None = None):
         """
         Clear statistics for an operation or all operations.
         Args:

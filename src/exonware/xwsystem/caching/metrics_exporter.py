@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Metrics exporters for cache monitoring.
 Performance Priority #4 - Observability and monitoring integration.
 """
 
-from typing import Any, Optional
+from typing import Any
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.caching.metrics_exporter")
 

@@ -60,7 +60,7 @@ def example_atomic_file_writer():
             json.dump(test_data, f, indent=2)
         # Verify it was written
         if test_file.exists():
-            with open(test_file, 'r') as f:
+            with open(test_file) as f:
                 loaded_data = json.load(f)
             print(f"✅ File written atomically: {loaded_data['message']}")
         else:

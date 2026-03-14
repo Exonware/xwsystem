@@ -11,7 +11,9 @@ Version: 0.1.0.1
 import time
 import sys
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 from dataclasses import dataclass
 import statistics
 from exonware.xwsystem.caching import (

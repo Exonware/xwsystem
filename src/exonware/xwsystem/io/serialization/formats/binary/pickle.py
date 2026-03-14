@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 Pickle serialization - Python object serialization.
 Following I→A pattern:
@@ -13,7 +13,7 @@ Following I→A pattern:
 """
 
 import pickle
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -93,7 +93,7 @@ class PickleSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using pickle module)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to Pickle bytes.
         Uses pickle.dumps().
@@ -121,7 +121,7 @@ class PickleSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode Pickle bytes to data.
         Uses pickle.loads().

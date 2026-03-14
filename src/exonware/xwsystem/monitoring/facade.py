@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2026
 XWMonitor - Unified Monitoring Facade
 Simplified API for monitoring operations:
@@ -13,7 +13,9 @@ Simplified API for monitoring operations:
 - System monitoring
 """
 
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 from contextlib import contextmanager
 from functools import wraps
 from .performance_monitor import (

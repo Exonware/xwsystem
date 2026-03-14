@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Paging strategy registry - LIKE CodecRegistry!
 Enables pluggable, extensible paging algorithms.
@@ -15,7 +15,6 @@ Priority 4 (Performance): Fast strategy lookup
 Priority 5 (Extensibility): Easy to add new strategies
 """
 
-from typing import Optional
 from ...contracts import IPagingStrategy
 from ...defs import PagingMode
 __all__ = [
@@ -57,7 +56,7 @@ class PagingStrategyRegistry:
         self._strategies[strategy_id] = strategy_class
         self._instances[strategy_id] = instance
 
-    def get(self, strategy_id: str) -> Optional[IPagingStrategy]:
+    def get(self, strategy_id: str) -> IPagingStrategy | None:
         """
         Get strategy by ID.
         Args:
@@ -93,7 +92,7 @@ class PagingStrategyRegistry:
         """List all registered strategy IDs."""
         return list(self._strategies.keys())
 # Global registry instance
-_global_paging_registry: Optional[PagingStrategyRegistry] = None
+_global_paging_registry: PagingStrategyRegistry | None = None
 
 
 def get_global_paging_registry() -> PagingStrategyRegistry:
@@ -125,7 +124,7 @@ def register_paging_strategy(strategy_class):
     return strategy_class
 
 
-def get_paging_strategy(strategy_id: str) -> Optional[IPagingStrategy]:
+def get_paging_strategy(strategy_id: str) -> IPagingStrategy | None:
     """
     Get paging strategy by ID.
     Args:

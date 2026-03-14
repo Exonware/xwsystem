@@ -5,13 +5,12 @@ Global query provider registry (foundation layer).
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 28-Dec-2025
 """
 
 from __future__ import annotations
 from threading import RLock
-from typing import Optional
 from .contracts import IQueryProvider
 from .errors import QueryProviderNotRegisteredError
 
@@ -27,7 +26,7 @@ class QueryProviderRegistry:
     def __init__(self) -> None:
         self._lock = RLock()
         self._providers: dict[str, IQueryProvider] = {}
-        self._default_provider_id: Optional[str] = None
+        self._default_provider_id: str | None = None
 
     def register(self, provider: IQueryProvider, *, overwrite: bool = False, make_default: bool = True) -> None:
         provider_id = provider.provider_id.strip().lower()
@@ -50,12 +49,12 @@ class QueryProviderRegistry:
                 self._default_provider_id = next(iter(self._providers.keys()), None)
             return True
 
-    def get(self, provider_id: str) -> Optional[IQueryProvider]:
+    def get(self, provider_id: str) -> IQueryProvider | None:
         pid = provider_id.strip().lower()
         with self._lock:
             return self._providers.get(pid)
 
-    def get_default(self) -> Optional[IQueryProvider]:
+    def get_default(self) -> IQueryProvider | None:
         with self._lock:
             if not self._default_provider_id:
                 return None
@@ -78,7 +77,7 @@ class QueryProviderRegistry:
         with self._lock:
             self._providers.clear()
             self._default_provider_id = None
-_global_registry: Optional[QueryProviderRegistry] = None
+_global_registry: QueryProviderRegistry | None = None
 _global_lock = RLock()
 
 
@@ -110,7 +109,7 @@ def register_query_provider(provider: IQueryProvider, *, overwrite: bool = False
     get_query_provider_registry().register(provider, overwrite=overwrite, make_default=make_default)
 
 
-def get_query_provider(provider_id: str | None = None) -> Optional[IQueryProvider]:
+def get_query_provider(provider_id: str | None = None) -> IQueryProvider | None:
     """
     Get a provider by id, or the default provider if provider_id is None.
     """

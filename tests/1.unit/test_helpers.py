@@ -10,7 +10,9 @@ Generation Date: October 12, 2025
 """
 
 import time
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 from pathlib import Path
 
 

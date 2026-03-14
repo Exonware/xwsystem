@@ -7,7 +7,9 @@ components to reduce memory allocation overhead and improve performance.
 """
 
 import threading
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from ..config.logging_setup import get_logger
@@ -103,7 +105,7 @@ class ObjectPool:
             self._stats["discarded"] += 1
             self._logger.debug(f"Discarded {obj_type.__name__} (pool full)")
 
-    def clear(self, obj_type: Optional[type] = None) -> None:
+    def clear(self, obj_type: type | None = None) -> None:
         """
         Clear objects from the pool.
         Args:
@@ -115,7 +117,7 @@ class ObjectPool:
         else:
             self._clear_pool(obj_type)
 
-    def _clear_pool(self, obj_type: Optional[type] = None) -> None:
+    def _clear_pool(self, obj_type: type | None = None) -> None:
         """Internal method to clear pool."""
         if obj_type is None:
             # Clear all pools

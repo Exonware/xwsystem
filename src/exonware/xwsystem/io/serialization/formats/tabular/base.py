@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2025
 Tabular serialization base class - ATabularSerialization.
 Extends ASerialization to provide DataFrame conversion capabilities.
@@ -11,7 +11,7 @@ All tabular formats (Excel, CSV, Google Sheets, DataFrame) extend this.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Any
+from typing import Any
 import pandas as pd
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -41,7 +41,7 @@ class ATabularSerialization(ASerialization, ABC):
     def to_df(
         self, 
         data: bytes | str | dict, 
-        sheet_name: Optional[str | list[str]] = None,
+        sheet_name: str | list[str] | None = None,
         **options
     ) -> pd.DataFrame | dict[str, pd.DataFrame]:
         """

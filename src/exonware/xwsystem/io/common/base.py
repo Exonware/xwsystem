@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Base classes and utilities for common IO operations.
 Like codec/base.py, this contains:
@@ -20,7 +20,8 @@ Priority 5 (Extensibility): Ready for new utilities
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Optional, Callable
+
+from collections.abc import Callable
 from pathlib import Path
 from ..contracts import IAtomicWriter, IPathValidator, IFileWatcher, IFileLock
 from ..defs import AtomicMode, WatcherEvent, LockMode, PathSecurityLevel
@@ -42,8 +43,8 @@ class AAtomicWriter(IAtomicWriter, ABC):
         """Initialize atomic writer."""
         self.path = Path(path)
         self.mode = mode
-        self._temp_path: Optional[Path] = None
-        self._backup_path: Optional[Path] = None
+        self._temp_path: Path | None = None
+        self._backup_path: Path | None = None
     @abstractmethod
 
     def write(self, data: bytes) -> int:
@@ -133,7 +134,7 @@ class AFileLock(IFileLock, ABC):
         self._locked = False
     @abstractmethod
 
-    def acquire(self, timeout: Optional[float] = None) -> bool:
+    def acquire(self, timeout: float | None = None) -> bool:
         """Acquire lock."""
         pass
     @abstractmethod

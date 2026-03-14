@@ -4,14 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Intelligent format detection for automatic serialization format selection.
 """
 
 import re
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from ...config.logging_setup import get_logger
 logger = get_logger("xwsystem.serialization.format_detector")
 
@@ -185,9 +185,9 @@ class FormatDetector:
 
     def detect_format(
         self, 
-        file_path: Optional[str | Path] = None,
-        content: Optional[str | bytes] = None,
-        data: Optional[bytes] = None
+        file_path: str | Path | None = None,
+        content: str | bytes | None = None,
+        data: bytes | None = None
     ) -> dict[str, float]:
         """
         Comprehensive format detection using all available methods.
@@ -222,10 +222,10 @@ class FormatDetector:
 
     def get_best_format(
         self, 
-        file_path: Optional[str | Path] = None,
-        content: Optional[str | bytes] = None,
-        data: Optional[bytes] = None
-    ) -> Optional[str]:
+        file_path: str | Path | None = None,
+        content: str | bytes | None = None,
+        data: bytes | None = None
+    ) -> str | None:
         """
         Get the most likely format with highest confidence.
         Args:
@@ -247,9 +247,9 @@ class FormatDetector:
 
     def get_format_suggestions(
         self, 
-        file_path: Optional[str | Path] = None,
-        content: Optional[str | bytes] = None,
-        data: Optional[bytes] = None,
+        file_path: str | Path | None = None,
+        content: str | bytes | None = None,
+        data: bytes | None = None,
         max_suggestions: int = 3
     ) -> list[tuple[str, float]]:
         """
@@ -296,10 +296,10 @@ _global_detector = FormatDetector()
 
 
 def detect_format(
-    file_path: Optional[str | Path] = None,
-    content: Optional[str | bytes] = None,
-    data: Optional[bytes] = None
-) -> Optional[str]:
+    file_path: str | Path | None = None,
+    content: str | bytes | None = None,
+    data: bytes | None = None
+) -> str | None:
     """
     Convenience function for format detection using global detector.
     Args:
@@ -313,9 +313,9 @@ def detect_format(
 
 
 def get_format_suggestions(
-    file_path: Optional[str | Path] = None,
-    content: Optional[str | bytes] = None,
-    data: Optional[bytes] = None,
+    file_path: str | Path | None = None,
+    content: str | bytes | None = None,
+    data: bytes | None = None,
     max_suggestions: int = 3
 ) -> list[tuple[str, float]]:
     """

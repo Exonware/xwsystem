@@ -1,13 +1,12 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/registry.py
 """Parser registry for JSON parser selection and auto-detection."""
 
-from typing import Optional, Type
 from .base import AJsonParser
 from .standard import StandardJsonParser
 from .hybrid_parser import HybridParser
 from .hyperjson_parser import HyperjsonParser
 # Registry of available parsers (order of preference when auto-detecting)
-_PARSERS: dict[str, Type[AJsonParser]] = {
+_PARSERS: dict[str, type[AJsonParser]] = {
     "hyperjson": HyperjsonParser,  # Preferred when installed (fastest in benchmarks)
     "hybrid": HybridParser,  # msgspec read + orjson write
     "standard": StandardJsonParser,  # Fallback only
@@ -42,7 +41,7 @@ def get_best_available_parser() -> AJsonParser:
     return StandardJsonParser()
 
 
-def get_parser(name: Optional[str] = None) -> AJsonParser:
+def get_parser(name: str | None = None) -> AJsonParser:
     """
     Get parser by name or auto-detect best available.
     Args:
@@ -70,7 +69,7 @@ def get_parser(name: Optional[str] = None) -> AJsonParser:
     return parser
 
 
-def register_parser(name: str, parser_class: Type[AJsonParser]):
+def register_parser(name: str, parser_class: type[AJsonParser]):
     """
     Register a new parser implementation.
     Args:

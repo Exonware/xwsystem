@@ -10,7 +10,6 @@ import stat
 import sys
 import tempfile
 from pathlib import Path
-from typing import Optional
 logger = logging.getLogger(__name__)
 
 
@@ -56,9 +55,9 @@ class PathValidator:
 
     def __init__(
         self,
-        base_path: Optional[str | Path] = None,
+        base_path: str | Path | None = None,
         allow_absolute: bool = False,
-        max_path_length: Optional[int] = None,
+        max_path_length: int | None = None,
         check_existence: bool = True,
         enable_cache: bool = True,
         max_cache_size: int = 10000,
@@ -321,8 +320,8 @@ class PathValidator:
 
     def create_temp_path(
         self,
-        prefix: Optional[str] = None,
-        suffix: Optional[str] = None,
+        prefix: str | None = None,
+        suffix: str | None = None,
         as_file: bool = True,
     ) -> Path:
         """

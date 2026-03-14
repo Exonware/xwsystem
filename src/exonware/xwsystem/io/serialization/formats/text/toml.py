@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 TOML serialization - Configuration file format.
 Following I→A pattern:
@@ -13,18 +13,14 @@ Following I→A pattern:
 """
 
 import sys
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
 from ....defs import CodecCapability
 from ....errors import SerializationError
 # Python 3.11+ has tomllib built-in, earlier versions need tomli
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    # Lazy import for tomli - the lazy hook will automatically handle ImportError
-    import tomli as tomllib
+import tomllib
 # Lazy import for tomli_w - the lazy hook will automatically handle ImportError
 import tomli_w
 
@@ -146,7 +142,7 @@ class TomlSerializer(ASerialization):
             # Primitive values - return as-is (None will be filtered out by caller)
             return data
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to TOML string.
         Uses tomli_w.dumps().
@@ -191,7 +187,7 @@ class TomlSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode TOML string to data.
         Uses tomllib.loads() (Python 3.11+) or tomli.loads().

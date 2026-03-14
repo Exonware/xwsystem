@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 Shelve serialization - Persistent dictionary storage.
 Following I→A pattern:
@@ -13,7 +13,7 @@ Following I→A pattern:
 """
 
 import shelve
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -60,11 +60,11 @@ class ShelveSerializer(ASerialization):
     def aliases(self) -> list[str]:
         return ["shelve", "Shelve"]
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """Shelve encode requires file path - use save_file() instead."""
         raise NotImplementedError("Shelve requires file-based operations - use save_file()")
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """Shelve decode requires file path - use load_file() instead."""
         raise NotImplementedError("Shelve requires file-based operations - use load_file()")
     # ---------------------------------------------------------------------

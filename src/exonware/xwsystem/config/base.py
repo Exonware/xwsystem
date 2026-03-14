@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Config module base classes - abstract classes for configuration functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 from .contracts import ConfigType, LogLevel, PerformanceMode
 
 
@@ -203,7 +203,7 @@ class AConfigManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_config(self, name: str) -> Optional[AConfigBase]:
+    def get_config(self, name: str) -> AConfigBase | None:
         """Get configuration instance by name."""
         pass
     @abstractmethod

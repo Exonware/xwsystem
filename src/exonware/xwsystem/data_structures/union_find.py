@@ -6,11 +6,11 @@ Generic Union-Find implementation that can be used by any library.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 26-Jan-2025
 """
 
-from typing import Any, Dict
+from typing import Any
 
 
 class UnionFind:
@@ -26,8 +26,8 @@ class UnionFind:
 
     def __init__(self):
         """Initialize Union-Find structure."""
-        self._parent: Dict[Any, Any] = {}
-        self._rank: Dict[Any, int] = {}
+        self._parent: dict[Any, Any] = {}
+        self._rank: dict[Any, int] = {}
         self._sets_count = 0
 
     def make_set(self, x: Any) -> None:

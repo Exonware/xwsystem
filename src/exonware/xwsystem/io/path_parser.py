@@ -6,12 +6,11 @@ Provides thread-safe path parsing with caching that can be used by any library.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 26-Jan-2025
 """
 
 import threading
-from typing import List
 from exonware.xwsystem.caching import create_cache
 from exonware.xwsystem import get_logger
 logger = get_logger(__name__)
@@ -45,7 +44,7 @@ class PathParser:
         # Lock for potential future stats tracking if needed
         self._lock = threading.RLock()
 
-    def parse(self, path: str) -> List[str]:
+    def parse(self, path: str) -> list[str]:
         """
         Parse a path string into parts (O(1) cache lookup with xwsystem cache).
         Args:
@@ -63,7 +62,7 @@ class PathParser:
         self._cache.put(path, parts)
         return parts
 
-    def _parse_path(self, path: str) -> List[str]:
+    def _parse_path(self, path: str) -> list[str]:
         """
         Internal path parsing logic.
         Args:

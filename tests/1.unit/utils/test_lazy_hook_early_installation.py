@@ -26,7 +26,7 @@ import os
 import sys
 from contextlib import contextmanager
 from unittest.mock import patch
-from typing import Iterator
+from collections.abc import Iterator
 import pytest
 # Skip all tests in this file - xwlazy has been removed
 pytestmark = pytest.mark.skip(reason="xwlazy has been removed from the codebase")

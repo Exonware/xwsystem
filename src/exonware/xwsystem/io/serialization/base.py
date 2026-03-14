@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 Serialization base classes - ASerialization abstract base.
 Following I→A→XW pattern:
@@ -15,7 +15,9 @@ Following I→A→XW pattern:
 from __future__ import annotations
 import asyncio
 from abc import ABC, abstractmethod, ABCMeta
-from typing import Any, Optional, BinaryIO, TextIO, AsyncIterator, Iterator, TYPE_CHECKING
+from typing import Any, BinaryIO, TextIO, TYPE_CHECKING
+
+from collections.abc import AsyncIterator, Iterator
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -39,7 +41,7 @@ from ...caching import create_cache
 _file_serializer_cache = create_cache(capacity=100, namespace='xwsystem.serialization', name="FileSerializerCache")
 
 
-def get_cached_serializer_for_path(file_path: str | Path) -> Optional[ISerialization]:
+def get_cached_serializer_for_path(file_path: str | Path) -> ISerialization | None:
     """
     Get cached serializer instance for file path, if available.
     This function allows retrieving a previously cached serializer instance
@@ -76,7 +78,7 @@ class ASerialization(ACodec[Any, bytes | str], ISerialization):
     - XWSystem integration
     """
 
-    def __init__(self, max_depth: Optional[int] = None, max_size_mb: Optional[float] = None):
+    def __init__(self, max_depth: int | None = None, max_size_mb: float | None = None):
         """
         Initialize serialization base.
         Args:
@@ -91,7 +93,7 @@ class ASerialization(ACodec[Any, bytes | str], ISerialization):
     # ========================================================================
     @abstractmethod
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to representation - must implement in subclass.
         Note: Safety validation is automatically performed in save_file() via inherited
@@ -100,7 +102,7 @@ class ASerialization(ACodec[Any, bytes | str], ISerialization):
         pass
     @abstractmethod
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode representation to data - must implement in subclass.
         Note: For decode operations, size validation happens on the input string/bytes,
@@ -415,7 +417,7 @@ class ASerialization(ACodec[Any, bytes | str], ISerialization):
         self,
         file_path: str | Path,
         match: callable,
-        projection: Optional[list[Any]] = None,
+        projection: list[Any] | None = None,
         **options: Any,
     ) -> Any:
         """
@@ -522,7 +524,7 @@ class ASerialization(ACodec[Any, bytes | str], ISerialization):
         raise KeyError(f"Record with {id_field}={id_value!r} not found")
     # Small helper for projection handling
 
-    def _apply_projection(self, record: Any, projection: Optional[list[Any]]) -> Any:
+    def _apply_projection(self, record: Any, projection: list[Any] | None) -> Any:
         if not projection:
             return record
         current = record
@@ -902,8 +904,7 @@ class ASerialization(ACodec[Any, bytes | str], ISerialization):
             data = self.load_file(file_path, **options)
             # If data is iterable (list, tuple), yield items
             if isinstance(data, (list, tuple)):
-                for item in data:
-                    yield item
+                yield from data
             else:
                 # Single item, yield it
                 yield data

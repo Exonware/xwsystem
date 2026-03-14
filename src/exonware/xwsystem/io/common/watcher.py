@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 File watching implementation for change monitoring.
 Priority 1 (Security): Safe file monitoring without exposing system internals
@@ -17,7 +17,9 @@ Priority 5 (Extensibility): Easy to add new event types
 import time
 import threading
 from pathlib import Path
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 from ..contracts import IFileWatcher
 
 
@@ -52,7 +54,7 @@ class FileWatcher(IFileWatcher):
         self._watched: dict[Path, Callable] = {}
         self._file_states: dict[Path, dict[str, Any]] = {}
         self._running = False
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
 
     def watch(self, path: Path, on_change: Callable[[Path, str], None]) -> None:
         """

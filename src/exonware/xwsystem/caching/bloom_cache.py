@@ -4,14 +4,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Bloom filter-enhanced cache for faster negative lookups.
 Performance Priority #4 - Probabilistic data structure for efficiency.
 """
 
 import hashlib
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.caching.bloom_cache")
@@ -90,8 +92,8 @@ class BloomFilterCache(LRUCache):
         self,
         capacity: int = 128,
         bloom_size: int = None,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None
+        ttl: float | None = None,
+        name: str | None = None
     ):
         """
         Initialize Bloom filter cache.

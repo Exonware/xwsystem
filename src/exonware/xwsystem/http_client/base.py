@@ -4,20 +4,22 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 HTTP module base classes - abstract classes for HTTP client functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, AsyncGenerator
+from typing import Any
+
+from collections.abc import AsyncGenerator
 from .contracts import HttpMethod, HttpStatus, ContentType, AuthType
 
 
 class AHttpClientBase(ABC):
     """Abstract base class for HTTP client operations."""
 
-    def __init__(self, base_url: Optional[str] = None, timeout: int = 30):
+    def __init__(self, base_url: str | None = None, timeout: int = 30):
         """
         Initialize HTTP client.
         Args:
@@ -26,7 +28,7 @@ class AHttpClientBase(ABC):
         """
         self.base_url = base_url
         self.timeout = timeout
-        self._session: Optional[Any] = None
+        self._session: Any | None = None
         self._headers: dict[str, str] = {}
         self._cookies: dict[str, str] = {}
     @abstractmethod
@@ -36,12 +38,12 @@ class AHttpClientBase(ABC):
         pass
     @abstractmethod
 
-    def post(self, url: str, data: Optional[Any] = None, **kwargs) -> Any:
+    def post(self, url: str, data: Any | None = None, **kwargs) -> Any:
         """Make POST request."""
         pass
     @abstractmethod
 
-    def put(self, url: str, data: Optional[Any] = None, **kwargs) -> Any:
+    def put(self, url: str, data: Any | None = None, **kwargs) -> Any:
         """Make PUT request."""
         pass
     @abstractmethod
@@ -51,7 +53,7 @@ class AHttpClientBase(ABC):
         pass
     @abstractmethod
 
-    def patch(self, url: str, data: Optional[Any] = None, **kwargs) -> Any:
+    def patch(self, url: str, data: Any | None = None, **kwargs) -> Any:
         """Make PATCH request."""
         pass
     @abstractmethod
@@ -85,12 +87,12 @@ class AAsyncHttpClientBase(ABC):
         pass
     @abstractmethod
 
-    async def apost(self, url: str, data: Optional[Any] = None, **kwargs) -> Any:
+    async def apost(self, url: str, data: Any | None = None, **kwargs) -> Any:
         """Make async POST request."""
         pass
     @abstractmethod
 
-    async def aput(self, url: str, data: Optional[Any] = None, **kwargs) -> Any:
+    async def aput(self, url: str, data: Any | None = None, **kwargs) -> Any:
         """Make async PUT request."""
         pass
     @abstractmethod
@@ -100,7 +102,7 @@ class AAsyncHttpClientBase(ABC):
         pass
     @abstractmethod
 
-    async def apatch(self, url: str, data: Optional[Any] = None, **kwargs) -> Any:
+    async def apatch(self, url: str, data: Any | None = None, **kwargs) -> Any:
         """Make async PATCH request."""
         pass
     @abstractmethod
@@ -166,7 +168,7 @@ class AHttpResponseBase(ABC):
         pass
     @abstractmethod
 
-    def get_header(self, name: str) -> Optional[str]:
+    def get_header(self, name: str) -> str | None:
         """Get response header."""
         pass
     @abstractmethod

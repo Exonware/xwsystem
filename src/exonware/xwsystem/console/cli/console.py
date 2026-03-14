@@ -3,13 +3,12 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Console utilities for CLI operations.
 """
 
 import os
-from typing import Optional
 from .contracts import IConsole, ColorType
 from .errors import ConsoleError
 # Import ConsoleWriter from console level (priority)
@@ -23,7 +22,7 @@ class CliConsole(ConsoleWriter, IConsole):
     like color support and IConsole interface compliance.
     """
 
-    def print(self, text: str, color: Optional[ColorType] = None, **kwargs) -> None:
+    def print(self, text: str, color: ColorType | None = None, **kwargs) -> None:
         """
         Print text to console with optional color.
         Args:

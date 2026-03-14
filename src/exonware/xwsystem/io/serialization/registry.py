@@ -3,13 +3,12 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 Serialization Registry - Delegates to UniversalCodecRegistry.
 Provides serialization-specific convenience methods for format discovery.
 """
 
-from typing import Optional
 from pathlib import Path
 from ..codec.registry import UniversalCodecRegistry, get_registry
 from .contracts import ISerialization
@@ -37,7 +36,7 @@ class SerializationRegistry:
         >>> formats = registry.list_formats()
     """
 
-    def __init__(self, codec_registry: Optional[UniversalCodecRegistry] = None):
+    def __init__(self, codec_registry: UniversalCodecRegistry | None = None):
         """
         Initialize serialization registry.
         Args:
@@ -46,7 +45,7 @@ class SerializationRegistry:
         """
         self._codec_registry = codec_registry or get_registry()
 
-    def get_by_format(self, format_id: str) -> Optional[ISerialization]:
+    def get_by_format(self, format_id: str) -> ISerialization | None:
         """
         Get serializer by format ID.
         Args:
@@ -59,7 +58,7 @@ class SerializationRegistry:
         """
         return self._codec_registry.get_by_id(format_id)
 
-    def detect_from_file(self, file_path: str | Path) -> Optional[ISerialization]:
+    def detect_from_file(self, file_path: str | Path) -> ISerialization | None:
         """
         Auto-detect serializer from file path.
         Uses file extension to determine the appropriate serializer.
@@ -73,7 +72,7 @@ class SerializationRegistry:
         """
         return self._codec_registry.detect(file_path)
 
-    def get_by_extension(self, extension: str) -> Optional[ISerialization]:
+    def get_by_extension(self, extension: str) -> ISerialization | None:
         """
         Get serializer by file extension.
         Args:
@@ -86,7 +85,7 @@ class SerializationRegistry:
         """
         return self._codec_registry.get_by_extension(extension)
 
-    def get_by_mime_type(self, mime_type: str) -> Optional[ISerialization]:
+    def get_by_mime_type(self, mime_type: str) -> ISerialization | None:
         """
         Get serializer by MIME type.
         Args:
@@ -141,7 +140,7 @@ class SerializationRegistry:
         """
         self._codec_registry.register(serializer_class)
 # Global serialization registry instance
-_global_serialization_registry: Optional[SerializationRegistry] = None
+_global_serialization_registry: SerializationRegistry | None = None
 
 
 def get_serialization_registry() -> SerializationRegistry:

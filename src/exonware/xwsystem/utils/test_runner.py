@@ -8,7 +8,7 @@ Implements the hierarchical runner utilities described in:
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 28-Dec-2025
 """
 
@@ -18,7 +18,7 @@ import subprocess
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from exonware.xwsystem.console.cli import ensure_utf8_console
 
 
@@ -46,13 +46,13 @@ class DualOutput:
         self.output_file = output_file
         self._markdown_lines: list[str] = []
 
-    def print(self, text: str, markdown_format: Optional[str] = None, *, emoji: Optional[str] = None) -> None:
+    def print(self, text: str, markdown_format: str | None = None, *, emoji: str | None = None) -> None:
         prefix = f"{emoji} " if emoji else ""
         line = f"{prefix}{text}"
         print(line)
         self._markdown_lines.append(markdown_format if markdown_format is not None else line)
 
-    def save(self, header_info: Optional[dict[str, Any]] = None) -> None:
+    def save(self, header_info: dict[str, Any] | None = None) -> None:
         header_info = header_info or {}
         now = datetime.now()
         header = (
@@ -66,7 +66,7 @@ class DualOutput:
         self.output_file.write_text(header + "\n".join(self._markdown_lines) + "\n", encoding="utf-8")
 
 
-def print_header(title: str, output: Optional[DualOutput] = None) -> None:
+def print_header(title: str, output: DualOutput | None = None) -> None:
     sep = "=" * 80
     if output is None:
         print(sep)
@@ -78,14 +78,14 @@ def print_header(title: str, output: Optional[DualOutput] = None) -> None:
     output.print(sep)
 
 
-def print_section(title: str, output: Optional[DualOutput] = None) -> None:
+def print_section(title: str, output: DualOutput | None = None) -> None:
     if output is None:
         print(f"\n{'=' * 80}\n{title}\n{'=' * 80}\n")
         return
     output.print(f"\n{title}", f"\n## {title}\n")
 
 
-def print_status(success: bool, message: str, output: Optional[DualOutput] = None) -> None:
+def print_status(success: bool, message: str, output: DualOutput | None = None) -> None:
     emoji = "✅" if success else "❌"
     if output is None:
         print(f"{emoji} {message}")
@@ -100,9 +100,9 @@ class PytestRunResult:
 def run_pytest(
     *,
     test_dir: Path,
-    markers: Optional[list[str]] = None,
-    extra_args: Optional[list[str]] = None,
-    cwd: Optional[Path] = None,
+    markers: list[str] | None = None,
+    extra_args: list[str] | None = None,
+    cwd: Path | None = None,
 ) -> PytestRunResult:
     """
     Run pytest as a subprocess with standard eXonware flags.
@@ -139,8 +139,8 @@ class TestRunner:
         layer_name: str,
         description: str,
         test_dir: Path,
-        markers: Optional[list[str]] = None,
-        output_file: Optional[Path] = None,
+        markers: list[str] | None = None,
+        output_file: Path | None = None,
     ):
         self.library_name = library_name
         self.layer_name = layer_name

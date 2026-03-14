@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 IO module base classes - abstract classes for input/output functionality.
 """
@@ -12,7 +12,7 @@ from __future__ import annotations
 import os
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Optional, BinaryIO, TextIO
+from typing import Any, BinaryIO, TextIO
 from pathlib import Path
 from .contracts import FileMode, FileType, PathType, OperationResult, LockType, IFile, IFolder, IPath, IStream, IAsyncIO, IAtomicOperations, IBackupOperations, ITemporaryOperations, IUnifiedIO, IFileManager
 # ============================================================================
@@ -26,7 +26,7 @@ class AFile(IFile, ABC):
     def __init__(self, file_path: str | Path):
         """Initialize file base."""
         self.file_path = Path(file_path)
-        self._handle: Optional[TextIO | BinaryIO] = None
+        self._handle: TextIO | BinaryIO | None = None
     # ============================================================================
     # INSTANCE METHODS
     # ============================================================================
@@ -37,7 +37,7 @@ class AFile(IFile, ABC):
         pass
     @abstractmethod
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """Read from file."""
         pass
     @abstractmethod
@@ -166,7 +166,7 @@ class AFile(IFile, ABC):
 
     def read_text(path: str | Path, encoding: str = 'utf-8') -> str:
         """Read file as text."""
-        with open(path, 'r', encoding=encoding) as f:
+        with open(path, encoding=encoding) as f:
             return f.read()
     @staticmethod
 
@@ -198,7 +198,7 @@ class AFile(IFile, ABC):
             return False
     @staticmethod
 
-    def safe_read_text(path: str | Path, encoding: str = 'utf-8') -> Optional[str]:
+    def safe_read_text(path: str | Path, encoding: str = 'utf-8') -> str | None:
         """Safely read text file, returning None on error."""
         try:
             return AFile.read_text(path, encoding)
@@ -206,7 +206,7 @@ class AFile(IFile, ABC):
             return None
     @staticmethod
 
-    def safe_read_bytes(path: str | Path) -> Optional[bytes]:
+    def safe_read_bytes(path: str | Path) -> bytes | None:
         """Safely read binary file, returning None on error."""
         try:
             return AFile.read_bytes(path)
@@ -283,7 +283,7 @@ class AFile(IFile, ABC):
             return OperationResult.FAILED
     @staticmethod
 
-    def create_backup(source: str | Path, backup_dir: str | Path) -> Optional[Path]:
+    def create_backup(source: str | Path, backup_dir: str | Path) -> Path | None:
         """Create backup of file (static version)."""
         import shutil
         source_path = Path(source)
@@ -310,7 +310,7 @@ class AFile(IFile, ABC):
             return OperationResult.FAILED
     @staticmethod
 
-    def create_temp_file(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file (static version)."""
         import tempfile
         fd, temp_path = tempfile.mkstemp(suffix=suffix, prefix=prefix)
@@ -318,7 +318,7 @@ class AFile(IFile, ABC):
         return Path(temp_path)
     @staticmethod
 
-    def create_temp_directory(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory (static version)."""
         import tempfile
         temp_path = tempfile.mkdtemp(suffix=suffix, prefix=prefix)
@@ -348,7 +348,7 @@ class AFolder(IFolder, ABC):
         """Delete directory."""
         pass
 
-    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files(self, pattern: str | None = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         return AFolder.list_files_static(self.dir_path, pattern, recursive)
 
@@ -407,7 +407,7 @@ class AFolder(IFolder, ABC):
             return False
     @staticmethod
 
-    def list_files_static(path: str | Path, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files_static(path: str | Path, pattern: str | None = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         if not AFolder.exists(path):
             return []
@@ -452,7 +452,7 @@ class AFolder(IFolder, ABC):
             if file_path.is_file():
                 try:
                     total_size += file_path.stat().st_size
-                except (OSError, IOError):
+                except OSError:
                     pass
         return total_size
     @staticmethod
@@ -463,7 +463,7 @@ class AFolder(IFolder, ABC):
             return True
         try:
             return not any(Path(path).iterdir())
-        except (OSError, IOError):
+        except OSError:
             return True
     @staticmethod
 
@@ -534,7 +534,7 @@ class APath(IPath, ABC):
         return Path(path).absolute()
     @staticmethod
 
-    def relative(path: str | Path, start: Optional[str | Path] = None) -> Path:
+    def relative(path: str | Path, start: str | Path | None = None) -> Path:
         """Get relative path."""
         if start is None:
             start = Path.cwd()
@@ -612,13 +612,13 @@ class AStream(IStream, ABC):
         """Initialize stream base."""
         self._closed = False
         self._position = 0
-        self._stream: Optional[TextIO | BinaryIO] = None
+        self._stream: TextIO | BinaryIO | None = None
     # ============================================================================
     # INSTANCE METHODS
     # ============================================================================
     @abstractmethod
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """Read from stream."""
         pass
     @abstractmethod
@@ -653,7 +653,7 @@ class AStream(IStream, ABC):
     # ============================================================================
     @staticmethod
 
-    def open_file(path: str | Path, mode: str = 'r', encoding: Optional[str] = None) -> TextIO | BinaryIO:
+    def open_file(path: str | Path, mode: str = 'r', encoding: str | None = None) -> TextIO | BinaryIO:
         """Open file as stream."""
         return open(path, mode, encoding=encoding)
     @staticmethod
@@ -688,13 +688,13 @@ class AAsyncIO(IAsyncIO, ABC):
         """Initialize async I/O base."""
         self._closed = False
         self._position = 0
-        self._async_stream: Optional[Any] = None
+        self._async_stream: Any | None = None
     # ============================================================================
     # INSTANCE METHODS
     # ============================================================================
     @abstractmethod
 
-    async def aread(self, size: Optional[int] = None) -> str | bytes:
+    async def aread(self, size: int | None = None) -> str | bytes:
         """Async read operation."""
         pass
     @abstractmethod
@@ -729,7 +729,7 @@ class AAsyncIO(IAsyncIO, ABC):
     # ============================================================================
     @staticmethod
 
-    async def aopen_file(path: str | Path, mode: str = 'r', encoding: Optional[str] = None) -> Any:
+    async def aopen_file(path: str | Path, mode: str = 'r', encoding: str | None = None) -> Any:
         """Async open file."""
         # Lazy installation system will handle aiofiles if missing
         import aiofiles
@@ -786,8 +786,8 @@ class AAtomicOperations(IAtomicOperations, ABC):
 
     def __init__(self):
         """Initialize atomic operations base."""
-        self._temp_dir: Optional[Path] = None
-        self._backup_dir: Optional[Path] = None
+        self._temp_dir: Path | None = None
+        self._backup_dir: Path | None = None
     # ============================================================================
     # INSTANCE METHODS
     # ============================================================================
@@ -891,13 +891,13 @@ class ABackupOperations(IBackupOperations, ABC):
 
     def __init__(self):
         """Initialize backup operations base."""
-        self._backup_dir: Optional[Path] = None
+        self._backup_dir: Path | None = None
     # ============================================================================
     # INSTANCE METHODS
     # ============================================================================
     @abstractmethod
 
-    def create_backup(self, source: str | Path, backup_dir: str | Path) -> Optional[Path]:
+    def create_backup(self, source: str | Path, backup_dir: str | Path) -> Path | None:
         """Create backup of file or directory."""
         pass
     @abstractmethod
@@ -922,7 +922,7 @@ class ABackupOperations(IBackupOperations, ABC):
     # ============================================================================
     @staticmethod
 
-    def create_backup_static(source: str | Path, backup_dir: str | Path) -> Optional[Path]:
+    def create_backup_static(source: str | Path, backup_dir: str | Path) -> Path | None:
         """Create backup of file or directory."""
         try:
             source_path = Path(source)
@@ -1014,18 +1014,18 @@ class ATemporaryOperations(ITemporaryOperations, ABC):
         """Initialize temporary operations base."""
         self._temp_files: list[Path] = []
         self._temp_dirs: list[Path] = []
-        self._temp_base_dir: Optional[Path] = None
+        self._temp_base_dir: Path | None = None
     # ============================================================================
     # INSTANCE METHODS
     # ============================================================================
     @abstractmethod
 
-    def create_temp_file(self, suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file(self, suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file."""
         pass
     @abstractmethod
 
-    def create_temp_directory(self, suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory(self, suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory."""
         pass
 
@@ -1048,7 +1048,7 @@ class ATemporaryOperations(ITemporaryOperations, ABC):
     # ============================================================================
     @staticmethod
 
-    def create_temp_file_static(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file_static(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file."""
         import tempfile
         fd, temp_path = tempfile.mkstemp(suffix=suffix, prefix=prefix)
@@ -1056,7 +1056,7 @@ class ATemporaryOperations(ITemporaryOperations, ABC):
         return Path(temp_path)
     @staticmethod
 
-    def create_temp_directory_static(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory_static(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory."""
         import tempfile
         temp_path = tempfile.mkdtemp(suffix=suffix, prefix=prefix)
@@ -1113,7 +1113,7 @@ class AUnifiedIO(AFile, AFolder, APath, AStream, AAsyncIO, AAtomicOperations, AB
     - xwsystem integration (security, validation, monitoring)
     """
 
-    def __init__(self, file_path: Optional[str | Path] = None, **config):
+    def __init__(self, file_path: str | Path | None = None, **config):
         """
         Initialize unified I/O with xwsystem integration.
         Args:
@@ -1171,7 +1171,7 @@ class AFileManager(AFile, AFolder, APath, AAtomicOperations, ABackupOperations, 
     - Format detection and intelligent handling
     """
 
-    def __init__(self, base_path: Optional[str | Path] = None, **config):
+    def __init__(self, base_path: str | Path | None = None, **config):
         """
         Initialize file manager with xwsystem integration.
         Args:

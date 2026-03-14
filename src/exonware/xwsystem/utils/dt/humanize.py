@@ -3,14 +3,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Human-friendly datetime formatting and parsing utilities.
 """
 
 import re
 from datetime import datetime, timedelta
-from typing import Optional
 from exonware.xwsystem.config.logging_setup import get_logger
 logger = get_logger("xwsystem.utils.dt.humanize")
 
@@ -70,7 +69,7 @@ def humanize_timedelta(td: timedelta, precision: int = 2, max_units: int = 2) ->
 
 
 def humanize_timestamp(timestamp: datetime | float, 
-                      reference: Optional[datetime] = None,
+                      reference: datetime | None = None,
                       precision: int = 2) -> str:
     """
     Convert timestamp to human-readable relative time.
@@ -132,7 +131,7 @@ def time_until(timestamp: datetime | float, precision: int = 2) -> str:
     return humanize_timestamp(timestamp, precision=precision)
 
 
-def format_relative_time(dt: datetime, relative_to: Optional[datetime] = None, precision: int = 2) -> str:
+def format_relative_time(dt: datetime, relative_to: datetime | None = None, precision: int = 2) -> str:
     """
     Format a datetime relative to a reference point.
     Args:
@@ -225,7 +224,7 @@ def parse_human_duration(duration_str: str) -> timedelta:
     return timedelta(seconds=total_seconds)
 
 
-def smart_time_format(dt: datetime, reference: Optional[datetime] = None) -> str:
+def smart_time_format(dt: datetime, reference: datetime | None = None) -> str:
     """
     Smart time formatting that chooses appropriate format based on time difference.
     Args:
@@ -341,11 +340,11 @@ class DateTimeHumanizer:
         """Convert timedelta to human-readable string."""
         return humanize_timedelta(td, precision, max_units)
 
-    def humanize_datetime(self, dt: datetime, relative_to: Optional[datetime] = None) -> str:
+    def humanize_datetime(self, dt: datetime, relative_to: datetime | None = None) -> str:
         """Convert datetime to human-readable string."""
         return smart_time_format(dt, relative_to)
 
-    def humanize_date(self, date_obj: datetime | str, relative_to: Optional[datetime] = None) -> str:
+    def humanize_date(self, date_obj: datetime | str, relative_to: datetime | None = None) -> str:
         """Convert date to human-readable string."""
         if isinstance(date_obj, datetime):
             return smart_time_format(date_obj, relative_to)
@@ -357,7 +356,7 @@ class DateTimeHumanizer:
                 return date_obj
         return str(date_obj)
 
-    def humanize_time(self, time_obj: datetime | str, relative_to: Optional[datetime] = None) -> str:
+    def humanize_time(self, time_obj: datetime | str, relative_to: datetime | None = None) -> str:
         """Convert time to human-readable string."""
         if isinstance(time_obj, datetime):
             return smart_time_format(time_obj, relative_to)
@@ -373,13 +372,13 @@ class DateTimeHumanizer:
         """Convert time range to natural string."""
         return natural_time_range(start, end)
 
-    def parse_natural_time(self, text: str, relative_to: Optional[datetime] = None) -> Optional[datetime]:
+    def parse_natural_time(self, text: str, relative_to: datetime | None = None) -> datetime | None:
         """Parse natural time expressions."""
         # This method is not fully implemented in the original file,
         # so it will return None as a placeholder.
         # A proper implementation would involve a DateTimeParser.
         return None
 
-    def format_relative_time(self, dt: datetime, relative_to: Optional[datetime] = None) -> str:
+    def format_relative_time(self, dt: datetime, relative_to: datetime | None = None) -> str:
         """Format datetime as relative time."""
         return format_relative_time(dt, relative_to)

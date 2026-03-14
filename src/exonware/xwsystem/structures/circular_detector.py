@@ -6,7 +6,7 @@ Circular reference detection and management utilities.
 import logging
 import weakref
 from collections import defaultdict
-from typing import Any, Optional
+from typing import Any
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +35,7 @@ class CircularReferenceDetector:
         self._reference_graph: dict[int, set[int]] = defaultdict(set)
         self._current_depth = 0
 
-    def is_circular(self, obj: Any, path: Optional[list[str]] = None) -> bool:
+    def is_circular(self, obj: Any, path: list[str] | None = None) -> bool:
         """
         Check if an object contains circular references.
         Args:

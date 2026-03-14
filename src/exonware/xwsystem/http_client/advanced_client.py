@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Advanced HTTP client with HTTP/2, streaming, pluggable transports, and modern features.
 """
@@ -14,7 +14,9 @@ import os
 import ssl
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import Any, AsyncIterator, Optional
+from typing import Any
+
+from collections.abc import AsyncIterator
 from urllib.parse import urljoin
 from .contracts import ITransport as Transport
 # Prevent httpx from importing rich (Python 3.8+ only, no legacy deps)
@@ -33,7 +35,7 @@ class StreamingConfig:
     chunk_size: int = 8192
     buffer_size: int = 65536
     timeout_per_chunk: float = 30.0
-    max_content_length: Optional[int] = None  # None = unlimited
+    max_content_length: int | None = None  # None = unlimited
 @dataclass
 
 
@@ -53,7 +55,7 @@ class AdvancedHttpConfig:
     streaming: StreamingConfig = field(default_factory=StreamingConfig)
     retry: RetryConfig = field(default_factory=RetryConfig)
     verify_ssl: bool = True
-    ssl_context: Optional[ssl.SSLContext] = None
+    ssl_context: ssl.SSLContext | None = None
     trust_env: bool = True
     follow_redirects: bool = True
     max_redirects: int = 20
@@ -129,11 +131,11 @@ class AdvancedHttpClient:
 
     def __init__(
         self,
-        base_url: Optional[str] = None,
+        base_url: str | None = None,
         timeout: float = 30.0,
-        config: Optional[AdvancedHttpConfig] = None,
-        transport: Optional[Transport] = None,
-        default_headers: Optional[dict[str, str]] = None,
+        config: AdvancedHttpConfig | None = None,
+        transport: Transport | None = None,
+        default_headers: dict[str, str] | None = None,
     ) -> None:
         """
         Initialize advanced HTTP client.
@@ -209,8 +211,8 @@ class AdvancedHttpClient:
     async def get(
         self,
         url: str,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
         **kwargs
     ) -> httpx.Response:
         """Async GET request."""
@@ -219,10 +221,10 @@ class AdvancedHttpClient:
     async def post(
         self,
         url: str,
-        json: Optional[Any] = None,
-        data: Optional[Any] = None,
-        files: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        json: Any | None = None,
+        data: Any | None = None,
+        files: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
         **kwargs
     ) -> httpx.Response:
         """Async POST request."""
@@ -231,9 +233,9 @@ class AdvancedHttpClient:
     async def put(
         self,
         url: str,
-        json: Optional[Any] = None,
-        data: Optional[Any] = None,
-        headers: Optional[dict[str, str]] = None,
+        json: Any | None = None,
+        data: Any | None = None,
+        headers: dict[str, str] | None = None,
         **kwargs
     ) -> httpx.Response:
         """Async PUT request."""
@@ -242,9 +244,9 @@ class AdvancedHttpClient:
     async def patch(
         self,
         url: str,
-        json: Optional[Any] = None,
-        data: Optional[Any] = None,
-        headers: Optional[dict[str, str]] = None,
+        json: Any | None = None,
+        data: Any | None = None,
+        headers: dict[str, str] | None = None,
         **kwargs
     ) -> httpx.Response:
         """Async PATCH request."""
@@ -253,7 +255,7 @@ class AdvancedHttpClient:
     async def delete(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         **kwargs
     ) -> httpx.Response:
         """Async DELETE request."""
@@ -262,7 +264,7 @@ class AdvancedHttpClient:
     async def head(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         **kwargs
     ) -> httpx.Response:
         """Async HEAD request."""
@@ -271,7 +273,7 @@ class AdvancedHttpClient:
     async def options(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         **kwargs
     ) -> httpx.Response:
         """Async OPTIONS request."""
@@ -281,11 +283,11 @@ class AdvancedHttpClient:
         self,
         method: str,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json: Optional[Any] = None,
-        data: Optional[Any] = None,
-        files: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json: Any | None = None,
+        data: Any | None = None,
+        files: dict[str, Any] | None = None,
         **kwargs
     ) -> httpx.Response:
         """Make async HTTP request with retry logic."""
@@ -339,10 +341,10 @@ class AdvancedHttpClient:
         self,
         method: str,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json: Optional[Any] = None,
-        data: Optional[Any] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json: Any | None = None,
+        data: Any | None = None,
         **kwargs
     ):
         """
@@ -386,7 +388,7 @@ class AdvancedHttpClient:
         self,
         method: str,
         url: str,
-        chunk_size: Optional[int] = None,
+        chunk_size: int | None = None,
         **kwargs
     ) -> AsyncIterator[bytes]:
         """
@@ -436,8 +438,8 @@ class AdvancedHttpClient:
         self,
         url: str,
         file_path: str,
-        chunk_size: Optional[int] = None,
-        progress_callback: Optional[callable] = None,
+        chunk_size: int | None = None,
+        progress_callback: callable | None = None,
         **kwargs
     ) -> None:
         """
@@ -463,7 +465,7 @@ class AdvancedHttpClient:
                     progress_callback(downloaded, total_size)
             await async_safe_write_bytes(file_path, content)
 
-    def _should_retry(self, response: Optional[httpx.Response], exception: Optional[Exception]) -> bool:
+    def _should_retry(self, response: httpx.Response | None, exception: Exception | None) -> bool:
         """Determine if a request should be retried."""
         if exception:
             return any(isinstance(exception, exc_type) for exc_type in self.config.retry.retry_on_exceptions)

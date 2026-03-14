@@ -10,7 +10,7 @@ Enables save_file(..., archive="zst") or archive="gzip".
 
 from __future__ import annotations
 import gzip
-from typing import Any, Optional
+from typing import Any
 # Magic bytes for auto-detect
 GZIP_MAGIC = b"\x1f\x8b"
 ZST_MAGIC = b"\x28\xb5\x2f\xfd"
@@ -36,7 +36,7 @@ class ArchiveService:
             return self._lz4_compress(data, **kwargs)
         raise ValueError(f"Unsupported archive format: {format}")
 
-    def decompress(self, data: bytes, *, format: Optional[str] = None, **kwargs: Any) -> bytes:
+    def decompress(self, data: bytes, *, format: str | None = None, **kwargs: Any) -> bytes:
         """
         Decompress data. If format is None, auto-detect from magic bytes.
         """

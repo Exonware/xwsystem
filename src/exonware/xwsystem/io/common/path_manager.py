@@ -9,7 +9,6 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Optional
 logger = logging.getLogger(__name__)
 # Constants
 URI_SCHEME_SEPARATOR = "://"
@@ -68,7 +67,7 @@ class PathManager:
         return False
     @staticmethod
 
-    def resolve_base_path(path: Optional[str]) -> Optional[str]:
+    def resolve_base_path(path: str | None) -> str | None:
         """
         Resolve and normalize a base path for reference resolution.
         This method handles both local file system paths and URI schemes,
@@ -122,7 +121,7 @@ class PathManager:
             return path  # Fallback to using the path as given
     @staticmethod
 
-    def get_canonical_uri(ref_uri: str, ref_base_path: Optional[str]) -> str:
+    def get_canonical_uri(ref_uri: str, ref_base_path: str | None) -> str:
         """
         Create a canonical, absolute URI for a reference.
         This method handles different types of URIs including JSON pointers,

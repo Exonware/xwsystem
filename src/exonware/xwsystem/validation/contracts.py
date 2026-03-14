@@ -4,12 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Validation protocol interfaces for XWSystem.
 """
 
-from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator, Callable
 # Import enums from types module
 from .defs import (
     ValidationLevel,

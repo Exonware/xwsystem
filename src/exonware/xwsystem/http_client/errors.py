@@ -4,18 +4,18 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 HTTP module errors - exception classes for HTTP client functionality.
 """
 
-from typing import Any, Optional
+from typing import Any
 
 
 class HttpError(Exception):
     """Base exception for HTTP client errors."""
 
-    def __init__(self, message: str, status_code: Optional[int] = None, response_data: Optional[Any] = None):
+    def __init__(self, message: str, status_code: int | None = None, response_data: Any | None = None):
         super().__init__(message)
         self.status_code = status_code
         self.response_data = response_data

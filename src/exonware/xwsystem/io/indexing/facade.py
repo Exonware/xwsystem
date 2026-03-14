@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2026
 XWIndex - Unified Indexing Facade
 Simplified API for indexing line-oriented files (JSONL/NDJSON):
@@ -14,7 +14,9 @@ Simplified API for indexing line-oriented files (JSONL/NDJSON):
 """
 
 from pathlib import Path
-from typing import Any, Optional, Callable, List, Iterator
+from typing import Any
+
+from collections.abc import Callable, Iterator
 from ..data_operations import (
     ADataOperations,
     JsonIndex,
@@ -34,12 +36,12 @@ class JsonlDataOperations(ADataOperations):
         self,
         file_path: str | Path,
         match: JsonMatchFn,
-        path: Optional[List[object]] = None,
+        path: list[object] | None = None,
         encoding: str = "utf-8",
     ) -> Any:
         """Return the first record that matches the predicate."""
         parser = get_best_available_parser()
-        with open(file_path, "r", encoding=encoding) as f:
+        with open(file_path, encoding=encoding) as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -70,7 +72,7 @@ class JsonlDataOperations(ADataOperations):
         file_path = Path(file_path)
         temp_path = file_path.with_suffix(file_path.suffix + ".tmp")
         try:
-            with open(file_path, "r", encoding=encoding) as infile, \
+            with open(file_path, encoding=encoding) as infile, \
                  open(temp_path, "w", encoding=encoding) as outfile:
                 for line in infile:
                     original_line = line
@@ -113,8 +115,8 @@ class JsonlDataOperations(ADataOperations):
         import time
         parser = get_best_available_parser()
         file_path = Path(file_path)
-        line_offsets: List[int] = []
-        id_index: Optional[dict[str, int]] = {} if id_field else None
+        line_offsets: list[int] = []
+        id_index: dict[str, int] | None = {} if id_field else None
         stat = file_path.stat()
         size = stat.st_size
         mtime = stat.st_mtime
@@ -159,7 +161,7 @@ class JsonlDataOperations(ADataOperations):
         line_number: int,
         *,
         encoding: str = "utf-8",
-        index: Optional[JsonIndex] = None,
+        index: JsonIndex | None = None,
     ) -> Any:
         """Random-access a specific record by line number."""
         parser = get_best_available_parser()
@@ -185,7 +187,7 @@ class JsonlDataOperations(ADataOperations):
         *,
         encoding: str = "utf-8",
         id_field: str = "id",
-        index: Optional[JsonIndex] = None,
+        index: JsonIndex | None = None,
     ) -> Any:
         """Random-access a record by logical ID."""
         if index is None:
@@ -210,8 +212,8 @@ class JsonlDataOperations(ADataOperations):
         page_size: int,
         *,
         encoding: str = "utf-8",
-        index: Optional[JsonIndex] = None,
-    ) -> List[Any]:
+        index: JsonIndex | None = None,
+    ) -> list[Any]:
         """Return a page of records using index."""
         if index is None:
             index = self.build_index(file_path, encoding=encoding)
@@ -248,9 +250,9 @@ class XWIndex:
         self,
         file_path: str | Path,
         *,
-        format: Optional[str] = None,
+        format: str | None = None,
         encoding: str = "utf-8",
-        id_field: Optional[str] = None,
+        id_field: str | None = None,
     ):
         """
         Initialize unified index.
@@ -265,7 +267,7 @@ class XWIndex:
         self.encoding = encoding
         self.id_field = id_field
         self._operations = JsonlDataOperations()
-        self._index: Optional[JsonIndex] = None
+        self._index: JsonIndex | None = None
 
     def _detect_format(self) -> str:
         """Auto-detect format from file extension."""
@@ -277,8 +279,8 @@ class XWIndex:
     def build(
         self,
         *,
-        id_field: Optional[str] = None,
-        max_id_index: Optional[int] = None,
+        id_field: str | None = None,
+        max_id_index: int | None = None,
         force: bool = False,
     ) -> JsonIndex:
         """
@@ -310,7 +312,7 @@ class XWIndex:
             index=self._index,
         )
 
-    def get_by_id(self, id_value: Any, id_field: Optional[str] = None) -> Any:
+    def get_by_id(self, id_value: Any, id_field: str | None = None) -> Any:
         """Get record by ID."""
         if self._index is None:
             self.build(id_field=id_field or self.id_field)
@@ -322,7 +324,7 @@ class XWIndex:
             index=self._index,
         )
 
-    def get_page(self, page: int = 0, size: int = 10) -> List[Any]:
+    def get_page(self, page: int = 0, size: int = 10) -> list[Any]:
         """Get a page of records."""
         if self._index is None:
             self.build()
@@ -334,14 +336,14 @@ class XWIndex:
             index=self._index,
         )
 
-    def stream(self, match: Optional[Callable[[Any], bool]] = None) -> Iterator[Any]:
+    def stream(self, match: Callable[[Any], bool] | None = None) -> Iterator[Any]:
         """
         Stream records matching predicate.
         Args:
             match: Optional predicate function (returns all records if None)
         """
         parser = get_best_available_parser()
-        with open(self.file_path, "r", encoding=self.encoding) as f:
+        with open(self.file_path, encoding=self.encoding) as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -378,7 +380,7 @@ class XWIndex:
         )
     @property
 
-    def index(self) -> Optional[JsonIndex]:
+    def index(self) -> JsonIndex | None:
         """Get current index (builds if needed)."""
         if self._index is None:
             self.build()

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2026
 XWSecurity & XWCrypto - Unified Security Facades
 Simplified API for security operations:
@@ -14,7 +14,7 @@ Simplified API for security operations:
 - Path validation
 """
 
-from typing import Any, Optional, Tuple
+from typing import Any
 from .crypto import (
     SecureHash,
     SecureRandom,
@@ -110,7 +110,7 @@ class XWSecurity:
         return verify_password(password, hashed_password)
     @staticmethod
 
-    def validate_path(path: str, base_path: Optional[str] = None) -> str:
+    def validate_path(path: str, base_path: str | None = None) -> str:
         """
         Validate and sanitize file path.
         Args:
@@ -135,7 +135,7 @@ class XWSecurity:
         return generate_session_token(length)
     class Storage:
         """Secure encrypted key-value storage."""
-        def __init__(self, password: Optional[str] = None):
+        def __init__(self, password: str | None = None):
             """
             Initialize secure storage.
             Args:
@@ -170,7 +170,7 @@ class XWCrypto:
         >>> decrypted = XWCrypto.decrypt(encrypted, private_key=private)
     """
 
-    def __init__(self, key: Optional[bytes] = None):
+    def __init__(self, key: bytes | None = None):
         """
         Initialize crypto with key.
         Args:
@@ -213,7 +213,7 @@ class XWCrypto:
         return self._key
     @staticmethod
 
-    def encrypt_static(data: str | bytes, password: Optional[str] = None, public_key: Optional[bytes] = None, key: Optional[bytes] = None) -> bytes:
+    def encrypt_static(data: str | bytes, password: str | None = None, public_key: bytes | None = None, key: bytes | None = None) -> bytes:
         """
         Static method to encrypt data.
         Args:
@@ -244,7 +244,7 @@ class XWCrypto:
             return crypto.encrypt(data)
     @staticmethod  
 
-    def decrypt_static(encrypted_data: bytes, password: Optional[str] = None, private_key: Optional[bytes] = None, key: Optional[bytes] = None) -> bytes:
+    def decrypt_static(encrypted_data: bytes, password: str | None = None, private_key: bytes | None = None, key: bytes | None = None) -> bytes:
         """
         Static method to decrypt data.
         Args:
@@ -272,7 +272,7 @@ class XWCrypto:
             raise ValueError("Either password, key, or private_key must be provided")
     @staticmethod
 
-    def generate_key_pair(key_size: int = 2048) -> Tuple[bytes, bytes]:
+    def generate_key_pair(key_size: int = 2048) -> tuple[bytes, bytes]:
         """
         Generate RSA key pair.
         Args:

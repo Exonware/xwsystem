@@ -16,7 +16,6 @@ import asyncio
 import time
 import multiprocessing as mp
 from datetime import datetime, timedelta
-from typing import Optional
 from enum import Enum
 import sys
 import os
@@ -69,7 +68,7 @@ class User(xModel):
     email: str = Field(pattern=r'^[^@]+@[^@]+\.[^@]+$')
     age: int = Field(ge=13, le=120)
     is_premium: bool = False
-    credit_score: Optional[int] = Field(ge=300, le=850)
+    credit_score: int | None = Field(ge=300, le=850)
 
 class Order(xModel):
     order_id: str

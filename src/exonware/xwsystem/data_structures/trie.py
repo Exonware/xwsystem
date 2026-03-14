@@ -6,11 +6,11 @@ Generic Trie node implementation that can be used by any library.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 26-Jan-2025
 """
 
-from typing import Any, Dict
+from typing import Any
 
 
 class TrieNode:
@@ -21,7 +21,7 @@ class TrieNode:
 
     def __init__(self):
         """Initialize Trie node."""
-        self.children: Dict[str, TrieNode] = {}
+        self.children: dict[str, TrieNode] = {}
         self.is_end_word: bool = False
         self.value: Any = None
 

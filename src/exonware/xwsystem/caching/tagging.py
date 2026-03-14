@@ -4,13 +4,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Tag-based cache invalidation.
 Extensibility Priority #5 - Flexible invalidation patterns.
 """
 
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from collections import defaultdict
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
@@ -33,7 +35,7 @@ class TaggedCache(LRUCache):
         cache.invalidate_by_tags(['user', 'product'])
     """
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, name: Optional[str] = None):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, name: str | None = None):
         """
         Initialize tagged cache.
         Args:
@@ -47,7 +49,7 @@ class TaggedCache(LRUCache):
         self._tag_to_keys: dict[str, set[Hashable]] = defaultdict(set)
         self._invalidations = 0
 
-    def put(self, key: Hashable, value: Any, tags: Optional[list[str]] = None) -> None:
+    def put(self, key: Hashable, value: Any, tags: list[str] | None = None) -> None:
         """
         Put value with optional tags.
         Args:

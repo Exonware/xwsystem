@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 1, 2025
 File Format Conversion - Convert between compatible formats.
 Enables:
@@ -19,7 +19,7 @@ Priority 5 (Extensibility): Works with any registered codec
 """
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from ..codec.base import get_global_registry
 from ..contracts import ICodec
 from ..defs import CodecCategory
@@ -138,8 +138,8 @@ class FormatConverter:
         self,
         source_path: Path,
         target_path: Path,
-        source_format: Optional[str] = None,
-        target_format: Optional[str] = None,
+        source_format: str | None = None,
+        target_format: str | None = None,
         **options
     ) -> None:
         """
@@ -197,8 +197,8 @@ _converter = FormatConverter()
 def convert_file(
     source_path: Path,
     target_path: Path,
-    source_format: Optional[str] = None,
-    target_format: Optional[str] = None,
+    source_format: str | None = None,
+    target_format: str | None = None,
     **options
 ) -> None:
     """

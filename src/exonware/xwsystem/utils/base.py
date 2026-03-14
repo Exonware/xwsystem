@@ -4,13 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Utils module base classes - abstract classes for utility functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Callable
+from collections.abc import Callable
+from typing import Any
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -29,8 +30,8 @@ class ALazyLoaderBase[T](ABC):
         self.load_mode = load_mode
         self._loaded = False
         self._loading = False
-        self._object: Optional[T] = None
-        self._load_function: Optional[Callable[[], T]] = None
+        self._object: T | None = None
+        self._load_function: Callable[[], T] | None = None
     @abstractmethod
 
     def set_load_function(self, load_func: Callable[[], T]) -> None:
@@ -63,7 +64,7 @@ class ALazyLoaderBase[T](ABC):
         pass
     @abstractmethod
 
-    def get_object(self) -> Optional[T]:
+    def get_object(self) -> T | None:
         """Get loaded object."""
         pass
     @abstractmethod
@@ -73,7 +74,7 @@ class ALazyLoaderBase[T](ABC):
         pass
     @abstractmethod
 
-    def get_load_time(self) -> Optional[float]:
+    def get_load_time(self) -> float | None:
         """Get object load time."""
         pass
     @abstractmethod
@@ -107,7 +108,7 @@ class APathUtilsBase(ABC):
         pass
     @abstractmethod
 
-    def relative_path(self, path: str | Path, start: Optional[str | Path] = None) -> Path:
+    def relative_path(self, path: str | Path, start: str | Path | None = None) -> Path:
         """Get relative path."""
         pass
     @abstractmethod
@@ -189,11 +190,16 @@ class AUtilityRegistryBase(ABC):
         """Initialize utility registry."""
         self._utilities: dict[str, Any] = {}
         self._utility_types: dict[str, UtilityType] = {}
-        self._utility_metadata: dict[str, dict[str, Any]] = {}
+        self._utility_metadata: dict[str, dict[str, Any] | None] = {}
     @abstractmethod
 
-    def register_utility(self, name: str, utility: Any, utility_type: UtilityType, 
-                        metadata: Optional[dict[str, Any]] = None) -> None:
+    def register_utility(
+        self,
+        name: str,
+        utility: Any,
+        utility_type: UtilityType,
+        metadata: dict[str, Any] | None = None,
+    ) -> None:
         """Register utility."""
         pass
     @abstractmethod
@@ -203,12 +209,12 @@ class AUtilityRegistryBase(ABC):
         pass
     @abstractmethod
 
-    def get_utility(self, name: str) -> Optional[Any]:
+    def get_utility(self, name: str) -> Any | None:
         """Get utility by name."""
         pass
     @abstractmethod
 
-    def list_utilities(self, utility_type: Optional[UtilityType] = None) -> list[str]:
+    def list_utilities(self, utility_type: UtilityType | None = None) -> list[str]:
         """List utilities."""
         pass
     @abstractmethod
@@ -218,12 +224,12 @@ class AUtilityRegistryBase(ABC):
         pass
     @abstractmethod
 
-    def get_utility_type(self, name: str) -> Optional[UtilityType]:
+    def get_utility_type(self, name: str) -> UtilityType | None:
         """Get utility type."""
         pass
     @abstractmethod
 
-    def get_utility_metadata(self, name: str) -> Optional[dict[str, Any]]:
+    def get_utility_metadata(self, name: str) -> dict[str, Any] | None:
         """Get utility metadata."""
         pass
     @abstractmethod
@@ -273,7 +279,7 @@ class AConfigManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_config(self, config_name: str) -> Optional[dict[str, Any]]:
+    def get_config(self, config_name: str) -> dict[str, Any] | None:
         """Get configuration."""
         pass
     @abstractmethod
@@ -313,7 +319,7 @@ class AConfigManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_config_schema(self, config_name: str) -> Optional[dict[str, Any]]:
+    def get_config_schema(self, config_name: str) -> dict[str, Any] | None:
         """Get configuration schema."""
         pass
     @abstractmethod
@@ -323,7 +329,7 @@ class AConfigManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_config_validator(self, config_name: str) -> Optional[Callable]:
+    def get_config_validator(self, config_name: str) -> Callable | None:
         """Get configuration validator."""
         pass
 
@@ -339,8 +345,12 @@ class AResourceManagerBase(ABC):
         self._resource_usage: dict[str, dict[str, Any]] = {}
     @abstractmethod
 
-    def acquire_resource(self, resource_id: str, resource_type: ResourceType, 
-                        **kwargs) -> Optional[Any]:
+    def acquire_resource(
+        self,
+        resource_id: str,
+        resource_type: ResourceType,
+        **kwargs,
+    ) -> Any | None:
         """Acquire resource."""
         pass
     @abstractmethod
@@ -350,7 +360,7 @@ class AResourceManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_resource(self, resource_id: str) -> Optional[Any]:
+    def get_resource(self, resource_id: str) -> Any | None:
         """Get resource by ID."""
         pass
     @abstractmethod
@@ -360,12 +370,12 @@ class AResourceManagerBase(ABC):
         pass
     @abstractmethod
 
-    def list_resources(self, resource_type: Optional[ResourceType] = None) -> list[str]:
+    def list_resources(self, resource_type: ResourceType | None = None) -> list[str]:
         """List resources."""
         pass
     @abstractmethod
 
-    def get_resource_type(self, resource_id: str) -> Optional[ResourceType]:
+    def get_resource_type(self, resource_id: str) -> ResourceType | None:
         """Get resource type."""
         pass
     @abstractmethod
@@ -385,7 +395,7 @@ class AResourceManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_resource_usage(self, resource_id: str) -> Optional[dict[str, Any]]:
+    def get_resource_usage(self, resource_id: str) -> dict[str, Any] | None:
         """Get resource usage statistics."""
         pass
     @abstractmethod
@@ -425,7 +435,7 @@ class BaseUtils:
         """Register a utility."""
         self._utilities[name] = utility
 
-    def get_utility(self, name: str) -> Optional[Any]:
+    def get_utility(self, name: str) -> Any | None:
         """Get utility by name."""
         return self._utilities.get(name)
 

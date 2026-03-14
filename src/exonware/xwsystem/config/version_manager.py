@@ -9,7 +9,7 @@ This module provides a centralized VersionManager class that can be used
 across all eXonware projects to maintain consistent version management.
 """
 
-from typing import Any, Optional
+from typing import Any
 import re
 
 
@@ -32,7 +32,7 @@ class VersionManager:
         self._version_components = self._parse_version(version)
         self._suffix = ""
 
-    def _parse_version(self, version: str) -> tuple[int, int, int, Optional[str]]:
+    def _parse_version(self, version: str) -> tuple[int, int, int, str | None]:
         """Parse version string into components."""
         parts = version.split('.')
         major = int(parts[0]) if len(parts) > 0 else 0
@@ -67,7 +67,7 @@ class VersionManager:
         return self._version_components[2]
     @property
 
-    def build(self) -> Optional[str]:
+    def build(self) -> str | None:
         """Get the build version."""
         return self._version_components[3]
     @property
@@ -81,7 +81,7 @@ class VersionManager:
         """Set the version suffix."""
         self._suffix = value
 
-    def get_version_info(self) -> tuple[int, int, int, Optional[str]]:
+    def get_version_info(self) -> tuple[int, int, int, str | None]:
         """Get version as a tuple (major, minor, patch, build)."""
         return self._version_components
 

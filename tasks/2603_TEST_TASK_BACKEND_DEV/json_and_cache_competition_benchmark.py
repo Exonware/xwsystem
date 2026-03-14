@@ -27,10 +27,11 @@ Generation Date: 06-Feb-2026
 """
 
 from __future__ import annotations
+from collections.abc import Callable
 import sys
 import time
 from dataclasses import dataclass, asdict
-from typing import Any, Callable
+from typing import Any
 from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
 from exonware.xwsystem.caching.external_caching_python import FunctoolsLRUCache
 from candidate_json import CandidateJsonSerializer

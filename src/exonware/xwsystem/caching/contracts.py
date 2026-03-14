@@ -4,12 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Caching protocol interfaces for XWSystem.
 """
 
-from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator, Callable
 import time
 # Import enums from types module
 from .defs import (
@@ -29,7 +31,7 @@ class ICacheable(Protocol):
     Enforces consistent caching behavior across XWSystem.
     """
 
-    def cache(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def cache(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """
         Cache a value with key.
         Args:
@@ -116,7 +118,7 @@ class ICacheManager(Protocol):
         """
         ...
 
-    def get_cache(self, name: str) -> Optional[ICacheable]:
+    def get_cache(self, name: str) -> ICacheable | None:
         """
         Get cache by name.
         Args:
@@ -184,7 +186,7 @@ class ICacheStorage(Protocol):
     Enforces consistent cache storage across XWSystem.
     """
 
-    def store(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def store(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """
         Store value in cache.
         Args:
@@ -196,7 +198,7 @@ class ICacheStorage(Protocol):
         """
         ...
 
-    def retrieve(self, key: str) -> Optional[Any]:
+    def retrieve(self, key: str) -> Any | None:
         """
         Retrieve value from cache.
         Args:
@@ -495,7 +497,7 @@ class ICacheDecorator(Protocol):
     Enforces consistent cache decoration across XWSystem.
     """
 
-    def cache_result(self, func: Callable, ttl: Optional[int] = None, key_func: Optional[Callable] = None) -> Callable:
+    def cache_result(self, func: Callable, ttl: int | None = None, key_func: Callable | None = None) -> Callable:
         """
         Decorate function to cache results.
         Args:
@@ -507,7 +509,7 @@ class ICacheDecorator(Protocol):
         """
         ...
 
-    def cache_invalidate(self, func: Callable, key_func: Optional[Callable] = None) -> Callable:
+    def cache_invalidate(self, func: Callable, key_func: Callable | None = None) -> Callable:
         """
         Decorate function to invalidate cache.
         Args:
@@ -622,11 +624,11 @@ class ICache(Protocol):
     use string keys (like disk caches and two-tier caches).
     """
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         """Get value from cache."""
         ...
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache."""
         ...
 
@@ -657,7 +659,7 @@ class ICacheableSimple(Protocol):
         """Get value from cache."""
         ...
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> None:
         """Set value in cache."""
         ...
 

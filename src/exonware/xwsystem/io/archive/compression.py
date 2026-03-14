@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Compression operations for gzip, bz2, and lzma.
 Priority 1 (Security): Safe compression/decompression
@@ -17,7 +17,6 @@ Priority 5 (Extensibility): Easy to add new algorithms
 import gzip
 import bz2
 from pathlib import Path
-from typing import Optional
 # lzma is standard library (Python 3.3+)
 import lzma
 from ..contracts import ICompression
@@ -67,7 +66,7 @@ class Compression(ICompression):
         else:
             raise ValueError(f"Unsupported compression algorithm: {algorithm}")
 
-    def decompress(self, data: bytes, algorithm: Optional[str] = None) -> bytes:
+    def decompress(self, data: bytes, algorithm: str | None = None) -> bytes:
         """
         Decompress bytes.
         Args:
@@ -133,7 +132,7 @@ class Compression(ICompression):
         output.write_bytes(compressed)
         return output
 
-    def decompress_file(self, path: Path, output: Optional[Path] = None) -> Path:
+    def decompress_file(self, path: Path, output: Path | None = None) -> Path:
         """
         Decompress file.
         Args:

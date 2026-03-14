@@ -63,7 +63,7 @@ def compare_with_baseline(improved_results: dict):
     if not baseline_file.exists():
         print("\n⚠️  Baseline not found - cannot compare")
         return
-    with open(baseline_file, 'r') as f:
+    with open(baseline_file) as f:
         baseline = json.load(f)
     baseline_results = {r['name']: r for r in baseline.get('results', [])}
     improved_results_map = {r['name']: r for r in improved_results.get('results', [])}

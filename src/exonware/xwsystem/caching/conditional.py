@@ -4,14 +4,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Conditional eviction policies for caching.
 Extensibility Priority #5 - Customizable eviction behavior.
 """
 
 import time
-from typing import Any, Callable, Optional, Hashable
+from typing import Any
+
+from collections.abc import Callable, Hashable
 from .lru_cache import LRUCache, CacheNode
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.caching.conditional")
@@ -38,9 +40,9 @@ class ConditionalEvictionCache(LRUCache):
     def __init__(
         self,
         capacity: int = 128,
-        eviction_policy: Optional[Callable[[Any, Any], bool]] = None,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None
+        eviction_policy: Callable[[Any, Any], bool] | None = None,
+        ttl: float | None = None,
+        name: str | None = None
     ):
         """
         Initialize conditional eviction cache.

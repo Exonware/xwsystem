@@ -4,20 +4,20 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Plugin-specific error classes for XSystem plugin system.
 """
 
-from typing import Any, Optional
+from typing import Any
 
 
 class PluginError(Exception):
     """Base exception for all plugin-related errors."""
 
-    def __init__(self, message: str, plugin_name: Optional[str] = None, 
-                 plugin_version: Optional[str] = None, context: Optional[dict[str, Any]] = None, 
-                 original_error: Optional[Exception] = None):
+    def __init__(self, message: str, plugin_name: str | None = None, 
+                 plugin_version: str | None = None, context: dict[str, Any] | None = None, 
+                 original_error: Exception | None = None):
         super().__init__(message)
         self.plugin_name = plugin_name
         self.plugin_version = plugin_version
@@ -39,7 +39,7 @@ class PluginError(Exception):
 class PluginNotFoundError(PluginError):
     """Error when a requested plugin is not found."""
 
-    def __init__(self, plugin_name: str, available_plugins: Optional[list[str]] = None, **kwargs):
+    def __init__(self, plugin_name: str, available_plugins: list[str] | None = None, **kwargs):
         message = f"Plugin '{plugin_name}' not found"
         if available_plugins:
             message += f". Available plugins: {', '.join(available_plugins)}"
@@ -50,7 +50,7 @@ class PluginNotFoundError(PluginError):
 class PluginLoadError(PluginError):
     """Error when plugin loading fails."""
 
-    def __init__(self, message: str, plugin_name: str, plugin_path: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, plugin_path: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.plugin_path = plugin_path
 
@@ -58,7 +58,7 @@ class PluginLoadError(PluginError):
 class PluginImportError(PluginLoadError):
     """Error when plugin import fails."""
 
-    def __init__(self, message: str, plugin_name: str, module_name: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, module_name: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.module_name = module_name
 
@@ -66,7 +66,7 @@ class PluginImportError(PluginLoadError):
 class PluginDependencyError(PluginLoadError):
     """Error when plugin dependencies are not met."""
 
-    def __init__(self, message: str, plugin_name: str, missing_dependencies: Optional[list[str]] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, missing_dependencies: list[str] | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.missing_dependencies = missing_dependencies or []
 
@@ -74,8 +74,8 @@ class PluginDependencyError(PluginLoadError):
 class PluginVersionError(PluginLoadError):
     """Error when plugin version is incompatible."""
 
-    def __init__(self, message: str, plugin_name: str, required_version: Optional[str] = None, 
-                 actual_version: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, required_version: str | None = None, 
+                 actual_version: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.required_version = required_version
         self.actual_version = actual_version
@@ -84,7 +84,7 @@ class PluginVersionError(PluginLoadError):
 class PluginRegistrationError(PluginError):
     """Error when plugin registration fails."""
 
-    def __init__(self, message: str, plugin_name: str, plugin_class: Optional[type] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, plugin_class: type | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.plugin_class = plugin_class
 
@@ -92,7 +92,7 @@ class PluginRegistrationError(PluginError):
 class PluginDuplicateError(PluginRegistrationError):
     """Error when trying to register a duplicate plugin."""
 
-    def __init__(self, message: str, plugin_name: str, existing_version: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, existing_version: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.existing_version = existing_version
 
@@ -100,7 +100,7 @@ class PluginDuplicateError(PluginRegistrationError):
 class PluginValidationError(PluginRegistrationError):
     """Error when plugin validation fails."""
 
-    def __init__(self, message: str, plugin_name: str, validation_errors: Optional[list[str]] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, validation_errors: list[str] | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.validation_errors = validation_errors or []
 
@@ -108,15 +108,15 @@ class PluginValidationError(PluginRegistrationError):
 class PluginInitializationError(PluginError):
     """Error when plugin initialization fails."""
 
-    def __init__(self, message: str, plugin_name: str, plugin_version: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, plugin_version: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, plugin_version=plugin_version, **kwargs)
 
 
 class PluginConfigurationError(PluginInitializationError):
     """Error when plugin configuration is invalid."""
 
-    def __init__(self, message: str, plugin_name: str, config_key: Optional[str] = None, 
-                 config_value: Optional[Any] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, config_key: str | None = None, 
+                 config_value: Any | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.config_key = config_key
         self.config_value = config_value
@@ -125,7 +125,7 @@ class PluginConfigurationError(PluginInitializationError):
 class PluginResourceError(PluginInitializationError):
     """Error when plugin resource allocation fails."""
 
-    def __init__(self, message: str, plugin_name: str, resource_type: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, resource_type: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.resource_type = resource_type
 
@@ -133,8 +133,8 @@ class PluginResourceError(PluginInitializationError):
 class PluginExecutionError(PluginError):
     """Error when plugin execution fails."""
 
-    def __init__(self, message: str, plugin_name: str, plugin_version: Optional[str] = None, 
-                 operation: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, plugin_version: str | None = None, 
+                 operation: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, plugin_version=plugin_version, **kwargs)
         self.operation = operation
 
@@ -158,7 +158,7 @@ class PluginTimeoutError(PluginExecutionError):
 class PluginPermissionError(PluginExecutionError):
     """Error when plugin lacks required permissions."""
 
-    def __init__(self, message: str, plugin_name: str, required_permission: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, required_permission: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.required_permission = required_permission
 
@@ -166,7 +166,7 @@ class PluginPermissionError(PluginExecutionError):
 class PluginCleanupError(PluginError):
     """Error when plugin cleanup fails."""
 
-    def __init__(self, message: str, plugin_name: str, plugin_version: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, plugin_version: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, plugin_version=plugin_version, **kwargs)
 
 
@@ -180,7 +180,7 @@ class PluginUnloadError(PluginCleanupError):
 class PluginRegistryError(PluginError):
     """Error related to plugin registry operations."""
 
-    def __init__(self, message: str, registry_operation: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, registry_operation: str | None = None, **kwargs):
         super().__init__(message, **kwargs)
         self.registry_operation = registry_operation
 
@@ -204,7 +204,7 @@ class PluginRegistryLockError(PluginRegistryError):
 class PluginManagerError(PluginError):
     """Error related to plugin manager operations."""
 
-    def __init__(self, message: str, manager_operation: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, manager_operation: str | None = None, **kwargs):
         super().__init__(message, **kwargs)
         self.manager_operation = manager_operation
 
@@ -226,7 +226,7 @@ class PluginManagerShutdownError(PluginManagerError):
 class PluginDiscoveryError(PluginError):
     """Error when plugin discovery fails."""
 
-    def __init__(self, message: str, discovery_path: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, discovery_path: str | None = None, **kwargs):
         super().__init__(message, **kwargs)
         self.discovery_path = discovery_path
 
@@ -234,7 +234,7 @@ class PluginDiscoveryError(PluginError):
 class PluginEntryPointError(PluginDiscoveryError):
     """Error when plugin entry point is invalid."""
 
-    def __init__(self, message: str, entry_point: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, entry_point: str | None = None, **kwargs):
         super().__init__(message, **kwargs)
         self.entry_point = entry_point
 
@@ -242,7 +242,7 @@ class PluginEntryPointError(PluginDiscoveryError):
 class PluginMetadataError(PluginError):
     """Error when plugin metadata is invalid."""
 
-    def __init__(self, message: str, plugin_name: str, metadata_key: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, metadata_key: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.metadata_key = metadata_key
 
@@ -250,7 +250,7 @@ class PluginMetadataError(PluginError):
 class PluginInterfaceError(PluginError):
     """Error when plugin interface is invalid."""
 
-    def __init__(self, message: str, plugin_name: str, interface_name: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, interface_name: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.interface_name = interface_name
 
@@ -258,7 +258,7 @@ class PluginInterfaceError(PluginError):
 class PluginLifecycleError(PluginError):
     """Error when plugin lifecycle operation fails."""
 
-    def __init__(self, message: str, plugin_name: str, lifecycle_stage: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, lifecycle_stage: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.lifecycle_stage = lifecycle_stage
 
@@ -291,7 +291,7 @@ class PluginEventError(PluginError):
 class PluginCommunicationError(PluginError):
     """Error when plugin communication fails."""
 
-    def __init__(self, message: str, plugin_name: str, target_plugin: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, target_plugin: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.target_plugin = target_plugin
 
@@ -299,7 +299,7 @@ class PluginCommunicationError(PluginError):
 class PluginSecurityError(PluginError):
     """Error when plugin security check fails."""
 
-    def __init__(self, message: str, plugin_name: str, security_violation: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, security_violation: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.security_violation = security_violation
 
@@ -307,7 +307,7 @@ class PluginSecurityError(PluginError):
 class PluginSandboxError(PluginSecurityError):
     """Error when plugin sandbox operation fails."""
 
-    def __init__(self, message: str, plugin_name: str, sandbox_operation: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, sandbox_operation: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, security_violation="sandbox", **kwargs)
         self.sandbox_operation = sandbox_operation
 
@@ -315,7 +315,7 @@ class PluginSandboxError(PluginSecurityError):
 class PluginCapabilityError(PluginError):
     """Error when plugin capability is insufficient."""
 
-    def __init__(self, message: str, plugin_name: str, required_capability: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, required_capability: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.required_capability = required_capability
 
@@ -323,8 +323,8 @@ class PluginCapabilityError(PluginError):
 class PluginCompatibilityError(PluginError):
     """Error when plugin compatibility check fails."""
 
-    def __init__(self, message: str, plugin_name: str, system_version: Optional[str] = None, 
-                 plugin_version: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, system_version: str | None = None, 
+                 plugin_version: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, plugin_version=plugin_version, **kwargs)
         self.system_version = system_version
 
@@ -333,7 +333,7 @@ class PluginConflictError(PluginError):
     """Error when plugin conflicts with another plugin."""
 
     def __init__(self, message: str, plugin_name: str, conflicting_plugin: str, 
-                 conflict_type: Optional[str] = None, **kwargs):
+                 conflict_type: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.conflicting_plugin = conflicting_plugin
         self.conflict_type = conflict_type
@@ -342,7 +342,7 @@ class PluginConflictError(PluginError):
 class PluginPriorityError(PluginError):
     """Error when plugin priority is invalid."""
 
-    def __init__(self, message: str, plugin_name: str, priority: Optional[int] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, priority: int | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.priority = priority
 
@@ -350,7 +350,7 @@ class PluginPriorityError(PluginError):
 class PluginDependencyCycleError(PluginError):
     """Error when plugin dependency cycle is detected."""
 
-    def __init__(self, message: str, plugin_name: str, dependency_cycle: Optional[list[str]] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, dependency_cycle: list[str] | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.dependency_cycle = dependency_cycle or []
 
@@ -358,7 +358,7 @@ class PluginDependencyCycleError(PluginError):
 class PluginHotReloadError(PluginError):
     """Error when plugin hot reload fails."""
 
-    def __init__(self, message: str, plugin_name: str, reload_reason: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, reload_reason: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.reload_reason = reload_reason
 
@@ -366,7 +366,7 @@ class PluginHotReloadError(PluginError):
 class PluginBackupError(PluginError):
     """Error when plugin backup/restore fails."""
 
-    def __init__(self, message: str, plugin_name: str, backup_operation: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, backup_operation: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.backup_operation = backup_operation
 
@@ -374,8 +374,8 @@ class PluginBackupError(PluginError):
 class PluginMigrationError(PluginError):
     """Error when plugin migration fails."""
 
-    def __init__(self, message: str, plugin_name: str, from_version: Optional[str] = None, 
-                 to_version: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, from_version: str | None = None, 
+                 to_version: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.from_version = from_version
         self.to_version = to_version
@@ -384,7 +384,7 @@ class PluginMigrationError(PluginError):
 class PluginMonitoringError(PluginError):
     """Error when plugin monitoring fails."""
 
-    def __init__(self, message: str, plugin_name: str, monitoring_metric: Optional[str] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, monitoring_metric: str | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.monitoring_metric = monitoring_metric
 
@@ -392,8 +392,8 @@ class PluginMonitoringError(PluginError):
 class PluginPerformanceError(PluginError):
     """Error when plugin performance is below threshold."""
 
-    def __init__(self, message: str, plugin_name: str, performance_metric: Optional[str] = None, 
-                 threshold: Optional[float] = None, actual_value: Optional[float] = None, **kwargs):
+    def __init__(self, message: str, plugin_name: str, performance_metric: str | None = None, 
+                 threshold: float | None = None, actual_value: float | None = None, **kwargs):
         super().__init__(message, plugin_name=plugin_name, **kwargs)
         self.performance_metric = performance_metric
         self.threshold = threshold

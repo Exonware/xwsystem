@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 26, 2025
 Merge operations implementation.
 """
 
 import threading
-from typing import Any, Optional
+from typing import Any
 from .base import MergeError
 from .contracts import IMergeOperation
 from .defs import MergeStrategy

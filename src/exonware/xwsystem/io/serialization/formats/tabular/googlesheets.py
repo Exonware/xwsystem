@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2025
 Google Sheets serialization.
 Following I→A→ATabular pattern:
@@ -15,7 +15,7 @@ Note: For local saving, convert to Excel or CSV first.
 For cloud saving, use xwstorage (avoids circular dependencies).
 """
 
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 import pandas as pd
 from .base import ATabularSerialization
@@ -48,9 +48,9 @@ class GoogleSheetsSerializer(ATabularSerialization):
 
     def __init__(
         self, 
-        credentials_path: Optional[str | Path] = None,
-        max_depth: Optional[int] = None, 
-        max_size_mb: Optional[float] = None
+        credentials_path: str | Path | None = None,
+        max_depth: int | None = None, 
+        max_size_mb: float | None = None
     ):
         """
         Initialize Google Sheets serializer.
@@ -132,7 +132,7 @@ class GoogleSheetsSerializer(ATabularSerialization):
     # CORE ENCODE/DECODE
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> str:
         """
         Encode data to Google Sheets format.
         Note: This is a placeholder. Use from_df() with spreadsheet_url instead.
@@ -161,7 +161,7 @@ class GoogleSheetsSerializer(ATabularSerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode Google Sheets to DataFrame(s).
         Args:
@@ -191,7 +191,7 @@ class GoogleSheetsSerializer(ATabularSerialization):
     def to_df(
         self, 
         spreadsheet_url: str, 
-        sheet_name: Optional[str | list[str]] = None,
+        sheet_name: str | list[str] | None = None,
         header: int = 0,
         **options
     ) -> pd.DataFrame | dict[str, pd.DataFrame]:
@@ -258,7 +258,7 @@ class GoogleSheetsSerializer(ATabularSerialization):
         self, 
         df: pd.DataFrame | dict[str, pd.DataFrame], 
         spreadsheet_url: str,
-        sheet_name: Optional[str] = None,
+        sheet_name: str | None = None,
         **options
     ) -> None:
         """

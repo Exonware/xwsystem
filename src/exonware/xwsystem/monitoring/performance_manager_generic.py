@@ -9,7 +9,7 @@ health monitoring, and recommendations without being tied to specific implementa
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 04, 2025
 """
 
@@ -17,7 +17,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 from ..config.performance_modes import PerformanceMode
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.monitoring.performance_manager_generic")
@@ -97,7 +97,7 @@ class GenericPerformanceManager:
         # Override in subclasses to get global mode
         return PerformanceMode.FAST  # Default fallback
 
-    def get_effective_config(self) -> Optional[Any]:
+    def get_effective_config(self) -> Any | None:
         """Get effective config (local or global)."""
         if hasattr(self, "_local_config") and self._local_config is not None:
             return self._local_config

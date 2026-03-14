@@ -11,7 +11,7 @@ Email: connect@exonware.com
 
 import asyncio
 import logging
-from typing import Dict, Any, Optional
+from typing import Any
 from fastapi import FastAPI, HTTPException
 import httpx
 from exonware.xwsystem import (
@@ -61,7 +61,7 @@ class MicroserviceClient:
         self.performance_monitor = PerformanceMonitor()
     @circuit_breaker
 
-    async def call_service(self, endpoint: str, method: str = "GET", data: Optional[Dict] = None):
+    async def call_service(self, endpoint: str, method: str = "GET", data: dict | None = None):
         """Call microservice with circuit breaker protection."""
         url = f"{self.base_url}/{endpoint}"
         with self.performance_monitor.measure(f"{self.service_name}_{endpoint}"):
@@ -119,7 +119,7 @@ async def get_user(user_id: str):
         logger.error(f"Error getting user: {e}")
         raise HTTPException(status_code=503, detail="User service unavailable")
 @app.post("/orders")
-async def create_order(order_data: Dict[str, Any]):
+async def create_order(order_data: dict[str, Any]):
     """Create order with multi-service coordination."""
     try:
         # Validate user exists

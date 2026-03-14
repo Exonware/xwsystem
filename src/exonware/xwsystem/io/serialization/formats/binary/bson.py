@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 BSON serialization - Binary JSON format (MongoDB).
 Following I→A pattern:
@@ -13,7 +13,7 @@ Following I→A pattern:
 """
 
 from importlib import import_module
-from typing import Any, Optional
+from typing import Any
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
 from ....defs import CodecCapability
@@ -95,7 +95,7 @@ class BsonSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using bson library)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to BSON bytes.
         Uses bson.encode().
@@ -121,7 +121,7 @@ class BsonSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode BSON bytes to data.
         Uses bson.decode().

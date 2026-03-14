@@ -9,7 +9,7 @@ framework-wide reusability.
 import logging
 import time
 from contextlib import contextmanager
-from typing import Any, ContextManager, Optional
+from typing import Any, ContextManager
 logger = logging.getLogger(__name__)
 # ======================
 # Performance Statistics
@@ -70,7 +70,7 @@ class PerformanceStats:
         operation_name: str,
         duration: float,
         success: bool = True,
-        memory_usage: Optional[dict[str, Any]] = None,
+        memory_usage: dict[str, Any] | None = None,
         **context_data: Any,
     ) -> None:
         """Add operation data to statistics."""
@@ -168,7 +168,7 @@ class PerformanceMonitor:
         operation_name: str,
         duration: float,
         success: bool = True,
-        memory_usage: Optional[dict[str, Any]] = None,
+        memory_usage: dict[str, Any] | None = None,
         **context_data: Any,
     ) -> None:
         """Record an operation manually."""

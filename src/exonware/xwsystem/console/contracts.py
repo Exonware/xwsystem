@@ -5,12 +5,12 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 2025-01-27
 Console module contracts - interfaces for console functionality.
 """
 
-from typing import Protocol, runtime_checkable, Optional, Any
+from typing import Protocol, runtime_checkable, Any
 from .defs import LogLevel, ConsoleEventType, ConsoleEvent
 @runtime_checkable
 
@@ -20,10 +20,10 @@ class IEventLogger(Protocol):
     def log(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None,
-        color: Optional[str] = None,
-        label: Optional[str] = None
+        source: str | None = None,
+        data: Any | None = None,
+        color: str | None = None,
+        label: str | None = None
     ) -> ConsoleEvent:
         """Log a general message."""
         ...
@@ -31,8 +31,8 @@ class IEventLogger(Protocol):
     def info(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log an info message."""
         ...
@@ -40,8 +40,8 @@ class IEventLogger(Protocol):
     def warn(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a warning message."""
         ...
@@ -49,9 +49,9 @@ class IEventLogger(Protocol):
     def error(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None,
-        stack: Optional[str] = None
+        source: str | None = None,
+        data: Any | None = None,
+        stack: str | None = None
     ) -> ConsoleEvent:
         """Log an error message."""
         ...
@@ -59,18 +59,18 @@ class IEventLogger(Protocol):
     def debug(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a debug message."""
         ...
 
     def get_events(
         self,
-        event_type: Optional[ConsoleEventType] = None,
-        level: Optional[LogLevel] = None,
-        source: Optional[str] = None,
-        limit: Optional[int] = None
+        event_type: ConsoleEventType | None = None,
+        level: LogLevel | None = None,
+        source: str | None = None,
+        limit: int | None = None
     ) -> list[dict]:
         """Get logged events as dictionaries."""
         ...

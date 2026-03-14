@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Pydantic-style declarative validation with type hints and automatic coercion.
 """
@@ -12,7 +12,7 @@ from __future__ import annotations
 import inspect
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional, Union, get_type_hints, get_origin, get_args
+from typing import Any, get_type_hints, get_origin, get_args
 from datetime import datetime, date
 from pathlib import Path
 from ..config.logging_setup import get_logger
@@ -28,7 +28,7 @@ def _json_ser():
 class ValidationError(Exception):
     """Raised when validation fails."""
 
-    def __init__(self, message: str, field_name: Optional[str] = None, value: Any = None):
+    def __init__(self, message: str, field_name: str | None = None, value: Any = None):
         super().__init__(message)
         self.field_name = field_name
         self.value = value
@@ -55,28 +55,28 @@ class ValidationError(Exception):
 class Field:
     """Field configuration for validation and metadata."""
     default: Any = None
-    default_factory: Optional[callable] = None
-    alias: Optional[str] = None
-    title: Optional[str] = None
-    description: Optional[str] = None
+    default_factory: callable | None = None
+    alias: str | None = None
+    title: str | None = None
+    description: str | None = None
     # Validation constraints
-    gt: Optional[int | float] = None  # Greater than
-    ge: Optional[int | float] = None  # Greater than or equal
-    lt: Optional[int | float] = None  # Less than
-    le: Optional[int | float] = None  # Less than or equal
-    min_length: Optional[int] = None
-    max_length: Optional[int] = None
-    pattern: Optional[str] = None
-    enum: Optional[list[Any]] = None
+    gt: int | float | None = None  # Greater than
+    ge: int | float | None = None  # Greater than or equal
+    lt: int | float | None = None  # Less than
+    le: int | float | None = None  # Less than or equal
+    min_length: int | None = None
+    max_length: int | None = None
+    pattern: str | None = None
+    enum: list[Any] | None = None
     # String validation
     strip_whitespace: bool = True
     to_lower: bool = False
     to_upper: bool = False
     # Advanced constraints
-    multiple_of: Optional[int | float] = None
+    multiple_of: int | float | None = None
     allow_inf_nan: bool = True
     # Metadata
-    examples: Optional[list[Any]] = None
+    examples: list[Any] | None = None
     deprecated: bool = False
 
     def __post_init__(self):
@@ -417,8 +417,8 @@ class XModel(metaclass=ModelMeta):
         return cls.model_validate(data)
 
     def model_dump(self, 
-                   include: Optional[set] = None, 
-                   exclude: Optional[set] = None,
+                   include: set | None = None, 
+                   exclude: set | None = None,
                    by_alias: bool = False) -> dict[str, Any]:
         """Export model to dictionary."""
         data = {}

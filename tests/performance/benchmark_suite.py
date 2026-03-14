@@ -14,7 +14,9 @@ import asyncio
 import time
 import statistics
 import multiprocessing as mp
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 from dataclasses import dataclass
 import json
 import sys

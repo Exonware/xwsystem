@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 File-based data source implementation.
 Priority 1 (Security): Safe path validation, atomic writes
@@ -15,7 +15,7 @@ Priority 5 (Extensibility): Foundation for other data sources (HTTP, S3, etc.)
 """
 
 from pathlib import Path
-from typing import Optional, Any
+from typing import Any
 from ..contracts import IDataSource
 
 
@@ -42,7 +42,7 @@ class FileDataSource(IDataSource[bytes | str]):
         self,
         path: str | Path,
         mode: str = 'rb',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         validate_path: bool = True
     ):
         """
@@ -93,7 +93,7 @@ class FileDataSource(IDataSource[bytes | str]):
                 encoding = options.get('encoding', self._encoding or 'utf-8')
                 return self._path.read_text(encoding=encoding)
         except Exception as e:
-            raise IOError(f"Failed to read {self._path}: {e}")
+            raise OSError(f"Failed to read {self._path}: {e}")
 
     def write(self, data: bytes | str, **options) -> None:
         """
@@ -137,7 +137,7 @@ class FileDataSource(IDataSource[bytes | str]):
                     encoding = options.get('encoding', self._encoding or 'utf-8')
                     self._path.write_text(data, encoding=encoding)
         except Exception as e:
-            raise IOError(f"Failed to write {self._path}: {e}")
+            raise OSError(f"Failed to write {self._path}: {e}")
 
     def exists(self) -> bool:
         """Check if file exists."""
@@ -153,7 +153,7 @@ class FileDataSource(IDataSource[bytes | str]):
             if self._path.exists():
                 self._path.unlink()
         except Exception as e:
-            raise IOError(f"Failed to delete {self._path}: {e}")
+            raise OSError(f"Failed to delete {self._path}: {e}")
 
     def metadata(self) -> dict[str, Any]:
         """

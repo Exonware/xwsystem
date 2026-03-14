@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 07-Jan-2025
 Security validator implementation for XWSystem.
 Implements ISecurityValidator protocol for comprehensive security validation.
@@ -13,7 +13,7 @@ Implements ISecurityValidator protocol for comprehensive security validation.
 import re
 import html
 import urllib.parse
-from typing import Any, Optional
+from typing import Any
 from email.utils import parseaddr
 from urllib.parse import urlparse
 from .base import ASecurityValidatorBase

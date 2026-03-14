@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 SQLite3 serialization - Embedded database storage.
 Following I→A pattern:
@@ -13,7 +13,7 @@ Following I→A pattern:
 """
 
 import sqlite3
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ...flyweight import get_serializer
@@ -64,11 +64,11 @@ class Sqlite3Serializer(ASerialization):
     def aliases(self) -> list[str]:
         return ["sqlite3", "sqlite", "db"]
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """SQLite3 encode requires file path - use save_file() instead."""
         raise NotImplementedError("SQLite3 requires file-based operations - use save_file()")
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """SQLite3 decode requires file path - use load_file() instead."""
         raise NotImplementedError("SQLite3 requires file-based operations - use load_file()")
     # ---------------------------------------------------------------------

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 XML serialization - Extensible Markup Language.
 Following I→A pattern:
@@ -17,7 +17,7 @@ Improved implementation:
 - Minimal try/catch blocks with proper error handling
 """
 
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -300,7 +300,7 @@ class XmlSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using xmltodict for both)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to XML string.
         Uses xmltodict.unparse() for encoding (better round-trip compatibility than dicttoxml).
@@ -361,7 +361,7 @@ class XmlSerializer(ASerialization):
             ) from e
         return xml_str
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode XML string to data.
         Uses xmltodict.parse() with security features enabled.

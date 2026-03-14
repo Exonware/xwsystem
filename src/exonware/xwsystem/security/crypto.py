@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Cryptographic utilities for secure data handling and protection.
 """
@@ -13,7 +13,7 @@ import hmac
 import secrets
 import time
 from base64 import b64decode, b64encode
-from typing import Any, Optional
+from typing import Any
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
@@ -54,7 +54,7 @@ class SecureHash:
         return hashlib.sha512(data).hexdigest()
     @staticmethod
 
-    def blake2b(data: str | bytes, key: Optional[bytes] = None) -> str:
+    def blake2b(data: str | bytes, key: bytes | None = None) -> str:
         """
         Compute BLAKE2b hash.
         Args:
@@ -164,7 +164,7 @@ class SecureRandom:
 class SymmetricEncryption:
     """Symmetric encryption using Fernet (AES-128 in CBC mode with HMAC)."""
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
+    def __init__(self, key: bytes | None = None) -> None:
         """
         Initialize symmetric encryption.
         Args:
@@ -181,7 +181,7 @@ class SymmetricEncryption:
         return Fernet.generate_key()
     @classmethod
 
-    def derive_key_from_password(cls, password: str, salt: Optional[bytes] = None) -> tuple[bytes, bytes]:
+    def derive_key_from_password(cls, password: str, salt: bytes | None = None) -> tuple[bytes, bytes]:
         """
         Derive encryption key from password using PBKDF2.
         Args:
@@ -250,7 +250,7 @@ class SymmetricEncryption:
 class AsymmetricEncryption:
     """Asymmetric (RSA) encryption for secure key exchange and digital signatures."""
 
-    def __init__(self, private_key: Optional[bytes] = None, public_key: Optional[bytes] = None) -> None:
+    def __init__(self, private_key: bytes | None = None, public_key: bytes | None = None) -> None:
         """
         Initialize asymmetric encryption.
         Args:
@@ -381,7 +381,7 @@ class AsymmetricEncryption:
 class SecureStorage:
     """Secure storage for sensitive data with encryption and integrity protection."""
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
+    def __init__(self, key: bytes | None = None) -> None:
         """
         Initialize secure storage.
         Args:
@@ -390,7 +390,7 @@ class SecureStorage:
         self.encryption = SymmetricEncryption(key)
         self._storage: dict[str, dict[str, Any]] = {}
 
-    def store(self, key: str, value: Any, metadata: Optional[dict[str, Any]] = None) -> None:
+    def store(self, key: str, value: Any, metadata: dict[str, Any] | None = None) -> None:
         """
         Store value securely.
         Args:
@@ -619,11 +619,11 @@ async def verify_password_async(password: str, hashed_password: str) -> bool:
 class AsyncSecureStorage:
     """Async version of SecureStorage for non-blocking operations."""
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
+    def __init__(self, key: bytes | None = None) -> None:
         """Initialize async secure storage."""
         self._storage = SecureStorage(key)
 
-    async def store(self, key: str, value: Any, metadata: Optional[dict[str, Any]] = None) -> None:
+    async def store(self, key: str, value: Any, metadata: dict[str, Any] | None = None) -> None:
         """Store value securely (async)."""
         import asyncio
         await asyncio.to_thread(self._storage.store, key, value, metadata)
@@ -662,7 +662,7 @@ class AsyncSecureStorage:
 class AsyncSymmetricEncryption:
     """Async version of SymmetricEncryption for non-blocking operations."""
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
+    def __init__(self, key: bytes | None = None) -> None:
         """Initialize async symmetric encryption."""
         self._encryption = SymmetricEncryption(key)
     @property
@@ -695,7 +695,7 @@ class AsyncSymmetricEncryption:
 class AsyncAsymmetricEncryption:
     """Async version of AsymmetricEncryption for non-blocking operations."""
 
-    def __init__(self, private_key: Optional[bytes] = None, public_key: Optional[bytes] = None) -> None:
+    def __init__(self, private_key: bytes | None = None, public_key: bytes | None = None) -> None:
         """Initialize async asymmetric encryption."""
         self._encryption = AsymmetricEncryption(private_key, public_key)
     @classmethod

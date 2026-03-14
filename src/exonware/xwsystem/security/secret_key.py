@@ -24,7 +24,8 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, MutableMapping, Optional
+
+from collections.abc import Iterable, Iterator, MutableMapping
 
 from ..config.logging_setup import get_logger
 
@@ -88,7 +89,7 @@ class SecretKeyStore(MutableMapping[str, str]):
     """
 
     def __init__(self) -> None:
-        self._cache: Dict[str, str] = {}
+        self._cache: dict[str, str] = {}
 
     # ------------------------------------------------------------------
     # Core helpers
@@ -105,14 +106,14 @@ class SecretKeyStore(MutableMapping[str, str]):
         """
         return name
 
-    def _load_from_env(self, name: str) -> Optional[str]:
+    def _load_from_env(self, name: str) -> str | None:
         env_name = self._env_key(name)
         value = os.getenv(env_name)
         if value is not None:
             return value
         return None
 
-    def _load_from_files(self, name: str) -> Optional[str]:
+    def _load_from_files(self, name: str) -> str | None:
         secrets_dir = _get_secrets_dir()
         # Ensure directory exists for developer convenience
         try:

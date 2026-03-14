@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 TAR archive format implementation.
 Priority 1 (Security): Safe TAR operations
@@ -17,7 +17,6 @@ Priority 5 (Extensibility): Registered via registry
 import sys
 import tarfile
 from pathlib import Path
-from typing import Optional
 from ...contracts import IArchiveFormat
 
 
@@ -67,7 +66,7 @@ class TarArchiver(IArchiveFormat):
                 arcname = opts.get('arcname', file_path.name)
                 tf.add(file_path, arcname=arcname)
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """Extract TAR archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
         extracted: list[Path] = []
@@ -88,7 +87,7 @@ class TarArchiver(IArchiveFormat):
         with tarfile.open(archive, 'r:*') as tf:
             return [member.name for member in tf.getmembers()]
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """Add file to TAR archive (supports compressed archives)."""
         arcname = arcname or file.name
         # Uncompressed TAR - direct append

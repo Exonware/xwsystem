@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Paged file source with MODULAR paging system.
 Uses pluggable paging strategies via registry!
@@ -16,7 +16,8 @@ Priority 5 (Extensibility): Add new strategies without changing this class!
 """
 
 from pathlib import Path
-from typing import Optional, Iterator
+
+from collections.abc import Iterator
 from ..contracts import IPagedDataSource
 from .source import FileDataSource
 from ..contracts import IPagingStrategy
@@ -45,9 +46,9 @@ class PagedFileSource(FileDataSource, IPagedDataSource[bytes | str]):
         self,
         path: str | Path,
         mode: str = 'rb',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         validate_path: bool = True,
-        paging_strategy: Optional[IPagingStrategy] = None
+        paging_strategy: IPagingStrategy | None = None
     ):
         """
         Initialize paged file source.
@@ -116,11 +117,11 @@ class PagedFileSource(FileDataSource, IPagedDataSource[bytes | str]):
                     return f.read(size)
             else:
                 encoding = options.get('encoding', self._encoding or 'utf-8')
-                with open(self._path, 'r', encoding=encoding) as f:
+                with open(self._path, encoding=encoding) as f:
                     f.seek(offset)
                     return f.read(size)
         except Exception as e:
-            raise IOError(f"Failed to read chunk from {self._path}: {e}")
+            raise OSError(f"Failed to read chunk from {self._path}: {e}")
 
     def iter_chunks(self, chunk_size: int, **options) -> Iterator[bytes | str]:
         """
@@ -130,7 +131,7 @@ class PagedFileSource(FileDataSource, IPagedDataSource[bytes | str]):
         offset = 0
         total_size = self.total_size
         if total_size < 0:
-            raise IOError(f"Cannot iterate chunks: file {self._path} doesn't exist")
+            raise OSError(f"Cannot iterate chunks: file {self._path} doesn't exist")
         while offset < total_size:
             chunk = self.read_chunk(offset, chunk_size, **options)
             if not chunk:

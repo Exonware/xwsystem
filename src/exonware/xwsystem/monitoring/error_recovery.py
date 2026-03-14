@@ -10,7 +10,9 @@ import functools
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 from .defs import CircuitState
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.error_recovery")
@@ -225,7 +227,7 @@ class ErrorRecoveryManager:
             self.circuit_breakers[name] = CircuitBreaker(name, config)
             logger.info(f"🔌 Added circuit breaker: {name}")
 
-    def get_circuit_breaker(self, name: str) -> Optional[CircuitBreaker]:
+    def get_circuit_breaker(self, name: str) -> CircuitBreaker | None:
         """Get a circuit breaker by name."""
         with self._lock:
             return self.circuit_breakers.get(name)
@@ -430,7 +432,7 @@ class ErrorRecoveryManager:
                 cb.reset()
             logger.info("🔄 All circuit breakers reset")
 # Global instance for easy access
-_error_recovery_manager: Optional[ErrorRecoveryManager] = None
+_error_recovery_manager: ErrorRecoveryManager | None = None
 
 
 def get_error_recovery_manager() -> ErrorRecoveryManager:

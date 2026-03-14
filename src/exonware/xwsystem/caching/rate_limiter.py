@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Rate limiting for caching module - Security Priority #1.
 Prevents DoS attacks via cache flooding.
@@ -14,7 +14,6 @@ Prevents DoS attacks via cache flooding.
 import time
 import threading
 from collections import deque
-from typing import Optional
 from .errors import CacheRateLimitError
 
 
@@ -32,7 +31,7 @@ class RateLimiter:
     def __init__(
         self,
         max_ops_per_second: int = 10000,
-        burst_capacity: Optional[int] = None,
+        burst_capacity: int | None = None,
         time_window: float = 1.0
     ):
         """

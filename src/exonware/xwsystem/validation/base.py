@@ -4,13 +4,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Validation module base classes - abstract classes for validation functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from .contracts import ValidationType, ValidationLevel, ConstraintType, SchemaType
@@ -86,7 +88,7 @@ class ADataValidatorBase(ABC):
         self._validation_cache: dict[str, bool] = {}
     @abstractmethod
 
-    def validate_data(self, data: Any, data_type: Optional[type] = None) -> bool:
+    def validate_data(self, data: Any, data_type: type | None = None) -> bool:
         """Validate data."""
         pass
     @abstractmethod
@@ -101,14 +103,14 @@ class ADataValidatorBase(ABC):
         pass
     @abstractmethod
 
-    def validate_range(self, data: int | float, min_value: Optional[int | float] = None, 
-                      max_value: Optional[int | float] = None) -> bool:
+    def validate_range(self, data: int | float, min_value: int | float | None = None, 
+                      max_value: int | float | None = None) -> bool:
         """Validate data range."""
         pass
     @abstractmethod
 
-    def validate_length(self, data: str | list | dict, min_length: Optional[int] = None, 
-                       max_length: Optional[int] = None) -> bool:
+    def validate_length(self, data: str | list | dict, min_length: int | None = None, 
+                       max_length: int | None = None) -> bool:
         """Validate data length."""
         pass
     @abstractmethod
@@ -143,7 +145,7 @@ class ADataValidatorBase(ABC):
         pass
     @abstractmethod
 
-    def get_validator(self, data_type: type) -> Optional[AValidatorBase]:
+    def get_validator(self, data_type: type) -> AValidatorBase | None:
         """Get validator for data type."""
         pass
 
@@ -228,7 +230,7 @@ class ADeclarativeValidatorBase(ABC):
         pass
     @abstractmethod
 
-    def get_schema(self, schema_name: str) -> Optional[dict[str, Any]]:
+    def get_schema(self, schema_name: str) -> dict[str, Any] | None:
         """Get schema definition."""
         pass
     @abstractmethod
@@ -248,7 +250,7 @@ class ADeclarativeValidatorBase(ABC):
         pass
     @abstractmethod
 
-    def get_validation_result(self, schema_name: str) -> Optional[dict[str, Any]]:
+    def get_validation_result(self, schema_name: str) -> dict[str, Any] | None:
         """Get validation result."""
         pass
     @abstractmethod
@@ -304,7 +306,7 @@ class AConstraintValidatorBase(ABC):
         pass
     @abstractmethod
 
-    def get_constraint(self, constraint_name: str) -> Optional[dict[str, Any]]:
+    def get_constraint(self, constraint_name: str) -> dict[str, Any] | None:
         """Get constraint definition."""
         pass
     @abstractmethod
@@ -314,7 +316,7 @@ class AConstraintValidatorBase(ABC):
         pass
     @abstractmethod
 
-    def get_constraint_type(self, constraint_name: str) -> Optional[ConstraintType]:
+    def get_constraint_type(self, constraint_name: str) -> ConstraintType | None:
         """Get constraint type."""
         pass
     @abstractmethod

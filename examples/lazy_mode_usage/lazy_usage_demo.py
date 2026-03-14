@@ -12,7 +12,9 @@ from __future__ import annotations
 import json
 import sys
 import traceback
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 from xwlazy.lazy import (
     LazyInstallConfig,
     config_package_lazy_install_enabled,

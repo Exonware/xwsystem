@@ -5,13 +5,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Event system for caching module.
 Extensibility Priority #5 - Event-driven architecture for custom behaviors.
 """
 
-from typing import Callable, Any, Optional
+from typing import Any
+
+from collections.abc import Callable
 from enum import Enum
 from ..config.logging_setup import get_logger
 from ..console import ConsoleEventLogger
@@ -86,7 +88,7 @@ class CacheEventEmitter:
             return True
         return False
 
-    def clear_hooks(self, event: Optional[CacheEvent] = None) -> None:
+    def clear_hooks(self, event: CacheEvent | None = None) -> None:
         """
         Clear event hooks.
         Args:
@@ -199,7 +201,7 @@ class EventLogger:
             data=event_data
         )
 
-    def get_events(self, event_type: Optional[CacheEvent] = None) -> list[dict[str, Any]]:
+    def get_events(self, event_type: CacheEvent | None = None) -> list[dict[str, Any]]:
         """
         Get logged events, optionally filtered by type.
         Returns events in a simplified format.

@@ -5,13 +5,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Cache integrity verification - Security Priority #1.
 Protects against cache poisoning and tampering.
 """
 
-from typing import Any, Optional
+from typing import Any
 from dataclasses import dataclass
 from .errors import CacheIntegrityError
 from .utils import compute_checksum

@@ -4,20 +4,22 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Caching module base classes - abstract classes for caching functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .defs import CachePolicy
 
 
 class ACache(ABC):
     """Abstract base class for all cache implementations."""
 
-    def __init__(self, capacity: int = 1000, ttl: Optional[int] = None):
+    def __init__(self, capacity: int = 1000, ttl: int | None = None):
         """
         Initialize cache base.
         Args:
@@ -32,7 +34,7 @@ class ACache(ABC):
         self._creation_times: dict[str, float] = {}
     @abstractmethod
 
-    def get(self, key: Any, default: Any = None) -> Optional[Any]:
+    def get(self, key: Any, default: Any = None) -> Any | None:
         """
         Get value from cache.
         Args:
@@ -215,7 +217,7 @@ class ACacheManager(ABC):
         pass
     @abstractmethod
 
-    def get_cache(self, name: str) -> Optional[ACache]:
+    def get_cache(self, name: str) -> ACache | None:
         """Get cache instance by name."""
         pass
     @abstractmethod

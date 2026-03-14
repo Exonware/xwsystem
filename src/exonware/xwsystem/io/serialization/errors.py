@@ -4,18 +4,17 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Error classes for XWSystem serialization module.
 """
 
-from typing import Optional
 
 
 class SerializationError(Exception):
     """Base exception for serialization errors."""
 
-    def __init__(self, message: str, format_name: str = "", original_error: Optional[Exception] = None):
+    def __init__(self, message: str, format_name: str = "", original_error: Exception | None = None):
         super().__init__(message)
         self.format_name = format_name
         self.original_error = original_error
@@ -44,7 +43,7 @@ class CborError(Exception):
 class JsonError(SerializationError):
     """JSON-specific serialization error."""
 
-    def __init__(self, message: str, original_error: Optional[Exception] = None):
+    def __init__(self, message: str, original_error: Exception | None = None):
         super().__init__(message, "JSON", original_error)
 
 

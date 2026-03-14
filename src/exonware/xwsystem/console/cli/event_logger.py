@@ -3,13 +3,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2025
 CLI Event Logger - Extends Python's logging.Logger with event logging capabilities.
 """
 
 import logging
-from typing import Optional, Any
+from typing import Any
 from ..event_logger import ConsoleEventLogger
 from ..contracts import IEventLogger
 from ..defs import LogLevel, ConsoleEventType, ConsoleEvent
@@ -43,10 +43,10 @@ class CliEventLogger(logging.Logger):
     def log_event(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None,
-        color: Optional[str] = None,
-        label: Optional[str] = None
+        source: str | None = None,
+        data: Any | None = None,
+        color: str | None = None,
+        label: str | None = None
     ) -> ConsoleEvent:
         """Log a general event message."""
         event = self._event_logger.log(msg, source=source, data=data, color=color, label=label)
@@ -57,8 +57,8 @@ class CliEventLogger(logging.Logger):
     def info_event(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log an info event."""
         event = self._event_logger.info(msg, source=source, data=data)
@@ -68,8 +68,8 @@ class CliEventLogger(logging.Logger):
     def warn_event(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a warning event."""
         event = self._event_logger.warn(msg, source=source, data=data)
@@ -79,9 +79,9 @@ class CliEventLogger(logging.Logger):
     def error_event(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None,
-        stack: Optional[str] = None
+        source: str | None = None,
+        data: Any | None = None,
+        stack: str | None = None
     ) -> ConsoleEvent:
         """Log an error event."""
         event = self._event_logger.error(msg, source=source, data=data, stack=stack)
@@ -91,8 +91,8 @@ class CliEventLogger(logging.Logger):
     def debug_event(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a debug event."""
         event = self._event_logger.debug(msg, source=source, data=data)
@@ -133,10 +133,10 @@ class CliEventLogger(logging.Logger):
 
     def get_events(
         self,
-        event_type: Optional[ConsoleEventType] = None,
-        level: Optional[LogLevel] = None,
-        source: Optional[str] = None,
-        limit: Optional[int] = None
+        event_type: ConsoleEventType | None = None,
+        level: LogLevel | None = None,
+        source: str | None = None,
+        limit: int | None = None
     ) -> list[dict]:
         """Get logged events as dictionaries."""
         return self._event_logger.get_events(event_type=event_type, level=level, source=source, limit=limit)

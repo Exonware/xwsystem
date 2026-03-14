@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Automatic serializer that detects format and delegates to appropriate serializer.
 """
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from .format_detector import FormatDetector, detect_format
 from .contracts import ISerialization
 from ...config.logging_setup import get_logger
@@ -173,8 +173,8 @@ class AutoSerializer:
     def detect_and_serialize(
         self, 
         data: Any, 
-        file_path: Optional[str | Path] = None,
-        format_hint: Optional[str] = None,
+        file_path: str | Path | None = None,
+        format_hint: str | None = None,
         **opts
     ) -> str | bytes:
         """
@@ -224,8 +224,8 @@ class AutoSerializer:
     def detect_and_deserialize(
         self, 
         data: str | bytes, 
-        file_path: Optional[str | Path] = None,
-        format_hint: Optional[str] = None
+        file_path: str | Path | None = None,
+        format_hint: str | None = None
     ) -> Any:
         """
         Auto-detect format and deserialize data.
@@ -257,7 +257,7 @@ class AutoSerializer:
         self, 
         data: Any, 
         file_path: str | Path, 
-        format_hint: Optional[str] = None
+        format_hint: str | None = None
     ) -> None:
         """
         Auto-detect format and save to file.
@@ -282,7 +282,7 @@ class AutoSerializer:
         self, 
         data: Any, 
         file_path: str | Path, 
-        format_hint: Optional[str] = None,
+        format_hint: str | None = None,
         **opts
     ) -> None:
         """
@@ -298,7 +298,7 @@ class AutoSerializer:
     def load_file(
         self, 
         file_path: str | Path, 
-        format_hint: Optional[str] = None,
+        format_hint: str | None = None,
         **opts
     ) -> Any:
         """
@@ -315,7 +315,7 @@ class AutoSerializer:
     def auto_load_file(
         self, 
         file_path: str | Path, 
-        format_hint: Optional[str] = None
+        format_hint: str | None = None
     ) -> Any:
         """
         Auto-detect format and load from file.
@@ -344,7 +344,7 @@ class AutoSerializer:
                         data=sample
                     )
                 else:
-                    with open(path, 'r', encoding='utf-8') as f:
+                    with open(path, encoding='utf-8') as f:
                         sample = f.read(1024)
                     format_name = self._detector.get_best_format(
                         file_path=file_path, 
@@ -365,7 +365,7 @@ class AutoSerializer:
         self, 
         data: Any, 
         file_path: str | Path, 
-        format_hint: Optional[str] = None
+        format_hint: str | None = None
     ) -> None:
         """
         Auto-detect format and save to file asynchronously.
@@ -388,7 +388,7 @@ class AutoSerializer:
     async def auto_load_file_async(
         self, 
         file_path: str | Path, 
-        format_hint: Optional[str] = None
+        format_hint: str | None = None
     ) -> Any:
         """
         Auto-detect format and load from file asynchronously.
@@ -418,7 +418,7 @@ class AutoSerializer:
     def get_format_suggestions(
         self, 
         data: str | bytes, 
-        file_path: Optional[str | Path] = None
+        file_path: str | Path | None = None
     ) -> list[tuple[str, float]]:
         """
         Get format suggestions for given data.
@@ -444,8 +444,8 @@ _global_auto_serializer = AutoSerializer()
 
 def auto_serialize(
     data: Any, 
-    file_path: Optional[str | Path] = None,
-    format_hint: Optional[str] = None,
+    file_path: str | Path | None = None,
+    format_hint: str | None = None,
     **opts
 ) -> str | bytes:
     """
@@ -463,8 +463,8 @@ def auto_serialize(
 
 def auto_deserialize(
     data: str | bytes, 
-    file_path: Optional[str | Path] = None,
-    format_hint: Optional[str] = None
+    file_path: str | Path | None = None,
+    format_hint: str | None = None
 ) -> Any:
     """
     Convenience function for auto-deserialization.
@@ -481,7 +481,7 @@ def auto_deserialize(
 def auto_save_file(
     data: Any, 
     file_path: str | Path, 
-    format_hint: Optional[str] = None
+    format_hint: str | None = None
 ) -> None:
     """
     Convenience function for auto-saving files.
@@ -495,7 +495,7 @@ def auto_save_file(
 
 def auto_load_file(
     file_path: str | Path, 
-    format_hint: Optional[str] = None
+    format_hint: str | None = None
 ) -> Any:
     """
     Convenience function for auto-loading files.

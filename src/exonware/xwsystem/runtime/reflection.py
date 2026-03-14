@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Reflection utilities for dynamic code inspection and manipulation.
 """
@@ -12,7 +12,9 @@ import importlib
 import inspect
 import sys
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.runtime.reflection")
 
@@ -104,7 +106,7 @@ class ReflectionUtils:
         }
     @staticmethod
 
-    def _get_source_lines(obj: Any) -> Optional[dict[str, Any]]:
+    def _get_source_lines(obj: Any) -> dict[str, Any] | None:
         """Get source lines for an object."""
         try:
             source_lines, start_line = inspect.getsourcelines(obj)
@@ -117,7 +119,7 @@ class ReflectionUtils:
             return None
     @staticmethod
 
-    def import_module(module_name: str, package: Optional[str] = None) -> Any:
+    def import_module(module_name: str, package: str | None = None) -> Any:
         """
         Dynamically import a module.
         Args:
@@ -214,7 +216,7 @@ class ReflectionUtils:
         return func(*args, **kwargs)
     @staticmethod
 
-    def find_classes_in_module(module: Any, base_class: Optional[type] = None) -> list[type]:
+    def find_classes_in_module(module: Any, base_class: type | None = None) -> list[type]:
         """
         Find all classes in a module, optionally filtered by base class.
         Args:
@@ -231,7 +233,7 @@ class ReflectionUtils:
         return classes
     @staticmethod
 
-    def find_functions_in_module(module: Any, decorator: Optional[Any] = None) -> list[Callable]:
+    def find_functions_in_module(module: Any, decorator: Any | None = None) -> list[Callable]:
         """
         Find all functions in a module, optionally filtered by decorator.
         Args:

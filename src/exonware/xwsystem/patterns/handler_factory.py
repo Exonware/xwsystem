@@ -5,7 +5,9 @@ Generic handler factory pattern combining all xwsystem utilities.
 """
 
 import logging
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from .contracts import IHandler
@@ -29,7 +31,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
 
     def __init__(
         self,
-        base_path: Optional[str] = None,
+        base_path: str | None = None,
         enable_security: bool = True,
         enable_circular_detection: bool = True,
         max_circular_depth: int = 100,
@@ -67,7 +69,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
         self,
         name: str,
         handler_class: type[T],
-        extensions: Optional[list[str]] = None,
+        extensions: list[str] | None = None,
         validate_class: bool = True,
     ) -> None:
         """
@@ -137,7 +139,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
         target_path: str,
         writer_func: Callable,
         mode: str = "w",
-        encoding: Optional[str] = "utf-8",
+        encoding: str | None = "utf-8",
         backup: bool = True,
     ) -> None:
         """
@@ -159,7 +161,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
         )
 
     def validate_data_structure(
-        self, data: Any, max_depth: Optional[int] = None
+        self, data: Any, max_depth: int | None = None
     ) -> bool:
         """
         Validate a data structure for circular references.
@@ -184,7 +186,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
         return True
 
     def create_safe_temp_file(
-        self, prefix: Optional[str] = None, suffix: Optional[str] = None
+        self, prefix: str | None = None, suffix: str | None = None
     ) -> str:
         """
         Create a safe temporary file path.
@@ -271,7 +273,7 @@ class GenericHandlerFactory[T](ThreadSafeFactory[T]):
 class HandlerFactory[T](GenericHandlerFactory[T]):
     """Simplified handler factory."""
 
-    def __init__(self, base_path: Optional[str] = None):
+    def __init__(self, base_path: str | None = None):
         """Initialize handler factory with basic settings."""
         super().__init__(
             base_path=base_path,
@@ -287,7 +289,7 @@ class HandlerFactory[T](GenericHandlerFactory[T]):
             raise ValueError(f"Handler '{name}' not found")
         return handler_class(*args, **kwargs)
 
-    def register_handler(self, name: str, handler_class: type[T], extensions: Optional[list[str]] = None):
+    def register_handler(self, name: str, handler_class: type[T], extensions: list[str] | None = None):
         """Register a handler class."""
         self.register_safe(name, handler_class, extensions)
 

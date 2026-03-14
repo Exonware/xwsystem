@@ -16,7 +16,6 @@ import asyncio
 import urllib.parse
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 from .common.atomic import FileOperationError
 from .stream.async_operations import async_safe_read_text
 # -----------------------------------------------------------------------------
@@ -103,10 +102,10 @@ def _validate_config(uri_or_path: str, config: SourceLoadConfig) -> None:
 # -----------------------------------------------------------------------------
 async def read_source_text(
     uri_or_path: str,
-    config: Optional[SourceLoadConfig] = None,
-    timeout_sec: Optional[float] = None,
-    max_size_mb: Optional[float] = None,
-    encoding: Optional[str] = None,
+    config: SourceLoadConfig | None = None,
+    timeout_sec: float | None = None,
+    max_size_mb: float | None = None,
+    encoding: str | None = None,
 ) -> tuple[str, dict]:
     """
     Read text from a URI or local path (async). All scheme and fetch logic here.
@@ -146,7 +145,7 @@ async def _read_http_text(
     url: str, timeout_sec: float, max_size_mb: float
 ) -> tuple[str, dict]:
     """Fetch http(s) URL; return (text, metadata)."""
-    content_type: Optional[str] = None
+    content_type: str | None = None
     try:
         try:
             import aiohttp
@@ -157,7 +156,7 @@ async def _read_http_text(
                     raw = await response.read()
                     content_type = response.headers.get('Content-Type') or None
         except ImportError:
-            def _fetch() -> tuple[bytes, Optional[str]]:
+            def _fetch() -> tuple[bytes, str | None]:
                 req = urllib.request.Request(url)
                 with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
                     ct = resp.headers.get('Content-Type')

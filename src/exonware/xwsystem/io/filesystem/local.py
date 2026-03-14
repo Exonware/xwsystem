@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Local filesystem implementation.
 Priority 1 (Security): Safe local file operations
@@ -15,7 +15,7 @@ Priority 5 (Extensibility): Foundation for other FS (S3, FTP, etc.)
 """
 
 from pathlib import Path
-from typing import Optional, Any
+from typing import Any
 from ..contracts import IFileSystem
 
 
@@ -34,7 +34,7 @@ class LocalFileSystem(IFileSystem):
         >>> fs.write_text("file.txt", "content")  # Saves to S3!
     """
 
-    def __init__(self, base_path: Optional[str | Path] = None):
+    def __init__(self, base_path: str | Path | None = None):
         """
         Initialize local filesystem.
         Args:

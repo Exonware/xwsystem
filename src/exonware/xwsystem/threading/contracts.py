@@ -4,12 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Threading protocol interfaces for XWSystem.
 """
 
-from typing import Any, Optional, Iterator, Callable, Coroutine, Awaitable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator, Callable, Coroutine, Awaitable
 import threading
 import asyncio
 # Import enums from types module
@@ -31,7 +33,7 @@ class ILockable(Protocol):
     Enforces consistent locking behavior across XWSystem.
     """
 
-    def acquire_lock(self, blocking: bool = True, timeout: Optional[float] = None) -> bool:
+    def acquire_lock(self, blocking: bool = True, timeout: float | None = None) -> bool:
         """
         Acquire lock.
         Args:
@@ -56,7 +58,7 @@ class ILockable(Protocol):
         """
         ...
 
-    def try_lock(self, timeout: Optional[float] = None) -> bool:
+    def try_lock(self, timeout: float | None = None) -> bool:
         """
         Try to acquire lock without blocking.
         Args:
@@ -74,7 +76,7 @@ class ILockable(Protocol):
         """
         ...
 
-    def get_lock_owner(self) -> Optional[str]:
+    def get_lock_owner(self) -> str | None:
         """
         Get lock owner thread ID.
         Returns:
@@ -222,7 +224,7 @@ class IThreadSafe(Protocol):
         """
         ...
 
-    def wait_for_threads(self, timeout: Optional[float] = None) -> bool:
+    def wait_for_threads(self, timeout: float | None = None) -> bool:
         """
         Wait for all threads to complete.
         Args:
@@ -336,7 +338,7 @@ class IConcurrencyControl(Protocol):
     Enforces consistent concurrency control across XWSystem.
     """
 
-    def acquire_resource(self, resource_id: str, timeout: Optional[float] = None) -> bool:
+    def acquire_resource(self, resource_id: str, timeout: float | None = None) -> bool:
         """
         Acquire resource for exclusive access.
         Args:
@@ -365,7 +367,7 @@ class IConcurrencyControl(Protocol):
         """
         ...
 
-    def get_resource_owner(self, resource_id: str) -> Optional[str]:
+    def get_resource_owner(self, resource_id: str) -> str | None:
         """
         Get resource owner.
         Args:
@@ -375,7 +377,7 @@ class IConcurrencyControl(Protocol):
         """
         ...
 
-    def wait_for_resource(self, resource_id: str, timeout: Optional[float] = None) -> bool:
+    def wait_for_resource(self, resource_id: str, timeout: float | None = None) -> bool:
         """
         Wait for resource to become available.
         Args:
@@ -412,7 +414,7 @@ class ISynchronization(Protocol):
     Enforces consistent synchronization across XWSystem.
     """
 
-    def wait(self, timeout: Optional[float] = None) -> bool:
+    def wait(self, timeout: float | None = None) -> bool:
         """
         Wait for condition.
         Args:
@@ -566,7 +568,7 @@ class IThreadMonitor(Protocol):
         """
         ...
 
-    def get_thread_by_id(self, thread_id: int) -> Optional[dict[str, Any]]:
+    def get_thread_by_id(self, thread_id: int) -> dict[str, Any] | None:
         """
         Get thread by ID.
         Args:

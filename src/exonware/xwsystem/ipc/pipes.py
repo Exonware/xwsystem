@@ -15,7 +15,9 @@ import platform
 import sys
 import threading
 import multiprocessing as mp
-from typing import Any, Optional, Callable, BinaryIO
+from typing import Any, BinaryIO
+
+from collections.abc import Callable
 import pickle
 import struct
 import logging
@@ -98,7 +100,7 @@ class Pipe:
             self._read_handle = self._read_conn
             self._write_handle = self._write_conn
 
-    def send(self, data: Any, timeout: Optional[float] = None) -> bool:
+    def send(self, data: Any, timeout: float | None = None) -> bool:
         """
         Send data through the pipe.
         Args:
@@ -130,7 +132,7 @@ class Pipe:
                 logger.error(f"Failed to send data through pipe: {e}")
                 return False
 
-    def recv(self, timeout: Optional[float] = None) -> Optional[Any]:
+    def recv(self, timeout: float | None = None) -> Any | None:
         """
         Receive data from the pipe.
         Args:
@@ -209,9 +211,9 @@ class AsyncPipe:
             buffer_size: Buffer size for data transfer
         """
         self.buffer_size = buffer_size
-        self._reader: Optional[asyncio.StreamReader] = None
-        self._writer: Optional[asyncio.StreamWriter] = None
-        self._server: Optional[asyncio.Server] = None
+        self._reader: asyncio.StreamReader | None = None
+        self._writer: asyncio.StreamWriter | None = None
+        self._server: asyncio.Server | None = None
         self._closed = False
         # Create async pipe using Unix domain socket or named pipe
         self._pipe_path = None
@@ -288,7 +290,7 @@ class AsyncPipe:
             logger.error(f"Failed to connect to async pipe: {e}")
             return False
 
-    async def send(self, data: Any, timeout: Optional[float] = None) -> bool:
+    async def send(self, data: Any, timeout: float | None = None) -> bool:
         """
         Send data through the async pipe.
         Args:
@@ -321,7 +323,7 @@ class AsyncPipe:
             logger.error(f"Failed to send data through async pipe: {e}")
             return False
 
-    async def recv(self, timeout: Optional[float] = None) -> Optional[Any]:
+    async def recv(self, timeout: float | None = None) -> Any | None:
         """
         Receive data from the async pipe.
         Args:

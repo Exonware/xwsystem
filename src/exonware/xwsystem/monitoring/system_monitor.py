@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 System-wide monitoring and hardware introspection utilities.
 """
@@ -12,7 +12,7 @@ import os
 import platform
 import time
 from dataclasses import dataclass
-from typing import Optional, Any
+from typing import Any
 from pathlib import Path
 # Import psutil - lazy installation system will handle it if missing
 import psutil
@@ -31,10 +31,10 @@ class ProcessInfo:
     memory_vms: int  # Virtual Memory Size in bytes
     create_time: float
     num_threads: int
-    username: Optional[str] = None
-    cmdline: Optional[list[str]] = None
-    cwd: Optional[str] = None
-    exe: Optional[str] = None
+    username: str | None = None
+    cmdline: list[str] | None = None
+    cwd: str | None = None
+    exe: str | None = None
 @dataclass
 
 class SystemInfo:
@@ -51,9 +51,9 @@ class SystemInfo:
     # CPU info
     cpu_count_logical: int
     cpu_count_physical: int
-    cpu_freq_current: Optional[float]
-    cpu_freq_min: Optional[float]
-    cpu_freq_max: Optional[float]
+    cpu_freq_current: float | None
+    cpu_freq_min: float | None
+    cpu_freq_max: float | None
     # Memory info
     memory_total: int
     memory_available: int
@@ -101,7 +101,7 @@ class NetworkConnection:
     remote_address: str
     remote_port: int
     status: str
-    pid: Optional[int] = None
+    pid: int | None = None
 
 
 class SystemMonitor:
@@ -129,7 +129,7 @@ class SystemMonitor:
     # PROCESS MONITORING
     # =============================================================================
 
-    def list_processes(self, attrs: Optional[list[str]] = None) -> list[ProcessInfo]:
+    def list_processes(self, attrs: list[str] | None = None) -> list[ProcessInfo]:
         """
         List all running processes.
         Args:
@@ -164,7 +164,7 @@ class SystemMonitor:
                 continue
         return processes
 
-    def get_process(self, pid: int) -> Optional[ProcessInfo]:
+    def get_process(self, pid: int) -> ProcessInfo | None:
         """
         Get detailed information about a specific process.
         Args:
@@ -569,7 +569,7 @@ def list_processes() -> list[ProcessInfo]:
     return _system_monitor.list_processes()
 
 
-def get_process(pid: int) -> Optional[ProcessInfo]:
+def get_process(pid: int) -> ProcessInfo | None:
     """Get process information by PID."""
     return _system_monitor.get_process(pid)
 

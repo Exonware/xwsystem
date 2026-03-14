@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2026
 XWCache - Unified Caching Facade
 Simplified API for all caching strategies:
@@ -13,7 +13,9 @@ Simplified API for all caching strategies:
 - Decorator support
 """
 
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 from functools import wraps
 from . import (
     LRUCache, AsyncLRUCache,
@@ -63,9 +65,9 @@ class XWCache:
         self,
         strategy: str = "LRU",
         *,
-        name: Optional[str] = None,
+        name: str | None = None,
         capacity: int = 1000,
-        ttl: Optional[int] = None,
+        ttl: int | None = None,
         async_mode: bool = False,
         memory_bounded: bool = False,
         two_tier: bool = False,
@@ -182,7 +184,7 @@ class XWCache:
         cls,
         strategy: str = "LRU",
         capacity: int = 1000,
-        ttl: Optional[int] = None,
+        ttl: int | None = None,
         async_mode: bool = False,
         **kwargs
     ):

@@ -6,13 +6,15 @@ Production-grade table formatting for XWSystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 05, 2025
 """
 
 from __future__ import annotations
 import sys
-from typing import Any, Optional, TextIO, Callable
+from typing import Any, TextIO
+
+from collections.abc import Callable
 from dataclasses import dataclass
 # Import general console enums from console level (priority)
 from ..defs import Alignment, BorderStyle, Colors, Style
@@ -30,15 +32,15 @@ class CliColumn:
     - Data validation and transformation
     """
     header: str
-    width: Optional[int] = None
+    width: int | None = None
     alignment: Alignment = Alignment.LEFT
-    color: Optional[str] = None
-    style: Optional[str] = None
-    header_color: Optional[str] = None
-    header_style: Optional[str] = None
-    formatter: Optional[Callable[[Any], str]] = None
+    color: str | None = None
+    style: str | None = None
+    header_color: str | None = None
+    header_style: str | None = None
+    formatter: Callable[[Any], str] | None = None
     min_width: int = 1
-    max_width: Optional[int] = None
+    max_width: int | None = None
 
     def __post_init__(self):
         """Initialize column defaults."""

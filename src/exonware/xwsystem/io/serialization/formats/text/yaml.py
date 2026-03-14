@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 YAML serialization - Human-readable data serialization format.
 Following I→A pattern:
@@ -12,7 +12,9 @@ Following I→A pattern:
 - Concrete: YamlSerializer
 """
 
-from typing import Any, Optional, Iterator
+from typing import Any
+
+from collections.abc import Iterator
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -139,7 +141,7 @@ class YamlSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using PyYAML library)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to YAML string.
         Uses PyYAML's yaml.dump().
@@ -174,7 +176,7 @@ class YamlSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode YAML string to data.
         Uses PyYAML's yaml.safe_load() for security.

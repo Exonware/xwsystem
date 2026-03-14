@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 Marshal serialization - Python internal serialization.
 Following I→A pattern:
@@ -13,7 +13,7 @@ Following I→A pattern:
 """
 
 import marshal
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -87,7 +87,7 @@ class MarshalSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using marshal module)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to Marshal bytes.
         Uses marshal.dumps().
@@ -112,7 +112,7 @@ class MarshalSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode Marshal bytes to data.
         Uses marshal.loads().

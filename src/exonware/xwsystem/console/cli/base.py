@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 CLI module base classes - abstract classes for command-line interface functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 from .contracts import ColorType, ProgressStyle, TableStyle, PromptType, ICLI
 from ..base import AConsoleWriter
 from exonware.xwsystem.version import __version__
@@ -23,7 +23,7 @@ class AConsoleBase(AConsoleWriter):
     """
     @abstractmethod
 
-    def print(self, text: str, color: Optional[ColorType] = None, **kwargs) -> None:
+    def print(self, text: str, color: ColorType | None = None, **kwargs) -> None:
         """Print text to console with optional color."""
         pass
     @abstractmethod
@@ -119,12 +119,12 @@ class CliAPromptBase(ABC):
         pass
     @abstractmethod
 
-    def select(self, message: str, choices: list[str], default: Optional[str] = None) -> str:
+    def select(self, message: str, choices: list[str], default: str | None = None) -> str:
         """Ask user to select from choices."""
         pass
     @abstractmethod
 
-    def multiselect(self, message: str, choices: list[str], default: Optional[list[str]] = None) -> list[str]:
+    def multiselect(self, message: str, choices: list[str], default: list[str] | None = None) -> list[str]:
         """Ask user to select multiple choices."""
         pass
 
@@ -147,7 +147,7 @@ class CliAArgumentParserBase(ABC):
         pass
     @abstractmethod
 
-    def parse_args(self, args: Optional[list[str]] = None) -> Any:
+    def parse_args(self, args: list[str] | None = None) -> Any:
         """Parse command line arguments."""
         pass
     @abstractmethod
@@ -209,7 +209,7 @@ class CliBase(ICLI):
         """Add an option to the CLI."""
         self._options[name] = option
 
-    def run(self, args: Optional[list[str]] = None) -> int:
+    def run(self, args: list[str] | None = None) -> int:
         """Run the CLI."""
         if not args:
             args = []

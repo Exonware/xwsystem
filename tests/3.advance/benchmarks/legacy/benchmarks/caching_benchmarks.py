@@ -16,7 +16,9 @@ import sys
 import threading
 import asyncio
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 from dataclasses import dataclass, asdict
 import statistics
 # Add src to path

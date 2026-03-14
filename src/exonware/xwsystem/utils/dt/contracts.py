@@ -3,12 +3,12 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 DateTime module contracts - interfaces and enums for date/time functionality.
 """
 
-from typing import Any, Optional, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 from datetime import datetime, date, time, timezone
 # Import enums from types module
 from .defs import (
@@ -40,15 +40,15 @@ class IDateTimeFormatter(Protocol):
 class IDateTimeParser(Protocol):
     """Interface for date/time parsing."""
 
-    def parse_datetime(self, date_string: str, format_type: Optional[TimeFormat] = None) -> datetime:
+    def parse_datetime(self, date_string: str, format_type: TimeFormat | None = None) -> datetime:
         """Parse datetime string."""
         ...
 
-    def parse_date(self, date_string: str, format_type: Optional[DateFormat] = None) -> date:
+    def parse_date(self, date_string: str, format_type: DateFormat | None = None) -> date:
         """Parse date string."""
         ...
 
-    def parse_time(self, time_string: str, format_type: Optional[TimeFormat] = None) -> time:
+    def parse_time(self, time_string: str, format_type: TimeFormat | None = None) -> time:
         """Parse time string."""
         ...
 @runtime_checkable
@@ -56,11 +56,11 @@ class IDateTimeParser(Protocol):
 class IDateTimeHumanizer(Protocol):
     """Interface for humanizing time differences."""
 
-    def humanize(self, dt: datetime, reference: Optional[datetime] = None) -> str:
+    def humanize(self, dt: datetime, reference: datetime | None = None) -> str:
         """Humanize datetime relative to reference."""
         ...
 
-    def natural_time(self, dt: datetime, reference: Optional[datetime] = None) -> str:
+    def natural_time(self, dt: datetime, reference: datetime | None = None) -> str:
         """Get natural time representation."""
         ...
 @runtime_checkable

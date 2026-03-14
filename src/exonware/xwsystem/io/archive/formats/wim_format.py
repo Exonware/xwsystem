@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 1, 2025
 WIM (Windows Imaging) format - RANK #9 SYSTEM IMAGES.
 **Used by Microsoft for system images**
@@ -16,7 +16,6 @@ Priority 5 (Extensibility): Lazy installation of wimlib
 """
 
 from pathlib import Path
-from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 # Optional dependency: wimlib
@@ -88,7 +87,7 @@ class WimArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create WIM image: {e}")
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """Extract WIM image."""
         output_dir.mkdir(parents=True, exist_ok=True)
         try:
@@ -112,7 +111,7 @@ class WimArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to list WIM contents: {e}")
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """Add image to WIM."""
         try:
             wim = wimlib.WIM(str(archive), 'rw')

@@ -3,15 +3,17 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 IO module contracts - interfaces and enums for input/output operations.
 """
 
 from __future__ import annotations
 from typing import Protocol, runtime_checkable
-from typing import Any, Optional, AsyncGenerator, BinaryIO, TextIO, Protocol, runtime_checkable, Callable, Iterator
-from typing_extensions import TypeAlias
+from typing import Any, BinaryIO, TextIO, Protocol, runtime_checkable
+
+from collections.abc import AsyncGenerator, Callable, Iterator
+from typing import TypeAlias
 from pathlib import Path
 # Type aliases for codec options
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
@@ -51,7 +53,7 @@ class IFile(Protocol):
         """Open file with specified mode."""
         ...
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """Read from file."""
         ...
 
@@ -167,12 +169,12 @@ class IFile(Protocol):
         ...
     @staticmethod
 
-    def safe_read_text(path: str | Path, encoding: str = 'utf-8') -> Optional[str]:
+    def safe_read_text(path: str | Path, encoding: str = 'utf-8') -> str | None:
         """Safely read text file, returning None on error."""
         ...
     @staticmethod
 
-    def safe_read_bytes(path: str | Path) -> Optional[bytes]:
+    def safe_read_bytes(path: str | Path) -> bytes | None:
         """Safely read binary file, returning None on error."""
         ...
     @staticmethod
@@ -211,7 +213,7 @@ class IFile(Protocol):
         ...
     @staticmethod
 
-    def create_backup(source: str | Path, backup_dir: str | Path) -> Optional[Path]:
+    def create_backup(source: str | Path, backup_dir: str | Path) -> Path | None:
         """Create backup of file (static version)."""
         ...
     @staticmethod
@@ -221,12 +223,12 @@ class IFile(Protocol):
         ...
     @staticmethod
 
-    def create_temp_file(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file (static version)."""
         ...
     @staticmethod
 
-    def create_temp_directory(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory (static version)."""
         ...
 # ============================================================================
@@ -255,7 +257,7 @@ class IFolder(Protocol):
         """Delete directory."""
         ...
 
-    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files(self, pattern: str | None = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         ...
 
@@ -302,7 +304,7 @@ class IFolder(Protocol):
         ...
     @staticmethod
 
-    def list_files_static(path: str | Path, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files_static(path: str | Path, pattern: str | None = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         ...
     @staticmethod
@@ -388,7 +390,7 @@ class IPath(Protocol):
         ...
     @staticmethod
 
-    def relative(path: str | Path, start: Optional[str | Path] = None) -> Path:
+    def relative(path: str | Path, start: str | Path | None = None) -> Path:
         """Get relative path."""
         ...
     @staticmethod
@@ -468,7 +470,7 @@ class IStream(Protocol):
     # INSTANCE METHODS
     # ============================================================================
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """Read from stream."""
         ...
 
@@ -496,7 +498,7 @@ class IStream(Protocol):
     # ============================================================================
     @staticmethod
 
-    def open_file(path: str | Path, mode: str = 'r', encoding: Optional[str] = None) -> TextIO | BinaryIO:
+    def open_file(path: str | Path, mode: str = 'r', encoding: str | None = None) -> TextIO | BinaryIO:
         """Open file as stream."""
         ...
     @staticmethod
@@ -536,7 +538,7 @@ class IAsyncIO(Protocol):
     # INSTANCE METHODS
     # ============================================================================
 
-    async def aread(self, size: Optional[int] = None) -> str | bytes:
+    async def aread(self, size: int | None = None) -> str | bytes:
         """Async read operation."""
         ...
 
@@ -564,7 +566,7 @@ class IAsyncIO(Protocol):
     # ============================================================================
     @staticmethod
 
-    async def aopen_file(path: str | Path, mode: str = 'r', encoding: Optional[str] = None) -> Any:
+    async def aopen_file(path: str | Path, mode: str = 'r', encoding: str | None = None) -> Any:
         """Async open file."""
         ...
     @staticmethod
@@ -670,7 +672,7 @@ class IBackupOperations(Protocol):
     # INSTANCE METHODS
     # ============================================================================
 
-    def create_backup(self, source: str | Path, backup_dir: str | Path) -> Optional[Path]:
+    def create_backup(self, source: str | Path, backup_dir: str | Path) -> Path | None:
         """Create backup of file or directory."""
         ...
 
@@ -694,7 +696,7 @@ class IBackupOperations(Protocol):
     # ============================================================================
     @staticmethod
 
-    def create_backup_static(source: str | Path, backup_dir: str | Path) -> Optional[Path]:
+    def create_backup_static(source: str | Path, backup_dir: str | Path) -> Path | None:
         """Create backup of file or directory."""
         ...
     @staticmethod
@@ -734,11 +736,11 @@ class ITemporaryOperations(Protocol):
     # INSTANCE METHODS
     # ============================================================================
 
-    def create_temp_file(self, suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file(self, suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file."""
         ...
 
-    def create_temp_directory(self, suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory(self, suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory."""
         ...
 
@@ -754,12 +756,12 @@ class ITemporaryOperations(Protocol):
     # ============================================================================
     @staticmethod
 
-    def create_temp_file_static(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file_static(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file."""
         ...
     @staticmethod
 
-    def create_temp_directory_static(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory_static(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory."""
         ...
     @staticmethod
@@ -956,7 +958,7 @@ class IArchiveFormat(Protocol):
         """Create archive from files."""
         ...
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """Extract archive."""
         ...
 
@@ -964,7 +966,7 @@ class IArchiveFormat(Protocol):
         """List archive contents."""
         ...
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """Add file to existing archive."""
         ...
 @runtime_checkable
@@ -1046,7 +1048,7 @@ class ICodec[T, R](Protocol):
         - Composable via adapters
     """
 
-    def encode(self, value: T, *, options: Optional[EncodeOptions] = None) -> R:
+    def encode(self, value: T, *, options: EncodeOptions | None = None) -> R:
         """
         Encode a model to its representation.
         Args:
@@ -1066,7 +1068,7 @@ class ICodec[T, R](Protocol):
         """
         ...
 
-    def decode(self, repr: R, *, options: Optional[DecodeOptions] = None) -> T:
+    def decode(self, repr: R, *, options: DecodeOptions | None = None) -> T:
         """
         Decode a representation to a model.
         Args:
@@ -1349,7 +1351,7 @@ class IPagingStrategy(Protocol):
         page: int,
         page_size: int,
         mode: str = 'rb',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         **options
     ) -> bytes | str:
         """
@@ -1371,7 +1373,7 @@ class IPagingStrategy(Protocol):
         file_path: Path,
         page_size: int,
         mode: str = 'rb',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         **options
     ) -> Iterator[bytes | str]:
         """
@@ -1418,7 +1420,7 @@ class IFolderSource(Protocol):
         """Delete directory."""
         ...
 
-    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files(self, pattern: str | None = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         ...
 # From manager/

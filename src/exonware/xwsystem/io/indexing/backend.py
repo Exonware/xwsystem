@@ -14,7 +14,9 @@ Email: connect@exonware.com
 from __future__ import annotations
 import re
 from pathlib import Path
-from typing import Any, Iterator, Optional, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator
 from exonware.xwsystem import get_logger, get_serializer, JsonSerializer
 logger = get_logger(__name__)
 # Reuse xwsystem JsonSerializer (flyweight) for file persistence and performance
@@ -25,7 +27,7 @@ _json = get_serializer(JsonSerializer)
 class IIndexBackend(Protocol):
     """Pluggable index backend for key-based get/put/delete and range scan."""
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         """Return value for key or None."""
         ...
 
@@ -55,7 +57,7 @@ class InMemoryIndexBackend:
     def __init__(self) -> None:
         self._store: dict[str, Any] = {}
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         return self._store.get(key)
 
     def put(self, key: str, value: Any) -> None:
@@ -101,7 +103,7 @@ class FileBackedIndexBackend:
         self._path.parent.mkdir(parents=True, exist_ok=True)
         _json.save_file(self._store, self._path)
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         return self._store.get(key)
 
     def put(self, key: str, value: Any) -> None:
@@ -136,7 +138,7 @@ class BTreeIndexBackend:
         self._store: dict[str, Any] = {}
         self._sorted_keys: list[str] = []
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         return self._store.get(key)
 
     def put(self, key: str, value: Any) -> None:

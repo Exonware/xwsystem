@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2026
 XWHTTP - Unified HTTP Client Facade
 Simplified API for HTTP operations:
@@ -13,7 +13,7 @@ Simplified API for HTTP operations:
 - Retry logic
 """
 
-from typing import Any, Optional, Dict
+from typing import Any
 from pathlib import Path
 from .client import HttpClient, AsyncHttpClient, HttpError, RetryConfig
 from .advanced_client import AdvancedHttpClient, AdvancedHttpConfig
@@ -40,7 +40,7 @@ class XWHTTP:
 
     def __init__(
         self,
-        base_url: Optional[str] = None,
+        base_url: str | None = None,
         timeout: int = 30,
         retries: int = 3,
         async_mode: bool = False,

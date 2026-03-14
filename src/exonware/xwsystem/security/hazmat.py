@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Hazardous Materials (Hazmat) Layer - Low-level cryptographic primitives.
 ⚠️  WARNING: This module provides direct access to cryptographic primitives.
@@ -20,7 +20,7 @@ Features:
 
 from __future__ import annotations
 import os
-from typing import Any, Optional
+from typing import Any
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, ec, ed25519, x25519, padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -69,7 +69,7 @@ class AES_GCM:
         self._cipher = AESGCM(key)
         self.key_size = len(key) * 8
 
-    def encrypt(self, nonce: bytes, data: bytes, associated_data: Optional[bytes] = None) -> bytes:
+    def encrypt(self, nonce: bytes, data: bytes, associated_data: bytes | None = None) -> bytes:
         """
         Encrypt and authenticate data.
         Args:
@@ -83,7 +83,7 @@ class AES_GCM:
             raise HazmatError("AES-GCM nonce must be exactly 12 bytes")
         return self._cipher.encrypt(nonce, data, associated_data)
 
-    def decrypt(self, nonce: bytes, data: bytes, associated_data: Optional[bytes] = None) -> bytes:
+    def decrypt(self, nonce: bytes, data: bytes, associated_data: bytes | None = None) -> bytes:
         """
         Decrypt and verify data.
         Args:
@@ -140,7 +140,7 @@ class ChaCha20Poly1305_Cipher:
         self._cipher = ChaCha20Poly1305(key)
         self.key_size = 256
 
-    def encrypt(self, nonce: bytes, data: bytes, associated_data: Optional[bytes] = None) -> bytes:
+    def encrypt(self, nonce: bytes, data: bytes, associated_data: bytes | None = None) -> bytes:
         """
         Encrypt and authenticate data.
         Args:
@@ -154,7 +154,7 @@ class ChaCha20Poly1305_Cipher:
             raise HazmatError("ChaCha20-Poly1305 nonce must be exactly 12 bytes")
         return self._cipher.encrypt(nonce, data, associated_data)
 
-    def decrypt(self, nonce: bytes, data: bytes, associated_data: Optional[bytes] = None) -> bytes:
+    def decrypt(self, nonce: bytes, data: bytes, associated_data: bytes | None = None) -> bytes:
         """
         Decrypt and verify data.
         Args:
@@ -194,7 +194,7 @@ class X25519_KeyExchange:
     Recommended for most applications requiring key agreement.
     """
 
-    def __init__(self, private_key: Optional[bytes] = None):
+    def __init__(self, private_key: bytes | None = None):
         """
         Initialize X25519 key exchange.
         Args:
@@ -271,7 +271,7 @@ class Ed25519_Signature:
     Algorithm with Curve25519. Recommended for most signature applications.
     """
 
-    def __init__(self, private_key: Optional[bytes] = None):
+    def __init__(self, private_key: bytes | None = None):
         """
         Initialize Ed25519 signature.
         Args:
@@ -366,7 +366,7 @@ class HKDF_Expand:
     @staticmethod
 
     def derive(key_material: bytes, length: int, info: bytes = b"", 
-               salt: Optional[bytes] = None, hash_algorithm=None) -> bytes:
+               salt: bytes | None = None, hash_algorithm=None) -> bytes:
         """
         Derive key using HKDF.
         Args:

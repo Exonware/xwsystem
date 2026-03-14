@@ -4,7 +4,7 @@ External Python caching library implementations.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Wrappers for external caching libraries:
 - cachebox: Rust-based Python cache (fastest)
@@ -13,7 +13,9 @@ Wrappers for external caching libraries:
 """
 
 import time
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from functools import lru_cache as std_lru_cache
 from collections import OrderedDict
 from .base import ACache
@@ -66,7 +68,7 @@ class CacheboxCache(ACache):
     providing excellent performance for large datasets.
     """
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, **kwargs):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, **kwargs):
         """
         Initialize Cachebox cache.
         Args:
@@ -158,7 +160,7 @@ class CacheboxCache(ACache):
         }
     # ICache interface compatibility
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache (ICache interface)."""
         self.put(key, value)
         return True
@@ -179,7 +181,7 @@ class FunctoolsLRUCache(ACache):
     implement a manual LRU cache that mimics its behavior.
     """
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, **kwargs):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, **kwargs):
         """
         Initialize functools-style LRU cache.
         Args:
@@ -273,7 +275,7 @@ class FunctoolsLRUCache(ACache):
         }
     # ICache interface compatibility
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache (ICache interface)."""
         self.put(key, value)
         return True
@@ -293,7 +295,7 @@ class PylruCache(ACache):
     Used as the default cache when pylru is installed.
     """
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, **kwargs):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, **kwargs):
         """
         Initialize pylru cache.
         Args:
@@ -384,7 +386,7 @@ class PylruCache(ACache):
             "capacity": self.capacity,
         }
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache (ICache interface)."""
         self.put(key, value)
         return True
@@ -400,7 +402,7 @@ class PylruCache(ACache):
 class CachetoolsLRUCache(ACache):
     """Cachetools LRUCache wrapper."""
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, **kwargs):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, **kwargs):
         """Initialize Cachetools LRU cache."""
         if not HAS_CACHETOOLS:
             raise ImportError(
@@ -480,7 +482,7 @@ class CachetoolsLRUCache(ACache):
         }
     # ICache interface compatibility
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache (ICache interface)."""
         self.put(key, value)
         return True
@@ -493,7 +495,7 @@ class CachetoolsLRUCache(ACache):
 class CachetoolsLFUCache(ACache):
     """Cachetools LFUCache wrapper."""
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, **kwargs):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, **kwargs):
         """Initialize Cachetools LFU cache."""
         if not HAS_CACHETOOLS:
             raise ImportError(
@@ -573,7 +575,7 @@ class CachetoolsLFUCache(ACache):
         }
     # ICache interface compatibility
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache (ICache interface)."""
         self.put(key, value)
         return True
@@ -586,7 +588,7 @@ class CachetoolsLFUCache(ACache):
 class CachetoolsTTLCache(ACache):
     """Cachetools TTLCache wrapper."""
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, **kwargs):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, **kwargs):
         """
         Initialize Cachetools TTL cache.
         Args:
@@ -674,7 +676,7 @@ class CachetoolsTTLCache(ACache):
         }
     # ICache interface compatibility
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache (ICache interface)."""
         self.put(key, value)
         return True
@@ -687,7 +689,7 @@ class CachetoolsTTLCache(ACache):
 class CachetoolsRRCache(ACache):
     """Cachetools RRCache (Random Replacement) wrapper."""
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, **kwargs):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, **kwargs):
         """Initialize Cachetools RR cache."""
         if not HAS_CACHETOOLS:
             raise ImportError(
@@ -767,7 +769,7 @@ class CachetoolsRRCache(ACache):
         }
     # ICache interface compatibility
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache (ICache interface)."""
         self.put(key, value)
         return True

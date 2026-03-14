@@ -5,13 +5,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Input validation for caching module - Security Priority #1.
 Implements comprehensive validation to prevent security vulnerabilities.
 """
 
-from typing import Any, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .errors import CacheValidationError, CacheKeySizeError, CacheValueSizeError
 from .utils import estimate_object_size
 # Security limits (configurable via environment or config)

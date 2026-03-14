@@ -13,7 +13,9 @@ import asyncio
 import queue
 import threading
 import multiprocessing as mp
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 from dataclasses import dataclass
 import time
 import logging
@@ -91,7 +93,7 @@ class MessageQueue[T]:
         # Shutdown flag
         self._shutdown = threading.Event()
 
-    def put(self, data: T, priority: int = 0, timeout: Optional[float] = None) -> bool:
+    def put(self, data: T, priority: int = 0, timeout: float | None = None) -> bool:
         """
         Put a message in the queue.
         Args:
@@ -125,7 +127,7 @@ class MessageQueue[T]:
             logger.warning(f"Failed to put message: {e}")
             return False
 
-    def get(self, timeout: Optional[float] = None) -> Optional[T]:
+    def get(self, timeout: float | None = None) -> T | None:
         """
         Get a message from the queue.
         Args:
@@ -160,7 +162,7 @@ class MessageQueue[T]:
         """Put a message without blocking."""
         return self.put(data, priority, timeout=0)
 
-    def get_nowait(self) -> Optional[T]:
+    def get_nowait(self) -> T | None:
         """Get a message without blocking."""
         return self.get(timeout=0)
 
@@ -205,7 +207,7 @@ class MessageQueue[T]:
             except Exception as exc:
                 logger.debug(f"Error shutting down manager: {exc}")
 
-    def send(self, message: T, priority: int = 0, timeout: Optional[float] = None) -> bool:
+    def send(self, message: T, priority: int = 0, timeout: float | None = None) -> bool:
         """
         Send a message (alias for put method).
         Args:
@@ -217,7 +219,7 @@ class MessageQueue[T]:
         """
         return self.put(message, priority, timeout)
 
-    def receive(self, timeout: Optional[float] = None) -> Optional[T]:
+    def receive(self, timeout: float | None = None) -> T | None:
         """
         Receive a message (alias for get method).
         Args:
@@ -268,7 +270,7 @@ class AsyncMessageQueue[T]:
         }
         self._stats_lock = asyncio.Lock()
 
-    async def put(self, data: T, timeout: Optional[float] = None) -> bool:
+    async def put(self, data: T, timeout: float | None = None) -> bool:
         """
         Put a message in the queue.
         Args:
@@ -289,11 +291,11 @@ class AsyncMessageQueue[T]:
                 self._stats['messages_sent'] += 1
             logger.debug("Put async message")
             return True
-        except (asyncio.TimeoutError, Exception) as e:
+        except (TimeoutError, Exception) as e:
             logger.warning(f"Failed to put async message: {e}")
             return False
 
-    async def get(self, timeout: Optional[float] = None) -> Optional[T]:
+    async def get(self, timeout: float | None = None) -> T | None:
         """
         Get a message from the queue.
         Args:
@@ -312,7 +314,7 @@ class AsyncMessageQueue[T]:
                 self._stats['messages_received'] += 1
             logger.debug("Got async message")
             return message.data
-        except (asyncio.TimeoutError, Exception) as e:
+        except (TimeoutError, Exception) as e:
             logger.debug(f"Failed to get async message: {e}")
             return None
 
@@ -327,7 +329,7 @@ class AsyncMessageQueue[T]:
         except asyncio.QueueFull:
             return False
 
-    def get_nowait(self) -> Optional[T]:
+    def get_nowait(self) -> T | None:
         """Get a message without blocking."""
         if self._shutdown.is_set():
             return None

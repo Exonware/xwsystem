@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Unit tests for TwoTierCache (ICache contract: put, get(key, default)).
 Regression: TwoTierCache must implement put() and get(key, default) so that

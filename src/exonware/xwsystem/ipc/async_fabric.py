@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 09-Nov-2025
 Async Process Fabric
 ====================
@@ -21,15 +21,9 @@ import importlib
 import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import (
-    Any,
-    AsyncIterator,
-    Callable,
-    Iterable,
-    Optional,
-    Sequence,
-    Union,
-)
+from typing import Any
+
+from collections.abc import AsyncIterator, Callable, Iterable, Sequence
 from .process_pool import AsyncProcessPool
 from .message_queue import AsyncMessageQueue
 from .shared_memory import SharedData, SharedMemoryManager
@@ -86,13 +80,13 @@ class AsyncProcessFabric:
     def __init__(
         self,
         *,
-        pool_factory: Optional[Callable[..., AsyncProcessPool]] = None,
-        queue_factory: Optional[Callable[..., AsyncMessageQueue]] = None,
-        shared_memory_factory: Optional[Callable[..., SharedMemoryManager]] = None,
-        pool_kwargs: Optional[dict[str, Any]] = None,
-        queue_kwargs: Optional[dict[str, Any]] = None,
-        shared_memory_kwargs: Optional[dict[str, Any]] = None,
-        logger_instance: Optional[logging.Logger] = None,
+        pool_factory: Callable[..., AsyncProcessPool] | None = None,
+        queue_factory: Callable[..., AsyncMessageQueue] | None = None,
+        shared_memory_factory: Callable[..., SharedMemoryManager] | None = None,
+        pool_kwargs: dict[str, Any] | None = None,
+        queue_kwargs: dict[str, Any] | None = None,
+        shared_memory_kwargs: dict[str, Any] | None = None,
+        logger_instance: logging.Logger | None = None,
     ) -> None:
         self._config = FabricConfig(
             pool_factory=pool_factory or AsyncProcessPool,
@@ -105,7 +99,7 @@ class AsyncProcessFabric:
         self._logger = logger_instance or logger
     @asynccontextmanager
 
-    async def session(self) -> AsyncIterator["AsyncProcessFabricSession"]:
+    async def session(self) -> AsyncIterator[AsyncProcessFabricSession]:
         """
         Provision an async session that owns the pooled IPC resources.
         Yields:
@@ -126,12 +120,12 @@ class AsyncProcessFabricSession:
     def __init__(self, config: FabricConfig, logger_instance: logging.Logger) -> None:
         self._config = config
         self._logger = logger_instance
-        self._pool: Optional[AsyncProcessPool] = None
-        self._queue: Optional[AsyncMessageQueue] = None
-        self._shared_memory: Optional[SharedMemoryManager] = None
+        self._pool: AsyncProcessPool | None = None
+        self._queue: AsyncMessageQueue | None = None
+        self._shared_memory: SharedMemoryManager | None = None
         self._active_task_ids: set[TaskId] = set()
 
-    async def __aenter__(self) -> "AsyncProcessFabricSession":
+    async def __aenter__(self) -> AsyncProcessFabricSession:
         self._logger.debug("Initializing AsyncProcessFabric session")
         self._pool = self._config.pool_factory(**self._config.pool_kwargs)
         self._queue = self._config.queue_factory(**self._config.queue_kwargs)
@@ -157,7 +151,7 @@ class AsyncProcessFabricSession:
         self,
         fn: CallableRef,
         *args: Any,
-        task_id: Optional[str] = None,
+        task_id: str | None = None,
         **kwargs: Any,
     ) -> TaskId:
         """
@@ -180,9 +174,9 @@ class AsyncProcessFabricSession:
 
     async def gather_results(
         self,
-        task_ids: Optional[Sequence[TaskId]] = None,
+        task_ids: Sequence[TaskId] | None = None,
         *,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ) -> Sequence[Any]:
         """
         Collect results for the provided task identifiers.
@@ -208,7 +202,7 @@ class AsyncProcessFabricSession:
         self,
         task_ids: TaskId | Sequence[TaskId],
         *,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ) -> AsyncIterator[Any]:
         """
         Async iterator yielding results as they are retrieved from the pool.
@@ -237,7 +231,7 @@ class AsyncProcessFabricSession:
     # Message queue facade
     # --------------------------------------------------------------------- #
 
-    async def publish(self, channel: str, message: Any, *, timeout: Optional[float] = None) -> bool:
+    async def publish(self, channel: str, message: Any, *, timeout: float | None = None) -> bool:
         """
         Publish a message to the async queue.
         Args:
@@ -250,7 +244,7 @@ class AsyncProcessFabricSession:
         # Channel support reserved for future sharding, currently single queue.
         return await self._queue.put({"channel": channel, "payload": message}, timeout=timeout)
 
-    async def consume(self, channel: Optional[str] = None, *, timeout: Optional[float] = None) -> Optional[Any]:
+    async def consume(self, channel: str | None = None, *, timeout: float | None = None) -> Any | None:
         """
         Consume a message from the async queue.
         Args:

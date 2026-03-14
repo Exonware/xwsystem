@@ -4,14 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 07-Jan-2025
 Security policy implementation for XWSystem.
 Implements ISecurityPolicy protocol for security policy management and enforcement.
 """
 
 import time
-from typing import Any, Optional
+from typing import Any
 from datetime import datetime
 from .base import ASecurityPolicyBase
 from .contracts import ISecurityPolicy

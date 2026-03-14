@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Line-based paging strategy.
 Priority 1 (Security): Safe line-level operations
@@ -15,7 +15,8 @@ Priority 5 (Extensibility): Pluggable via registry
 """
 
 from pathlib import Path
-from typing import Optional, Iterator
+
+from collections.abc import Iterator
 from ...contracts import IPagingStrategy
 
 
@@ -40,7 +41,7 @@ class LinePagingStrategy:
         page: int,
         page_size: int,
         mode: str = 'r',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         **options
     ) -> str:
         """Read page by line count."""
@@ -65,7 +66,7 @@ class LinePagingStrategy:
         file_path: Path,
         page_size: int,
         mode: str = 'r',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         **options
     ) -> Iterator[str]:
         """Iterate over pages by line chunks."""

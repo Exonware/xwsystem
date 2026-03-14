@@ -3,13 +3,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 CLI module contracts - interfaces and enums for command-line interface functionality.
 """
 
 from typing import Protocol, runtime_checkable
-from typing import Any, Optional
+from typing import Any
 # Import general console enums from console level (priority)
 from ..defs import Alignment, BorderStyle, Colors, Style
 # Import CLI-specific enums from defs
@@ -25,7 +25,7 @@ from .defs import (
 class IConsole(Protocol):
     """Interface for console operations."""
 
-    def print(self, text: str, color: Optional[ColorType] = None, **kwargs) -> None:
+    def print(self, text: str, color: ColorType | None = None, **kwargs) -> None:
         """Print text to console."""
         ...
 
@@ -81,7 +81,7 @@ class IArgumentParser(Protocol):
         """Add argument to parser."""
         ...
 
-    def parse_args(self, args: Optional[list[str]] = None) -> Any:
+    def parse_args(self, args: list[str] | None = None) -> Any:
         """Parse command line arguments."""
         ...
 @runtime_checkable
@@ -107,7 +107,7 @@ class ICLI(Protocol):
         """Add an option to the CLI."""
         ...
 
-    def run(self, args: Optional[list[str]] = None) -> int:
+    def run(self, args: list[str] | None = None) -> int:
         """Run the CLI."""
         ...
 
@@ -143,7 +143,7 @@ class IPrompts(Protocol):
         """Ask for confirmation."""
         ...
 
-    def select(self, message: str, choices: list[str], default: Optional[str] = None) -> str:
+    def select(self, message: str, choices: list[str], default: str | None = None) -> str:
         """Ask user to select from choices."""
         ...
 @runtime_checkable

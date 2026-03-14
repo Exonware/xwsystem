@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 1, 2025
 LZ4 compression format - RANK #7 FASTEST COMPRESSION.
 **Very fast, lower ratio, real-time archiving**
@@ -18,7 +18,6 @@ Priority 5 (Extensibility): Lazy installation of lz4
 import sys
 import tarfile
 from pathlib import Path
-from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 # Optional dependency: lz4
@@ -96,7 +95,7 @@ class Lz4Archiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create lz4 archive: {e}")
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """Extract LZ4 archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
         try:
@@ -111,8 +110,7 @@ class Lz4Archiver(IArchiveFormat):
                 # Use data filter for Python 3.12+ compatibility (prevents deprecation warning)
                 # For older Python versions, filter parameter is not available
                 extract_kwargs = {}
-                if sys.version_info >= (3, 12):
-                    extract_kwargs['filter'] = 'data'
+                extract_kwargs['filter'] = 'data'
                 if members:
                     for member in members:
                         tar.extract(member, output_dir, **extract_kwargs)
@@ -136,6 +134,6 @@ class Lz4Archiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to list lz4 contents: {e}")
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """Not supported - recreate archive instead."""
         raise ArchiveError("LZ4 doesn't support append mode. Recreate the archive.")

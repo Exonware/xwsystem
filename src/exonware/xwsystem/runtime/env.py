@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Environment management utilities for runtime configuration and detection.
 """
@@ -12,7 +12,7 @@ import os
 import platform
 import sys
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.runtime.env")
 
@@ -88,7 +88,7 @@ class EnvironmentManager:
             }
         return self._cache['python_info']
 
-    def get_env(self, key: str, default: Optional[str] = None) -> Optional[str]:
+    def get_env(self, key: str, default: str | None = None) -> str | None:
         """
         Get environment variable with optional default.
         Args:
@@ -149,7 +149,7 @@ class EnvironmentManager:
             logger.warning(f"Invalid float value for {key}: {value}, using default: {default}")
             return default
 
-    def get_env_list(self, key: str, separator: str = ',', default: Optional[list[str]] = None) -> list[str]:
+    def get_env_list(self, key: str, separator: str = ',', default: list[str] | None = None) -> list[str]:
         """
         Get environment variable as list.
         Args:
@@ -193,7 +193,7 @@ class EnvironmentManager:
         """Get user home directory."""
         return Path.home()
 
-    def get_user_config_dir(self, app_name: Optional[str] = None) -> Path:
+    def get_user_config_dir(self, app_name: str | None = None) -> Path:
         """
         Get user configuration directory.
         Args:
@@ -215,7 +215,7 @@ class EnvironmentManager:
             base = base / app_name
         return base
 
-    def get_user_data_dir(self, app_name: Optional[str] = None) -> Path:
+    def get_user_data_dir(self, app_name: str | None = None) -> Path:
         """
         Get user data directory.
         Args:
@@ -291,7 +291,7 @@ class EnvironmentManager:
         else:
             return 'unknown'
 
-    def get_available_memory_mb(self) -> Optional[float]:
+    def get_available_memory_mb(self) -> float | None:
         """
         Get available system memory in MB.
         Returns:
@@ -320,7 +320,7 @@ class EnvironmentManager:
                 return memoryStatus.ullAvailPhys / (1024 * 1024)
             else:
                 # Unix-like systems
-                with open('/proc/meminfo', 'r') as f:
+                with open('/proc/meminfo') as f:
                     for line in f:
                         if line.startswith('MemAvailable:'):
                             return int(line.split()[1]) / 1024  # Convert KB to MB
@@ -357,7 +357,7 @@ class EnvironmentManager:
             }
         }
 # Global instance for convenience
-_env_manager: Optional[EnvironmentManager] = None
+_env_manager: EnvironmentManager | None = None
 
 
 def get_environment_manager() -> EnvironmentManager:

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2025
 DataFrame serialization - Direct pandas DataFrame operations.
 Following I→A→ATabular pattern:
@@ -14,7 +14,7 @@ Following I→A→ATabular pattern:
 Useful for intermediate DataFrame processing and format conversion.
 """
 
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 import pandas as pd
 from .base import ATabularSerialization
@@ -97,7 +97,7 @@ class DataFrameSerializer(ATabularSerialization):
     # CORE ENCODE/DECODE (Using pickle)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes:
         """
         Encode DataFrame to pickle bytes.
         Args:
@@ -120,7 +120,7 @@ class DataFrameSerializer(ATabularSerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode pickle bytes to DataFrame(s).
         Args:
@@ -154,7 +154,7 @@ class DataFrameSerializer(ATabularSerialization):
     def to_df(
         self, 
         data: bytes | str | Path, 
-        sheet_name: Optional[str | list[str]] = None,
+        sheet_name: str | list[str] | None = None,
         **options
     ) -> pd.DataFrame | dict[str, pd.DataFrame]:
         """

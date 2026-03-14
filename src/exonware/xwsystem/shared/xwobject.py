@@ -4,12 +4,12 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 XWObject - Concrete base class for all objects in the eXonware ecosystem.
 """
 
-from typing import Any, Optional
+from typing import Any
 from datetime import datetime
 import uuid
 from .base import AObject
@@ -51,7 +51,7 @@ class XWObject(AObject):
         ...         return self._updated_at
     """
 
-    def __init__(self, object_id: Optional[str] = None):
+    def __init__(self, object_id: str | None = None):
         """
         Initialize XWObject base class.
         uid is auto-generated (UUID). id is set by programmer when object_id is passed.
@@ -67,10 +67,10 @@ class XWObject(AObject):
         # Instance identity: GUID only
         self._uid = str(uuid.uuid4())
         # Semantic id: never equal to uid
-        self._id: Optional[str] = object_id if object_id else None
+        self._id: str | None = object_id if object_id else None
         # Timestamps are initialized by subclasses
-        self._title: Optional[str] = None
-        self._description: Optional[str] = None
+        self._title: str | None = None
+        self._description: str | None = None
     @property
 
     def id(self) -> str:
@@ -89,7 +89,7 @@ class XWObject(AObject):
         return self._uid
     @property
 
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         """
         Get the object title.
         Returns:
@@ -98,7 +98,7 @@ class XWObject(AObject):
         return self._title
     @property
 
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """
         Get the object description.
         Returns:

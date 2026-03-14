@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 26, 2025
 Disk cache implementation with pickle-based persistence.
 """
@@ -15,7 +15,7 @@ import hashlib
 import threading
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from .contracts import ICache
 from .errors import CacheError
 from ..config.logging_setup import get_logger
@@ -36,7 +36,7 @@ class DiskCache(ICache):
     def __init__(
         self,
         namespace: str = "default",
-        cache_dir: Optional[str] = None,
+        cache_dir: str | None = None,
         max_size: int = 1000,
         max_file_size: int = 10 * 1024 * 1024,  # 10MB
         cleanup_interval: int = 3600,  # 1 hour
@@ -150,7 +150,7 @@ class DiskCache(ICache):
         except Exception as e:
             logger.warning(f"Failed to delete cache entry {key}: {e}")
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         """Get value from cache."""
         with self._lock:
             try:
@@ -183,7 +183,7 @@ class DiskCache(ICache):
                 self._stats['misses'] += 1
                 return None
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache."""
         with self._lock:
             try:

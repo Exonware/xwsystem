@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2026
 XWConcurrency - Unified Concurrency Facade
 Simplified API for threading and concurrency:
@@ -13,7 +13,9 @@ Simplified API for threading and concurrency:
 - Process pools
 """
 
-from typing import Any, Optional, Callable, List
+from typing import Any
+
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from .safe_factory import ThreadSafeFactory, MethodGenerator
 from .async_primitives import (
@@ -83,7 +85,7 @@ class XWConcurrency:
         return AsyncQueue(maxsize)
     @staticmethod
 
-    def Condition(lock: Optional[AsyncLock] = None) -> AsyncCondition:
+    def Condition(lock: AsyncLock | None = None) -> AsyncCondition:
         """Create async condition."""
         return AsyncCondition(lock)
     @staticmethod
@@ -100,7 +102,7 @@ class XWConcurrency:
                 workers: Number of worker threads
             """
             self.workers = workers
-            self._pool: Optional[ThreadPoolExecutor] = None
+            self._pool: ThreadPoolExecutor | None = None
         def __enter__(self):
             """Context manager entry."""
             self._pool = ThreadPoolExecutor(max_workers=self.workers)
@@ -109,7 +111,7 @@ class XWConcurrency:
             """Context manager exit."""
             if self._pool:
                 self._pool.shutdown(wait=True)
-        def map(self, func: Callable, items: List[Any]) -> List[Any]:
+        def map(self, func: Callable, items: list[Any]) -> list[Any]:
             """Map function over items using thread pool."""
             if not self._pool:
                 raise RuntimeError("Pool not started. Use as context manager.")
@@ -128,7 +130,7 @@ class XWConcurrency:
                 workers: Number of worker processes
             """
             self.workers = workers
-            self._pool: Optional[ProcessPoolExecutor] = None
+            self._pool: ProcessPoolExecutor | None = None
         def __enter__(self):
             """Context manager entry."""
             self._pool = ProcessPoolExecutor(max_workers=self.workers)
@@ -137,7 +139,7 @@ class XWConcurrency:
             """Context manager exit."""
             if self._pool:
                 self._pool.shutdown(wait=True)
-        def map(self, func: Callable, items: List[Any]) -> List[Any]:
+        def map(self, func: Callable, items: list[Any]) -> list[Any]:
             """Map function over items using process pool."""
             if not self._pool:
                 raise RuntimeError("Pool not started. Use as context manager.")

@@ -59,7 +59,7 @@ def basic_usage_examples():
         json.dump(test_data, f, indent=2)
     print(f"File written atomically: {test_file.exists()}")
     if test_file.exists():
-        with open(test_file, 'r') as f:
+        with open(test_file) as f:
             loaded_data = json.load(f)
         print(f"Content: {loaded_data['message']}")
         test_file.unlink()  # Cleanup

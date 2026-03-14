@@ -16,7 +16,7 @@ import mmap
 import struct
 import pickle
 import threading
-from typing import Any, Optional
+from typing import Any
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from contextlib import contextmanager
@@ -50,7 +50,7 @@ class SharedData[T]:
         self.name = name
         self.size = size
         self._lock = threading.RLock()
-        self._mmap: Optional[mmap.mmap] = None
+        self._mmap: mmap.mmap | None = None
         self._file_handle = None
         if create:
             self._create_segment()
@@ -182,7 +182,7 @@ class SharedData[T]:
                 logger.error(f"Failed to store data in shared memory '{self.name}': {e}")
                 return False
 
-    def get(self) -> Optional[T]:
+    def get(self) -> T | None:
         """
         Retrieve a value from shared memory.
         Returns:
@@ -278,7 +278,7 @@ class SharedMemoryManager:
             self._segments[name] = segment
             return segment
 
-    def get_segment(self, name: str) -> Optional[SharedData]:
+    def get_segment(self, name: str) -> SharedData | None:
         """Get an existing shared memory segment."""
         with self._lock:
             return self._segments.get(name)

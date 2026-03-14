@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 ZIP archive format implementation.
 Priority 1 (Security): Safe ZIP operations
@@ -16,7 +16,6 @@ Priority 5 (Extensibility): Registered via registry
 
 import zipfile
 from pathlib import Path
-from typing import Optional
 from ...contracts import IArchiveFormat
 
 
@@ -55,7 +54,7 @@ class ZipArchiver(IArchiveFormat):
                             arcname = str(item.relative_to(file_path.parent))
                             zf.write(item, arcname=arcname)
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """Extract ZIP archive."""
         output_dir.mkdir(parents=True, exist_ok=True)
         extracted: list[Path] = []
@@ -74,7 +73,7 @@ class ZipArchiver(IArchiveFormat):
         with zipfile.ZipFile(archive, 'r') as zf:
             return zf.namelist()
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """Add file to ZIP archive."""
         arcname = arcname or file.name
         with zipfile.ZipFile(archive, 'a') as zf:

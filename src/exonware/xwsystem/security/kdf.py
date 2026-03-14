@@ -8,7 +8,6 @@ PBKDF2 is always available (cryptography). Argon2id is used when argon2-cffi is 
 """
 
 from __future__ import annotations
-from typing import Optional
 from .errors import CryptographicError
 # Default salt size for password KDF
 DEFAULT_SALT_SIZE = 16
@@ -47,7 +46,7 @@ def derive_key_argon2id(
     time_cost: int = ARGON2_TIME_COST,
     memory_cost_kb: int = ARGON2_MEMORY_COST_KB,
     hash_len: int = ARGON2_HASH_LEN,
-) -> Optional[bytes]:
+) -> bytes | None:
     """
     Derive key from password using Argon2id.
     Returns None if argon2-cffi is not installed; otherwise returns 32-byte key.

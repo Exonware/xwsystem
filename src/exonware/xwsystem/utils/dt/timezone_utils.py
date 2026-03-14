@@ -3,13 +3,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Timezone utilities - Placeholder.
 """
 
 from datetime import datetime, timezone
-from typing import Optional, Any
+from typing import Any
 import pytz
 
 
@@ -20,7 +20,7 @@ class TimezoneManager:
         """Initialize timezone manager."""
         self._timezones = {}
 
-    def get_timezone(self, name: str) -> Optional[timezone]:
+    def get_timezone(self, name: str) -> timezone | None:
         """Get timezone by name."""
         try:
             return pytz.timezone(name)

@@ -12,7 +12,7 @@ Email: connect@exonware.com
 import asyncio
 import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any
 from dataclasses import dataclass
 from exonware.xwsystem import (
     JsonSerializer,
@@ -56,7 +56,7 @@ class DataPipeline:
             "avro": AvroSerializer(),
             "parquet": ParquetSerializer(),
         }
-        self.stages: List[PipelineStage] = []
+        self.stages: list[PipelineStage] = []
         self.stats = {
             "processed": 0,
             "failed": 0,
@@ -150,7 +150,7 @@ class DataPipeline:
             self.memory_monitor.stop_monitoring()
             self.performance_monitor.stop()
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get pipeline statistics."""
         return {
             "pipeline_id": self.pipeline_id,

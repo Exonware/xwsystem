@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 1, 2025
 SquashFS filesystem format - RANK #10 EMBEDDED SYSTEMS.
 **Embedded & system image use**
@@ -16,7 +16,6 @@ Priority 5 (Extensibility): Binary tool integration
 """
 
 from pathlib import Path
-from typing import Optional
 import subprocess
 import shutil
 from ...contracts import IArchiveFormat
@@ -95,7 +94,7 @@ class SquashfsArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create squashfs: {e}")
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """Extract SquashFS filesystem."""
         output_dir.mkdir(parents=True, exist_ok=True)
         _, unsquashfs = self._check_tools()
@@ -127,6 +126,6 @@ class SquashfsArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to list squashfs contents: {e}")
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """SquashFS doesn't support append (read-only FS)."""
         raise ArchiveError("SquashFS is read-only. Recreate the filesystem to add files.")

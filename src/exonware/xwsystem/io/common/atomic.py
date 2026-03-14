@@ -11,7 +11,7 @@ import tempfile
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, BinaryIO, Optional, TextIO
+from typing import Any, BinaryIO, TextIO
 logger = logging.getLogger(__name__)
 
 
@@ -32,9 +32,9 @@ class AtomicFileWriter:
         self,
         target_path: str | Path,
         mode: str = "w",
-        encoding: Optional[str] = "utf-8",
+        encoding: str | None = "utf-8",
         backup: bool = False,
-        temp_dir: Optional[str | Path] = None,
+        temp_dir: str | Path | None = None,
     ):
         """
         Initialize atomic file writer.
@@ -50,9 +50,9 @@ class AtomicFileWriter:
         self.encoding = encoding if "b" not in mode else None
         self.backup = backup
         self.temp_dir = Path(temp_dir) if temp_dir else self.target_path.parent
-        self.temp_path: Optional[Path] = None
-        self.backup_path: Optional[Path] = None
-        self.file_handle: Optional[BinaryIO | TextIO] = None
+        self.temp_path: Path | None = None
+        self.backup_path: Path | None = None
+        self.file_handle: BinaryIO | TextIO | None = None
         self._committed = False
         self._started = False
 
@@ -219,9 +219,9 @@ class AtomicFileWriter:
 def atomic_write(
     target_path: str | Path,
     mode: str = "w",
-    encoding: Optional[str] = "utf-8",
+    encoding: str | None = "utf-8",
     backup: bool = True,
-    temp_dir: Optional[str | Path] = None,
+    temp_dir: str | Path | None = None,
 ):
     """
     Context manager for atomic file writing.
@@ -323,13 +323,13 @@ def safe_read_text(
         ) from e
     # Read file content
     try:
-        with open(file_path, "r", encoding=encoding) as f:
+        with open(file_path, encoding=encoding) as f:
             return f.read()
     except UnicodeDecodeError as e:
         raise FileOperationError(
             f"Encoding error reading '{file_path}' with encoding '{encoding}': {e}"
         ) from e
-    except IOError as e:
+    except OSError as e:
         raise FileOperationError(f"IOError reading file '{file_path}': {e}") from e
 
 
@@ -366,14 +366,14 @@ def safe_read_bytes(file_path: str | Path, max_size_mb: float = 100.0) -> bytes:
     try:
         with open(file_path, "rb") as f:
             return f.read()
-    except IOError as e:
+    except OSError as e:
         raise FileOperationError(f"IOError reading file '{file_path}': {e}") from e
 
 
 def safe_read_with_fallback(
     file_path: str | Path,
     preferred_encoding: str = "utf-8",
-    fallback_encodings: Optional[list[str]] = None,
+    fallback_encodings: list[str] | None = None,
     max_size_mb: float = 100.0,
 ) -> str:
     """

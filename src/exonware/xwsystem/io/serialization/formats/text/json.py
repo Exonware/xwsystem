@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 JSON serialization - Universal, human-readable data interchange format.
 Following I→A pattern:
@@ -13,7 +13,7 @@ Following I→A pattern:
 """
 
 import json
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ...parsers.registry import get_parser
@@ -53,9 +53,9 @@ class JsonSerializer(ASerialization):
 
     def __init__(
         self,
-        parser_name: Optional[str] = None,
-        max_depth: Optional[int] = None,
-        max_size_mb: Optional[float] = None,
+        parser_name: str | None = None,
+        max_depth: int | None = None,
+        max_size_mb: float | None = None,
     ):
         """
         Initialize JSON serializer with optional parser selection.
@@ -136,7 +136,7 @@ class JsonSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using official json library)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to JSON string.
         Uses pluggable JSON parser (orjson if available, else stdlib).
@@ -177,7 +177,7 @@ class JsonSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode JSON string to data.
         Uses pluggable JSON parser (orjson if available, else stdlib).

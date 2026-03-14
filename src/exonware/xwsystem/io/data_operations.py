@@ -12,14 +12,16 @@ lazy, paged, and atomic access features without re-implementing I/O logic.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 15-Dec-2025
 """
 
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 from abc import ABC, abstractmethod
 import os
 import platform
@@ -115,7 +117,7 @@ class JsonIndex:
     """
     meta: JsonIndexMeta
     line_offsets: list[int]
-    id_index: Optional[dict[str, int]] = None
+    id_index: dict[str, int] | None = None
 
 
 class ADataOperations(ABC):
@@ -134,7 +136,7 @@ class ADataOperations(ABC):
         self,
         file_path: str | Path,
         match: JsonMatchFn,
-        path: Optional[list[object]] = None,
+        path: list[object] | None = None,
         encoding: str = "utf-8",
     ) -> Any:
         """Return the first record (or sub-path) that matches the predicate."""
@@ -177,7 +179,7 @@ class ADataOperations(ABC):
         line_number: int,
         *,
         encoding: str = "utf-8",
-        index: Optional[JsonIndex] = None,
+        index: JsonIndex | None = None,
     ) -> Any:
         """Random-access a specific logical record by its index position."""
         raise NotImplementedError
@@ -190,7 +192,7 @@ class ADataOperations(ABC):
         *,
         encoding: str = "utf-8",
         id_field: str = "id",
-        index: Optional[JsonIndex] = None,
+        index: JsonIndex | None = None,
     ) -> Any:
         """Random-access a record by logical identifier, with optional index."""
         raise NotImplementedError
@@ -203,7 +205,7 @@ class ADataOperations(ABC):
         page_size: int,
         *,
         encoding: str = "utf-8",
-        index: Optional[JsonIndex] = None,
+        index: JsonIndex | None = None,
     ) -> list[Any]:
         """Return a page of logical records using an index for efficiency."""
         raise NotImplementedError
@@ -217,7 +219,7 @@ class NDJSONDataOperations(ADataOperations):
     higher-level, type-agnostic facades.
     """
 
-    def __init__(self, serializer: Optional[AutoSerializer] = None):
+    def __init__(self, serializer: AutoSerializer | None = None):
         # Reuse xwsystem's AutoSerializer so we do not re-implement parsing.
         self._serializer = serializer or AutoSerializer(default_format="JSON")
     # ------------------------------------------------------------------
@@ -228,7 +230,7 @@ class NDJSONDataOperations(ADataOperations):
         self,
         file_path: str | Path,
         match: JsonMatchFn,
-        path: Optional[list[object]] = None,
+        path: list[object] | None = None,
         encoding: str = "utf-8",
     ) -> Any:
         """
@@ -550,7 +552,7 @@ class NDJSONDataOperations(ADataOperations):
         line_number: int,
         *,
         encoding: str = "utf-8",
-        index: Optional[JsonIndex] = None,
+        index: JsonIndex | None = None,
     ) -> Any:
         """
         Random-access a specific record by line_number (0-based) using index.
@@ -578,7 +580,7 @@ class NDJSONDataOperations(ADataOperations):
         *,
         encoding: str = "utf-8",
         id_field: str = "id",
-        index: Optional[JsonIndex] = None,
+        index: JsonIndex | None = None,
     ) -> Any:
         """
         Random-access a record by logical id using id_index if available.
@@ -606,7 +608,7 @@ class NDJSONDataOperations(ADataOperations):
         page_size: int,
         *,
         encoding: str = "utf-8",
-        index: Optional[JsonIndex] = None,
+        index: JsonIndex | None = None,
     ) -> list[Any]:
         """
         Paging helper using index:
@@ -641,7 +643,7 @@ class NDJSONDataOperations(ADataOperations):
     # Helpers
     # ------------------------------------------------------------------
 
-    def _extract_path(self, obj: Any, path: Optional[list[object]]) -> Any:
+    def _extract_path(self, obj: Any, path: list[object] | None) -> Any:
         """Extract a nested path like ['user', 'email'] or ['tags', 0]."""
         if not path:
             return obj

@@ -3,14 +3,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 05, 2025
 Colored terminal output utilities with cross-platform support.
 """
 
 import os
 import sys
-from typing import Optional
 # Import general console enums from console level (priority)
 from ..defs import Colors, Style
 # Explicit import - colorama is a required dependency for CLI functionality
@@ -32,7 +31,7 @@ class CliColoredOutput:
     - Rich formatting options
     """
 
-    def __init__(self, force_color: Optional[bool] = None, auto_reset: bool = True):
+    def __init__(self, force_color: bool | None = None, auto_reset: bool = True):
         """
         Initialize colored output.
         Args:
@@ -71,7 +70,7 @@ class CliColoredOutput:
         """Check if colored output is supported."""
         return self._supports_color
 
-    def colorize(self, text: str, color: Colors | str, style: Optional[Style | str] = None) -> str:
+    def colorize(self, text: str, color: Colors | str, style: Style | str | None = None) -> str:
         """
         Apply color and style to text.
         Args:
@@ -99,7 +98,7 @@ class CliColoredOutput:
             return f"{color_str}{text}"
 
     def print_colored(self, text: str, color: Colors | str, 
-                     style: Optional[Style | str] = None, **kwargs) -> None:
+                     style: Style | str | None = None, **kwargs) -> None:
         """
         Print colored text.
         Args:
@@ -201,13 +200,13 @@ class CliColoredOutput:
 _colored_output = CliColoredOutput()
 # Convenience functions
 
-def colorize(text: str, color: Colors | str, style: Optional[Style | str] = None) -> str:
+def colorize(text: str, color: Colors | str, style: Style | str | None = None) -> str:
     """Colorize text using global instance."""
     return _colored_output.colorize(text, color, style)
 
 
 def print_colored(text: str, color: Colors | str, 
-                 style: Optional[Style | str] = None, **kwargs) -> None:
+                 style: Style | str | None = None, **kwargs) -> None:
     """Print colored text using global instance."""
     _colored_output.print_colored(text, color, style, **kwargs)
 

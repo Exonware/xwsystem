@@ -39,7 +39,6 @@ print(async_result)
 print("\n2. ✅ PYDANTIC-STYLE VALIDATION")
 print("-" * 30)
 from src.exonware.xwsystem import xModel, Field
-from typing import Optional
 from enum import Enum
 
 class Priority(Enum):
@@ -51,7 +50,7 @@ class DemoUser(xModel):
     age: int = Field(ge=0, le=150)
     email: str = Field(pattern=r'^[^@]+@[^@]+\.[^@]+$')
     priority: Priority = Priority.LOW
-    tags: Optional[str] = None
+    tags: str | None = None
 # Test type coercion
 user_data = {
     "name": "Alice",

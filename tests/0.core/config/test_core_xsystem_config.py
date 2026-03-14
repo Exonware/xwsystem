@@ -230,7 +230,7 @@ def test_config_file_operations():
             # Verify file was created
             assert config_file.exists()
             # Test reading configuration
-            with open(config_file, 'r') as f:
+            with open(config_file) as f:
                 loaded_config = json.load(f)
             assert loaded_config == test_config
         print("✅ Configuration file operations tests passed")

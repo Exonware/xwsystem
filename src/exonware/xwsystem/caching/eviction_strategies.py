@@ -5,14 +5,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Pluggable eviction strategies for caching module.
 Extensibility Priority #5 - Strategy pattern for custom eviction policies.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 import random
 import time
 
@@ -24,7 +26,7 @@ class AEvictionStrategy(ABC):
     """
     @abstractmethod
 
-    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Optional[Hashable]:
+    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Hashable | None:
         """
         Select item to evict from cache.
         Args:
@@ -74,7 +76,7 @@ class AEvictionStrategy(ABC):
 class LRUEvictionStrategy(AEvictionStrategy):
     """Least Recently Used eviction strategy."""
 
-    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Optional[Hashable]:
+    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Hashable | None:
         """Select least recently used item."""
         if not cache_items:
             return None
@@ -106,7 +108,7 @@ class LFUEvictionStrategy(AEvictionStrategy):
         """Initialize LFU strategy."""
         self._access_counts: dict = {}
 
-    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Optional[Hashable]:
+    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Hashable | None:
         """Select least frequently used item."""
         if not cache_items:
             return None
@@ -136,7 +138,7 @@ class LFUEvictionStrategy(AEvictionStrategy):
 class FIFOEvictionStrategy(AEvictionStrategy):
     """First In, First Out eviction strategy."""
 
-    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Optional[Hashable]:
+    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Hashable | None:
         """Select oldest inserted item."""
         if not cache_items:
             return None
@@ -164,7 +166,7 @@ class FIFOEvictionStrategy(AEvictionStrategy):
 class RandomEvictionStrategy(AEvictionStrategy):
     """Random eviction strategy."""
 
-    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Optional[Hashable]:
+    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Hashable | None:
         """Select random item to evict."""
         if not cache_items:
             return None
@@ -191,7 +193,7 @@ class RandomEvictionStrategy(AEvictionStrategy):
 class SizeBasedEvictionStrategy(AEvictionStrategy):
     """Evict largest items first to free maximum memory."""
 
-    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Optional[Hashable]:
+    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Hashable | None:
         """Select largest item to evict."""
         if not cache_items:
             return None
@@ -220,7 +222,7 @@ class SizeBasedEvictionStrategy(AEvictionStrategy):
 class TTLEvictionStrategy(AEvictionStrategy):
     """Evict items closest to expiration first."""
 
-    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Optional[Hashable]:
+    def select_victim(self, cache_items: list[tuple[Hashable, Any, dict]]) -> Hashable | None:
         """Select item closest to expiration."""
         if not cache_items:
             return None

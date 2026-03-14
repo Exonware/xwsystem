@@ -9,7 +9,7 @@ Load: read -> decompress (optional) -> decrypt (optional) -> binary unwrap (opti
 """
 
 from __future__ import annotations
-from typing import Any, Optional
+from typing import Any
 from .encryption import EncryptionService
 from .archive import ArchiveService
 from .binary import BinaryService
@@ -17,7 +17,7 @@ from .binary import BinaryService
 
 def apply_pipeline_save(
     repr_data: bytes,
-    options: Optional[dict[str, Any]] = None,
+    options: dict[str, Any] | None = None,
 ) -> bytes:
     """
     Apply pipeline for save: binary_framing -> encryption -> archive.
@@ -49,7 +49,7 @@ def apply_pipeline_save(
 
 def apply_pipeline_load(
     raw_bytes: bytes,
-    options: Optional[dict[str, Any]] = None,
+    options: dict[str, Any] | None = None,
 ) -> bytes:
     """
     Apply pipeline for load: decompress -> decrypt -> binary unwrap.

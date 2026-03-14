@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Archive facade using registry pattern.
 Like get_codec_for_file() - auto-detects format!
@@ -16,7 +16,6 @@ Priority 5 (Extensibility): Add formats via registry!
 """
 
 from pathlib import Path
-from typing import Optional
 # IArchive removed - using IArchiver and IArchiveFile instead
 from .formats import get_archiver_for_file, get_archiver_by_id
 
@@ -56,7 +55,7 @@ class Archive:
         # Delegate to format-specific handler
         archiver.create(files, output, **opts)
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """
         Extract archive - auto-detects handler.
         """
@@ -77,7 +76,7 @@ class Archive:
             raise ValueError(f"No archiver found for: {archive.suffix}")
         return archiver.list_contents(archive)
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """
         Add file to archive - auto-detects handler.
         """

@@ -9,11 +9,11 @@ Provides generic security auditing that can be used by any library:
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 26-Jan-2025
 """
 
-from typing import Any, Optional
+from typing import Any
 from dataclasses import dataclass
 from enum import Enum
 from exonware.xwsystem import get_logger
@@ -35,7 +35,7 @@ class SecurityIssue:
     category: str
     description: str
     recommendation: str
-    location: Optional[str] = None
+    location: str | None = None
 
 
 class SecurityAuditor:

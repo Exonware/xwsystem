@@ -3,12 +3,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Utils module contracts - interfaces and enums for utility functionality.
 """
 
-from typing import Any, Optional, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -85,7 +87,7 @@ class IUtilityRegistry(Protocol):
         """Register utility."""
         ...
 
-    def get_utility(self, name: str) -> Optional[Any]:
+    def get_utility(self, name: str) -> Any | None:
         """Get utility by name."""
         ...
 
@@ -105,7 +107,7 @@ class IUtilityRegistry(Protocol):
 class IConfigManager(Protocol):
     """Interface for configuration management."""
 
-    def get_config(self, key: str, default: Optional[Any] = None) -> Any:
+    def get_config(self, key: str, default: Any | None = None) -> Any:
         """Get configuration value."""
         ...
 

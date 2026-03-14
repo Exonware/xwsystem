@@ -16,7 +16,9 @@ import time
 import signal
 import subprocess
 import multiprocessing as mp
-from typing import Optional, Callable, Any
+from typing import Any
+
+from collections.abc import Callable
 from dataclasses import dataclass
 from threading import Lock, Event
 import logging
@@ -32,9 +34,9 @@ class ProcessInfo:
     command: list[str]
     started_at: float
     status: str  # 'running', 'stopped', 'failed', 'terminated'
-    exit_code: Optional[int] = None
-    memory_usage: Optional[float] = None
-    cpu_percent: Optional[float] = None
+    exit_code: int | None = None
+    memory_usage: float | None = None
+    cpu_percent: float | None = None
 
 
 class ProcessManager:
@@ -72,8 +74,8 @@ class ProcessManager:
     def start_process(self, 
                      name: str, 
                      command: str | list[str], 
-                     cwd: Optional[str] = None,
-                     env: Optional[dict[str, str]] = None,
+                     cwd: str | None = None,
+                     env: dict[str, str] | None = None,
                      shell: bool = False) -> bool:
         """
         Start a new managed process.
@@ -196,7 +198,7 @@ class ProcessManager:
         # Start again
         return self.start_process(name, command)
 
-    def get_process_info(self, name: str) -> Optional[ProcessInfo]:
+    def get_process_info(self, name: str) -> ProcessInfo | None:
         """Get information about a managed process."""
         with self._lock:
             return self.process_info.get(name)

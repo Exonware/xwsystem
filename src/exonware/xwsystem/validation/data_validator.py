@@ -7,7 +7,7 @@ framework-wide reusability.
 """
 
 import sys
-from typing import Any, Optional
+from typing import Any
 from ..config import (
     DEFAULT_MAX_DICT_DEPTH,
     DEFAULT_MAX_PATH_DEPTH,
@@ -22,7 +22,7 @@ from .errors import ValidationError, PathValidationError, DepthValidationError, 
 
 
 def check_data_depth(
-    data: Any, current_depth: int = 0, max_depth: Optional[int] = None
+    data: Any, current_depth: int = 0, max_depth: int | None = None
 ) -> None:
     """
     Check data structure depth to prevent excessive nesting.
@@ -170,10 +170,10 @@ class DataValidator:
 
     def __init__(
         self,
-        max_dict_depth: Optional[int] = None,
-        max_path_length: Optional[int] = None,
-        max_path_depth: Optional[int] = None,
-        max_resolution_depth: Optional[int] = None,
+        max_dict_depth: int | None = None,
+        max_path_length: int | None = None,
+        max_path_depth: int | None = None,
+        max_resolution_depth: int | None = None,
     ):
         """
         Initialize validator with custom limits.

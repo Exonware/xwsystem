@@ -4,13 +4,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Structures module base classes - abstract classes for data structure functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Iterator
+from typing import Any
+
+from collections.abc import Iterator
 from .contracts import StructureType, TraversalType, ValidationLevel
 
 
@@ -78,7 +80,7 @@ class ATreeBase(ABC):
 
     def __init__(self):
         """Initialize tree base."""
-        self._root: Optional[Any] = None
+        self._root: Any | None = None
         self._size = 0
     @abstractmethod
 
@@ -92,12 +94,12 @@ class ATreeBase(ABC):
         pass
     @abstractmethod
 
-    def search(self, value: Any) -> Optional[Any]:
+    def search(self, value: Any) -> Any | None:
         """Search for value in tree."""
         pass
     @abstractmethod
 
-    def get_root(self) -> Optional[Any]:
+    def get_root(self) -> Any | None:
         """Get tree root."""
         pass
     @abstractmethod
@@ -163,7 +165,7 @@ class AGraphBase(ABC):
         pass
     @abstractmethod
 
-    def add_edge(self, vertex1: Any, vertex2: Any, weight: Optional[float] = None) -> bool:
+    def add_edge(self, vertex1: Any, vertex2: Any, weight: float | None = None) -> bool:
         """Add edge to graph."""
         pass
     @abstractmethod
@@ -278,7 +280,7 @@ class ATreeWalkerBase(ABC):
 
     def __init__(self):
         """Initialize tree walker."""
-        self._current_node: Optional[Any] = None
+        self._current_node: Any | None = None
         self._visited_nodes: set = set()
         self._path: list[Any] = []
     @abstractmethod
@@ -308,7 +310,7 @@ class ATreeWalkerBase(ABC):
         pass
     @abstractmethod
 
-    def find_path(self, root: Any, target: Any) -> Optional[list[Any]]:
+    def find_path(self, root: Any, target: Any) -> list[Any] | None:
         """Find path to target node."""
         pass
     @abstractmethod

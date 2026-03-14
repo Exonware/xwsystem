@@ -4,12 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Plugin protocol interfaces for XWSystem.
 """
 
-from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator, Callable
 import importlib
 # Import enums from types module
 from .defs import (
@@ -164,7 +166,7 @@ class IExtensible(Protocol):
         """
         ...
 
-    def get_extension(self, name: str) -> Optional[Any]:
+    def get_extension(self, name: str) -> Any | None:
         """
         Get extension by name.
         Args:
@@ -250,7 +252,7 @@ class IHookable(Protocol):
         """
         ...
 
-    def list_hooks(self, event: Optional[str] = None) -> list[dict[str, Any]]:
+    def list_hooks(self, event: str | None = None) -> list[dict[str, Any]]:
         """
         List hooks.
         Args:
@@ -270,7 +272,7 @@ class IHookable(Protocol):
         """
         ...
 
-    def clear_hooks(self, event: Optional[str] = None) -> None:
+    def clear_hooks(self, event: str | None = None) -> None:
         """
         Clear hooks.
         Args:
@@ -278,7 +280,7 @@ class IHookable(Protocol):
         """
         ...
 
-    def get_hook_count(self, event: Optional[str] = None) -> int:
+    def get_hook_count(self, event: str | None = None) -> int:
         """
         Get hook count.
         Args:
@@ -328,7 +330,7 @@ class IPluginManager(Protocol):
         """
         ...
 
-    def get_plugin(self, plugin_name: str) -> Optional[IPlugin]:
+    def get_plugin(self, plugin_name: str) -> IPlugin | None:
         """
         Get plugin by name.
         Args:
@@ -364,7 +366,7 @@ class IPluginManager(Protocol):
         """
         ...
 
-    def get_plugin_info(self, plugin_name: str) -> Optional[dict[str, Any]]:
+    def get_plugin_info(self, plugin_name: str) -> dict[str, Any] | None:
         """
         Get plugin information.
         Args:
@@ -424,7 +426,7 @@ class IPluginRegistry(Protocol):
         """
         ...
 
-    def get_plugin_class(self, name: str) -> Optional[type[IPlugin]]:
+    def get_plugin_class(self, name: str) -> type[IPlugin] | None:
         """
         Get plugin class by name.
         Args:
@@ -488,7 +490,7 @@ class IPluginDiscovery(Protocol):
         """
         ...
 
-    def get_plugin_metadata(self, plugin_path: str) -> Optional[dict[str, Any]]:
+    def get_plugin_metadata(self, plugin_path: str) -> dict[str, Any] | None:
         """
         Get plugin metadata.
         Args:
@@ -670,7 +672,7 @@ class IPluginEvents(Protocol):
         """
         ...
 
-    def clear_event_subscribers(self, event: Optional[PluginEvent] = None) -> None:
+    def clear_event_subscribers(self, event: PluginEvent | None = None) -> None:
         """
         Clear event subscribers.
         Args:
@@ -678,7 +680,7 @@ class IPluginEvents(Protocol):
         """
         ...
 
-    def get_event_history(self, event: Optional[PluginEvent] = None, limit: int = 100) -> list[dict[str, Any]]:
+    def get_event_history(self, event: PluginEvent | None = None, limit: int = 100) -> list[dict[str, Any]]:
         """
         Get event history.
         Args:
@@ -705,7 +707,7 @@ class IPluginDependency(Protocol):
     Enforces consistent plugin dependency handling across XWSystem.
     """
 
-    def add_dependency(self, plugin_name: str, dependency: str, version: Optional[str] = None) -> None:
+    def add_dependency(self, plugin_name: str, dependency: str, version: str | None = None) -> None:
         """
         Add plugin dependency.
         Args:

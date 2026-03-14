@@ -5,14 +5,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Fluent API wrappers for caching module.
 Usability Priority #2 - Method chaining for developer experience.
 """
 
 from __future__ import annotations
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .lru_cache import LRUCache
 from .lfu_cache import LFUCache
 from .ttl_cache import TTLCache
@@ -93,7 +95,7 @@ class FluentTTLCache(TTLCache):
         cache.put("k1", "v1").put("k2", "v2", ttl=60.0).put("k3", "v3")
     """
 
-    def put(self, key: str, value: Any, ttl: Optional[float] = None) -> FluentTTLCache:
+    def put(self, key: str, value: Any, ttl: float | None = None) -> FluentTTLCache:
         """Put value and return self for chaining."""
         super().put(key, value, ttl)
         return self

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2025
 Excel serialization - .xlsx, .xls format.
 Following I→A→XW pattern:
@@ -16,7 +16,7 @@ Following I→A→XW pattern:
 import io
 import os
 import tempfile
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 import pandas as pd
 from .base import ATabularSerialization
@@ -99,7 +99,7 @@ class ExcelSerializer(ATabularSerialization):
     # CORE ENCODE/DECODE (Using pandas)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes:
         """
         Encode data to Excel bytes.
         Args:
@@ -126,7 +126,7 @@ class ExcelSerializer(ATabularSerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode Excel bytes to DataFrame(s).
         Args:
@@ -156,7 +156,7 @@ class ExcelSerializer(ATabularSerialization):
     def to_df(
         self, 
         excel_content: bytes | str | Path, 
-        sheet_name: Optional[str | list[str]] = None,
+        sheet_name: str | list[str] | None = None,
         **options
     ) -> pd.DataFrame | dict[str, pd.DataFrame]:
         """
@@ -214,7 +214,7 @@ class ExcelSerializer(ATabularSerialization):
     def _to_df_via_tempfile(
         self,
         excel_content: bytes,
-        sheet_name: Optional[str | list[str]],
+        sheet_name: str | list[str] | None,
         engine: str,
         options: dict,
     ) -> pd.DataFrame | dict[str, pd.DataFrame]:

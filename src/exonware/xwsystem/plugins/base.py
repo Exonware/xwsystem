@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Plugin system base classes and management.
 """
@@ -15,7 +15,7 @@ import threading
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from importlib.metadata import entry_points
 from ..config.logging_setup import get_logger
 from ..runtime.reflection import ReflectionUtils
@@ -44,7 +44,7 @@ class APlugin(IPlugin):
     Plugins should inherit from this class and implement the required methods.
     """
 
-    def __init__(self, config: Optional[dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         """
         Initialize plugin with optional configuration.
         Args:
@@ -204,7 +204,7 @@ class APluginRegistry:
             logger.info(f"Unregistered plugin: {plugin_name}")
             return True
 
-    def get(self, plugin_name: str) -> Optional[APlugin]:
+    def get(self, plugin_name: str) -> APlugin | None:
         """
         Get plugin by name.
         Args:
@@ -288,7 +288,7 @@ class APluginManager:
     Plugin manager for loading, discovering and managing plugins.
     """
 
-    def __init__(self, registry: Optional[APluginRegistry] = None) -> None:
+    def __init__(self, registry: APluginRegistry | None = None) -> None:
         """
         Initialize plugin manager.
         Args:
@@ -297,7 +297,7 @@ class APluginManager:
         self.registry = registry or APluginRegistry()
         self._discovered_plugins: dict[str, dict[str, Any]] = {}
 
-    def load_plugin_from_module(self, module_path: str, class_name: str, config: Optional[dict[str, Any]] = None) -> APlugin:
+    def load_plugin_from_module(self, module_path: str, class_name: str, config: dict[str, Any] | None = None) -> APlugin:
         """
         Load plugin from module path and class name.
         Args:
@@ -319,7 +319,7 @@ class APluginManager:
         except Exception as e:
             raise PluginError(f"Failed to load plugin {module_path}.{class_name}: {e}") from e
 
-    def load_plugin_from_file(self, file_path: str | Path, class_name: str, config: Optional[dict[str, Any]] = None) -> APlugin:
+    def load_plugin_from_file(self, file_path: str | Path, class_name: str, config: dict[str, Any] | None = None) -> APlugin:
         """
         Load plugin from Python file.
         Args:
@@ -423,7 +423,7 @@ class APluginManager:
             logger.error(f"Error discovering plugins in directory {directory}: {e}")
         return discovered
 
-    def load_discovered_plugins(self, plugin_names: Optional[list[str]] = None, config: Optional[dict[str, dict[str, Any]]] = None) -> list[APlugin]:
+    def load_discovered_plugins(self, plugin_names: list[str] | None = None, config: dict[str, dict[str, Any]] | None = None) -> list[APlugin]:
         """
         Load discovered plugins.
         Args:
@@ -461,7 +461,7 @@ class APluginManager:
         logger.info(f"Loaded {len(loaded)} plugins")
         return loaded
 
-    def initialize_plugins(self, plugin_names: Optional[list[str]] = None) -> None:
+    def initialize_plugins(self, plugin_names: list[str] | None = None) -> None:
         """
         Initialize plugins with dependency resolution.
         Args:
@@ -505,7 +505,7 @@ class APluginManager:
         """Get all discovered plugins."""
         return self._discovered_plugins.copy()
 # Global plugin manager instance
-_plugin_manager: Optional[APluginManager] = None
+_plugin_manager: APluginManager | None = None
 
 
 def get_plugin_manager() -> APluginManager:
@@ -519,7 +519,7 @@ def get_plugin_manager() -> APluginManager:
 class BasePlugin(APlugin):
     """Base plugin class."""
 
-    def __init__(self, config: Optional[dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """Initialize base plugin."""
         super().__init__(config)
         self._name = "BasePlugin"

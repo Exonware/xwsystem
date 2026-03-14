@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 02-Nov-2025
 JSON5 Serialization - Extended JSON with Comments and Trailing Commas
 JSON5 is a superset of JSON that allows:
@@ -20,7 +20,7 @@ Priority 4 (Performance): Efficient parsing via json5 library
 Priority 5 (Extensibility): Compatible with standard JSON
 """
 
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 # Lazy import for json5 - the lazy hook will automatically handle ImportError
 import json5
@@ -37,7 +37,7 @@ class Json5Serializer(JsonSerializer):
     - Concrete: Json5Serializer
     """
 
-    def __init__(self, max_depth: Optional[int] = 50, max_size_mb: Optional[float] = 10.0):
+    def __init__(self, max_depth: int | None = 50, max_size_mb: float | None = 10.0):
         """
         Initialize JSON5 serializer.
         Args:
@@ -87,7 +87,7 @@ class Json5Serializer(JsonSerializer):
         """JSON5 is a serialization and config format (supports comments)."""
         return ["serialization", "config"]
 
-    def encode(self, data: Any, options: Optional[dict[str, Any]] = None) -> str:
+    def encode(self, data: Any, options: dict[str, Any] | None = None) -> str:
         """
         Encode data to JSON5 string.
         Root cause: json5.dumps() can hang on very large/deep nested structures.
@@ -124,7 +124,7 @@ class Json5Serializer(JsonSerializer):
                 original_error=e
             )
 
-    def decode(self, data: str | bytes, options: Optional[dict[str, Any]] = None) -> Any:
+    def decode(self, data: str | bytes, options: dict[str, Any] | None = None) -> Any:
         """
         Decode JSON5 string to Python data.
         Root cause: json5.loads() can hang on very large/deep nested JSON5 strings.

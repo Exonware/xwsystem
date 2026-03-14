@@ -3,12 +3,12 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Codec module contracts - interfaces for codec operations.
 """
 
-from typing import Protocol, Optional, runtime_checkable, Any
+from typing import Protocol, runtime_checkable, Any
 from pathlib import Path
 from ..contracts import EncodeOptions, DecodeOptions, CodecCapability
 # ============================================================================
@@ -36,7 +36,7 @@ class ICodec[T, R](Protocol):
         - Composable via adapters
     """
 
-    def encode(self, value: T, *, options: Optional[EncodeOptions] = None) -> R:
+    def encode(self, value: T, *, options: EncodeOptions | None = None) -> R:
         """
         Encode a model to its representation.
         Args:
@@ -56,7 +56,7 @@ class ICodec[T, R](Protocol):
         """
         ...
 
-    def decode(self, repr: R, *, options: Optional[DecodeOptions] = None) -> T:
+    def decode(self, repr: R, *, options: DecodeOptions | None = None) -> T:
         """
         Decode a representation to a model.
         Args:

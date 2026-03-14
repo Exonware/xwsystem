@@ -9,7 +9,10 @@ import contextlib
 import logging
 import threading
 from contextlib import ExitStack, contextmanager
-from typing import Any, ContextManager, Generator, Optional
+from typing import Any, ContextManager
+
+from collections.abc import Generator
+from collections.abc import Callable
 logger = logging.getLogger(__name__)
 @contextmanager
 
@@ -35,10 +38,8 @@ def combine_contexts(*contexts) -> "CombinedContextManager":
                 stack.enter_context(context)
         yield
 @contextmanager
-
-
 def safe_context(
-    context_manager, default_value: Any = None, error_handler: Optional[callable] = None
+    context_manager, default_value: Any = None, error_handler: Callable[[Exception], Any] | None = None
 ):
     """
     Wrap a context manager to handle errors gracefully.
@@ -246,7 +247,7 @@ class MultiContextManager:
         """Initialize empty multi-context manager."""
         self.contexts: list[ContextManager] = []
         self.entered_contexts: list[Any] = []
-        self.stack: Optional[ExitStack] = None
+        self.stack: ExitStack | None = None
 
     def add_context(self, context: ContextManager):
         """Add a context manager to be managed."""
@@ -267,7 +268,7 @@ class MultiContextManager:
             self.stack.__exit__(None, None, None)
             raise
 
-    def __exit__(self, exc_type: Optional[type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[Any]) -> None:
+    def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any | None) -> None:
         """Exit all managed contexts."""
         if self.stack is not None:
             return self.stack.__exit__(exc_type, exc_val, exc_tb)

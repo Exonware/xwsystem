@@ -3,25 +3,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 IO module contracts - interfaces and enums for input/output operations.
 """
 
 from __future__ import annotations
-from typing import (
-    Protocol, 
-    runtime_checkable, 
-    Any, 
-    Optional, 
-    Union, 
-    BinaryIO, 
-    TextIO, 
-    Callable, 
-    Iterator, 
-    AsyncGenerator
-)
-from typing_extensions import TypeAlias
+from typing import Protocol, runtime_checkable, Any, BinaryIO, TextIO
+
+from collections.abc import Callable, Iterator, AsyncGenerator
+from typing import TypeAlias
 from pathlib import Path
 # Import enums from types module
 from .defs import (
@@ -47,11 +38,11 @@ class ICodec[T, R](Protocol):
         R: Representation type (bytes or str)
     """
 
-    def encode(self, value: T, *, options: Optional[EncodeOptions] = None) -> R:
+    def encode(self, value: T, *, options: EncodeOptions | None = None) -> R:
         """Encode a model to its representation."""
         ...
 
-    def decode(self, repr: R, *, options: Optional[DecodeOptions] = None) -> T:
+    def decode(self, repr: R, *, options: DecodeOptions | None = None) -> T:
         """Decode a representation to a model."""
         ...
 @runtime_checkable
@@ -113,7 +104,7 @@ class IPath(Protocol):
         ...
     @staticmethod
 
-    def relative(path: PathType, start: Optional[PathType] = None) -> Path:
+    def relative(path: PathType, start: PathType | None = None) -> Path:
         """Get relative path."""
         ...
     @staticmethod
@@ -201,7 +192,7 @@ class IStream(Protocol):
     """Interface for stream operations."""
     # Instance Methods
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """Read from stream."""
         ...
 
@@ -227,7 +218,7 @@ class IStream(Protocol):
     # Static Methods
     @staticmethod
 
-    def open_file(path: PathType, mode: str = 'r', encoding: Optional[str] = None) -> TextIO | BinaryIO:
+    def open_file(path: PathType, mode: str = 'r', encoding: str | None = None) -> TextIO | BinaryIO:
         """Open file as stream."""
         ...
     @staticmethod
@@ -256,7 +247,7 @@ class IAsyncIO(Protocol):
     """Interface for async I/O operations."""
     # Instance Methods
 
-    async def aread(self, size: Optional[int] = None) -> str | bytes:
+    async def aread(self, size: int | None = None) -> str | bytes:
         """Async read operation."""
         ...
 
@@ -282,7 +273,7 @@ class IAsyncIO(Protocol):
     # Static Methods
     @staticmethod
 
-    async def aopen_file(path: PathType, mode: str = 'r', encoding: Optional[str] = None) -> Any:
+    async def aopen_file(path: PathType, mode: str = 'r', encoding: str | None = None) -> Any:
         """Async open file."""
         ...
     @staticmethod
@@ -320,7 +311,7 @@ class IFile(Protocol):
         """Open file with specified mode."""
         ...
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """Read from file."""
         ...
 
@@ -434,12 +425,12 @@ class IFile(Protocol):
         ...
     @staticmethod
 
-    def safe_read_text(path: PathType, encoding: str = 'utf-8') -> Optional[str]:
+    def safe_read_text(path: PathType, encoding: str = 'utf-8') -> str | None:
         """Safely read text file, returning None on error."""
         ...
     @staticmethod
 
-    def safe_read_bytes(path: PathType) -> Optional[bytes]:
+    def safe_read_bytes(path: PathType) -> bytes | None:
         """Safely read binary file, returning None on error."""
         ...
     @staticmethod
@@ -476,7 +467,7 @@ class IFile(Protocol):
         ...
     @staticmethod
 
-    def create_backup(source: PathType, backup_dir: PathType) -> Optional[Path]:
+    def create_backup(source: PathType, backup_dir: PathType) -> Path | None:
         """Create backup of file (static version)."""
         ...
     @staticmethod
@@ -486,12 +477,12 @@ class IFile(Protocol):
         ...
     @staticmethod
 
-    def create_temp_file(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file (static version)."""
         ...
     @staticmethod
 
-    def create_temp_directory(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory (static version)."""
         ...
 @runtime_checkable
@@ -510,7 +501,7 @@ class IFolder(Protocol):
         """Delete directory."""
         ...
 
-    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files(self, pattern: str | None = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         ...
 
@@ -555,7 +546,7 @@ class IFolder(Protocol):
         ...
     @staticmethod
 
-    def list_files_static(path: PathType, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files_static(path: PathType, pattern: str | None = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         ...
     @staticmethod
@@ -738,7 +729,7 @@ class IBackupOperations(Protocol):
     """Interface for backup operations."""
     # Instance Methods
 
-    def create_backup(self, source: PathType, backup_dir: PathType) -> Optional[Path]:
+    def create_backup(self, source: PathType, backup_dir: PathType) -> Path | None:
         """Create backup of file or directory."""
         ...
 
@@ -760,7 +751,7 @@ class IBackupOperations(Protocol):
     # Static Methods
     @staticmethod
 
-    def create_backup_static(source: PathType, backup_dir: PathType) -> Optional[Path]:
+    def create_backup_static(source: PathType, backup_dir: PathType) -> Path | None:
         """Create backup of file or directory."""
         ...
     @staticmethod
@@ -789,11 +780,11 @@ class ITemporaryOperations(Protocol):
     """Interface for temporary operations."""
     # Instance Methods
 
-    def create_temp_file(self, suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file(self, suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file."""
         ...
 
-    def create_temp_directory(self, suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory(self, suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory."""
         ...
 
@@ -807,12 +798,12 @@ class ITemporaryOperations(Protocol):
     # Static Methods
     @staticmethod
 
-    def create_temp_file_static(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file_static(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file."""
         ...
     @staticmethod
 
-    def create_temp_directory_static(suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory_static(suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory."""
         ...
     @staticmethod
@@ -888,7 +879,7 @@ class IArchiveFormat(Protocol):
         """Create archive from files."""
         ...
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """Extract archive."""
         ...
 
@@ -896,7 +887,7 @@ class IArchiveFormat(Protocol):
         """List archive contents."""
         ...
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """Add file to existing archive."""
         ...
 @runtime_checkable
@@ -1059,7 +1050,7 @@ class IPagingStrategy(Protocol):
         page: int,
         page_size: int,
         mode: str = 'rb',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         **options
     ) -> bytes | str:
         """Read specific page using this strategy."""
@@ -1070,7 +1061,7 @@ class IPagingStrategy(Protocol):
         file_path: Path,
         page_size: int,
         mode: str = 'rb',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         **options
     ) -> Iterator[bytes | str]:
         """Iterate over pages using this strategy."""
@@ -1088,7 +1079,7 @@ class IFolderSource(Protocol):
         """Delete directory."""
         ...
 
-    def list_files(self, pattern: Optional[str] = None, recursive: bool = False) -> list[Path]:
+    def list_files(self, pattern: str | None = None, recursive: bool = False) -> list[Path]:
         """List files in directory."""
         ...
 # ============================================================================

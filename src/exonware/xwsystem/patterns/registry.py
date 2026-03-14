@@ -5,14 +5,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 26, 2025
 Generic registry pattern for dynamic registration and discovery.
 """
 
 import threading
 import time
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from .contracts import IGenericRegistry
@@ -40,7 +42,7 @@ class GenericRegistry[T](IGenericRegistry[T]):
     def __init__(
         self,
         name: str = "generic",
-        item_type: Optional[type] = None,
+        item_type: type | None = None,
         allow_overwrite: bool = False,
         auto_discovery: bool = False
     ):
@@ -79,8 +81,8 @@ class GenericRegistry[T](IGenericRegistry[T]):
         self,
         name: str,
         item: T,
-        metadata: Optional[dict[str, Any]] = None,
-        factory: Optional[Callable[[], T]] = None
+        metadata: dict[str, Any] | None = None,
+        factory: Callable[[], T] | None = None
     ) -> bool:
         """
         Register an item with optional metadata and factory.
@@ -166,7 +168,7 @@ class GenericRegistry[T](IGenericRegistry[T]):
                 logger.error(f"Failed to unregister item '{name}': {e}")
                 return False
 
-    def get(self, name: str) -> Optional[T]:
+    def get(self, name: str) -> T | None:
         """
         Get an item by name.
         Args:
@@ -227,7 +229,7 @@ class GenericRegistry[T](IGenericRegistry[T]):
                 logger.error(f"Failed to clear registry '{self.name}': {e}")
                 return False
 
-    def get_metadata(self, name: str) -> Optional[dict[str, Any]]:
+    def get_metadata(self, name: str) -> dict[str, Any] | None:
         """Get metadata for an item."""
         with self._lock:
             return self._metadata.get(name)

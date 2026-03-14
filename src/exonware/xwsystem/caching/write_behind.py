@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Write-behind (lazy write) cache implementation.
 Performance Priority #4 - Delayed persistence for write performance.
@@ -12,7 +12,9 @@ Performance Priority #4 - Delayed persistence for write performance.
 
 import threading
 import time
-from typing import Any, Callable, Optional, Hashable
+from typing import Any
+
+from collections.abc import Callable, Hashable
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.caching.write_behind")
@@ -47,10 +49,10 @@ class WriteBehindCache(LRUCache):
     def __init__(
         self,
         capacity: int = 128,
-        writer: Optional[Callable[[Any, Any], None]] = None,
+        writer: Callable[[Any, Any], None] | None = None,
         flush_interval: float = 5.0,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None,
+        ttl: float | None = None,
+        name: str | None = None,
         auto_start: bool = True
     ):
         """

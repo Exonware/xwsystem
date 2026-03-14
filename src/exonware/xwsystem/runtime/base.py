@@ -4,13 +4,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Runtime module base classes - abstract classes for runtime functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 from .contracts import RuntimeMode, PlatformType, PythonVersion, EnvironmentType
 
 
@@ -87,7 +89,7 @@ class AEnvironmentBase(ABC):
         pass
     @abstractmethod
 
-    def get_environment_variable(self, name: str, default: Optional[str] = None) -> Optional[str]:
+    def get_environment_variable(self, name: str, default: str | None = None) -> str | None:
         """Get environment variable."""
         pass
     @abstractmethod
@@ -254,22 +256,22 @@ class AReflectionBase(ABC):
         self._class_cache: dict[str, type] = {}
     @abstractmethod
 
-    def get_class(self, class_name: str, module_name: Optional[str] = None) -> Optional[type]:
+    def get_class(self, class_name: str, module_name: str | None = None) -> type | None:
         """Get class by name."""
         pass
     @abstractmethod
 
-    def get_function(self, function_name: str, module_name: Optional[str] = None) -> Optional[Callable]:
+    def get_function(self, function_name: str, module_name: str | None = None) -> Callable | None:
         """Get function by name."""
         pass
     @abstractmethod
 
-    def get_module(self, module_name: str) -> Optional[Any]:
+    def get_module(self, module_name: str) -> Any | None:
         """Get module by name."""
         pass
     @abstractmethod
 
-    def get_attribute(self, obj: Any, attribute_name: str) -> Optional[Any]:
+    def get_attribute(self, obj: Any, attribute_name: str) -> Any | None:
         """Get object attribute."""
         pass
     @abstractmethod
@@ -328,7 +330,7 @@ class ARuntimeManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_component(self, name: str) -> Optional[Any]:
+    def get_component(self, name: str) -> Any | None:
         """Get runtime component."""
         pass
     @abstractmethod
@@ -439,7 +441,7 @@ class BaseRuntime(ARuntimeBase):
             return True
         return False
 
-    def get_component(self, name: str) -> Optional[Any]:
+    def get_component(self, name: str) -> Any | None:
         """Get component."""
         return self._components.get(name)
 

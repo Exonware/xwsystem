@@ -231,7 +231,7 @@ class TestTypeValidation:
         # Mutable types
         assert not SafeTypeValidator.is_immutable_type([1, 2, 3])
         assert not SafeTypeValidator.is_immutable_type({"key": "value"})
-        assert not SafeTypeValidator.is_immutable_type(set([1, 2, 3]))
+        assert not SafeTypeValidator.is_immutable_type({1, 2, 3})
 
     def test_untrusted_data_validation(self):
         """Test validation of untrusted data."""

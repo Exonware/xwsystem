@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Record-based paging strategy for structured formats.
 Priority 1 (Security): Safe record parsing
@@ -15,7 +15,8 @@ Priority 5 (Extensibility): Pluggable via registry
 """
 
 from pathlib import Path
-from typing import Optional, Iterator
+
+from collections.abc import Iterator
 from ...contracts import IPagingStrategy
 
 
@@ -50,7 +51,7 @@ class RecordPagingStrategy:
         page: int,
         page_size: int,
         mode: str = 'r',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         **options
     ) -> str:
         """Read page by record count."""
@@ -77,7 +78,7 @@ class RecordPagingStrategy:
         file_path: Path,
         page_size: int,
         mode: str = 'r',
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         **options
     ) -> Iterator[str]:
         """Iterate over pages by record chunks."""

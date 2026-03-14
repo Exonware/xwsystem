@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 CBOR serialization - Concise Binary Object Representation.
 Following I→A pattern:
@@ -12,7 +12,7 @@ Following I→A pattern:
 - Concrete: CborSerializer
 """
 
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -95,7 +95,7 @@ class CborSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using cbor2 library)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to CBOR bytes.
         Uses cbor2.dumps().
@@ -123,7 +123,7 @@ class CborSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode CBOR bytes to data.
         Uses cbor2.loads().

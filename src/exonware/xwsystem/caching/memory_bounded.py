@@ -5,13 +5,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Memory-bounded cache implementations.
 Performance Priority #4 - Memory budget enforcement for controlled memory usage.
 """
 
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .lru_cache import LRUCache
 from .lfu_optimized import OptimizedLFUCache
 from .utils import estimate_object_size, format_bytes
@@ -35,8 +37,8 @@ class MemoryBoundedLRUCache(LRUCache):
         self,
         capacity: int = 128,
         memory_budget_mb: float = 100.0,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None
+        ttl: float | None = None,
+        name: str | None = None
     ):
         """
         Initialize memory-bounded LRU cache.
@@ -167,7 +169,7 @@ class MemoryBoundedLFUCache(OptimizedLFUCache):
         self,
         capacity: int = 128,
         memory_budget_mb: float = 100.0,
-        name: Optional[str] = None
+        name: str | None = None
     ):
         """Initialize memory-bounded LFU cache."""
         super().__init__(capacity, name)

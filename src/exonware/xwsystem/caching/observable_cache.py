@@ -5,13 +5,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Observable cache implementations with event emission.
 Extensibility Priority #5 - Event-driven caching for custom behaviors.
 """
 
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .lru_cache import LRUCache
 from .lfu_optimized import OptimizedLFUCache
 from .events import CacheEventEmitter, CacheEvent
@@ -33,8 +35,8 @@ class ObservableLRUCache(CacheEventEmitter, LRUCache):
     def __init__(
         self,
         capacity: int = 128,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None
+        ttl: float | None = None,
+        name: str | None = None
     ):
         """
         Initialize observable LRU cache.
@@ -95,7 +97,7 @@ class ObservableLFUCache(CacheEventEmitter, OptimizedLFUCache):
     Combines performance and extensibility.
     """
 
-    def __init__(self, capacity: int = 128, name: Optional[str] = None):
+    def __init__(self, capacity: int = 128, name: str | None = None):
         """Initialize observable LFU cache."""
         OptimizedLFUCache.__init__(self, capacity, name)
         CacheEventEmitter.__init__(self)

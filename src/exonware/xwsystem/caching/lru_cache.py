@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 LRU (Least Recently Used) Cache implementation with thread-safety and async support.
 """
@@ -13,7 +13,9 @@ import asyncio
 import threading
 import time
 from collections import OrderedDict
-from typing import Any, Optional, Callable, Hashable
+from typing import Any
+
+from collections.abc import Callable, Hashable
 from ..config.logging_setup import get_logger
 from .base import ACache
 logger = get_logger("xwsystem.caching.lru_cache")
@@ -25,8 +27,8 @@ class CacheNode:
     def __init__(self, key: Hashable, value: Any):
         self.key = key
         self.value = value
-        self.prev: Optional[CacheNode] = None
-        self.next: Optional[CacheNode] = None
+        self.prev: CacheNode | None = None
+        self.next: CacheNode | None = None
         self.access_time = time.time()
 
 
@@ -46,7 +48,7 @@ class LRUCache(ACache):
         Both work identically; use put() for consistency with codebase.
     """
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, name: Optional[str] = None):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, name: str | None = None):
         """
         Initialize LRU cache.
         Args:
@@ -139,7 +141,7 @@ class LRUCache(ACache):
                 self._add_to_head(node)
                 logger.debug(f"Cache {self.name} added key: {key}")
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> None:
         """
         Set value in cache (Protocol interface method).
         Delegates to put(). Prefer using put() for consistency.
@@ -318,7 +320,7 @@ class AsyncLRUCache:
     - Memory-efficient implementation
     """
 
-    def __init__(self, capacity: int = 128, ttl: Optional[float] = None, name: Optional[str] = None):
+    def __init__(self, capacity: int = 128, ttl: float | None = None, name: str | None = None):
         """
         Initialize async LRU cache.
         Args:

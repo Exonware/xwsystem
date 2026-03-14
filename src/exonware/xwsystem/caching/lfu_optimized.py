@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Optimized O(1) LFU Cache implementation.
 Performance Priority #4 - Replaces O(n) eviction with O(1) frequency buckets.
@@ -18,7 +18,9 @@ Performance Improvement:
 import threading
 import asyncio
 from collections import defaultdict, OrderedDict
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .base import ACache
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.caching.lfu_optimized")
@@ -42,7 +44,7 @@ class OptimizedLFUCache(ACache):
         - Optimized for high-throughput scenarios
     """
 
-    def __init__(self, capacity: int = 128, name: Optional[str] = None):
+    def __init__(self, capacity: int = 128, name: str | None = None):
         """
         Initialize optimized LFU cache.
         Args:
@@ -328,7 +330,7 @@ class AsyncOptimizedLFUCache:
     Same algorithm as OptimizedLFUCache but with async lock.
     """
 
-    def __init__(self, capacity: int = 128, name: Optional[str] = None):
+    def __init__(self, capacity: int = 128, name: str | None = None):
         """Initialize async optimized LFU cache."""
         if capacity <= 0:
             raise ValueError(

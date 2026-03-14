@@ -4,7 +4,7 @@ Cache Factory - Configurable cache creation utility.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2025
 Provides configurable cache factory that allows choosing different caching engines
 via settings/environment variables. Defaults to PylruCache when pylru is installed (highest throughput);
@@ -12,7 +12,7 @@ otherwise FunctoolsLRUCache.
 """
 
 import os
-from typing import Any, Optional, Type
+from typing import Any
 from enum import Enum
 from ..config.logging_setup import get_logger
 from .base import ACache
@@ -76,7 +76,7 @@ class CacheFactory:
     # Global settings registry (can be set by packages)
     _settings: dict[str, Any] = {}
     # Cache type registry
-    _cache_types: dict[str, Type[ACache]] = {
+    _cache_types: dict[str, type[ACache]] = {
         CacheType.PYLRU: PylruCache,  # Default when installed - highest throughput
         CacheType.FUNCTOOLS_LRU: FunctoolsLRUCache,
         CacheType.LRU: LRUCache,
@@ -114,7 +114,7 @@ class CacheFactory:
         return cls._settings.get(key, default)
     @classmethod
 
-    def get_cache_type(cls, namespace: Optional[str] = None) -> str:
+    def get_cache_type(cls, namespace: str | None = None) -> str:
         """
         Get cache type from configuration.
         Priority:
@@ -151,9 +151,9 @@ class CacheFactory:
     def create(
         cls,
         capacity: int = 128,
-        cache_type: Optional[str] = None,
-        namespace: Optional[str] = None,
-        name: Optional[str] = None,
+        cache_type: str | None = None,
+        namespace: str | None = None,
+        name: str | None = None,
         **kwargs
     ) -> ACache:
         """
@@ -229,7 +229,7 @@ class CacheFactory:
             return FunctoolsLRUCache(capacity=capacity, name=name)
     @classmethod
 
-    def register_cache_type(cls, cache_type: str, cache_class: Type[ACache]) -> None:
+    def register_cache_type(cls, cache_type: str, cache_class: type[ACache]) -> None:
         """
         Register custom cache type.
         Args:
@@ -247,9 +247,9 @@ class CacheFactory:
 
 def create_cache(
     capacity: int = 128,
-    cache_type: Optional[str] = None,
-    namespace: Optional[str] = None,
-    name: Optional[str] = None,
+    cache_type: str | None = None,
+    namespace: str | None = None,
+    name: str | None = None,
     **kwargs
 ) -> ACache:
     """

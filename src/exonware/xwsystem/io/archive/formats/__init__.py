@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 1, 2025
 Archive format implementations - COMPREHENSIVE 2025 SUPPORT.
 Pluggable archive formats registered with ArchiveFormatRegistry.

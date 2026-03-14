@@ -3,13 +3,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 HTTP module contracts - interfaces and enums for HTTP client functionality.
 """
 
 from __future__ import annotations
-from typing import Any, Optional, AsyncGenerator, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import AsyncGenerator
 from urllib.parse import ParseResult
 # Import enums from types module
 from .defs import (
@@ -28,11 +30,11 @@ class IHttpClient(Protocol):
         """Make GET request."""
         ...
 
-    async def post(self, url: str, data: Optional[Any] = None, **kwargs) -> IHttpResponse:
+    async def post(self, url: str, data: Any | None = None, **kwargs) -> IHttpResponse:
         """Make POST request."""
         ...
 
-    async def put(self, url: str, data: Optional[Any] = None, **kwargs) -> IHttpResponse:
+    async def put(self, url: str, data: Any | None = None, **kwargs) -> IHttpResponse:
         """Make PUT request."""
         ...
 
@@ -72,7 +74,7 @@ class IHttpResponse(Protocol):
         """Response content as JSON."""
         ...
 
-    async def stream(self) -> AsyncGenerator[bytes, None]:
+    async def stream(self) -> AsyncGenerator[bytes]:
         """Stream response content."""
         ...
 @runtime_checkable

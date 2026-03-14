@@ -10,7 +10,7 @@ import statistics
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 from .defs import AdvancedPerformanceMode
 import psutil
 # Use AdvancedPerformanceMode directly as PerformanceMode
@@ -606,7 +606,7 @@ class PerformanceProfiles:
     @staticmethod
 
     def get_profile(
-        mode: PerformanceMode, data_size: Optional[int] = None
+        mode: PerformanceMode, data_size: int | None = None
     ) -> PerformanceProfile:
         """Get performance profile based on mode and data characteristics."""
         if mode == PerformanceMode.ADAPTIVE:
@@ -784,10 +784,10 @@ class PerformanceModeManager:
 
     def __init__(self, default_mode: PerformanceMode = PerformanceMode.DEFAULT):
         self._mode = default_mode
-        self._parent_mode: Optional[PerformanceMode] = None
+        self._parent_mode: PerformanceMode | None = None
         self._manual_overrides: dict[str, Any] = {}
-        self._adaptive_engine: Optional[AdaptiveLearningEngine] = None
-        self._dual_adaptive_engine: Optional[DualPhaseAdaptiveEngine] = None
+        self._adaptive_engine: AdaptiveLearningEngine | None = None
+        self._dual_adaptive_engine: DualPhaseAdaptiveEngine | None = None
         self._lock = threading.RLock()
 
     def set_mode(self, mode: PerformanceMode) -> None:
@@ -820,7 +820,7 @@ class PerformanceModeManager:
         with self._lock:
             self._manual_overrides[key] = value
 
-    def get_profile(self, data_size: Optional[int] = None) -> PerformanceProfile:
+    def get_profile(self, data_size: int | None = None) -> PerformanceProfile:
         """Get the current performance profile."""
         with self._lock:
             effective_mode = self._get_effective_mode()

@@ -5,14 +5,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Pluggable cache with runtime-switchable eviction strategies.
 Extensibility Priority #5 - Maximum flexibility for custom behaviors.
 """
 
 import threading
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .base import ACache
 from .eviction_strategies import AEvictionStrategy, LRUEvictionStrategy
 from ..config.logging_setup import get_logger
@@ -33,8 +35,8 @@ class PluggableCache(ACache):
     def __init__(
         self,
         capacity: int = 128,
-        strategy: Optional[AEvictionStrategy] = None,
-        name: Optional[str] = None
+        strategy: AEvictionStrategy | None = None,
+        name: str | None = None
     ):
         """
         Initialize pluggable cache.

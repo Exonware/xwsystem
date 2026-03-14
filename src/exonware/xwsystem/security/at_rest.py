@@ -11,7 +11,7 @@ with a common envelope format so they are swappable and benchmarkable.
 from __future__ import annotations
 import os
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 from .contracts import IAtRestEncryption
 from .errors import CryptographicError
 # Envelope format: magic(4) + version(1) + algo(1) + nonce(12) + salt_len(1) + salt(0..16) + ciphertext
@@ -36,7 +36,7 @@ def build_envelope(
     ciphertext: bytes,
     algo_byte: int,
     nonce: bytes,
-    salt: Optional[bytes] = None,
+    salt: bytes | None = None,
 ) -> bytes:
     """Build envelope: magic + version + algo + nonce + salt_len + salt + ciphertext."""
     if len(nonce) != NONCE_SIZE:
@@ -88,7 +88,7 @@ class AAtRestEncryption(ABC):
     Subclasses implement _encrypt_core and _decrypt_core (raw cipher, no envelope).
     """
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
+    def __init__(self, key: bytes | None = None) -> None:
         self._key = key
     @abstractmethod
 
@@ -118,10 +118,10 @@ class AAtRestEncryption(ABC):
 
     def _resolve_key(
         self,
-        key: Optional[bytes] = None,
-        password: Optional[str] = None,
-        salt: Optional[bytes] = None,
-    ) -> tuple[bytes, Optional[bytes]]:
+        key: bytes | None = None,
+        password: str | None = None,
+        salt: bytes | None = None,
+    ) -> tuple[bytes, bytes | None]:
         """Resolve key from instance key, or key arg, or password (with KDF). Returns (key, salt_for_envelope)."""
         if key is not None:
             return key, None
@@ -136,9 +136,9 @@ class AAtRestEncryption(ABC):
         self,
         data: bytes,
         *,
-        key: Optional[bytes] = None,
-        password: Optional[str] = None,
-        salt: Optional[bytes] = None,
+        key: bytes | None = None,
+        password: str | None = None,
+        salt: bytes | None = None,
     ) -> bytes:
         """Encrypt data and return envelope bytes."""
         key_bytes, salt_for_envelope = self._resolve_key(key=key, password=password, salt=salt)
@@ -154,8 +154,8 @@ class AAtRestEncryption(ABC):
         self,
         payload: bytes,
         *,
-        key: Optional[bytes] = None,
-        password: Optional[str] = None,
+        key: bytes | None = None,
+        password: str | None = None,
     ) -> bytes:
         """Decrypt envelope and return plaintext bytes."""
         algo_byte, nonce, salt, ciphertext = parse_envelope(payload)
@@ -175,7 +175,7 @@ class AAtRestEncryption(ABC):
 class AES256GCMAtRest(AAtRestEncryption):
     """At-rest encryption using AES-256-GCM (AEAD)."""
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
+    def __init__(self, key: bytes | None = None) -> None:
         super().__init__(key=key)
 
     def algorithm_id(self) -> str:
@@ -207,7 +207,7 @@ class AES256GCMAtRest(AAtRestEncryption):
 class XChaCha20Poly1305AtRest(AAtRestEncryption):
     """At-rest encryption using XChaCha20-Poly1305 (AEAD)."""
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
+    def __init__(self, key: bytes | None = None) -> None:
         super().__init__(key=key)
 
     def algorithm_id(self) -> str:
@@ -239,7 +239,7 @@ class XChaCha20Poly1305AtRest(AAtRestEncryption):
 class FernetAtRest(AAtRestEncryption):
     """At-rest encryption using Fernet (AES-128-CBC + HMAC). Uses envelope for consistency."""
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
+    def __init__(self, key: bytes | None = None) -> None:
         super().__init__(key=key)
 
     def algorithm_id(self) -> str:
@@ -271,7 +271,7 @@ class FernetAtRest(AAtRestEncryption):
         return f.decrypt(ciphertext)
 
 
-def get_at_rest_encryption(algorithm_id: str, key: Optional[bytes] = None) -> IAtRestEncryption:
+def get_at_rest_encryption(algorithm_id: str, key: bytes | None = None) -> IAtRestEncryption:
     """Factory: return IAtRestEncryption implementation by algorithm id."""
     aliases = {
         "aes256-gcm": AES256GCMAtRest,

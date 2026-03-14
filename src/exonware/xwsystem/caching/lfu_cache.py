@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 LFU (Least Frequently Used) Cache implementation with thread-safety and async support.
 """
@@ -11,7 +11,9 @@ LFU (Least Frequently Used) Cache implementation with thread-safety and async su
 import asyncio
 import threading
 import time
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from ..config.logging_setup import get_logger
 from .base import ACache
 logger = get_logger("xwsystem.caching.lfu_cache")
@@ -33,7 +35,7 @@ class LFUCache(ACache):
         cache = OptimizedLFUCache(capacity=1000)  # O(1) eviction
     """
 
-    def __init__(self, capacity: int = 128, name: Optional[str] = None):
+    def __init__(self, capacity: int = 128, name: str | None = None):
         """
         Initialize LFU cache.
         ⚠️ PERFORMANCE WARNING: Consider using OptimizedLFUCache for better performance.
@@ -89,7 +91,7 @@ class LFUCache(ACache):
                 self._cache[key] = value
                 self._frequencies[key] = 1
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> None:
         """
         Set value in cache (abstract method implementation).
         Delegates to put().
@@ -183,7 +185,7 @@ class AsyncLFUCache:
     Async-safe LFU (Least Frequently Used) Cache.
     """
 
-    def __init__(self, capacity: int = 128, name: Optional[str] = None):
+    def __init__(self, capacity: int = 128, name: str | None = None):
         """Initialize async LFU cache."""
         if capacity <= 0:
             raise ValueError("Capacity must be positive")

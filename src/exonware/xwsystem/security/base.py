@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Security module base classes - abstract classes for security functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 from .defs import HashAlgorithm, EncryptionAlgorithm, SecurityLevel
 
 
@@ -24,8 +24,8 @@ class ACryptographicBase(ABC):
             algorithm: Cryptographic algorithm
         """
         self.algorithm = algorithm
-        self._key: Optional[bytes] = None
-        self._iv: Optional[bytes] = None
+        self._key: bytes | None = None
+        self._iv: bytes | None = None
     @abstractmethod
 
     def generate_key(self, key_size: int = 256) -> bytes:
@@ -38,7 +38,7 @@ class ACryptographicBase(ABC):
         pass
     @abstractmethod
 
-    def get_key(self) -> Optional[bytes]:
+    def get_key(self) -> bytes | None:
         """Get cryptographic key."""
         pass
     @abstractmethod
@@ -83,10 +83,10 @@ class AHashBase(ABC):
             algorithm: Hash algorithm
         """
         self.algorithm = algorithm
-        self._salt: Optional[bytes] = None
+        self._salt: bytes | None = None
     @abstractmethod
 
-    def hash(self, data: str | bytes, salt: Optional[bytes] = None) -> str:
+    def hash(self, data: str | bytes, salt: bytes | None = None) -> str:
         """Hash data."""
         pass
     @abstractmethod
@@ -96,7 +96,7 @@ class AHashBase(ABC):
         pass
     @abstractmethod
 
-    def verify_hash(self, data: str | bytes, hash_value: str, salt: Optional[bytes] = None) -> bool:
+    def verify_hash(self, data: str | bytes, hash_value: str, salt: bytes | None = None) -> bool:
         """Verify data hash."""
         pass
     @abstractmethod
@@ -111,7 +111,7 @@ class AHashBase(ABC):
         pass
     @abstractmethod
 
-    def get_salt(self) -> Optional[bytes]:
+    def get_salt(self) -> bytes | None:
         """Get current salt."""
         pass
     @abstractmethod
@@ -131,8 +131,8 @@ class AEncryptionBase(ABC):
             algorithm: Encryption algorithm
         """
         self.algorithm = algorithm
-        self._key: Optional[bytes] = None
-        self._iv: Optional[bytes] = None
+        self._key: bytes | None = None
+        self._iv: bytes | None = None
     @abstractmethod
 
     def generate_key(self, key_size: int = 256) -> bytes:
@@ -155,12 +155,12 @@ class AEncryptionBase(ABC):
         pass
     @abstractmethod
 
-    def encrypt(self, data: str | bytes, key: Optional[bytes] = None, iv: Optional[bytes] = None) -> bytes:
+    def encrypt(self, data: str | bytes, key: bytes | None = None, iv: bytes | None = None) -> bytes:
         """Encrypt data."""
         pass
     @abstractmethod
 
-    def decrypt(self, encrypted_data: bytes, key: Optional[bytes] = None, iv: Optional[bytes] = None) -> str | bytes:
+    def decrypt(self, encrypted_data: bytes, key: bytes | None = None, iv: bytes | None = None) -> str | bytes:
         """Decrypt data."""
         pass
     @abstractmethod
@@ -258,7 +258,7 @@ class AResourceLimitsBase(ABC):
         pass
     @abstractmethod
 
-    def get_limit(self, resource: str) -> Optional[int]:
+    def get_limit(self, resource: str) -> int | None:
         """Get resource limit."""
         pass
     @abstractmethod
@@ -374,16 +374,16 @@ class ATokenInfo:
     """Token information structure."""
     access_token: str
     token_type: str = "Bearer"
-    expires_in: Optional[int] = None
-    refresh_token: Optional[str] = None
-    scope: Optional[str] = None
+    expires_in: int | None = None
+    refresh_token: str | None = None
+    scope: str | None = None
 @dataclass
 
 class AUserInfo:
     """User information structure."""
     user_id: str
-    username: Optional[str] = None
-    email: Optional[str] = None
+    username: str | None = None
+    email: str | None = None
     roles: list[str] = field(default_factory=list)
     attributes: dict[str, Any] = field(default_factory=dict)
 

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Archive FILES - File persistence for archives.
 IArchiveFile extends IFile and USES IArchiver for compression.
@@ -22,7 +22,7 @@ Priority 5 (Extensibility): Easy to add new formats
 import zipfile
 import tarfile
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from ..archive.base import AArchiveFile
 from ..contracts import IArchiveFile, IArchiver
 from ..errors import ArchiveError

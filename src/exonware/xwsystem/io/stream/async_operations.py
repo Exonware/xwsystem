@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Asynchronous I/O operations for non-blocking file handling.
 """
@@ -16,7 +16,7 @@ import tempfile
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, AsyncContextManager, BinaryIO, Optional, TextIO
+from typing import Any, AsyncContextManager, BinaryIO, TextIO
 # Import aiofiles - lazy installation system will handle it if missing
 import aiofiles
 import aiofiles.os
@@ -37,9 +37,9 @@ class AsyncAtomicFileWriter:
         self,
         target_path: str | Path,
         mode: str = "w",
-        encoding: Optional[str] = "utf-8",
+        encoding: str | None = "utf-8",
         backup: bool = False,
-        temp_dir: Optional[str | Path] = None,
+        temp_dir: str | Path | None = None,
     ):
         """
         Initialize async atomic file writer.
@@ -55,9 +55,9 @@ class AsyncAtomicFileWriter:
         self.encoding = encoding if "b" not in mode else None
         self.backup = backup
         self.temp_dir = Path(temp_dir) if temp_dir else self.target_path.parent
-        self.temp_path: Optional[Path] = None
-        self.backup_path: Optional[Path] = None
-        self.file_handle: Optional[Any] = None  # aiofiles handle
+        self.temp_path: Path | None = None
+        self.backup_path: Path | None = None
+        self.file_handle: Any | None = None  # aiofiles handle
         self._committed = False
         self._started = False
 
@@ -269,9 +269,9 @@ class AsyncAtomicFileWriter:
 async def async_atomic_write(
     target_path: str | Path,
     mode: str = "w",
-    encoding: Optional[str] = "utf-8",
+    encoding: str | None = "utf-8",
     backup: bool = True,
-    temp_dir: Optional[str | Path] = None,
+    temp_dir: str | Path | None = None,
 ) -> AsyncContextManager[Any]:
     """
     Async context manager for atomic file writing.
@@ -365,7 +365,7 @@ async def async_safe_read_text(
         raise FileOperationError(
             f"Encoding error reading '{file_path}' with encoding '{encoding}': {e}"
         ) from e
-    except IOError as e:
+    except OSError as e:
         raise FileOperationError(f"IOError reading file '{file_path}': {e}") from e
 async def async_safe_read_bytes(file_path: str | Path, max_size_mb: float = 100.0) -> bytes:
     """
@@ -401,12 +401,12 @@ async def async_safe_read_bytes(file_path: str | Path, max_size_mb: float = 100.
     try:
         async with aiofiles.open(file_path, "rb") as f:
             return await f.read()
-    except IOError as e:
+    except OSError as e:
         raise FileOperationError(f"IOError reading file '{file_path}': {e}") from e
 async def async_safe_read_with_fallback(
     file_path: str | Path,
     preferred_encoding: str = "utf-8",
-    fallback_encodings: Optional[list[str]] = None,
+    fallback_encodings: list[str] | None = None,
     max_size_mb: float = 100.0,
 ) -> str:
     """

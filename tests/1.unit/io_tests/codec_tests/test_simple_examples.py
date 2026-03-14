@@ -6,7 +6,7 @@ Additional codec tests covering bespoke serializer/formatter examples.
 
 import json
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 import pytest
 from exonware.xwsystem.io.codec import (
     ICodec,
@@ -34,12 +34,12 @@ class SimpleJsonCodec(ACodec[dict, bytes]):
     file_extensions = [".json"]
     aliases = ["json", "JSON"]
 
-    def encode(self, value: dict, *, options: Optional[dict] = None) -> bytes:
+    def encode(self, value: dict, *, options: dict | None = None) -> bytes:
         opts = options or {}
         indent = 2 if opts.get("pretty") else None
         return json.dumps(value, indent=indent).encode("utf-8")
 
-    def decode(self, repr: bytes, *, options: Optional[dict] = None) -> dict:
+    def decode(self, repr: bytes, *, options: dict | None = None) -> dict:
         return json.loads(repr.decode("utf-8"))
 
     def capabilities(self) -> CodecCapability:
@@ -53,13 +53,13 @@ class SimpleSqlFormatter(ACodec[dict, str]):
     file_extensions = [".sql"]
     aliases = ["sql", "SQL"]
 
-    def encode(self, value: dict, *, options: Optional[dict] = None) -> str:
+    def encode(self, value: dict, *, options: dict | None = None) -> str:
         """Generate SQL from dict."""
         if "select" in value:
             return f"SELECT {value['select']} FROM {value['from']}"
         return str(value)
 
-    def decode(self, repr: str, *, options: Optional[dict] = None) -> dict:
+    def decode(self, repr: str, *, options: dict | None = None) -> dict:
         """Parse SQL to dict (simple parser)."""
         if repr.startswith("SELECT"):
             parts = repr.replace(",", "").split()

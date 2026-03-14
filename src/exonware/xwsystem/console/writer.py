@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 2025-01-27
 Console Writer implementation for user interaction (not logging).
 Can be used as a base class for bots and other user interaction systems.
@@ -14,7 +14,6 @@ Can be used as a base class for bots and other user interaction systems.
 import os
 import platform
 import sys
-from typing import Optional
 from .base import AConsoleWriter
 from .errors import ConsoleWriterError
 

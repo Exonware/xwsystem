@@ -14,7 +14,9 @@ Wrappers for:
 - pylru: Simple LRU cache
 """
 
-from typing import Any, Optional, Callable
+from typing import Any
+
+from collections.abc import Callable
 from functools import lru_cache as std_lru_cache
 import sys
 import time

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 HTTP client with retry mechanisms, connection pooling, and error handling.
 """
@@ -13,7 +13,7 @@ import asyncio
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urljoin
 # Prevent httpx from importing rich (Python 3.8+ only, no legacy deps)
 os.environ.setdefault("HTTPX_NO_RICH", "1")
@@ -42,12 +42,12 @@ class HttpClient:
 
     def __init__(
         self,
-        base_url: Optional[str] = None,
+        base_url: str | None = None,
         timeout: float = 30.0,
         max_connections: int = 100,
         max_keepalive_connections: int = 20,
-        retry_config: Optional[RetryConfig] = None,
-        default_headers: Optional[dict[str, str]] = None,
+        retry_config: RetryConfig | None = None,
+        default_headers: dict[str, str] | None = None,
     ) -> None:
         """
         Initialize HTTP client.
@@ -107,7 +107,7 @@ class HttpClient:
         except Exception as e:
             logger.warning(f"Error closing HTTP client: {e}")
 
-    def _should_retry(self, response: Optional[httpx.Response], exception: Optional[Exception]) -> bool:
+    def _should_retry(self, response: httpx.Response | None, exception: Exception | None) -> bool:
         """Determine if a request should be retried."""
         if exception:
             return any(isinstance(exception, exc_type) for exc_type in self.retry_config.retry_on_exceptions)
@@ -119,11 +119,11 @@ class HttpClient:
         self,
         method: str,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json_data: Optional[Any] = None,
-        data: Optional[Any] = None,
-        files: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json_data: Any | None = None,
+        data: Any | None = None,
+        files: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make HTTP request with retry logic."""
         # Combine headers
@@ -167,8 +167,8 @@ class HttpClient:
     def get(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make GET request."""
         return self._make_request('GET', url, headers=headers, params=params)
@@ -176,11 +176,11 @@ class HttpClient:
     def post(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json_data: Optional[Any] = None,
-        data: Optional[Any] = None,
-        files: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json_data: Any | None = None,
+        data: Any | None = None,
+        files: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make POST request."""
         return self._make_request(
@@ -191,10 +191,10 @@ class HttpClient:
     def put(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json_data: Optional[Any] = None,
-        data: Optional[Any] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json_data: Any | None = None,
+        data: Any | None = None,
     ) -> httpx.Response:
         """Make PUT request."""
         return self._make_request(
@@ -205,10 +205,10 @@ class HttpClient:
     def patch(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json_data: Optional[Any] = None,
-        data: Optional[Any] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json_data: Any | None = None,
+        data: Any | None = None,
     ) -> httpx.Response:
         """Make PATCH request."""
         return self._make_request(
@@ -219,8 +219,8 @@ class HttpClient:
     def delete(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make DELETE request."""
         return self._make_request('DELETE', url, headers=headers, params=params)
@@ -228,8 +228,8 @@ class HttpClient:
     def head(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make HEAD request."""
         return self._make_request('HEAD', url, headers=headers, params=params)
@@ -237,8 +237,8 @@ class HttpClient:
     def options(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make OPTIONS request."""
         return self._make_request('OPTIONS', url, headers=headers, params=params)
@@ -287,12 +287,12 @@ class AsyncHttpClient:
 
     def __init__(
         self,
-        base_url: Optional[str] = None,
+        base_url: str | None = None,
         timeout: float = 30.0,
         max_connections: int = 100,
         max_keepalive_connections: int = 20,
-        retry_config: Optional[RetryConfig] = None,
-        default_headers: Optional[dict[str, str]] = None,
+        retry_config: RetryConfig | None = None,
+        default_headers: dict[str, str] | None = None,
     ) -> None:
         """
         Initialize async HTTP client.
@@ -335,7 +335,7 @@ class AsyncHttpClient:
         except Exception as e:
             logger.warning(f"Error closing async HTTP client: {e}")
 
-    def _should_retry(self, response: Optional[httpx.Response], exception: Optional[Exception]) -> bool:
+    def _should_retry(self, response: httpx.Response | None, exception: Exception | None) -> bool:
         """Determine if a request should be retried."""
         if exception:
             return any(isinstance(exception, exc_type) for exc_type in self.retry_config.retry_on_exceptions)
@@ -347,11 +347,11 @@ class AsyncHttpClient:
         self,
         method: str,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json_data: Optional[Any] = None,
-        data: Optional[Any] = None,
-        files: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json_data: Any | None = None,
+        data: Any | None = None,
+        files: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make async HTTP request with retry logic."""
         # Combine headers
@@ -395,8 +395,8 @@ class AsyncHttpClient:
     async def get(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make async GET request."""
         return await self._make_request('GET', url, headers=headers, params=params)
@@ -404,11 +404,11 @@ class AsyncHttpClient:
     async def post(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json_data: Optional[Any] = None,
-        data: Optional[Any] = None,
-        files: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json_data: Any | None = None,
+        data: Any | None = None,
+        files: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make async POST request."""
         return await self._make_request(
@@ -419,10 +419,10 @@ class AsyncHttpClient:
     async def put(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json_data: Optional[Any] = None,
-        data: Optional[Any] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json_data: Any | None = None,
+        data: Any | None = None,
     ) -> httpx.Response:
         """Make async PUT request."""
         return await self._make_request(
@@ -433,10 +433,10 @@ class AsyncHttpClient:
     async def patch(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
-        json_data: Optional[Any] = None,
-        data: Optional[Any] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json_data: Any | None = None,
+        data: Any | None = None,
     ) -> httpx.Response:
         """Make async PATCH request."""
         return await self._make_request(
@@ -447,8 +447,8 @@ class AsyncHttpClient:
     async def delete(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make async DELETE request."""
         return await self._make_request('DELETE', url, headers=headers, params=params)
@@ -456,8 +456,8 @@ class AsyncHttpClient:
     async def head(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make async HEAD request."""
         return await self._make_request('HEAD', url, headers=headers, params=params)
@@ -465,8 +465,8 @@ class AsyncHttpClient:
     async def options(
         self,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        params: Optional[dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> httpx.Response:
         """Make async OPTIONS request."""
         return await self._make_request('OPTIONS', url, headers=headers, params=params)

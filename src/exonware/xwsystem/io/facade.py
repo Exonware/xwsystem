@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 XWIO - Main facade for all I/O operations (MANDATORY facade pattern).
 This is the primary entry point for the IO module, following GUIDELINES_DEV.md.
@@ -15,7 +15,7 @@ import shutil
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Optional, BinaryIO, TextIO
+from typing import Any, BinaryIO, TextIO
 from .base import AUnifiedIO
 from .contracts import FileMode, FileType, PathType, OperationResult, LockType, IUnifiedIO
 from .common.atomic import AtomicFileWriter
@@ -49,7 +49,7 @@ class XWIO(AUnifiedIO):
     - Delegates to specialized components
     """
 
-    def __init__(self, file_path: Optional[str | Path] = None, **config):
+    def __init__(self, file_path: str | Path | None = None, **config):
         """
         Initialize XWIO facade.
         Args:
@@ -71,7 +71,7 @@ class XWIO(AUnifiedIO):
     # FILE OPERATIONS
     # ============================================================================
 
-    def open_file(self, file_path: Optional[str | Path] = None, mode: FileMode = FileMode.READ) -> None:
+    def open_file(self, file_path: str | Path | None = None, mode: FileMode = FileMode.READ) -> None:
         """Open file with validation and monitoring."""
         target_path = Path(file_path) if file_path else self.file_path
         if not target_path:
@@ -101,7 +101,7 @@ class XWIO(AUnifiedIO):
         """Open file with validation and monitoring (alias for open_file())."""
         self.open_file(mode=mode)
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """
         Read from file (implements AFile abstract method).
         Delegates to read_file() for file operations.
@@ -180,7 +180,7 @@ class XWIO(AUnifiedIO):
         """
         return self.load(file_path=path, **kwargs)
 
-    def read_file(self, size: Optional[int] = None) -> str | bytes:
+    def read_file(self, size: int | None = None) -> str | bytes:
         """Read from file with validation."""
         if not self.is_open():
             raise ValueError("File not open")
@@ -199,7 +199,7 @@ class XWIO(AUnifiedIO):
         with performance_monitor("file_write"):
             return self._handle.write(data)
 
-    def save(self, data: Any, file_path: Optional[str | Path] = None) -> bool:
+    def save(self, data: Any, file_path: str | Path | None = None) -> bool:
         """
         Save data to file with atomic operations.
         Returns:
@@ -230,7 +230,7 @@ class XWIO(AUnifiedIO):
                     f.write(data)
         return True
 
-    def load(self, file_path: Optional[str | Path] = None) -> Any:
+    def load(self, file_path: str | Path | None = None) -> Any:
         """Load data from file with validation."""
         target_path = Path(file_path) if file_path else self.file_path
         if not target_path:
@@ -242,7 +242,7 @@ class XWIO(AUnifiedIO):
         with performance_monitor("file_load"):
             # Try to read as text first, then binary
             try:
-                with open(target_path, 'r', encoding='utf-8') as f:
+                with open(target_path, encoding='utf-8') as f:
                     data = f.read()
             except UnicodeDecodeError:
                 with open(target_path, 'rb') as f:
@@ -392,7 +392,7 @@ class XWIO(AUnifiedIO):
     # BACKUP OPERATIONS
     # ============================================================================
 
-    def create_backup(self, source: str | Path, backup_dir: str | Path) -> Optional[Path]:
+    def create_backup(self, source: str | Path, backup_dir: str | Path) -> Path | None:
         """Create backup of file or directory."""
         source_path = Path(source)
         backup_path = Path(backup_dir)
@@ -446,7 +446,7 @@ class XWIO(AUnifiedIO):
     # TEMPORARY OPERATIONS
     # ============================================================================
 
-    def create_temp_file(self, suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_file(self, suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary file."""
         with performance_monitor("temp_file_create"):
             try:
@@ -462,7 +462,7 @@ class XWIO(AUnifiedIO):
                 logger.error(f"Failed to create temporary file: {e}")
                 raise
 
-    def create_temp_directory(self, suffix: Optional[str] = None, prefix: Optional[str] = None) -> Path:
+    def create_temp_directory(self, suffix: str | None = None, prefix: str | None = None) -> Path:
         """Create temporary directory."""
         with performance_monitor("temp_dir_create"):
             try:
@@ -479,7 +479,7 @@ class XWIO(AUnifiedIO):
     # ASYNC OPERATIONS
     # ============================================================================
 
-    async def aread(self, size: Optional[int] = None) -> str | bytes:
+    async def aread(self, size: int | None = None) -> str | bytes:
         """Async read operation."""
         if not self._async_stream:
             raise ValueError("Async stream not initialized")
@@ -598,7 +598,7 @@ class XWIO(AUnifiedIO):
             raise ValueError(f"Unknown format: {format_id}")
         return codec.decode(data, options=options or None)
 
-    def save_serialized(self, data: Any, file_path: str | Path, format_id: Optional[str] = None, **options) -> None:
+    def save_serialized(self, data: Any, file_path: str | Path, format_id: str | None = None, **options) -> None:
         """
         Serialize and save data to file.
         Auto-detects format from file extension if format_id not provided.
@@ -636,7 +636,7 @@ class XWIO(AUnifiedIO):
             else:
                 path.write_text(repr_data, encoding='utf-8')
 
-    def load_serialized(self, file_path: str | Path, format_id: Optional[str] = None, **options) -> Any:
+    def load_serialized(self, file_path: str | Path, format_id: str | None = None, **options) -> Any:
         """
         Load and deserialize data from file.
         Auto-detects format from file extension if format_id not provided.
@@ -696,7 +696,7 @@ class XWIO(AUnifiedIO):
         self,
         file_path: str | Path,
         data: Any,
-        format_id: Optional[str] = None,
+        format_id: str | None = None,
         **options,
     ) -> bool:
         """
@@ -728,7 +728,7 @@ class XWIO(AUnifiedIO):
             logger.error(f"Failed to save data to {file_path}: {e}")
             return False
 
-    def read_as(self, file_path: str | Path, format_id: Optional[str] = None, **options) -> Any:
+    def read_as(self, file_path: str | Path, format_id: str | None = None, **options) -> Any:
         """
         Read and deserialize file (auto-detect or explicit format).
         Alias for load_serialized(). More intuitive name for reading files.
@@ -745,7 +745,7 @@ class XWIO(AUnifiedIO):
         """
         return self.load_serialized(file_path, format_id=format_id, **options)
 
-    def write_as(self, file_path: str | Path, data: Any, format_id: Optional[str] = None, **options) -> None:
+    def write_as(self, file_path: str | Path, data: Any, format_id: str | None = None, **options) -> None:
         """
         Serialize and write to file (auto-detect or explicit format).
         Alias for save_serialized(). More intuitive name for writing files.

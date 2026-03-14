@@ -26,7 +26,7 @@ def load_benchmark_results(filename: str) -> dict:
     if not filepath.exists():
         print(f"❌ Benchmark file not found: {filepath}")
         return None
-    with open(filepath, 'r', encoding='utf-8') as f:
+    with open(filepath, encoding='utf-8') as f:
         return json.load(f)
 
 

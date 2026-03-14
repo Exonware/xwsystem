@@ -4,20 +4,22 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Threading module base classes - abstract classes for threading functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Callable, Coroutine
+from typing import Any
+
+from collections.abc import Callable, Coroutine
 from .contracts import ThreadState, LockType, AsyncPrimitiveType, ConcurrencyMode
 
 
 class AThreadBase(ABC):
     """Abstract base class for thread operations."""
 
-    def __init__(self, name: Optional[str] = None, daemon: bool = False):
+    def __init__(self, name: str | None = None, daemon: bool = False):
         """
         Initialize thread base.
         Args:
@@ -27,7 +29,7 @@ class AThreadBase(ABC):
         self.name = name
         self.daemon = daemon
         self._state = ThreadState.NEW
-        self._target: Optional[Callable] = None
+        self._target: Callable | None = None
         self._args: tuple = ()
         self._kwargs: dict[str, Any] = {}
     @abstractmethod
@@ -42,7 +44,7 @@ class AThreadBase(ABC):
         pass
     @abstractmethod
 
-    def join(self, timeout: Optional[float] = None) -> None:
+    def join(self, timeout: float | None = None) -> None:
         """Join thread."""
         pass
     @abstractmethod
@@ -77,7 +79,7 @@ class AThreadBase(ABC):
         pass
     @abstractmethod
 
-    def get_exception(self) -> Optional[Exception]:
+    def get_exception(self) -> Exception | None:
         """Get thread exception."""
         pass
 
@@ -93,11 +95,11 @@ class ALockBase(ABC):
         """
         self.lock_type = lock_type
         self._locked = False
-        self._owner: Optional[int] = None
+        self._owner: int | None = None
         self._waiting_threads: list[int] = []
     @abstractmethod
 
-    def acquire(self, blocking: bool = True, timeout: Optional[float] = None) -> bool:
+    def acquire(self, blocking: bool = True, timeout: float | None = None) -> bool:
         """Acquire lock."""
         pass
     @abstractmethod
@@ -117,7 +119,7 @@ class ALockBase(ABC):
         pass
     @abstractmethod
 
-    def get_owner(self) -> Optional[int]:
+    def get_owner(self) -> int | None:
         """Get lock owner thread ID."""
         pass
     @abstractmethod
@@ -156,7 +158,7 @@ class AAsyncPrimitiveBase(ABC):
         self._waiting_coroutines: list[Coroutine] = []
     @abstractmethod
 
-    async def wait(self, timeout: Optional[float] = None) -> bool:
+    async def wait(self, timeout: float | None = None) -> bool:
         """Wait for primitive."""
         pass
     @abstractmethod
@@ -176,7 +178,7 @@ class AAsyncPrimitiveBase(ABC):
         pass
     @abstractmethod
 
-    async def wait_for(self, condition: Callable, timeout: Optional[float] = None) -> bool:
+    async def wait_for(self, condition: Callable, timeout: float | None = None) -> bool:
         """Wait for condition."""
         pass
     @abstractmethod
@@ -215,7 +217,7 @@ class ASafeFactoryBase(ABC):
         pass
     @abstractmethod
 
-    def get_instance(self, instance_id: str) -> Optional[Any]:
+    def get_instance(self, instance_id: str) -> Any | None:
         """Get instance by ID."""
         pass
     @abstractmethod
@@ -332,17 +334,17 @@ class AConcurrencyManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_thread(self, name: str) -> Optional[AThreadBase]:
+    def get_thread(self, name: str) -> AThreadBase | None:
         """Get thread by name."""
         pass
     @abstractmethod
 
-    def get_lock(self, name: str) -> Optional[ALockBase]:
+    def get_lock(self, name: str) -> ALockBase | None:
         """Get lock by name."""
         pass
     @abstractmethod
 
-    def get_async_primitive(self, name: str) -> Optional[AAsyncPrimitiveBase]:
+    def get_async_primitive(self, name: str) -> AAsyncPrimitiveBase | None:
         """Get async primitive by name."""
         pass
     @abstractmethod

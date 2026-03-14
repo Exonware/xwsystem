@@ -4,13 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 10, 2025
 Shared protocol interfaces (merged from the former core module).
 """
 
-from typing import Protocol, runtime_checkable
-from typing import Any, Iterator, Optional
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator
 from datetime import datetime
 from .defs import CloneMode, CoreMode, CorePriority, CoreState, DataType
 # ============================================================================
@@ -179,7 +180,7 @@ class IObject(IID, INative, Protocol):
         ...
     @property
 
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         """
         Get the object title.
         Returns:
@@ -188,7 +189,7 @@ class IObject(IID, INative, Protocol):
         ...
     @property
 
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """
         Get the object description.
         Returns:
@@ -733,9 +734,9 @@ class IBasicProviderAuth(Protocol):
         Validate a token and return simple token information.
         Returns a simple dict with:
         - valid: bool - Whether token is valid
-        - user_id: Optional[str] - User ID if valid
+        - user_id: str | None - User ID if valid
         - scopes: list[str] - List of scopes
-        - expires_at: Optional[float] - Expiration timestamp
+        - expires_at: float | None - Expiration timestamp
         Args:
             token: Token string to validate
         Returns:
@@ -776,7 +777,7 @@ class IBasicProviderStorage(Protocol):
         self,
         entity_type: str,
         entity_id: str
-    ) -> Optional[dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """
         Get entity by ID.
         Args:
@@ -792,7 +793,7 @@ class IBasicProviderStorage(Protocol):
         entity_type: str,
         field: str,
         value: Any
-    ) -> Optional[dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """
         Get entity by field value.
         Args:
@@ -835,7 +836,7 @@ class IBasicProviderStorage(Protocol):
     async def list(
         self,
         entity_type: str,
-        filters: Optional[dict[str, Any]] = None
+        filters: dict[str, Any] | None = None
     ) -> list[dict[str, Any]]:
         """
         List entities with optional filters.

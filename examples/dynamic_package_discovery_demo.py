@@ -135,7 +135,7 @@ def demo_export_functionality():
         export_dependency_mappings(export_file)
         print(f"✅ Exported dependency mappings to {export_file}")
         # Read and display the exported data
-        with open(export_file, 'r', encoding='utf-8') as f:
+        with open(export_file, encoding='utf-8') as f:
             data = json.load(f)
         print(f"\n📊 Exported data:")
         print(f"   Total dependencies: {data['total_count']}")

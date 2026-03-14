@@ -3,12 +3,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 IPC module contracts - interfaces and enums for inter-process communication.
 """
 
-from typing import Any, Optional, AsyncGenerator, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import AsyncGenerator, Callable
 from multiprocessing import Process
 # Import enums from types module
 from .defs import (
@@ -28,7 +30,7 @@ class IMessageQueue(Protocol):
         """Put message in queue."""
         ...
 
-    async def get(self, timeout: Optional[float] = None) -> Any:
+    async def get(self, timeout: float | None = None) -> Any:
         """Get message from queue."""
         ...
 
@@ -56,7 +58,7 @@ class IPipe(Protocol):
         """Send data through pipe."""
         ...
 
-    async def recv(self, timeout: Optional[float] = None) -> Any:
+    async def recv(self, timeout: float | None = None) -> Any:
         """Receive data from pipe."""
         ...
 
@@ -92,7 +94,7 @@ class ISharedMemory(Protocol):
         """Unlink shared memory segment."""
         ...
 
-    def read(self, offset: int = 0, size: Optional[int] = None) -> bytes:
+    def read(self, offset: int = 0, size: int | None = None) -> bytes:
         """Read from shared memory."""
         ...
 
@@ -104,7 +106,7 @@ class ISharedMemory(Protocol):
 class IProcessManager(Protocol):
     """Interface for process management."""
 
-    def create_process(self, target: Callable, args: tuple = (), kwargs: Optional[dict] = None) -> Process:
+    def create_process(self, target: Callable, args: tuple = (), kwargs: dict | None = None) -> Process:
         """Create new process."""
         ...
 
@@ -112,7 +114,7 @@ class IProcessManager(Protocol):
         """Start process."""
         ...
 
-    def stop_process(self, process: Process, timeout: Optional[float] = None) -> None:
+    def stop_process(self, process: Process, timeout: float | None = None) -> None:
         """Stop process."""
         ...
 

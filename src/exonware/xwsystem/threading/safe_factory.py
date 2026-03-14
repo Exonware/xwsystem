@@ -7,7 +7,9 @@ Thread-safe factory pattern for handler registration and management.
 import logging
 import threading
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 logger = logging.getLogger(__name__)
@@ -28,7 +30,7 @@ class ThreadSafeFactory[T]:
         self._methods_lock = threading.Lock()
 
     def register(
-        self, name: str, handler_class: type[T], extensions: Optional[list[str]] = None
+        self, name: str, handler_class: type[T], extensions: list[str] | None = None
     ) -> None:
         """
         Register a handler with optional file extensions.
@@ -70,7 +72,7 @@ class ThreadSafeFactory[T]:
                 raise KeyError(f"No handler registered for: {name}")
             return handler
 
-    def get_handler_if_exists(self, name: str) -> Optional[type[T]]:
+    def get_handler_if_exists(self, name: str) -> type[T] | None:
         """
         Get a handler by name, returning None if not found.
         Args:
@@ -81,7 +83,7 @@ class ThreadSafeFactory[T]:
         with self._lock:
             return self._handlers.get(name.lower())
 
-    def get_format_by_extension(self, extension: str) -> Optional[str]:
+    def get_format_by_extension(self, extension: str) -> str | None:
         """
         Get format name by file extension.
         Args:

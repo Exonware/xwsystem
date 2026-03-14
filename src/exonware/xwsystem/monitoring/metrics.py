@@ -10,7 +10,9 @@ import time
 from collections import defaultdict, deque
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 from ..config.logging_setup import get_logger
 @dataclass
 

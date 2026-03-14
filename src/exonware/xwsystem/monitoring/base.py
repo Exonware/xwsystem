@@ -4,14 +4,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Monitoring module base classes - abstract classes for monitoring functionality.
 """
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Callable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
+
+from collections.abc import Callable
 from .defs import MetricType, AlertLevel, HealthStatus, SpanKind
 if TYPE_CHECKING:
     from .tracing import SpanContext
@@ -52,7 +54,7 @@ class APerformanceMonitorBase(ABC):
         pass
     @abstractmethod
 
-    def get_metric(self, metric_name: str) -> Optional[float]:
+    def get_metric(self, metric_name: str) -> float | None:
         """Get metric value."""
         pass
     @abstractmethod
@@ -317,14 +319,14 @@ class ATracingProvider(ABC):
         self, 
         name: str, 
         kind: SpanKind = None,
-        parent: Optional[SpanContext] = None,
-        attributes: Optional[dict[str, Any]] = None
+        parent: SpanContext | None = None,
+        attributes: dict[str, Any] | None = None
     ) -> SpanContext:
         """Start a new span."""
         pass
     @abstractmethod
 
-    def finish_span(self, span: SpanContext, status: str = "OK", error: Optional[Exception] = None) -> None:
+    def finish_span(self, span: SpanContext, status: str = "OK", error: Exception | None = None) -> None:
         """Finish a span."""
         pass
     @abstractmethod
@@ -334,6 +336,6 @@ class ATracingProvider(ABC):
         pass
     @abstractmethod
 
-    def add_span_event(self, span: SpanContext, name: str, attributes: Optional[dict[str, Any]] = None) -> None:
+    def add_span_event(self, span: SpanContext, name: str, attributes: dict[str, Any] | None = None) -> None:
         """Add event to span."""
         pass

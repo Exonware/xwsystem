@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 26, 2025
 Two-tier cache implementation combining memory and disk caching.
 """
 
 import threading
-from typing import Any, Optional
+from typing import Any
 from .lru_cache import LRUCache
 from .disk_cache import DiskCache
 from .contracts import ICache
@@ -36,7 +36,7 @@ class TwoTierCache(ICache):
         namespace: str = "default",
         memory_size: int = 1000,
         disk_size: int = 10000,
-        disk_cache_dir: Optional[str] = None,
+        disk_cache_dir: str | None = None,
         max_file_size: int = 10 * 1024 * 1024,  # 10MB
     ):
         """
@@ -72,7 +72,7 @@ class TwoTierCache(ICache):
             'promotions': 0,  # Disk to memory promotions
         }
 
-    def get(self, key: str, default: Optional[Any] = None) -> Optional[Any]:
+    def get(self, key: str, default: Any | None = None) -> Any | None:
         """Get value from cache (memory first, then disk). Returns default if key missing."""
         with self._lock:
             try:
@@ -105,7 +105,7 @@ class TwoTierCache(ICache):
         """Set value in both tiers (ICache/ACache contract; delegates to set)."""
         self.set(key, value)
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in both memory and disk tiers."""
         with self._lock:
             try:

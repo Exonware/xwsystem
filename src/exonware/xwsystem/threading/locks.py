@@ -7,7 +7,7 @@ import logging
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Optional
+from typing import Any
 logger = logging.getLogger(__name__)
 
 
@@ -21,8 +21,8 @@ class EnhancedRLock:
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
-        name: Optional[str] = None,
+        timeout: float | None = None,
+        name: str | None = None,
         track_stats: bool = True,
     ):
         """
@@ -38,9 +38,9 @@ class EnhancedRLock:
         self._track_stats = track_stats
         self._current_holders = 0  # Current recursive acquisition count
         self._total_acquisitions = 0  # Total number of acquisitions
-        self._last_acquired_at: Optional[float] = None
+        self._last_acquired_at: float | None = None
 
-    def acquire(self, timeout: Optional[float] = None) -> bool:
+    def acquire(self, timeout: float | None = None) -> bool:
         """
         Acquire the lock with optional timeout.
         Args:

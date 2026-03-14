@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 Serialization contracts - ISerialization interface extending ICodec.
 Following I→A→XW pattern:
@@ -12,7 +12,9 @@ Following I→A→XW pattern:
 - XW: XW{Format}Serializer (concrete implementations)
 """
 
-from typing import Any, Optional, BinaryIO, TextIO, AsyncIterator, Iterator, Protocol, runtime_checkable
+from typing import Any, BinaryIO, TextIO, Protocol, runtime_checkable
+
+from collections.abc import AsyncIterator, Iterator
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -68,14 +70,14 @@ class ISerialization(ICodec[Any, bytes | str], Protocol):
     # CORE CODEC METHODS (from ICodec)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to representation (bytes or str).
         Core codec method - all serializers must implement.
         """
         ...
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode representation (bytes or str) to data.
         Core codec method - all serializers must implement.
@@ -358,7 +360,7 @@ class ISerialization(ICodec[Any, bytes | str], Protocol):
         self,
         file_path: str | Path,
         match: callable,
-        projection: Optional[list[Any]] = None,
+        projection: list[Any] | None = None,
         **options: Any,
     ) -> Any:
         """

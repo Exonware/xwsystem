@@ -3,12 +3,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Runtime module contracts - interfaces and enums for runtime environment functionality.
 """
 
-from typing import Any, Optional, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Callable
 import sys
 # Import enums from types module
 from .defs import (
@@ -30,7 +32,7 @@ class IEnvironmentManager(Protocol):
         """Set environment type."""
         ...
 
-    def get_environment_variable(self, name: str, default: Optional[str] = None) -> Optional[str]:
+    def get_environment_variable(self, name: str, default: str | None = None) -> str | None:
         """Get environment variable."""
         ...
 
@@ -126,7 +128,7 @@ class IRuntimeConfig(Protocol):
         """Set runtime mode."""
         ...
 
-    def get_config_value(self, key: str, default: Optional[Any] = None) -> Any:
+    def get_config_value(self, key: str, default: Any | None = None) -> Any:
         """Get configuration value."""
         ...
 

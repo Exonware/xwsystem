@@ -34,7 +34,8 @@ The benchmark will:
 """
 
 from __future__ import annotations
-from typing import Any, Optional, Hashable
+from collections.abc import Hashable
+from typing import Any
 from exonware.xwsystem.caching.base import ACache
 
 
@@ -49,7 +50,7 @@ class CandidateCache(ACache):
       * Outperforms `FunctoolsLRUCache` on the official benchmark
     """
 
-    def __init__(self, capacity: int = 1024, ttl: Optional[int] = None, **_: Any) -> None:
+    def __init__(self, capacity: int = 1024, ttl: int | None = None, **_: Any) -> None:
         """
         Initialize candidate cache.
         Freelancer MAY:
@@ -62,7 +63,7 @@ class CandidateCache(ACache):
     # CORE CACHE OPERATIONS – TO BE IMPLEMENTED BY FREELANCER
     # ======================================================================
 
-    def get(self, key: Any, default: Any = None) -> Optional[Any]:
+    def get(self, key: Any, default: Any = None) -> Any | None:
         """
         Get value from cache.
         REQUIREMENTS:

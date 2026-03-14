@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 DateTime module base classes - abstract classes for date/time functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 from datetime import datetime, date, time, timedelta
 from .contracts import DateTimeFormat, TimezoneType, HumanizeStyle
 
@@ -19,7 +19,7 @@ class ADateTimeBase(ABC):
     """Abstract base class for datetime operations."""
     @abstractmethod
 
-    def parse(self, date_string: str, format_string: Optional[str] = None) -> datetime:
+    def parse(self, date_string: str, format_string: str | None = None) -> datetime:
         """Parse datetime string."""
         pass
     @abstractmethod
@@ -29,7 +29,7 @@ class ADateTimeBase(ABC):
         pass
     @abstractmethod
 
-    def now(self, timezone: Optional[str] = None) -> datetime:
+    def now(self, timezone: str | None = None) -> datetime:
         """Get current datetime."""
         pass
     @abstractmethod
@@ -39,7 +39,7 @@ class ADateTimeBase(ABC):
         pass
     @abstractmethod
 
-    def from_timestamp(self, timestamp: int | float, timezone: Optional[str] = None) -> datetime:
+    def from_timestamp(self, timestamp: int | float, timezone: str | None = None) -> datetime:
         """Create datetime from timestamp."""
         pass
     @abstractmethod
@@ -68,7 +68,7 @@ class ATimezoneBase(ABC):
         pass
     @abstractmethod
 
-    def get_utc_offset(self, timezone_name: str, dt: Optional[datetime] = None) -> timedelta:
+    def get_utc_offset(self, timezone_name: str, dt: datetime | None = None) -> timedelta:
         """Get UTC offset for timezone."""
         pass
     @abstractmethod
@@ -141,7 +141,7 @@ class ADateFormatBase(ABC):
         pass
     @abstractmethod
 
-    def auto_detect_format(self, date_string: str) -> Optional[str]:
+    def auto_detect_format(self, date_string: str) -> str | None:
         """Auto-detect date format."""
         pass
 
@@ -187,7 +187,7 @@ class BaseDateTime(ADateTimeBase):
         """Initialize base datetime."""
         self._default_format = "%Y-%m-%d %H:%M:%S"
 
-    def parse(self, date_string: str, format_string: Optional[str] = None) -> datetime:
+    def parse(self, date_string: str, format_string: str | None = None) -> datetime:
         """Parse datetime string."""
         try:
             if format_string:
@@ -216,7 +216,7 @@ class BaseDateTime(ADateTimeBase):
         """Format datetime object."""
         return dt.strftime(format_string)
 
-    def now(self, timezone: Optional[str] = None) -> datetime:
+    def now(self, timezone: str | None = None) -> datetime:
         """Get current datetime."""
         if timezone:
             import pytz
@@ -228,7 +228,7 @@ class BaseDateTime(ADateTimeBase):
         """Get current UTC datetime."""
         return datetime.utcnow()
 
-    def from_timestamp(self, timestamp: int | float, timezone: Optional[str] = None) -> datetime:
+    def from_timestamp(self, timestamp: int | float, timezone: str | None = None) -> datetime:
         """Create datetime from timestamp."""
         dt = datetime.fromtimestamp(timestamp)
         if timezone:

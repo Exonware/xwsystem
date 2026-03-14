@@ -15,14 +15,14 @@ import re
 import sys
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 logger = logging.getLogger(__name__)
 # Default markers for auto-generated sections
 DEFAULT_AUTO_MARKERS = ("#AUTO-START", "#AUTO-END")
 @contextmanager
 
 
-def _project_path_context(project_root: Optional[Path] = None):
+def _project_path_context(project_root: Path | None = None):
     """
     Context manager for temporarily adding project root to sys.path.
     Args:
@@ -85,7 +85,7 @@ def _discover_classes_from_file(
         relative_mod_path = file_path.relative_to(init_folder_path.resolve())
         relative_mod_dotted = ".".join(relative_mod_path.with_suffix("").parts)
         # Read and parse the file
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
         # Parse the AST
         tree = ast.parse(content)
@@ -285,9 +285,9 @@ def _update_init_file_content(
 def register_imports_flat(
     target_package: str,
     source_folders: list[str],
-    project_root: Optional[Path] = None,
+    project_root: Path | None = None,
     auto_markers: tuple[str, str] = DEFAULT_AUTO_MARKERS,
-    logger_instance: Optional[logging.Logger] = None,
+    logger_instance: logging.Logger | None = None,
 ) -> bool:
     """
     Register all public classes under a package in a flat structure.
@@ -329,7 +329,7 @@ def register_imports_flat(
             logger.info(f"ℹ️  No classes found for {init_file_path}. Skipping update.")
             return True
         # Read existing content
-        with open(init_file_path, "r", encoding="utf-8") as f:
+        with open(init_file_path, encoding="utf-8") as f:
             existing_lines = f.readlines()
         # Update content
         new_content_lines = _update_init_file_content(
@@ -350,9 +350,9 @@ def register_imports_flat(
 def register_imports_tree(
     target_package: str,
     source_folders: list[str],
-    project_root: Optional[Path] = None,
+    project_root: Path | None = None,
     auto_markers: tuple[str, str] = DEFAULT_AUTO_MARKERS,
-    logger_instance: Optional[logging.Logger] = None,
+    logger_instance: logging.Logger | None = None,
 ) -> bool:
     """
     Register all public classes following tree structure.
@@ -395,7 +395,7 @@ def register_imports_tree(
             logger.info(f"ℹ️  No classes found for {init_file_path}. Skipping update.")
             return True
         # Read existing content
-        with open(init_file_path, "r", encoding="utf-8") as f:
+        with open(init_file_path, encoding="utf-8") as f:
             existing_lines = f.readlines()
         # Update content
         new_content_lines = _update_init_file_content(
@@ -416,9 +416,9 @@ def register_imports_tree(
 def register_imports_batch(
     tasks: list[dict[str, Any]],
     registration_type: str = "flat",
-    project_root: Optional[Path] = None,
+    project_root: Path | None = None,
     auto_markers: tuple[str, str] = DEFAULT_AUTO_MARKERS,
-    logger_instance: Optional[logging.Logger] = None,
+    logger_instance: logging.Logger | None = None,
 ) -> dict[str, bool]:
     """
     Register imports for multiple packages in batch.
@@ -475,12 +475,12 @@ def register_imports_batch(
 class ImportRegistry:
     """Registry for managing import statements and __all__ lists."""
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         """Initialize import registry."""
         self.project_root = project_root or Path.cwd().resolve()
         self._registered_imports = {}
 
-    def register_imports(self, target_package: str, source_folders: list[str], auto_markers: Optional[tuple[str, str]] = None) -> bool:
+    def register_imports(self, target_package: str, source_folders: list[str], auto_markers: tuple[str, str] | None = None) -> bool:
         """Register imports for a package."""
         return register_imports(
             target_package=target_package,
@@ -489,7 +489,7 @@ class ImportRegistry:
             auto_markers=auto_markers
         )
 
-    def batch_register_imports(self, tasks: list[dict[str, Any]], auto_markers: Optional[tuple[str, str]] = None) -> dict[str, bool]:
+    def batch_register_imports(self, tasks: list[dict[str, Any]], auto_markers: tuple[str, str] | None = None) -> dict[str, bool]:
         """Batch register imports for multiple packages."""
         return batch_register_imports(
             tasks=tasks,

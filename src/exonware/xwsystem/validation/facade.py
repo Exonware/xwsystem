@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2026
 XWValidator - Unified Validation Facade
 Simplified API for validation operations:
@@ -13,7 +13,7 @@ Simplified API for validation operations:
 - Data validation (depth, size)
 """
 
-from typing import Any, Optional, Dict, Type
+from typing import Any
 from pathlib import Path
 from .declarative import XModel, Field, ValidationError
 from .data_validator import DataValidator, validate_path_input, check_data_depth, estimate_memory_usage
@@ -45,7 +45,7 @@ class XWValidator:
     Field = Field
     @staticmethod
 
-    def validate(data: Any, rules: Dict[str, Any]) -> bool:
+    def validate(data: Any, rules: dict[str, Any]) -> bool:
         """
         Quick validation with rules dictionary.
         Args:
@@ -71,7 +71,7 @@ class XWValidator:
         return True
     @staticmethod
 
-    def validate_path(path: str, base_path: Optional[str] = None, must_exist: bool = False) -> str:
+    def validate_path(path: str, base_path: str | None = None, must_exist: bool = False) -> str:
         """
         Validate and sanitize file path.
         Args:
@@ -146,7 +146,7 @@ class XWValidator:
         return validate_untrusted_data(data, max_depth=max_depth)
     @classmethod
 
-    def create_model(cls, **fields) -> Type[XModel]:
+    def create_model(cls, **fields) -> type[XModel]:
         """
         Create a model class dynamically.
         Args:

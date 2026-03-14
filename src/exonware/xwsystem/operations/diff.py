@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 27, 2025
 Diff operations implementation.
 """
 
 import threading
-from typing import Any, Optional
+from typing import Any
 from .base import DiffError
 from .contracts import IDiffOperation
 from .defs import DiffMode, DiffResult

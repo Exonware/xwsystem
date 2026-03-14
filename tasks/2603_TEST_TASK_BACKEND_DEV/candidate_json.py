@@ -33,7 +33,7 @@ The benchmark will:
 """
 
 from __future__ import annotations
-from typing import Any, Optional
+from typing import Any
 from exonware.xwsystem.io.serialization.base import ASerialization
 from exonware.xwsystem.io.serialization.contracts import EncodeOptions, DecodeOptions
 from exonware.xwsystem.io.serialization.defs import CodecCapability
@@ -110,8 +110,8 @@ class CandidateJsonSerializer(ASerialization):
     def __init__(
         self,
         *,
-        max_depth: Optional[int] = None,
-        max_size_mb: Optional[float] = None,
+        max_depth: int | None = None,
+        max_size_mb: float | None = None,
         # Feel free to add custom tuning parameters here (e.g. buffer sizes)
         **_: Any,
     ) -> None:
@@ -124,7 +124,7 @@ class CandidateJsonSerializer(ASerialization):
         super().__init__(max_depth=max_depth, max_size_mb=max_size_mb)
         # NOTE: Intentionally no implementation yet – this is the task.
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode Python value to JSON representation.
         REQUIREMENTS (for freelancer implementation):
@@ -140,7 +140,7 @@ class CandidateJsonSerializer(ASerialization):
             "This is an evaluation task for freelancers."
         )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode JSON representation back to Python value.
         REQUIREMENTS (for freelancer implementation):

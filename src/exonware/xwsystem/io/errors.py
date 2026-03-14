@@ -3,13 +3,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team  
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 IO module errors - ALL exceptions in ONE place.
 Consolidated from all submodules for maintainability.
 """
 
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 # From ROOT
 
@@ -134,8 +134,8 @@ class CommonIOError(Exception):
     def __init__(
         self,
         message: str,
-        path: Optional[Path] = None,
-        original_error: Optional[Exception] = None
+        path: Path | None = None,
+        original_error: Exception | None = None
     ):
         super().__init__(message)
         self.path = path
@@ -163,7 +163,7 @@ class LockError(CommonIOError):
 class LockTimeoutError(LockError):
     """Lock acquisition timeout."""
 
-    def __init__(self, message: str, path: Optional[Path] = None, timeout: Optional[float] = None):
+    def __init__(self, message: str, path: Path | None = None, timeout: float | None = None):
         super().__init__(message, path)
         self.timeout = timeout
 # From file
@@ -174,8 +174,8 @@ class FileError(Exception):
     def __init__(
         self,
         message: str,
-        path: Optional[Path] = None,
-        original_error: Optional[Exception] = None
+        path: Path | None = None,
+        original_error: Exception | None = None
     ):
         super().__init__(message)
         self.path = path
@@ -206,9 +206,9 @@ class PagingStrategyError(FileError):
     def __init__(
         self,
         message: str,
-        strategy_id: Optional[str] = None,
-        path: Optional[Path] = None,
-        original_error: Optional[Exception] = None
+        strategy_id: str | None = None,
+        path: Path | None = None,
+        original_error: Exception | None = None
     ):
         super().__init__(message, path, original_error)
         self.strategy_id = strategy_id
@@ -240,8 +240,8 @@ class ArchiveError(Exception):
     def __init__(
         self,
         message: str,
-        archive_path: Optional[Path] = None,
-        original_error: Optional[Exception] = None
+        archive_path: Path | None = None,
+        original_error: Exception | None = None
     ):
         super().__init__(message)
         self.archive_path = archive_path
@@ -259,7 +259,7 @@ class ArchiveError(Exception):
 class ArchiveFormatError(ArchiveError):
     """Error when archive format is unsupported or invalid."""
 
-    def __init__(self, message: str, format_id: Optional[str] = None, archive_path: Optional[Path] = None):
+    def __init__(self, message: str, format_id: str | None = None, archive_path: Path | None = None):
         super().__init__(message, archive_path)
         self.format_id = format_id
 # From archive
@@ -280,8 +280,8 @@ class CompressionError(Exception):
     def __init__(
         self,
         message: str,
-        algorithm: Optional[str] = None,
-        original_error: Optional[Exception] = None
+        algorithm: str | None = None,
+        original_error: Exception | None = None
     ):
         super().__init__(message)
         self.algorithm = algorithm
@@ -315,8 +315,8 @@ class SerializationError(Exception):
     def __init__(
         self,
         message: str,
-        format_name: Optional[str] = None,
-        original_error: Optional[Exception] = None
+        format_name: str | None = None,
+        original_error: Exception | None = None
     ):
         """
         Initialize SerializationError.

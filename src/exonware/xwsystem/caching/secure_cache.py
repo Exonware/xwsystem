@@ -5,14 +5,16 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Secure cache implementations with validation, integrity checks, and rate limiting.
 Security Priority #1 - Production-grade security features.
 """
 
 import time
-from typing import Any, Optional, Hashable
+from typing import Any
+
+from collections.abc import Hashable
 from .lru_cache import LRUCache
 from .lfu_cache import LFUCache
 from .ttl_cache import TTLCache
@@ -40,8 +42,8 @@ class SecureLRUCache(LRUCache):
     def __init__(
         self,
         capacity: int = 128,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None,
+        ttl: float | None = None,
+        name: str | None = None,
         enable_integrity: bool = True,
         enable_rate_limit: bool = True,
         max_ops_per_second: int = 10000,
@@ -213,7 +215,7 @@ class SecureLFUCache(LFUCache):
     def __init__(
         self,
         capacity: int = 128,
-        name: Optional[str] = None,
+        name: str | None = None,
         enable_rate_limit: bool = True,
         max_ops_per_second: int = 10000,
         max_key_size: int = DEFAULT_MAX_KEY_SIZE,
@@ -297,7 +299,7 @@ class SecureTTLCache(TTLCache):
         if self.enable_rate_limit:
             self.rate_limiter.acquire()
 
-    def put(self, key: str, value: Any, ttl: Optional[float] = None) -> bool:
+    def put(self, key: str, value: Any, ttl: float | None = None) -> bool:
         """Put value with security checks."""
         self._check_rate_limit()
         validate_cache_key(key, max_size=self.max_key_size)

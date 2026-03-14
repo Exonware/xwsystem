@@ -3,14 +3,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 IO module definitions - ALL enums and types in ONE place.
 Consolidated from all submodules for maintainability.
 """
 
 from enum import Enum, IntEnum, Flag, IntFlag, auto
-from typing import Any, Optional
+from typing import Any
 from dataclasses import dataclass
 # From ROOT
 

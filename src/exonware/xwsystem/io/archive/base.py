@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Base classes and registries for archive system.
 Like codec/base.py: Contains abstracts + ArchiveFormatRegistry!
@@ -16,7 +16,7 @@ Priority 5 (Extensibility): Easy to add 7z, RAR, etc.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Any
+from typing import Any
 from pathlib import Path
 from ..contracts import IArchiveFormat, ICompressor, IArchiveMetadata, IArchiver, IArchiveFile, EncodeOptions, DecodeOptions
 from ..codec.base import ACodec
@@ -87,12 +87,12 @@ class AArchiver(ACodec[Any, bytes], IArchiver, ABC):
     """
     @abstractmethod
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes:
         """Encode data to archive bytes - must implement in subclass."""
         pass
     @abstractmethod
 
-    def decode(self, repr: bytes, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes, *, options: DecodeOptions | None = None) -> Any:
         """Decode archive bytes to data - must implement in subclass."""
         pass
     @property
@@ -173,7 +173,7 @@ class AArchiveFile(AFile, IArchiveFile, ABC):
     This is for file-based archive operations - works on archive files on disk.
     """
 
-    def __init__(self, file_path: str | Path, archiver: Optional[IArchiver] = None):
+    def __init__(self, file_path: str | Path, archiver: IArchiver | None = None):
         """
         Initialize archive file.
         Args:
@@ -181,7 +181,7 @@ class AArchiveFile(AFile, IArchiveFile, ABC):
             archiver: Optional archiver instance (if None, must be set by subclass)
         """
         super().__init__(file_path)
-        self._archiver: Optional[IArchiver] = archiver
+        self._archiver: IArchiver | None = archiver
     @abstractmethod
 
     def get_archiver(self) -> IArchiver:
@@ -248,11 +248,11 @@ class ArchiveFormatRegistry:
         for ext in instance.file_extensions:
             self._extension_map[ext.lower()] = format_id
 
-    def get_by_id(self, format_id: str) -> Optional[IArchiveFormat]:
+    def get_by_id(self, format_id: str) -> IArchiveFormat | None:
         """Get archiver by format ID."""
         return self._instances.get(format_id)
 
-    def get_by_extension(self, path: str | Path) -> Optional[IArchiveFormat]:
+    def get_by_extension(self, path: str | Path) -> IArchiveFormat | None:
         """
         Get archiver by file extension (AUTO-DETECTION!).
         Args:
@@ -299,11 +299,11 @@ class CompressionRegistry:
         self._algorithms[algo_id] = compressor_class
         self._instances[algo_id] = instance
 
-    def get(self, algorithm_id: str) -> Optional[ICompressor]:
+    def get(self, algorithm_id: str) -> ICompressor | None:
         """Get compressor by algorithm ID."""
         return self._instances.get(algorithm_id)
 
-    def auto_detect(self, data: bytes) -> Optional[ICompressor]:
+    def auto_detect(self, data: bytes) -> ICompressor | None:
         """Auto-detect compression algorithm from data."""
         for compressor in self._instances.values():
             if compressor.can_handle(data):
@@ -314,8 +314,8 @@ class CompressionRegistry:
         """List all registered algorithm IDs."""
         return list(self._algorithms.keys())
 # Global registries
-_global_archive_registry: Optional[ArchiveFormatRegistry] = None
-_global_compression_registry: Optional[CompressionRegistry] = None
+_global_archive_registry: ArchiveFormatRegistry | None = None
+_global_compression_registry: CompressionRegistry | None = None
 
 
 def get_global_archive_registry() -> ArchiveFormatRegistry:

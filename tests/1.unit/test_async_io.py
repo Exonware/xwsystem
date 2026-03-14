@@ -39,7 +39,7 @@ class TestAsyncAtomicFileWriter:
                 await f.write(content)
             # Verify file was written
             assert file_path.exists()
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 assert f.read() == content
     @pytest.mark.asyncio
 
@@ -71,7 +71,7 @@ class TestAsyncAtomicFileWriter:
             async with writer as f:
                 await f.write(new_content)
             # Verify new content
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 assert f.read() == new_content
             # Backup should be cleaned up after successful write
             backup_files = list(Path(temp_dir).glob("*.backup.*"))
@@ -95,7 +95,7 @@ class TestAsyncAtomicFileWriter:
             except ValueError:
                 pass  # Expected
             # Original content should be preserved
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 assert f.read() == original_content
 
 
@@ -110,7 +110,7 @@ class TestAsyncConvenienceFunctions:
             content = "Test content with unicode: 🚀"
             await async_safe_write_text(file_path, content)
             assert file_path.exists()
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 assert f.read() == content
     @pytest.mark.asyncio
 
@@ -196,7 +196,7 @@ class TestAsyncConvenienceFunctions:
             async with async_atomic_write(file_path) as f:
                 await f.write(content)
             assert file_path.exists()
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 assert f.read() == content
 
 

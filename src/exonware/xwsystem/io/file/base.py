@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Base classes for file operations.
 Like codec/base.py: contains abstract bases + utilities.
@@ -17,7 +17,7 @@ Priority 5 (Extensibility): Ready for new file types
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional, Any
+from typing import Any
 from ..contracts import IFileSource, IPagedSource, IPagingStrategy
 from ..defs import PagingMode
 __all__ = [
@@ -32,7 +32,7 @@ class AFileSource(IFileSource, ABC):
     Provides common file source functionality.
     """
 
-    def __init__(self, path: str | Path, mode: str = 'rb', encoding: Optional[str] = None):
+    def __init__(self, path: str | Path, mode: str = 'rb', encoding: str | None = None):
         """Initialize file source."""
         self._path = Path(path)
         self._mode = mode
@@ -79,8 +79,8 @@ class APagedSource(IPagedSource, ABC):
         self,
         path: str | Path,
         mode: str = 'rb',
-        encoding: Optional[str] = None,
-        paging_strategy: Optional[IPagingStrategy] = None
+        encoding: str | None = None,
+        paging_strategy: IPagingStrategy | None = None
     ):
         """
         Initialize paged source.

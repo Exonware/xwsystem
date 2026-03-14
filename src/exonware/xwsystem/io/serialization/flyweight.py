@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 05, 2025
 Flyweight Pattern Implementation for Serializers
 Optimizes memory usage by sharing serializer instances with identical configurations.
@@ -13,7 +13,9 @@ configuration, which is especially important for high-throughput applications.
 """
 
 import threading
-from typing import Any, Hashable, Optional
+from typing import Any
+
+from collections.abc import Hashable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from weakref import WeakValueDictionary

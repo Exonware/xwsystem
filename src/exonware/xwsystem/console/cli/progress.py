@@ -6,7 +6,7 @@ Production-grade progress indicators for XSystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 05, 2025
 """
 
@@ -14,7 +14,7 @@ from __future__ import annotations
 import sys
 import time
 import threading
-from typing import Optional, TextIO
+from typing import TextIO
 from dataclasses import dataclass
 import math
 # Import general console enums from console level (priority)
@@ -125,7 +125,7 @@ class CliProgressBar:
             return self.current / elapsed if elapsed > 0 else 0
         return sum(self._rate_samples) / len(self._rate_samples)
 
-    def _get_eta(self) -> Optional[float]:
+    def _get_eta(self) -> float | None:
         """Get estimated time to completion."""
         if self.current == 0:
             return None

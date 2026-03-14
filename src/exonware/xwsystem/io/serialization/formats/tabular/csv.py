@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2025
 CSV serialization - Comma-separated values format.
 Following I→A→ATabular pattern:
@@ -16,7 +16,7 @@ Moved from text/csv.py and updated to extend ATabularSerialization.
 
 import csv
 import io
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 import pandas as pd
 from .base import ATabularSerialization
@@ -105,7 +105,7 @@ class CsvSerializer(ATabularSerialization):
     # CORE ENCODE/DECODE (Using csv module)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> str:
         """
         Encode data to CSV string.
         Uses csv.DictWriter or csv.writer.
@@ -158,7 +158,7 @@ class CsvSerializer(ATabularSerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode CSV string to data.
         Uses csv.DictReader or csv.reader.
@@ -202,7 +202,7 @@ class CsvSerializer(ATabularSerialization):
     def to_df(
         self, 
         csv_content: bytes | str | Path, 
-        sheet_name: Optional[str | list[str]] = None,
+        sheet_name: str | list[str] | None = None,
         **options
     ) -> pd.DataFrame:
         """

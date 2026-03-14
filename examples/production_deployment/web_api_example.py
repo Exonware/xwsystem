@@ -12,7 +12,7 @@ Email: connect@exonware.com
 from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from typing import Dict, Any, Optional
+from typing import Any
 import logging
 from contextlib import asynccontextmanager
 from exonware.xwsystem import (
@@ -107,7 +107,7 @@ async def health_check():
     return health_status
 @app.post("/data/{format_type}")
 async def create_data(
-    data: Dict[str, Any],
+    data: dict[str, Any],
     format_type: str = "json",
     serializer = Depends(get_serializer)
 ):
@@ -158,7 +158,7 @@ async def get_data(
         logger.error(f"Error getting data: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 @app.post("/hash")
-async def hash_data(data: Dict[str, Any]):
+async def hash_data(data: dict[str, Any]):
     """Hash data endpoint with secure hashing."""
     try:
         # Serialize data first

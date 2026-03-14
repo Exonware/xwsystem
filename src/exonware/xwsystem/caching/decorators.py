@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Advanced cache decorators with hooks and customization.
 Extensibility Priority #5 - Flexible caching decorators for functions.
@@ -13,7 +13,9 @@ Extensibility Priority #5 - Flexible caching decorators for functions.
 
 import functools
 import asyncio
-from typing import Any, Callable, Optional, Hashable
+from typing import Any
+
+from collections.abc import Callable, Hashable
 from .lru_cache import LRUCache, AsyncLRUCache
 from .utils import default_key_builder
 from ..config.logging_setup import get_logger
@@ -21,13 +23,13 @@ logger = get_logger("xwsystem.caching.decorators")
 
 
 def xwcached(
-    cache: Optional[Any] = None,
-    ttl: Optional[int] = None,
-    key_builder: Optional[Callable] = None,
-    condition: Optional[Callable] = None,
-    on_hit: Optional[Callable] = None,
-    on_miss: Optional[Callable] = None,
-    namespace: Optional[str] = None
+    cache: Any | None = None,
+    ttl: int | None = None,
+    key_builder: Callable | None = None,
+    condition: Callable | None = None,
+    on_hit: Callable | None = None,
+    on_miss: Callable | None = None,
+    namespace: str | None = None
 ):
     """
     Advanced caching decorator with hooks and customization (eXonware naming convention).
@@ -103,13 +105,13 @@ def xwcached(
 
 
 def xw_async_cached(
-    cache: Optional[Any] = None,
-    ttl: Optional[int] = None,
-    key_builder: Optional[Callable] = None,
-    condition: Optional[Callable] = None,
-    on_hit: Optional[Callable] = None,
-    on_miss: Optional[Callable] = None,
-    namespace: Optional[str] = None
+    cache: Any | None = None,
+    ttl: int | None = None,
+    key_builder: Callable | None = None,
+    condition: Callable | None = None,
+    on_hit: Callable | None = None,
+    on_miss: Callable | None = None,
+    namespace: str | None = None
 ):
     """
     Advanced async caching decorator (eXonware naming convention).
@@ -176,7 +178,7 @@ def xw_async_cached(
     return decorator
 # Simplified aliases with XW prefix
 
-def xwcache(func: Optional[Callable] = None, ttl: Optional[int] = None):
+def xwcache(func: Callable | None = None, ttl: int | None = None):
     """
     Simple cache decorator (eXonware naming convention).
     Example:
@@ -195,7 +197,7 @@ def xwcache(func: Optional[Callable] = None, ttl: Optional[int] = None):
         return xwcached()(func)
 
 
-def xw_async_cache(func: Optional[Callable] = None, ttl: Optional[int] = None):
+def xw_async_cache(func: Callable | None = None, ttl: int | None = None):
     """
     Simple async cache decorator (eXonware naming convention).
     Example:

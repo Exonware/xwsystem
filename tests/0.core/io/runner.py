@@ -39,7 +39,7 @@ class IoCoreTester:
                     writer.write(test_content)
                 # Verify file was written correctly
                 assert temp_file.exists()
-                with open(temp_file, 'r') as f:
+                with open(temp_file) as f:
                     content = f.read()
                     assert content == test_content
                 print("[PASS] Atomic file writer tests passed")

@@ -16,7 +16,7 @@ from pathlib import Path
 import timeit
 import threading
 from datetime import datetime
-from typing import Protocol, TypeVar, Generic, Optional, Any
+from typing import Protocol, TypeVar, Generic, Any
 from enum import Flag, auto
 from functools import lru_cache
 from collections import defaultdict
@@ -30,7 +30,7 @@ sys.modules.setdefault('exonware.xwsystem.io', type(sys)('exonware.xwsystem.io')
 sys.modules.setdefault('exonware.xwsystem.io.codec', type(sys)('exonware.xwsystem.io.codec'))
 # Load contracts first (needed by registry)
 contracts_path = src_path / "exonware" / "xwsystem" / "io" / "codec" / "contracts.py"
-with open(contracts_path, 'r', encoding='utf-8') as f:
+with open(contracts_path, encoding='utf-8') as f:
     contracts_code = f.read()
 # Create contracts module
 contracts_module = type(sys)('exonware.xwsystem.io.codec.contracts')
@@ -39,7 +39,7 @@ sys.modules['exonware.xwsystem.io.codec.contracts'] = contracts_module
 exec(contracts_code, contracts_module.__dict__)
 # Load registry module
 registry_path = src_path / "exonware" / "xwsystem" / "io" / "codec" / "registry.py"
-with open(registry_path, 'r', encoding='utf-8') as f:
+with open(registry_path, encoding='utf-8') as f:
     registry_code = f.read()
 # Create registry module
 registry_module = type(sys)('exonware.xwsystem.io.codec.registry')

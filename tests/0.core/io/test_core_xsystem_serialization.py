@@ -80,14 +80,14 @@ def test_json_file_operations():
         assert test_file.exists()
         assert test_file.stat().st_size > 0
         # Test file load operation
-        with open(test_file, 'r', encoding='utf-8') as f:
+        with open(test_file, encoding='utf-8') as f:
             loaded_data = json.load(f)
         assert loaded_data == test_data
         # Test with different file name
         test_file2 = data_dir / "config.json"
         with open(test_file2, 'w', encoding='utf-8') as f:
             json.dump(test_data, f, indent=2)
-        with open(test_file2, 'r', encoding='utf-8') as f:
+        with open(test_file2, encoding='utf-8') as f:
             loaded_data2 = json.load(f)
         assert loaded_data2 == test_data
         print("[PASS] JSON file operations tests passed")
@@ -174,7 +174,7 @@ def test_yaml_file_operations():
         assert test_file.exists()
         assert test_file.stat().st_size > 0
         # Test file load operation
-        with open(test_file, 'r', encoding='utf-8') as f:
+        with open(test_file, encoding='utf-8') as f:
             loaded_data = yaml.safe_load(f)
         assert loaded_data == test_data
         print("[PASS] YAML file operations tests passed")

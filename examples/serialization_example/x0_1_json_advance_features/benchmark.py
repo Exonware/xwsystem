@@ -22,7 +22,7 @@ import time
 import psutil
 import json
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from datetime import datetime, timedelta
 import random
 import string

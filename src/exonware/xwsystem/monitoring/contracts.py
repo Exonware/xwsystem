@@ -4,12 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Monitoring protocol interfaces for XWSystem.
 """
 
-from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator, Callable
 import time
 # Import enums from types module
 from .defs import (
@@ -75,7 +77,7 @@ class IPerformance(Protocol):
         """
         ...
 
-    def get_metric(self, name: str) -> Optional[float]:
+    def get_metric(self, name: str) -> float | None:
         """
         Get performance metric value.
         Args:
@@ -198,7 +200,7 @@ class IMetrics(Protocol):
         """
         ...
 
-    def add_metric(self, name: str, value: Any, labels: Optional[dict[str, str]] = None) -> None:
+    def add_metric(self, name: str, value: Any, labels: dict[str, str] | None = None) -> None:
         """
         Add metric.
         Args:
@@ -208,7 +210,7 @@ class IMetrics(Protocol):
         """
         ...
 
-    def get_metric(self, name: str) -> Optional[Any]:
+    def get_metric(self, name: str) -> Any | None:
         """
         Get metric value.
         Args:
@@ -360,7 +362,7 @@ class IAlerting(Protocol):
         """
         ...
 
-    def get_alert(self, alert_id: str) -> Optional[dict[str, Any]]:
+    def get_alert(self, alert_id: str) -> dict[str, Any] | None:
         """
         Get alert by ID.
         Args:
@@ -370,7 +372,7 @@ class IAlerting(Protocol):
         """
         ...
 
-    def list_alerts(self, level: Optional[AlertLevel] = None) -> list[dict[str, Any]]:
+    def list_alerts(self, level: AlertLevel | None = None) -> list[dict[str, Any]]:
         """
         List alerts.
         Args:
@@ -546,7 +548,7 @@ class IProfiler(Protocol):
         """
         ...
 
-    def get_profiling_results(self, session_id: str) -> Optional[dict[str, Any]]:
+    def get_profiling_results(self, session_id: str) -> dict[str, Any] | None:
         """
         Get profiling results.
         Args:
@@ -616,7 +618,7 @@ class IMonitoringConfig(Protocol):
         """
         ...
 
-    def get_metric_interval(self, metric: str) -> Optional[float]:
+    def get_metric_interval(self, metric: str) -> float | None:
         """
         Get metric collection interval.
         Args:

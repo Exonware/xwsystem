@@ -6,13 +6,12 @@ Production-grade datetime parsing for XSystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generated: 2025-01-27
 """
 
 import re
 from datetime import datetime, date, time, timezone, timedelta
-from typing import Optional
 import logging
 logger = logging.getLogger(__name__)
 # Common datetime patterns
@@ -38,7 +37,7 @@ DATETIME_PATTERNS = [
 ]
 
 
-def parse_datetime(text: str, default_timezone: Optional[timezone] = None) -> Optional[datetime]:
+def parse_datetime(text: str, default_timezone: timezone | None = None) -> datetime | None:
     """
     Parse datetime from text.
     Args:
@@ -84,13 +83,13 @@ def parse_datetime(text: str, default_timezone: Optional[timezone] = None) -> Op
     return None
 
 
-def parse_date(text: str) -> Optional[date]:
+def parse_date(text: str) -> date | None:
     """Parse date from text."""
     dt = parse_datetime(text)
     return dt.date() if dt else None
 
 
-def parse_time(text: str) -> Optional[time]:
+def parse_time(text: str) -> time | None:
     """Parse time from text."""
     if not text or not isinstance(text, str):
         return None
@@ -112,7 +111,7 @@ def parse_time(text: str) -> Optional[time]:
     return None
 
 
-def parse_iso8601(text: str) -> Optional[datetime]:
+def parse_iso8601(text: str) -> datetime | None:
     """Parse ISO 8601 datetime string."""
     try:
         if hasattr(datetime, 'fromisoformat'):
@@ -124,7 +123,7 @@ def parse_iso8601(text: str) -> Optional[datetime]:
     return parse_datetime(text)
 
 
-def parse_timestamp(timestamp: int | float | str) -> Optional[datetime]:
+def parse_timestamp(timestamp: int | float | str) -> datetime | None:
     """
     Parse Unix timestamp to datetime.
     Automatically detects if timestamp is in seconds or milliseconds.
@@ -153,7 +152,7 @@ def parse_timestamp(timestamp: int | float | str) -> Optional[datetime]:
         return None
 
 
-def parse_timestamp_milliseconds(timestamp: int | float | str) -> Optional[datetime]:
+def parse_timestamp_milliseconds(timestamp: int | float | str) -> datetime | None:
     """
     Parse timestamp that may be in milliseconds.
     Explicitly handles millisecond timestamps (common in JavaScript/Java).
@@ -180,11 +179,11 @@ def parse_timestamp_milliseconds(timestamp: int | float | str) -> Optional[datet
 class DateTimeParser:
     """Advanced datetime parser with multiple format support."""
 
-    def __init__(self, default_timezone: Optional[timezone] = None):
+    def __init__(self, default_timezone: timezone | None = None):
         self.default_timezone = default_timezone or timezone.utc
         self._cache = {}
 
-    def parse(self, text: str) -> Optional[datetime]:
+    def parse(self, text: str) -> datetime | None:
         """Parse datetime from text with caching."""
         if not text:
             return None
@@ -196,20 +195,20 @@ class DateTimeParser:
             self._cache[text] = result
         return result
 
-    def parse_date(self, text: str) -> Optional[date]:
+    def parse_date(self, text: str) -> date | None:
         """Parse date from text."""
         dt = self.parse(text)
         return dt.date() if dt else None
 
-    def parse_time(self, text: str) -> Optional[time]:
+    def parse_time(self, text: str) -> time | None:
         """Parse time from text."""
         return parse_time(text)
 
-    def parse_iso8601(self, text: str) -> Optional[datetime]:
+    def parse_iso8601(self, text: str) -> datetime | None:
         """Parse ISO 8601 datetime string."""
         return parse_iso8601(text)
 
-    def parse_timestamp(self, timestamp: int | float | str) -> Optional[datetime]:
+    def parse_timestamp(self, timestamp: int | float | str) -> datetime | None:
         """Parse Unix timestamp to datetime."""
         return parse_timestamp(timestamp)
 

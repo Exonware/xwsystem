@@ -4,13 +4,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Pattern contracts and interfaces for XWSystem design patterns.
 """
 
 from __future__ import annotations
-from typing import Any, Optional, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Callable
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 # Import enums from types module
@@ -94,9 +96,9 @@ class IContextManager(Protocol):
         """Enter the context."""
         ...
 
-    def __exit__(self, exc_type: Optional[type[BaseException]], 
-                exc_val: Optional[BaseException], 
-                exc_tb: Optional[Any]) -> bool:
+    def __exit__(self, exc_type: type[BaseException] | None, 
+                exc_val: BaseException | None, 
+                exc_tb: Any | None) -> bool:
         """Exit the context."""
         ...
 
@@ -120,7 +122,7 @@ class IObjectPool[T](Protocol):
         """Release an object back to the pool."""
         ...
 
-    def clear(self, obj_type: Optional[type[T]] = None) -> None:
+    def clear(self, obj_type: type[T] | None = None) -> None:
         """Clear objects from the pool."""
         ...
 
@@ -144,7 +146,7 @@ class IRegistry[K, V](Protocol):
         """Unregister a value by key."""
         ...
 
-    def get(self, key: K) -> Optional[V]:
+    def get(self, key: K) -> V | None:
         """Get a value by key."""
         ...
 
@@ -172,7 +174,7 @@ class IGenericRegistry[T](Protocol):
     Priority #3: Maintainability - Generic types improve code clarity and type checking.
     """
 
-    def register(self, name: str, item: T, metadata: Optional[dict[str, Any]] = None) -> bool:
+    def register(self, name: str, item: T, metadata: dict[str, Any] | None = None) -> bool:
         """Register an item with optional metadata."""
         ...
 
@@ -180,7 +182,7 @@ class IGenericRegistry[T](Protocol):
         """Unregister an item."""
         ...
 
-    def get(self, name: str) -> Optional[T]:
+    def get(self, name: str) -> T | None:
         """Get an item by name."""
         ...
 
@@ -520,7 +522,7 @@ class IConcurrencyControl(Protocol):
         """Check if locked."""
         ...
 
-    def try_acquire(self, timeout: Optional[float] = None) -> bool:
+    def try_acquire(self, timeout: float | None = None) -> bool:
         """Try to acquire with timeout."""
         ...
 @runtime_checkable

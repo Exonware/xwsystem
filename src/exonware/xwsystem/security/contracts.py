@@ -4,12 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Security protocol interfaces for XWSystem.
 """
 
-from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator, Callable
 import hashlib
 # Import enums from types module
 from .defs import (
@@ -219,8 +221,8 @@ class IAuditable(Protocol):
         """
         ...
 
-    def get_audit_trail(self, user: Optional[str] = None, resource: Optional[str] = None, 
-                       start_time: Optional[float] = None, end_time: Optional[float] = None) -> list[dict[str, Any]]:
+    def get_audit_trail(self, user: str | None = None, resource: str | None = None, 
+                       start_time: float | None = None, end_time: float | None = None) -> list[dict[str, Any]]:
         """
         Get audit trail.
         Args:
@@ -233,7 +235,7 @@ class IAuditable(Protocol):
         """
         ...
 
-    def clear_audit_trail(self, older_than: Optional[float] = None) -> int:
+    def clear_audit_trail(self, older_than: float | None = None) -> int:
         """
         Clear audit trail.
         Args:
@@ -698,7 +700,7 @@ class ISecurityToken(Protocol):
         """
         ...
 
-    def list_active_tokens(self, user: Optional[str] = None) -> list[str]:
+    def list_active_tokens(self, user: str | None = None) -> list[str]:
         """
         List active tokens.
         Args:
@@ -757,9 +759,9 @@ class IAtRestEncryption(Protocol):
         self,
         data: bytes,
         *,
-        key: Optional[bytes] = None,
-        password: Optional[str] = None,
-        salt: Optional[bytes] = None,
+        key: bytes | None = None,
+        password: str | None = None,
+        salt: bytes | None = None,
     ) -> bytes:
         """
         Encrypt data and return envelope bytes (magic + version + algo + nonce + salt + ciphertext).
@@ -771,8 +773,8 @@ class IAtRestEncryption(Protocol):
         self,
         payload: bytes,
         *,
-        key: Optional[bytes] = None,
-        password: Optional[str] = None,
+        key: bytes | None = None,
+        password: str | None = None,
     ) -> bytes:
         """
         Decrypt envelope payload and return plaintext bytes.

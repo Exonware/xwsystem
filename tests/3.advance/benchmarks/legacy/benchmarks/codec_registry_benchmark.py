@@ -134,7 +134,7 @@ def benchmark_thread_safety():
     print(f"   Total operations: {total_ops}")
     print(f"   Total time: {elapsed:.4f}s")
     print(f"   Average: {avg_ms:.4f}ms per operation")
-    print(f"   All returned same instance: {len(set(id(r) for r in results)) == 1}")
+    print(f"   All returned same instance: {len({id(r) for r in results}) == 1}")
     print(f"   Status: ✅ PASS (Thread-safe)")
     return True
 

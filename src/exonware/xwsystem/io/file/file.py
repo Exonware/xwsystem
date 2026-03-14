@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 XWFile - Concrete implementation of file operations.
 Handles reading from local paths and URIs (file, http, https, ftp, etc.)
@@ -15,7 +15,7 @@ from __future__ import annotations
 import asyncio
 import os
 from pathlib import Path
-from typing import Any, Optional, BinaryIO, TextIO
+from typing import Any, BinaryIO, TextIO
 from ..base import AFile
 from ..contracts import FileMode, OperationResult, IFile
 from ..common.atomic import AtomicFileWriter
@@ -45,7 +45,7 @@ class XWFile(AFile):
     def __init__(
         self,
         file_path: str | Path,
-        source_config: Optional[SourceLoadConfig] = None,
+        source_config: SourceLoadConfig | None = None,
         **config
     ):
         """
@@ -85,7 +85,7 @@ class XWFile(AFile):
             self._handle = open(self.file_path, mode.value)
             logger.debug(f"File opened: {self.file_path} in mode {mode.value}")
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """Read from file with validation."""
         if not self._handle:
             raise ValueError("File not open")
@@ -157,7 +157,7 @@ class XWFile(AFile):
         with performance_monitor("file_load"):
             try:
                 try:
-                    with open(self.file_path, 'r', encoding='utf-8') as f:
+                    with open(self.file_path, encoding='utf-8') as f:
                         data = f.read()
                 except UnicodeDecodeError:
                     with open(self.file_path, 'rb') as f:
@@ -254,8 +254,8 @@ class XWFile(AFile):
     def convert(
         source_path: str | Path,
         target_path: str | Path,
-        source_format: Optional[str] = None,
-        target_format: Optional[str] = None,
+        source_format: str | None = None,
+        target_format: str | None = None,
         **options
     ) -> None:
         """
@@ -294,7 +294,7 @@ class XWFile(AFile):
     def save_as(
         self,
         target_path: str | Path,
-        target_format: Optional[str] = None,
+        target_format: str | None = None,
         **options
     ) -> None:
         """

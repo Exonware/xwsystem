@@ -12,7 +12,9 @@ import time
 import weakref
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 import psutil
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.memory_monitor")
@@ -74,7 +76,7 @@ class MemoryMonitor:
         self._leak_reports: list[MemoryLeakReport] = []
         # Thread safety
         self._lock = threading.RLock()
-        self._monitoring_thread: Optional[threading.Thread] = None
+        self._monitoring_thread: threading.Thread | None = None
         self._stop_monitoring = threading.Event()
         # Statistics
         self._total_objects_created = 0
@@ -310,7 +312,7 @@ class MemoryMonitor:
             self._monitoring_thread is not None and self._monitoring_thread.is_alive()
         )
 # Global instance for easy access
-_memory_monitor: Optional[MemoryMonitor] = None
+_memory_monitor: MemoryMonitor | None = None
 
 
 def get_memory_monitor() -> MemoryMonitor:

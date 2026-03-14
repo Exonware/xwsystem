@@ -1,7 +1,9 @@
 #exonware/xwsystem/src/exonware/xwsystem/patterns/dynamic_facade.py
 
 import re
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 
 
 class _FormatProxy:

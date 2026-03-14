@@ -4,18 +4,17 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 26, 2025
 Base classes and contracts for operations.
 """
 
-from typing import Optional
 
 
 class OperationError(Exception):
     """Base exception for operation errors."""
 
-    def __init__(self, message: str, operation: Optional[str] = None):
+    def __init__(self, message: str, operation: str | None = None):
         super().__init__(message)
         self.operation = operation
 

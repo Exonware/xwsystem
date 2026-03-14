@@ -16,7 +16,9 @@ import logging
 import multiprocessing as mp
 import time
 from dataclasses import dataclass
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 logger = logging.getLogger(__name__)
 @dataclass
 
@@ -26,9 +28,9 @@ class TaskResult:
     task_id: str
     result: Any
     success: bool
-    error: Optional[str] = None
+    error: str | None = None
     execution_time: float = 0.0
-    worker_pid: Optional[int] = None
+    worker_pid: int | None = None
 
 
 class ProcessPool:
@@ -44,11 +46,11 @@ class ProcessPool:
     """
 
     def __init__(self, 
-                 max_workers: Optional[int] = None,
-                 size: Optional[int] = None,
-                 initializer: Optional[Callable] = None,
+                 max_workers: int | None = None,
+                 size: int | None = None,
+                 initializer: Callable | None = None,
                  initargs: tuple = (),
-                 timeout: Optional[float] = None):
+                 timeout: float | None = None):
         """
         Initialize process pool.
         Args:
@@ -86,8 +88,8 @@ class ProcessPool:
     def submit(self, 
                fn: Callable, 
                *args, 
-               task_id: Optional[str] = None,
-               timeout: Optional[float] = None,
+               task_id: str | None = None,
+               timeout: float | None = None,
                **kwargs) -> str:
         """
         Submit a task to the process pool.
@@ -144,7 +146,7 @@ class ProcessPool:
             logger.error(f"Failed to submit task {task_id}: {e}")
             raise
 
-    def get_result(self, task_id: str, timeout: Optional[float] = None) -> Optional[Any]:
+    def get_result(self, task_id: str, timeout: float | None = None) -> Any | None:
         """
         Get result of a completed task.
         Args:
@@ -176,7 +178,7 @@ class ProcessPool:
                 return None
         return None
 
-    def wait_for_all(self, timeout: Optional[float] = None) -> list[TaskResult]:
+    def wait_for_all(self, timeout: float | None = None) -> list[TaskResult]:
         """
         Wait for all active tasks to complete.
         Args:
@@ -227,7 +229,7 @@ class ProcessPool:
             stats['avg_execution_time'] = 0.0
         return stats
 
-    def shutdown(self, wait: bool = True, timeout: Optional[float] = None):
+    def shutdown(self, wait: bool = True, timeout: float | None = None):
         """
         Shutdown the process pool.
         Args:
@@ -259,8 +261,8 @@ class AsyncProcessPool:
     """
 
     def __init__(self, 
-                 max_workers: Optional[int] = None,
-                 initializer: Optional[Callable] = None,
+                 max_workers: int | None = None,
+                 initializer: Callable | None = None,
                  initargs: tuple = ()):
         """
         Initialize async process pool.
@@ -273,8 +275,8 @@ class AsyncProcessPool:
         self.initializer = initializer
         self.initargs = initargs
         # Will be created when first used
-        self._executor: Optional[concurrent.futures.ProcessPoolExecutor] = None
-        self._loop: Optional[asyncio.AbstractEventLoop] = None
+        self._executor: concurrent.futures.ProcessPoolExecutor | None = None
+        self._loop: asyncio.AbstractEventLoop | None = None
         # Task tracking
         self._active_tasks: dict[str, asyncio.Task] = {}
         self._task_counter = 0
@@ -292,7 +294,7 @@ class AsyncProcessPool:
     async def submit(self, 
                     fn: Callable, 
                     *args, 
-                    task_id: Optional[str] = None,
+                    task_id: str | None = None,
                     **kwargs) -> str:
         """
         Submit a task to the async process pool.
@@ -323,7 +325,7 @@ class AsyncProcessPool:
         logger.debug(f"Submitted async task {task_id}")
         return task_id
 
-    async def get_result(self, task_id: str, timeout: Optional[float] = None) -> Any:
+    async def get_result(self, task_id: str, timeout: float | None = None) -> Any:
         """
         Get result of a task.
         Args:
@@ -340,7 +342,7 @@ class AsyncProcessPool:
         else:
             return await task
 
-    async def wait_for_all(self, timeout: Optional[float] = None) -> list[Any]:
+    async def wait_for_all(self, timeout: float | None = None) -> list[Any]:
         """
         Wait for all active tasks to complete.
         Args:
@@ -389,7 +391,7 @@ class AsyncProcessPool:
         """Get list of active task IDs."""
         return list(self._active_tasks.keys())
 
-    async def shutdown(self, timeout: Optional[float] = None):
+    async def shutdown(self, timeout: float | None = None):
         """
         Shutdown the async process pool.
         Args:

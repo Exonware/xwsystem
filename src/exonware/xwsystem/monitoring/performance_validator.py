@@ -10,7 +10,9 @@ import threading
 import time
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.performance_validator")
 @dataclass
@@ -22,7 +24,7 @@ class PerformanceMetric:
     duration: float  # seconds
     timestamp: float
     success: bool = True
-    error_info: Optional[dict[str, Any]] = None
+    error_info: dict[str, Any] | None = None
     additional_data: dict[str, Any] = field(default_factory=dict)
 @dataclass
 
@@ -33,8 +35,8 @@ class PerformanceThreshold:
     max_duration: float  # seconds
     max_error_rate: float = 0.1  # 10%
     min_throughput: float = 0.0  # operations per second
-    percentile_95: Optional[float] = None  # 95th percentile threshold
-    percentile_99: Optional[float] = None  # 99th percentile threshold
+    percentile_95: float | None = None  # 95th percentile threshold
+    percentile_99: float | None = None  # 99th percentile threshold
 @dataclass
 
 
@@ -86,7 +88,7 @@ class PerformanceValidator:
         self._baseline_performance: dict[str, dict[str, float]] = {}
         # Thread safety
         self._lock = threading.RLock()
-        self._validation_thread: Optional[threading.Thread] = None
+        self._validation_thread: threading.Thread | None = None
         self._stop_validation = threading.Event()
         # Statistics
         self._total_metrics_recorded = 0
@@ -108,7 +110,7 @@ class PerformanceValidator:
         operation_name: str,
         duration: float,
         success: bool = True,
-        error_info: Optional[dict[str, Any]] = None,
+        error_info: dict[str, Any] | None = None,
         additional_data: dict[str, Any] = None,
     ) -> None:
         """Record a performance metric."""
@@ -245,7 +247,7 @@ class PerformanceValidator:
             reports[operation_name] = self.validate_performance(operation_name)
         return reports
 
-    def detect_regression(self, operation_name: str) -> Optional[dict[str, Any]]:
+    def detect_regression(self, operation_name: str) -> dict[str, Any] | None:
         """Detect performance regression compared to baseline."""
         if not self.enable_regression_detection:
             return None
@@ -392,7 +394,7 @@ class PerformanceValidator:
             self._validation_thread is not None and self._validation_thread.is_alive()
         )
 
-    def clear_metrics(self, operation_name: Optional[str] = None) -> None:
+    def clear_metrics(self, operation_name: str | None = None) -> None:
         """Clear performance metrics."""
         with self._lock:
             if operation_name:
@@ -403,7 +405,7 @@ class PerformanceValidator:
                 self._metrics.clear()
                 logger.info("🧹 Cleared all performance metrics")
 # Global instance for easy access
-_performance_validator: Optional[PerformanceValidator] = None
+_performance_validator: PerformanceValidator | None = None
 
 
 def get_performance_validator() -> PerformanceValidator:
@@ -431,7 +433,7 @@ def record_performance_metric(
     operation_name: str,
     duration: float,
     success: bool = True,
-    error_info: Optional[dict[str, Any]] = None,
+    error_info: dict[str, Any] | None = None,
     additional_data: dict[str, Any] = None,
 ) -> None:
     """Record a global performance metric."""

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Async-aware concurrency primitives and synchronization utilities.
 """
@@ -13,7 +13,7 @@ import logging
 import time
 import weakref
 from contextlib import asynccontextmanager
-from typing import Any, AsyncContextManager, Optional
+from typing import Any, AsyncContextManager
 from collections import defaultdict
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.threading.async_primitives")
@@ -30,7 +30,7 @@ class AsyncLock:
     Enhanced async lock with timeout support and debugging capabilities.
     """
 
-    def __init__(self, name: Optional[str] = None):
+    def __init__(self, name: str | None = None):
         """
         Initialize async lock.
         Args:
@@ -38,10 +38,10 @@ class AsyncLock:
         """
         self._lock = asyncio.Lock()
         self.name = name or f"AsyncLock-{id(self)}"
-        self._acquired_at: Optional[float] = None
-        self._acquired_by: Optional[str] = None
+        self._acquired_at: float | None = None
+        self._acquired_by: str | None = None
 
-    async def acquire(self, timeout: Optional[float] = None) -> bool:
+    async def acquire(self, timeout: float | None = None) -> bool:
         """
         Acquire the lock with optional timeout.
         Args:
@@ -61,7 +61,7 @@ class AsyncLock:
             self._acquired_by = f"Task-{id(asyncio.current_task())}"
             logger.debug(f"Lock {self.name} acquired by {self._acquired_by} (timeout: {timeout}s)")
             return True
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.warning(f"Lock {self.name} acquisition timeout after {timeout}s")
             return False
 
@@ -109,7 +109,7 @@ class AsyncSemaphore:
     Enhanced async semaphore with monitoring and debugging.
     """
 
-    def __init__(self, value: int = 1, name: Optional[str] = None):
+    def __init__(self, value: int = 1, name: str | None = None):
         """
         Initialize async semaphore.
         Args:
@@ -121,7 +121,7 @@ class AsyncSemaphore:
         self._initial_value = value
         self._acquired_tasks: set[str] = set()
 
-    async def acquire(self, timeout: Optional[float] = None) -> bool:
+    async def acquire(self, timeout: float | None = None) -> bool:
         """
         Acquire semaphore with optional timeout.
         Args:
@@ -140,7 +140,7 @@ class AsyncSemaphore:
             self._acquired_tasks.add(task_id)
             logger.debug(f"Semaphore {self.name} acquired by {task_id} (timeout: {timeout}s) ({len(self._acquired_tasks)}/{self._initial_value})")
             return True
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.warning(f"Semaphore {self.name} acquisition timeout after {timeout}s")
             return False
 
@@ -170,7 +170,7 @@ class AsyncEvent:
     Enhanced async event with timeout and debugging.
     """
 
-    def __init__(self, name: Optional[str] = None):
+    def __init__(self, name: str | None = None):
         """
         Initialize async event.
         Args:
@@ -178,10 +178,10 @@ class AsyncEvent:
         """
         self._event = asyncio.Event()
         self.name = name or f"AsyncEvent-{id(self)}"
-        self._set_at: Optional[float] = None
+        self._set_at: float | None = None
         self._waiting_tasks: set[str] = set()
 
-    async def wait(self, timeout: Optional[float] = None) -> bool:
+    async def wait(self, timeout: float | None = None) -> bool:
         """
         Wait for event with optional timeout.
         Args:
@@ -200,7 +200,7 @@ class AsyncEvent:
                 await asyncio.wait_for(self._event.wait(), timeout=timeout)
                 logger.debug(f"Event {self.name} received by {task_id} (timeout: {timeout}s)")
                 return True
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 logger.warning(f"Event {self.name} wait timeout after {timeout}s for {task_id}")
                 return False
         finally:
@@ -229,7 +229,7 @@ class AsyncQueue:
     Enhanced async queue with monitoring and timeout support.
     """
 
-    def __init__(self, maxsize: int = 0, name: Optional[str] = None):
+    def __init__(self, maxsize: int = 0, name: str | None = None):
         """
         Initialize async queue.
         Args:
@@ -242,7 +242,7 @@ class AsyncQueue:
         self._put_count = 0
         self._get_count = 0
 
-    async def put(self, item: Any, timeout: Optional[float] = None) -> bool:
+    async def put(self, item: Any, timeout: float | None = None) -> bool:
         """
         Put item in queue with optional timeout.
         Args:
@@ -261,11 +261,11 @@ class AsyncQueue:
             self._put_count += 1
             logger.debug(f"Queue {self.name} put item #{self._put_count} (timeout: {timeout}s) (size: {self.qsize()})")
             return True
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.warning(f"Queue {self.name} put timeout after {timeout}s")
             return False
 
-    async def get(self, timeout: Optional[float] = None) -> Any | None:
+    async def get(self, timeout: float | None = None) -> Any | None:
         """
         Get item from queue with optional timeout.
         Args:
@@ -283,7 +283,7 @@ class AsyncQueue:
             self._get_count += 1
             logger.debug(f"Queue {self.name} got item #{self._get_count} (timeout: {timeout}s) (size: {self.qsize()})")
             return item
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.warning(f"Queue {self.name} get timeout after {timeout}s")
             return None
 
@@ -345,7 +345,7 @@ class AsyncCondition:
     Async condition variable with timeout support.
     """
 
-    def __init__(self, lock: Optional[AsyncLock] = None, name: Optional[str] = None):
+    def __init__(self, lock: AsyncLock | None = None, name: str | None = None):
         """
         Initialize async condition.
         Args:
@@ -357,7 +357,7 @@ class AsyncCondition:
         self.name = name or f"AsyncCondition-{id(self)}"
         self._waiting_tasks: set[str] = set()
 
-    async def acquire(self, timeout: Optional[float] = None) -> bool:
+    async def acquire(self, timeout: float | None = None) -> bool:
         """Acquire the underlying lock."""
         return await self._lock.acquire(timeout)
 
@@ -365,7 +365,7 @@ class AsyncCondition:
         """Release the underlying lock."""
         self._lock.release()
 
-    async def wait(self, timeout: Optional[float] = None) -> bool:
+    async def wait(self, timeout: float | None = None) -> bool:
         """
         Wait for condition with optional timeout.
         Args:
@@ -384,7 +384,7 @@ class AsyncCondition:
                 await asyncio.wait_for(self._condition.wait(), timeout=timeout)
                 logger.debug(f"Condition {self.name} notified to {task_id} (timeout: {timeout}s)")
                 return True
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 logger.warning(f"Condition {self.name} wait timeout after {timeout}s for {task_id}")
                 return False
         finally:
@@ -421,7 +421,7 @@ class AsyncResourcePool:
     Async resource pool for managing limited resources.
     """
 
-    def __init__(self, resources: list, name: Optional[str] = None):
+    def __init__(self, resources: list, name: str | None = None):
         """
         Initialize resource pool.
         Args:
@@ -437,7 +437,7 @@ class AsyncResourcePool:
             self._available.put_nowait(resource)
         logger.debug(f"Resource pool {self.name} initialized with {self._total_resources} resources")
 
-    async def acquire(self, timeout: Optional[float] = None) -> Any | None:
+    async def acquire(self, timeout: float | None = None) -> Any | None:
         """
         Acquire a resource from the pool.
         Args:
@@ -456,7 +456,7 @@ class AsyncResourcePool:
             self._in_use[resource] = task_id
             logger.debug(f"Resource pool {self.name} acquired resource by {task_id} (timeout: {timeout}s) ({len(self._in_use)}/{self._total_resources} in use)")
             return resource
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.warning(f"Resource pool {self.name} acquisition timeout after {timeout}s")
             return None
 
@@ -474,7 +474,7 @@ class AsyncResourcePool:
             logger.warning(f"Resource pool {self.name} attempted to release unknown resource")
     @asynccontextmanager
 
-    async def get_resource(self, timeout: Optional[float] = None) -> AsyncContextManager[Any]:
+    async def get_resource(self, timeout: float | None = None) -> AsyncContextManager[Any]:
         """
         Context manager for resource acquisition.
         Args:

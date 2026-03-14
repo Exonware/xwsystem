@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Archive codecs - In-memory archive processors.
 Following FormatAction naming: ZipArchiver, TarArchiver, 7zArchiver
@@ -23,7 +23,7 @@ import zipfile
 import tarfile
 import io
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from ..archive.base import AArchiver
 from ..contracts import IArchiver, EncodeOptions, DecodeOptions
 from ..defs import ArchiveFormat, CodecCapability, CodecCategory
@@ -126,7 +126,7 @@ class ZipArchiver(AArchiver):
         except Exception as e:
             raise ArchiveError(f"Failed to add file to zip '{archive_path}': {e}")
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes:
         """
         Encode data to zip bytes (in RAM).
         Args:
@@ -161,7 +161,7 @@ class ZipArchiver(AArchiver):
         except Exception as e:
             raise EncodeError(f"Failed to create zip archive: {e}")
 
-    def decode(self, repr: bytes, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode zip bytes to data (in RAM).
         Args:
@@ -188,7 +188,7 @@ class ZipArchiver(AArchiver):
         """
         return self.encode(data, options=options)
 
-    def extract(self, source: bytes | Path, extract_dir: Optional[Path] = None, **options) -> Any:
+    def extract(self, source: bytes | Path, extract_dir: Path | None = None, **options) -> Any:
         """
         Extract ZIP from either in-memory bytes or a file path.
         - If source is bytes: returns dict[str, bytes] via decode()
@@ -284,7 +284,7 @@ class TarArchiver(AArchiver):
         except Exception as e:
             raise ArchiveError(f"Failed to add file to tar '{archive_path}': {e}")
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes:
         """Encode data to tar bytes (in RAM)."""
         options = options or {}
         compression = options.get('compression', '')  # '', 'gz', 'bz2', 'xz'
@@ -312,7 +312,7 @@ class TarArchiver(AArchiver):
         except Exception as e:
             raise EncodeError(f"Failed to create tar archive: {e}")
 
-    def decode(self, repr: bytes, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes, *, options: DecodeOptions | None = None) -> Any:
         """Decode tar bytes to data (in RAM)."""
         try:
             tar_buffer = io.BytesIO(repr)
@@ -331,7 +331,7 @@ class TarArchiver(AArchiver):
         """User-friendly: Compress data to tar bytes."""
         return self.encode(data, options=options)
 
-    def extract(self, source: bytes | Path, extract_dir: Optional[Path] = None, **options) -> Any:
+    def extract(self, source: bytes | Path, extract_dir: Path | None = None, **options) -> Any:
         """
         Extract TAR from either in-memory bytes or a file path.
         - If source is bytes: returns dict[str, bytes] via decode()
@@ -348,8 +348,7 @@ class TarArchiver(AArchiver):
                 # data_filter allows all files but validates paths for security
                 # For older Python versions, filter parameter is not available
                 extract_kwargs = {}
-                if sys.version_info >= (3, 12):
-                    extract_kwargs['filter'] = 'data'
+                extract_kwargs['filter'] = 'data'
                 tf.extractall(extract_dir, **extract_kwargs)
                 return [extract_dir / m.name for m in tf.getmembers() if m.name]
         except Exception as e:

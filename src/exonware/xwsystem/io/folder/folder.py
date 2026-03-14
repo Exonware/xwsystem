@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 XWFolder - Concrete implementation of folder operations.
 """
@@ -11,7 +11,7 @@ XWFolder - Concrete implementation of folder operations.
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 from ..base import AFolder
 from ..contracts import OperationResult, IFolder
 from ...config.logging_setup import get_logger

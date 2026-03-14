@@ -3,12 +3,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 04, 2025
 Universal Codec Registry - High-performance registry for all codec types.
 """
 
-from typing import Optional, Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 from pathlib import Path
 from threading import RLock
 from functools import lru_cache
@@ -114,9 +116,9 @@ class UniversalCodecRegistry:
     def register(
         self,
         codec_class: type[ICodec],
-        codec_instance: Optional[ICodec] = None,
+        codec_instance: ICodec | None = None,
         priority: int = 0,
-        magic_bytes: Optional[list[bytes]] = None
+        magic_bytes: list[bytes] | None = None
     ) -> None:
         """
         Register a codec class or instance with optional priority and magic bytes.
@@ -269,7 +271,7 @@ class UniversalCodecRegistry:
     # SINGLE RESULT METHODS (Priority-based resolution)
     # ========================================================================
 
-    def get_by_id(self, codec_id: str) -> Optional[ICodec]:
+    def get_by_id(self, codec_id: str) -> ICodec | None:
         """
         Get codec by ID with O(1) caching (unique lookup).
         OPTIMIZED: Lockless fast path for cached instances.
@@ -301,7 +303,7 @@ class UniversalCodecRegistry:
                 # Failed to instantiate - don't cache the failure
                 return None
 
-    def get_by_extension(self, ext: str) -> Optional[ICodec]:
+    def get_by_extension(self, ext: str) -> ICodec | None:
         """
         Get codec by extension with O(1) caching (highest priority match).
         OPTIMIZED: Reduced lock contention by doing normalization outside lock.
@@ -324,7 +326,7 @@ class UniversalCodecRegistry:
         # Get instance outside lock (uses lockless cache)
         return self.get_by_id(codec_id)
 
-    def get_by_mime_type(self, mime: str) -> Optional[ICodec]:
+    def get_by_mime_type(self, mime: str) -> ICodec | None:
         """
         Get codec by MIME type (highest priority match).
         Args:
@@ -340,7 +342,7 @@ class UniversalCodecRegistry:
             codec_id = codec_list[0][0]
             return self.get_by_id(codec_id)
 
-    def get_by_alias(self, alias: str) -> Optional[ICodec]:
+    def get_by_alias(self, alias: str) -> ICodec | None:
         """
         Get codec by alias (unique lookup).
         Args:
@@ -355,7 +357,7 @@ class UniversalCodecRegistry:
             return self.get_by_id(codec_id)
     @lru_cache(maxsize=256)
 
-    def detect(self, path: str | Path, codec_type: Optional[str] = None) -> Optional[ICodec]:
+    def detect(self, path: str | Path, codec_type: str | None = None) -> ICodec | None:
         """
         Auto-detect codec from file path (best match with optional type filter).
         Uses multiple detection strategies with caching:
@@ -374,7 +376,7 @@ class UniversalCodecRegistry:
         with self._lock:
             return self._detect_internal(path, codec_type)
 
-    def _detect_internal(self, path: str | Path, codec_type: Optional[str] = None) -> Optional[ICodec]:
+    def _detect_internal(self, path: str | Path, codec_type: str | None = None) -> ICodec | None:
         """Internal detection implementation (not cached)."""
         path_obj = Path(path)
         def matches_type(codec: ICodec) -> bool:
@@ -409,7 +411,7 @@ class UniversalCodecRegistry:
             return codec
         return None
 
-    def detect_by_content(self, content: bytes, codec_type: Optional[str] = None) -> Optional[ICodec]:
+    def detect_by_content(self, content: bytes, codec_type: str | None = None) -> ICodec | None:
         """
         Detect codec from content using magic bytes.
         Args:
@@ -497,7 +499,7 @@ class UniversalCodecRegistry:
                     results.append(codec)
             return results
 
-    def detect_all(self, path: str | Path, codec_type: Optional[str] = None) -> list[ICodec]:
+    def detect_all(self, path: str | Path, codec_type: str | None = None) -> list[ICodec]:
         """
         Detect all possible codecs for a file path.
         Args:
@@ -540,7 +542,7 @@ class UniversalCodecRegistry:
     # METADATA & MANAGEMENT METHODS
     # ========================================================================
 
-    def get_metadata(self, codec_id: str) -> Optional[dict[str, Any]]:
+    def get_metadata(self, codec_id: str) -> dict[str, Any] | None:
         """
         Get full metadata for a codec.
         Args:
@@ -560,7 +562,7 @@ class UniversalCodecRegistry:
         with self._lock:
             return list(self._by_type.keys())
 
-    def list_codecs(self, codec_type: Optional[str] = None) -> list[str]:
+    def list_codecs(self, codec_type: str | None = None) -> list[str]:
         """
         List all codec IDs, optionally filtered by type.
         Args:
@@ -612,7 +614,7 @@ class UniversalCodecRegistry:
     # BULK OPERATIONS
     # ========================================================================
 
-    def register_bulk(self, codec_classes: list[type[ICodec]], priorities: Optional[list[int]] = None) -> int:
+    def register_bulk(self, codec_classes: list[type[ICodec]], priorities: list[int] | None = None) -> int:
         """
         Register multiple codecs efficiently.
         Args:
@@ -679,7 +681,7 @@ class UniversalCodecRegistry:
 # ============================================================================
 # GLOBAL REGISTRY SINGLETON
 # ============================================================================
-_global_registry: Optional[UniversalCodecRegistry] = None
+_global_registry: UniversalCodecRegistry | None = None
 _global_lock = RLock()
 
 

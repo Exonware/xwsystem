@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 Multipart serialization - Multipart form data format.
 Following I→A pattern:
@@ -19,7 +19,7 @@ from email import encoders
 from email.parser import BytesParser
 from email.policy import default
 import io
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -90,7 +90,7 @@ class MultipartSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using email.mime modules)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to multipart format.
         Uses email.mime modules.
@@ -134,7 +134,7 @@ class MultipartSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode multipart data.
         Uses email.parser.BytesParser.

@@ -22,7 +22,9 @@ focusing on correctness of behaviour and delegation rather than performance.
 
 from __future__ import annotations
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 import pytest
 from exonware.xwsystem.io.serialization.formats.text.json import JsonSerializer
 from exonware.xwsystem.io.serialization.formats.text.json5 import Json5Serializer

@@ -4,13 +4,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Read-through and Write-through cache implementations.
 Extensibility Priority #5 - Auto-loading and auto-writing patterns.
 """
 
-from typing import Any, Callable, Optional, Hashable
+from typing import Any
+
+from collections.abc import Callable, Hashable
 from .lru_cache import LRUCache
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.caching.read_through")
@@ -35,9 +37,9 @@ class ReadThroughCache(LRUCache):
     def __init__(
         self,
         capacity: int = 128,
-        loader: Optional[Callable[[Any], Any]] = None,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None
+        loader: Callable[[Any], Any] | None = None,
+        ttl: float | None = None,
+        name: str | None = None
     ):
         """
         Initialize read-through cache.
@@ -105,9 +107,9 @@ class WriteThroughCache(LRUCache):
     def __init__(
         self,
         capacity: int = 128,
-        writer: Optional[Callable[[Any, Any], None]] = None,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None
+        writer: Callable[[Any, Any], None] | None = None,
+        ttl: float | None = None,
+        name: str | None = None
     ):
         """
         Initialize write-through cache.
@@ -169,10 +171,10 @@ class ReadWriteThroughCache(LRUCache):
     def __init__(
         self,
         capacity: int = 128,
-        loader: Optional[Callable[[Any], Any]] = None,
-        writer: Optional[Callable[[Any, Any], None]] = None,
-        ttl: Optional[float] = None,
-        name: Optional[str] = None
+        loader: Callable[[Any], Any] | None = None,
+        writer: Callable[[Any, Any], None] | None = None,
+        ttl: float | None = None,
+        name: str | None = None
     ):
         """Initialize read-write-through cache."""
         super().__init__(capacity, ttl, name)

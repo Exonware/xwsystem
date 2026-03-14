@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 02-Nov-2025
 JSON Lines (JSONL/NDJSON) Serialization - Newline-Delimited JSON
 JSON Lines format (also called NDJSON - Newline Delimited JSON):
@@ -19,7 +19,7 @@ Priority 4 (Performance): Memory-efficient streaming
 Priority 5 (Extensibility): Compatible with standard JSON
 """
 
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from .json import JsonSerializer
 from ...parsers.registry import get_parser
@@ -39,7 +39,7 @@ class JsonLinesSerializer(JsonSerializer):
     Concrete: JsonLinesSerializer
     """
 
-    def __init__(self, parser_name: Optional[str] = None):
+    def __init__(self, parser_name: str | None = None):
         """
         Initialize JSON Lines serializer with optional parser selection.
         Args:
@@ -103,7 +103,7 @@ class JsonLinesSerializer(JsonSerializer):
     # CORE ENCODE / DECODE
     # -------------------------------------------------------------------------
 
-    def encode(self, data: Any, *, options: Optional[dict[str, Any]] = None) -> str:
+    def encode(self, data: Any, *, options: dict[str, Any] | None = None) -> str:
         """
         Encode data to JSON Lines string.
         Args:
@@ -127,7 +127,7 @@ class JsonLinesSerializer(JsonSerializer):
             lines.append(result)
         return "\n".join(lines)
 
-    def decode(self, data: str | bytes, *, options: Optional[dict[str, Any]] = None) -> list[Any]:
+    def decode(self, data: str | bytes, *, options: dict[str, Any] | None = None) -> list[Any]:
         """
         Decode JSON Lines string to list of Python objects.
         Args:
@@ -155,7 +155,7 @@ class JsonLinesSerializer(JsonSerializer):
         self,
         file_path: str | Path,
         match: callable,
-        projection: Optional[list[Any]] = None,
+        projection: list[Any] | None = None,
         **options: Any,
     ) -> Any:
         """

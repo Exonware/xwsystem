@@ -7,7 +7,7 @@ declarative models, field validation, and advanced validation rules.
 """
 
 import re
-from typing import Any, Optional
+from typing import Any
 from datetime import datetime, date
 import json
 

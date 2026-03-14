@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2026
 XWArchive - Unified Archiving Facade
 Simplified API for all archive formats:
@@ -13,7 +13,7 @@ Simplified API for all archive formats:
 """
 
 from pathlib import Path
-from typing import Any, Optional, Union, List
+from typing import Any
 from .archive import Archive
 from .archivers import ZipArchiver, TarArchiver
 from .formats import get_archiver_for_file, get_archiver_by_id
@@ -46,11 +46,11 @@ class XWArchive:
 
     def __init__(
         self,
-        format_or_path: Union[str, Path],
+        format_or_path: str | Path,
         *,
-        format: Optional[str] = None,
-        compression: Optional[str] = None,
-        level: Union[str, int] = "balanced",
+        format: str | None = None,
+        compression: str | None = None,
+        level: str | int = "balanced",
         **kwargs
     ):
         """
@@ -138,7 +138,7 @@ class XWArchive:
             except Exception:
                 raise ValueError(f"Unknown archive format: {self.format}")
 
-    def create(self, archive_path: Union[str, Path], files: List[Union[str, Path]], **options) -> Path:
+    def create(self, archive_path: str | Path, files: list[str | Path], **options) -> Path:
         """
         Create archive from files.
         Args:
@@ -155,7 +155,7 @@ class XWArchive:
         archive.create(files, archive_path, format=self.format or None, **options)
         return archive_path
 
-    def extract(self, archive_path: Union[str, Path], output_dir: Union[str, Path], **options) -> Path:
+    def extract(self, archive_path: str | Path, output_dir: str | Path, **options) -> Path:
         """
         Extract archive to directory.
         Args:
@@ -172,7 +172,7 @@ class XWArchive:
         archive.extract(archive_path, output_dir, **options)
         return output_dir
 
-    def add(self, file_path: Union[str, Path], **options) -> None:
+    def add(self, file_path: str | Path, **options) -> None:
         """Add file to archive (when used as context manager)."""
         if not hasattr(self, 'file_path') or not self.file_path:
             raise ValueError("No archive file path specified. Initialize with file path for context manager usage.")
@@ -180,7 +180,7 @@ class XWArchive:
         archive = Archive()
         archive.add_file(self.file_path, Path(file_path), **options)
 
-    def list_contents(self) -> List[str]:
+    def list_contents(self) -> list[str]:
         """List files in archive."""
         if not self._archive_file:
             raise ValueError("Archive not opened")
@@ -199,9 +199,9 @@ class XWArchive:
 
     def create_archive(
         cls,
-        archive_path: Union[str, Path],
-        files: List[Union[str, Path]],
-        format: Optional[str] = None,
+        archive_path: str | Path,
+        files: list[str | Path],
+        format: str | None = None,
         **options
     ) -> Path:
         """
@@ -219,8 +219,8 @@ class XWArchive:
 
     def extract_archive(
         cls,
-        archive_path: Union[str, Path],
-        output_dir: Union[str, Path],
+        archive_path: str | Path,
+        output_dir: str | Path,
         **options
     ) -> Path:
         """

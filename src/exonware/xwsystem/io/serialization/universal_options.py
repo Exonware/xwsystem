@@ -6,10 +6,10 @@ Options like pretty, compact, sorted, canonical can be mapped to format-specific
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 """
 
-from typing import Dict, List, Set, Any, Optional
+from typing import Any
 from enum import Enum
 
 
@@ -27,7 +27,7 @@ class UniversalOption(Enum):
     LINE_SEPARATOR = "line_separator"
     ITEM_SEPARATOR = "item_separator"
 # Format-specific option mappings
-_FORMAT_OPTION_MAPS: Dict[str, Dict[str, str]] = {
+_FORMAT_OPTION_MAPS: dict[str, dict[str, str]] = {
     "json": {
         "pretty": "indent",
         "compact": "separators",
@@ -70,7 +70,7 @@ _FORMAT_OPTION_MAPS: Dict[str, Dict[str, str]] = {
     },
 }
 # Supported options per format
-_FORMAT_SUPPORTED_OPTIONS: Dict[str, Set[str]] = {
+_FORMAT_SUPPORTED_OPTIONS: dict[str, set[str]] = {
     "json": {
         "pretty", "compact", "sorted", "canonical", "indent",
         "ensure_ascii", "allow_nan"
@@ -103,9 +103,9 @@ _FORMAT_SUPPORTED_OPTIONS: Dict[str, Set[str]] = {
 
 def map_universal_options(
     format_name: str,
-    universal_options: Optional[Dict[str, Any]] = None,
+    universal_options: dict[str, Any] | None = None,
     **kwargs: Any
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Map universal options to format-specific options.
     Args:
@@ -168,7 +168,7 @@ def map_universal_options(
     return format_options
 
 
-def get_supported_universal_options(format_name: Optional[str] = None) -> Set[str] | Dict[str, Any]:
+def get_supported_universal_options(format_name: str | None = None) -> set[str] | dict[str, Any]:
     """
     Get list of supported universal options for a format, or all universal options info.
     Args:
@@ -241,9 +241,9 @@ def get_supported_universal_options(format_name: Optional[str] = None) -> Set[st
 
 def validate_universal_options(
     format_name: str,
-    universal_options: Optional[Dict[str, Any]] = None,
+    universal_options: dict[str, Any] | None = None,
     **kwargs: Any
-) -> tuple[bool, Optional[str]]:
+) -> tuple[bool, str | None]:
     """
     Validate universal options for a format.
     Args:
@@ -301,7 +301,7 @@ def validate_universal_options(
     return True, None
 
 
-def get_all_supported_formats() -> List[str]:
+def get_all_supported_formats() -> list[str]:
     """
     Get list of all formats that support universal options.
     Returns:
@@ -310,7 +310,7 @@ def get_all_supported_formats() -> List[str]:
     return list(_FORMAT_SUPPORTED_OPTIONS.keys())
 
 
-def get_format_option_info(format_name: str) -> Dict[str, Any]:
+def get_format_option_info(format_name: str) -> dict[str, Any]:
     """
     Get detailed information about format option support.
     Args:

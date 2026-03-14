@@ -6,14 +6,14 @@ Production-grade TTL caching for XSystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generated: 2025-01-27
 """
 
 import asyncio
 import time
 import threading
-from typing import Any, Optional
+from typing import Any
 from dataclasses import dataclass
 import logging
 from .base import ACache
@@ -143,7 +143,7 @@ class TTLCache(ACache):
             self._access_order.remove(key)
         self._access_order.append(key)
 
-    def put(self, key: str, value: Any, ttl: Optional[float] = None) -> bool:
+    def put(self, key: str, value: Any, ttl: float | None = None) -> bool:
         """
         Store a value in the cache.
         Args:
@@ -172,7 +172,7 @@ class TTLCache(ACache):
                 logger.error(f"TTL cache put error: {e}")
                 return False
 
-    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
+    def set(self, key: str, value: Any, ttl: int | None = None) -> None:
         """
         Set value in cache (abstract method implementation).
         Delegates to put().
@@ -299,7 +299,7 @@ class TTLCache(ACache):
                 'cleanups': self._stats['cleanups']
             }
 
-    def get_remaining_ttl(self, key: str) -> Optional[float]:
+    def get_remaining_ttl(self, key: str) -> float | None:
         """Get remaining TTL for a key."""
         with self._lock:
             if key not in self._cache:
@@ -399,7 +399,7 @@ class AsyncTTLCache:
                 self._stats['cleanups'] += 1
                 logger.debug(f"Async TTL cache '{self.name}' cleaned up {len(expired_keys)} expired entries")
 
-    async def put(self, key: str, value: Any, ttl: Optional[float] = None) -> bool:
+    async def put(self, key: str, value: Any, ttl: float | None = None) -> bool:
         """Store a value in the async cache."""
         async with self._lock:
             try:

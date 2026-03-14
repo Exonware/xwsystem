@@ -20,7 +20,7 @@ Providers should register an entry point that resolves to either:
 from __future__ import annotations
 from dataclasses import dataclass
 import threading
-from typing import Any, Optional
+from typing import Any
 from ..config.logging_setup import get_logger
 from .contracts import ISchemaProvider
 logger = get_logger("xwsystem.validation.schema_discovery")
@@ -39,7 +39,7 @@ _providers_by_group: dict[str, dict[str, ISchemaProvider]] = {}
 _default_provider_by_group: dict[str, str] = {}
 
 
-def _as_schema_provider(obj: Any) -> Optional[ISchemaProvider]:
+def _as_schema_provider(obj: Any) -> ISchemaProvider | None:
     """Coerce an entry-point loaded object into an ISchemaProvider instance."""
     if obj is None:
         return None
@@ -147,9 +147,9 @@ def set_schema_validator(
 
 def get_schema_validator(
     *,
-    name: Optional[str] = None,
+    name: str | None = None,
     group: str = DEFAULT_SCHEMA_VALIDATOR_ENTRYPOINT_GROUP,
-) -> Optional[ISchemaProvider]:
+) -> ISchemaProvider | None:
     """
     Get a schema provider (validator).
     Args:

@@ -13,7 +13,6 @@ import sys
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from typing import Optional
 # Set UTF-8 encoding for Windows console to support emojis
 if sys.platform == 'win32':
     try:
@@ -66,8 +65,8 @@ class DualOutput:
         self.colored = ColoredOutput()
         self.markdown_lines = []
 
-    def print(self, text: str = "", markdown_format: Optional[str] = None, 
-              color: Optional[str] = None, emoji: Optional[str] = None):
+    def print(self, text: str = "", markdown_format: str | None = None, 
+              color: str | None = None, emoji: str | None = None):
         """
         Print to terminal and capture for Markdown.
         Args:
@@ -144,7 +143,7 @@ class DualOutput:
         self.output_file.write_text(content, encoding='utf-8')
 
 
-def format_path(path: Path, relative_to: Optional[Path] = None) -> str:
+def format_path(path: Path, relative_to: Path | None = None) -> str:
     """
     Format path for display with full absolute path.
     Args:
@@ -164,7 +163,7 @@ def format_path(path: Path, relative_to: Optional[Path] = None) -> str:
     return str(abs_path)
 
 
-def print_header(title: str, output: Optional[DualOutput] = None):
+def print_header(title: str, output: DualOutput | None = None):
     """
     Print a formatted header with separator.
     Args:
@@ -183,7 +182,7 @@ def print_header(title: str, output: Optional[DualOutput] = None):
         print(separator)
 
 
-def print_section(title: str, output: Optional[DualOutput] = None):
+def print_section(title: str, output: DualOutput | None = None):
     """
     Print a formatted section header.
     Args:
@@ -197,7 +196,7 @@ def print_section(title: str, output: Optional[DualOutput] = None):
         colored.subheader(f"\n📋 {title}")
 
 
-def print_status(success: bool, message: str, output: Optional[DualOutput] = None):
+def print_status(success: bool, message: str, output: DualOutput | None = None):
     """
     Print a status message with appropriate color and emoji.
     Args:
@@ -224,8 +223,8 @@ def print_status(success: bool, message: str, output: Optional[DualOutput] = Non
 def run_pytest(
     test_dir: Path,
     markers: list[str],
-    options: Optional[list[str]] = None,
-    output: Optional[DualOutput] = None
+    options: list[str] | None = None,
+    output: DualOutput | None = None
 ) -> tuple[int, str, str]:
     """
     Run pytest with specified options and capture output.
@@ -283,9 +282,9 @@ class RunnerUtil:  # Utility class (not a test class - renamed to avoid pytest c
         library_name: str,
         layer_name: str,
         description: str,
-        test_dir: Optional[Path] = None,
-        markers: Optional[list[str]] = None,
-        output_file: Optional[Path] = None
+        test_dir: Path | None = None,
+        markers: list[str] | None = None,
+        output_file: Path | None = None
     ):
         """
         Initialize test runner.

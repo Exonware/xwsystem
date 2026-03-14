@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Shared base classes (merged from the former core module).
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 from datetime import datetime
 import uuid
 from .contracts import CoreMode, CorePriority, CoreState, IObject
@@ -199,15 +199,15 @@ class AValidationBase(ABC):
 class AOperationBase(ABC):
     """Abstract base class for core operations."""
 
-    def __init__(self, timeout: Optional[int] = None):
+    def __init__(self, timeout: int | None = None):
         """
         Initialize operation base.
         Args:
             timeout: Operation timeout in seconds
         """
         self.timeout = timeout
-        self._start_time: Optional[float] = None
-        self._end_time: Optional[float] = None
+        self._start_time: float | None = None
+        self._end_time: float | None = None
     @abstractmethod
 
     def execute(self, **kwargs) -> Any:
@@ -230,7 +230,7 @@ class AOperationBase(ABC):
         pass
     @abstractmethod
 
-    def get_duration(self) -> Optional[float]:
+    def get_duration(self) -> float | None:
         """Get operation duration."""
         pass
     @abstractmethod
@@ -245,7 +245,7 @@ class AOperationBase(ABC):
         pass
     @abstractmethod
 
-    def get_error(self) -> Optional[Exception]:
+    def get_error(self) -> Exception | None:
         """Get operation error."""
         pass
 
@@ -331,7 +331,7 @@ class AObject(IObject, ABC):
     - load() method (object-specific loading logic)
     """
 
-    def __init__(self, object_id: Optional[str] = None):
+    def __init__(self, object_id: str | None = None):
         """
         Initialize abstract object.
         Args:
@@ -372,7 +372,7 @@ class AObject(IObject, ABC):
         pass
     @property
 
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         """
         Get the object title.
         Default implementation returns None. Subclasses should override
@@ -381,7 +381,7 @@ class AObject(IObject, ABC):
         return getattr(self, '_title', None)
     @property
 
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """
         Get the object description.
         Default implementation returns None. Subclasses should override

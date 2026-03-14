@@ -4,12 +4,11 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: January 2025
 String utility functions for XSystem.
 """
 
-from typing import Optional
 
 
 def find_nth_occurrence(text: str, key: str, n: int) -> int:

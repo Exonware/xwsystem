@@ -5,12 +5,12 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 2025-01-27
 Type definitions and constants for console module.
 """
 
-from typing import Literal, Any, Optional
+from typing import Literal, Any
 from dataclasses import dataclass
 from enum import Enum
 # ============================================================================
@@ -43,9 +43,9 @@ class ConsoleEvent:
     color: str
     label: str
     msg: str
-    source: Optional[str] = None
-    level: Optional[LogLevel] = None
-    data: Optional[Any] = None
+    source: str | None = None
+    level: LogLevel | None = None
+    data: Any | None = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""

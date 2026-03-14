@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 01-Nov-2025
 Common utility functions for caching module.
 """
@@ -13,7 +13,9 @@ Common utility functions for caching module.
 import sys
 import hashlib
 import pickle
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 
 
 def estimate_object_size(obj: Any) -> int:

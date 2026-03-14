@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 1, 2025
 RAR5 archive format implementation - RANK #3 PROPRIETARY COMPRESSION.
 **Strong compression + recovery record + multi-volume**
@@ -16,7 +16,6 @@ Priority 5 (Extensibility): Optional rarfile dependency
 """
 
 from pathlib import Path
-from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 # Optional dependency: rarfile
@@ -78,7 +77,7 @@ class RarArchiver(IArchiveFormat):
             "Use SevenZipArchiver or ZstandardArchiver instead for creation."
         )
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """
         Extract RAR archive.
         Options:
@@ -111,6 +110,6 @@ class RarArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to list RAR contents: {e}")
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """RAR append not supported (requires WinRAR binary)."""
         raise ArchiveError("RAR append requires WinRAR/RAR binary (proprietary).")

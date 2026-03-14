@@ -3,13 +3,15 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 Structures module contracts - interfaces and enums for data structure functionality.
 """
 
 from __future__ import annotations
-from typing import Any, Optional, Iterator, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from collections.abc import Iterator, Callable
 # Import enums from types module
 from .defs import (
     StructureType,
@@ -35,7 +37,7 @@ class ITreeNode(Protocol):
         ...
     @property
 
-    def parent(self) -> Optional[ITreeNode]:
+    def parent(self) -> ITreeNode | None:
         """Node parent."""
         ...
 
@@ -118,7 +120,7 @@ class IGraphNode(Protocol):
         """Node neighbors."""
         ...
 
-    def add_neighbor(self, neighbor: IGraphNode, weight: Optional[float] = None) -> None:
+    def add_neighbor(self, neighbor: IGraphNode, weight: float | None = None) -> None:
         """Add neighbor node."""
         ...
 
@@ -126,7 +128,7 @@ class IGraphNode(Protocol):
         """Remove neighbor node."""
         ...
 
-    def get_edge_weight(self, neighbor: IGraphNode) -> Optional[float]:
+    def get_edge_weight(self, neighbor: IGraphNode) -> float | None:
         """Get edge weight to neighbor."""
         ...
 @runtime_checkable
@@ -142,11 +144,11 @@ class IGraph(Protocol):
         """Remove node from graph."""
         ...
 
-    def get_node(self, node_id: str) -> Optional[IGraphNode]:
+    def get_node(self, node_id: str) -> IGraphNode | None:
         """Get node by ID."""
         ...
 
-    def add_edge(self, from_node: str, to_node: str, weight: Optional[float] = None) -> None:
+    def add_edge(self, from_node: str, to_node: str, weight: float | None = None) -> None:
         """Add edge between nodes."""
         ...
 

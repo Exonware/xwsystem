@@ -4,13 +4,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: September 04, 2025
 IPC module base classes - abstract classes for inter-process communication functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 from .contracts import MessageType, QueueType, ProcessState, SharedMemoryType
 
 
@@ -49,12 +49,12 @@ class AMessageQueueBase(ABC):
         pass
     @abstractmethod
 
-    def receive(self, timeout: Optional[int] = None) -> Optional[Any]:
+    def receive(self, timeout: int | None = None) -> Any | None:
         """Receive message from queue."""
         pass
     @abstractmethod
 
-    def peek(self) -> Optional[Any]:
+    def peek(self) -> Any | None:
         """Peek at next message without removing it."""
         pass
     @abstractmethod
@@ -82,7 +82,7 @@ class AMessageQueueBase(ABC):
 class APipeBase(ABC):
     """Abstract base class for pipe operations."""
 
-    def __init__(self, pipe_name: Optional[str] = None):
+    def __init__(self, pipe_name: str | None = None):
         """
         Initialize pipe.
         Args:
@@ -119,7 +119,7 @@ class APipeBase(ABC):
         pass
     @abstractmethod
 
-    def read(self, size: Optional[int] = None) -> str | bytes:
+    def read(self, size: int | None = None) -> str | bytes:
         """Read data from pipe."""
         pass
     @abstractmethod
@@ -220,7 +220,7 @@ class AProcessManagerBase(ABC):
         pass
     @abstractmethod
 
-    def stop_process(self, name: str, timeout: Optional[int] = None) -> bool:
+    def stop_process(self, name: str, timeout: int | None = None) -> bool:
         """Stop process."""
         pass
     @abstractmethod
@@ -230,7 +230,7 @@ class AProcessManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_process(self, name: str) -> Optional[Any]:
+    def get_process(self, name: str) -> Any | None:
         """Get process by name."""
         pass
     @abstractmethod
@@ -250,17 +250,17 @@ class AProcessManagerBase(ABC):
         pass
     @abstractmethod
 
-    def get_process_pid(self, name: str) -> Optional[int]:
+    def get_process_pid(self, name: str) -> int | None:
         """Get process PID."""
         pass
     @abstractmethod
 
-    def get_process_output(self, name: str) -> Optional[str]:
+    def get_process_output(self, name: str) -> str | None:
         """Get process output."""
         pass
     @abstractmethod
 
-    def get_process_error(self, name: str) -> Optional[str]:
+    def get_process_error(self, name: str) -> str | None:
         """Get process error output."""
         pass
 
@@ -290,7 +290,7 @@ class AProcessPoolBase(ABC):
         pass
     @abstractmethod
 
-    def get_process(self) -> Optional[Any]:
+    def get_process(self) -> Any | None:
         """Get available process from pool."""
         pass
     @abstractmethod

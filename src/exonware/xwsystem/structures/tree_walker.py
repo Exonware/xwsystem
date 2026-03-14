@@ -7,7 +7,9 @@ previously embedded in xData but is generally useful across xLib components.
 
 import logging
 from collections.abc import Mapping, Sequence
-from typing import Any, Callable, Optional
+from typing import Any
+
+from collections.abc import Callable
 logger = logging.getLogger(__name__)
 
 
@@ -22,7 +24,7 @@ class TreeWalker:
         self,
         max_depth: int = 1000,
         track_visited: bool = True,
-        visit_tracker: Optional[set[int]] = None,
+        visit_tracker: set[int] | None = None,
     ):
         """
         Initialize tree walker.
@@ -183,7 +185,7 @@ def walk_and_replace(
 def resolve_proxies_in_dict(
     data: Any,
     resolving_paths: set[str],
-    visited_objects: Optional[set[int]] = None,
+    visited_objects: set[int] | None = None,
     max_depth: int = 1000,
 ) -> Any:
     """

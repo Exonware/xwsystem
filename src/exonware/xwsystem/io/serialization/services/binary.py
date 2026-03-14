@@ -9,7 +9,6 @@ Ensures binary-safe handling; optional length-prefixed framing for streaming.
 
 from __future__ import annotations
 import struct
-from typing import Optional
 # 4-byte big-endian length prefix
 LENGTH_PREFIX_FORMAT = ">I"
 LENGTH_PREFIX_SIZE = 4

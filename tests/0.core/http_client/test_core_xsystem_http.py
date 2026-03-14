@@ -69,7 +69,7 @@ Content-Disposition: form-data; name="email"\r
 \r
 john@example.com\r
 --{boundary}--\r
-""".encode('utf-8')
+""".encode()
         assert isinstance(multipart_data, bytes)
         assert b"John Doe" in multipart_data
         print("[PASS] HTTP client POST tests passed")

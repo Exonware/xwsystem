@@ -70,7 +70,7 @@ class SecureConfigManager:
             # Validate the file path
             safe_path = self.path_validator.validate_path(f"{config_name}.json")
             # Load and validate data
-            with open(safe_path, 'r', encoding='utf-8') as f:
+            with open(safe_path, encoding='utf-8') as f:
                 config_data = json.load(f)
             # Check for circular references in loaded data
             if self.circular_detector.is_circular(config_data):
@@ -163,7 +163,7 @@ class SafeDataManager:
         # These would be real handler classes in practice
         class MockJsonHandler:
             def load(self, file_path): 
-                with open(file_path, 'r') as f:
+                with open(file_path) as f:
                     return json.load(f)
             def save(self, data, file_path):
                 with open(file_path, 'w') as f:
@@ -191,7 +191,7 @@ class SafeDataManager:
             elif operation == "load":
                 # Safe file read operation
                 def read_operation(validated_path):
-                    with open(validated_path, 'r') as f:
+                    with open(validated_path) as f:
                         return json.load(f)
                 data = self.factory.safe_file_operation(
                     file_path,

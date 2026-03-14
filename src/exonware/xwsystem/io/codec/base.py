@@ -5,13 +5,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 30, 2025
 Base classes, registry, adapters, and helper functions for codec system.
 """
 
 from __future__ import annotations
-from typing import Optional, Any, IO
+from typing import Any, IO
 # Root cause: Migrating to Python 3.12 built-in generic syntax for consistency
 # Priority #3: Maintainability - Modern type annotations improve code clarity
 from pathlib import Path
@@ -63,7 +63,7 @@ class MediaKey:
         return self.type
     @classmethod
 
-    def from_extension(cls, ext: str) -> Optional[MediaKey]:
+    def from_extension(cls, ext: str) -> MediaKey | None:
         """
         Create MediaKey from file extension.
         Args:
@@ -155,7 +155,7 @@ class CodecRegistry:
             for alias in instance.aliases:
                 self._by_id[alias.lower()] = codec_class
 
-    def get(self, key: MediaKey) -> Optional[ICodec]:
+    def get(self, key: MediaKey) -> ICodec | None:
         """
         Get codec by media type key.
         Args:
@@ -175,7 +175,7 @@ class CodecRegistry:
             self._instances[codec_id] = codec_class()
         return self._instances[codec_id]
 
-    def get_by_extension(self, ext: str) -> Optional[ICodec]:
+    def get_by_extension(self, ext: str) -> ICodec | None:
         """
         Get codec by file extension.
         Args:
@@ -201,7 +201,7 @@ class CodecRegistry:
             self._instances[codec_id] = codec_class()
         return self._instances[codec_id]
 
-    def get_by_id(self, codec_id: str) -> Optional[ICodec]:
+    def get_by_id(self, codec_id: str) -> ICodec | None:
         """
         Get codec by ID or alias.
         Args:
@@ -235,7 +235,7 @@ class CodecRegistry:
             for cls in set(self._by_id.values())
         ]
 # Global registry singleton
-_global_registry: Optional[CodecRegistry] = None
+_global_registry: CodecRegistry | None = None
 
 
 def get_global_registry() -> CodecRegistry:
@@ -284,7 +284,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
         ...         return CodecCapability.BIDIRECTIONAL | CodecCapability.TEXT
     """
 
-    def __init__(self, max_depth: Optional[int] = None, max_size_mb: Optional[float] = None):
+    def __init__(self, max_depth: int | None = None, max_size_mb: float | None = None):
         """
         Initialize codec base.
         Args:
@@ -304,7 +304,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
     # SAFETY VALIDATION METHODS (Protect against infinite recursion)
     # ========================================================================
 
-    def _get_data_depth(self, data: Any, cache: Optional[dict[int, int]] = None, visited: Optional[set] = None, current_depth: int = 0) -> int:
+    def _get_data_depth(self, data: Any, cache: dict[int, int] | None = None, visited: set | None = None, current_depth: int = 0) -> int:
         """
         Calculate maximum nesting depth of data structure using caching.
         Root cause: Deeply nested structures can cause infinite recursion in parsers.
@@ -383,7 +383,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
             # Remove from visited when done processing
             visited.discard(obj_id)
 
-    def _estimate_data_size_mb(self, data: Any, cache: Optional[dict[int, float]] = None) -> float:
+    def _estimate_data_size_mb(self, data: Any, cache: dict[int, float] | None = None) -> float:
         """
         Estimate data size in megabytes using caching.
         Root cause: Very large data structures can cause memory issues and hangs.
@@ -432,7 +432,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
         self, 
         data: Any, 
         operation: str = "encode",
-        file_path: Optional[str | Path] = None,
+        file_path: str | Path | None = None,
         skip_size_check: bool = False
     ) -> None:
         """
@@ -496,12 +496,12 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
     # ========================================================================
     @abstractmethod
 
-    def encode(self, value: T, *, options: Optional[EncodeOptions] = None) -> R:
+    def encode(self, value: T, *, options: EncodeOptions | None = None) -> R:
         """Encode value to representation. Must implement."""
         pass
     @abstractmethod
 
-    def decode(self, repr: R, *, options: Optional[DecodeOptions] = None) -> T:
+    def decode(self, repr: R, *, options: DecodeOptions | None = None) -> T:
         """Decode representation to value. Must implement."""
         pass
     # ========================================================================
@@ -616,7 +616,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
         """Alias for load() - explicit direction."""
         return self.load(path, **opts)
 
-    def save_as(self, value: T, path: Path | str, format: Optional[str] = None, **opts) -> None:
+    def save_as(self, value: T, path: Path | str, format: str | None = None, **opts) -> None:
         """
         Save with optional format hint.
         Args:
@@ -629,7 +629,7 @@ class ACodec[T, R](ICodec[T, R], ICodecMetadata, ABC):
             opts['format'] = format
         return self.save(value, path, **opts)
 
-    def load_as(self, path: Path | str, format: Optional[str] = None, **opts) -> T:
+    def load_as(self, path: Path | str, format: str | None = None, **opts) -> T:
         """
         Load with optional format hint.
         Args:
@@ -716,12 +716,12 @@ class FormatterToSerializer[T]:
         self._encoding = encoding
         self._errors = errors
 
-    def encode(self, value: T, *, options: Optional[EncodeOptions] = None) -> bytes:
+    def encode(self, value: T, *, options: EncodeOptions | None = None) -> bytes:
         """Encode to bytes via string."""
         text = self._formatter.encode(value, options=options)
         return text.encode(self._encoding, errors=self._errors)
 
-    def decode(self, repr: bytes, *, options: Optional[DecodeOptions] = None) -> T:
+    def decode(self, repr: bytes, *, options: DecodeOptions | None = None) -> T:
         """Decode from bytes via string."""
         text = repr.decode(self._encoding, errors=self._errors)
         return self._formatter.decode(text, options=options)
@@ -757,12 +757,12 @@ class SerializerToFormatter[T]:
         self._encoding = encoding
         self._errors = errors
 
-    def encode(self, value: T, *, options: Optional[EncodeOptions] = None) -> str:
+    def encode(self, value: T, *, options: EncodeOptions | None = None) -> str:
         """Encode to string via bytes."""
         data = self._serializer.encode(value, options=options)
         return data.decode(self._encoding, errors=self._errors)
 
-    def decode(self, repr: str, *, options: Optional[DecodeOptions] = None) -> T:
+    def decode(self, repr: str, *, options: DecodeOptions | None = None) -> T:
         """Decode from string via bytes."""
         data = repr.encode(self._encoding, errors=self._errors)
         return self._serializer.decode(data, options=options)

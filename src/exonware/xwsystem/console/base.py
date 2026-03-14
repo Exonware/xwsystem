@@ -5,13 +5,13 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 2025-01-27
 Console module base classes - abstract base classes for console functionality.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Any
+from typing import Any
 from .contracts import IEventLogger, IConsoleWriter
 from .defs import LogLevel, ConsoleEventType, ConsoleEvent
 
@@ -26,10 +26,10 @@ class AEventLogger(ABC, IEventLogger):
     def log(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None,
-        color: Optional[str] = None,
-        label: Optional[str] = None
+        source: str | None = None,
+        data: Any | None = None,
+        color: str | None = None,
+        label: str | None = None
     ) -> ConsoleEvent:
         """Log a general message."""
         pass
@@ -38,8 +38,8 @@ class AEventLogger(ABC, IEventLogger):
     def info(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log an info message."""
         pass
@@ -48,8 +48,8 @@ class AEventLogger(ABC, IEventLogger):
     def warn(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a warning message."""
         pass
@@ -58,9 +58,9 @@ class AEventLogger(ABC, IEventLogger):
     def error(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None,
-        stack: Optional[str] = None
+        source: str | None = None,
+        data: Any | None = None,
+        stack: str | None = None
     ) -> ConsoleEvent:
         """Log an error message."""
         pass
@@ -69,8 +69,8 @@ class AEventLogger(ABC, IEventLogger):
     def debug(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a debug message."""
         pass
@@ -78,10 +78,10 @@ class AEventLogger(ABC, IEventLogger):
 
     def get_events(
         self,
-        event_type: Optional[ConsoleEventType] = None,
-        level: Optional[LogLevel] = None,
-        source: Optional[str] = None,
-        limit: Optional[int] = None
+        event_type: ConsoleEventType | None = None,
+        level: LogLevel | None = None,
+        source: str | None = None,
+        limit: int | None = None
     ) -> list[dict]:
         """Get logged events as dictionaries."""
         pass

@@ -11,7 +11,7 @@ Email: connect@exonware.com
 
 import logging
 import os
-from typing import Dict, Any, Optional
+from typing import Any
 from pathlib import Path
 from exonware.xwsystem import (
     PathValidator,
@@ -76,7 +76,7 @@ class SecurityHardenedApp:
             raise ValueError(f"File size exceeds limit: {file_size}")
         return True
 
-    def store_secure_data(self, key: str, data: Dict[str, Any], encrypt: bool = True):
+    def store_secure_data(self, key: str, data: dict[str, Any], encrypt: bool = True):
         """Store data securely."""
         try:
             # Validate data structure
@@ -94,7 +94,7 @@ class SecurityHardenedApp:
             logger.error(f"Error storing data: {e}")
             raise
 
-    def retrieve_secure_data(self, key: str) -> Dict[str, Any]:
+    def retrieve_secure_data(self, key: str) -> dict[str, Any]:
         """Retrieve securely stored data."""
         try:
             stored = self.secure_storage.retrieve(key)

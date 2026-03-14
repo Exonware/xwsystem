@@ -10,14 +10,13 @@ Provides generic file security operations that can be used by any library:
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 26-Jan-2025
 """
 
 import os
 import stat
 from pathlib import Path
-from typing import Optional, List
 from .path_validator import PathValidator, PathSecurityError
 from .resource_limits import get_resource_limits, GenericLimitError
 
@@ -25,7 +24,7 @@ from .resource_limits import get_resource_limits, GenericLimitError
 class FileSecurityError(Exception):
     """Base exception for file security errors."""
 
-    def __init__(self, message: str, path: Optional[str] = None, context: Optional[dict] = None):
+    def __init__(self, message: str, path: str | None = None, context: dict | None = None):
         super().__init__(message)
         self.path = path
         self.context = context or {}
@@ -34,7 +33,7 @@ class FileSecurityError(Exception):
 class FileSizeLimitError(FileSecurityError):
     """Exception raised when file size exceeds limit."""
 
-    def __init__(self, message: str, size: int, limit: int, path: Optional[str] = None):
+    def __init__(self, message: str, size: int, limit: int, path: str | None = None):
         super().__init__(message, path=path, context={'size': size, 'limit': limit})
         self.size = size
         self.limit = limit
@@ -55,7 +54,7 @@ class FileSecurity:
     def __init__(
         self,
         max_file_size: int = 100 * 1024 * 1024,  # 100MB default
-        allowed_directories: Optional[List[str]] = None,
+        allowed_directories: list[str] | None = None,
         allow_absolute_paths: bool = False
     ):
         """
@@ -274,7 +273,7 @@ class FileSecurity:
         except (PathSecurityError, FileIOError):
             return False
 # Global file security instance
-_file_security: Optional[FileSecurity] = None
+_file_security: FileSecurity | None = None
 
 
 def get_file_security() -> FileSecurity:

@@ -7,10 +7,9 @@ Provides common path operations and project root detection.
 
 import os
 from pathlib import Path
-from typing import Optional
 
 
-def get_project_root(from_file: Optional[str] = None, levels_up: int = 7) -> Path:
+def get_project_root(from_file: str | None = None, levels_up: int = 7) -> Path:
     """
     Get the project root directory.
     Args:
@@ -50,7 +49,7 @@ def get_project_root(from_file: Optional[str] = None, levels_up: int = 7) -> Pat
     return current_path
 
 
-def get_src_path(from_file: Optional[str] = None, levels_up: int = 7) -> Path:
+def get_src_path(from_file: str | None = None, levels_up: int = 7) -> Path:
     """
     Get the src directory path within the project.
     Args:
@@ -69,7 +68,7 @@ def get_src_path(from_file: Optional[str] = None, levels_up: int = 7) -> Path:
 
 
 def setup_python_path(
-    from_file: Optional[str] = None, levels_up: int = 7
+    from_file: str | None = None, levels_up: int = 7
 ) -> tuple[Path, Path]:
     """
     Setup Python path by adding src directory to sys.path.
@@ -93,17 +92,17 @@ class PathUtils:
     """Utility class for path operations."""
     @staticmethod
 
-    def get_project_root(from_file: Optional[str] = None, levels_up: int = 7) -> Path:
+    def get_project_root(from_file: str | None = None, levels_up: int = 7) -> Path:
         """Get the project root directory."""
         return get_project_root(from_file, levels_up)
     @staticmethod
 
-    def get_src_path(from_file: Optional[str] = None, levels_up: int = 7) -> Path:
+    def get_src_path(from_file: str | None = None, levels_up: int = 7) -> Path:
         """Get the src directory path."""
         return get_src_path(from_file, levels_up)
     @staticmethod
 
-    def setup_paths(from_file: Optional[str] = None, levels_up: int = 7) -> tuple[Path, Path]:
+    def setup_paths(from_file: str | None = None, levels_up: int = 7) -> tuple[Path, Path]:
         """Setup project and src paths."""
         return setup_paths(from_file, levels_up)
     @staticmethod

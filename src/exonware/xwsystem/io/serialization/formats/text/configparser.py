@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 2, 2025
 ConfigParser serialization - INI file format.
 Following I→A pattern:
@@ -14,7 +14,7 @@ Following I→A pattern:
 
 import configparser
 import io
-from typing import Any, Optional
+from typing import Any
 from pathlib import Path
 from ...base import ASerialization
 from ....contracts import EncodeOptions, DecodeOptions
@@ -94,7 +94,7 @@ class ConfigParserSerializer(ASerialization):
     # CORE ENCODE/DECODE (Using configparser module)
     # ========================================================================
 
-    def encode(self, value: Any, *, options: Optional[EncodeOptions] = None) -> bytes | str:
+    def encode(self, value: Any, *, options: EncodeOptions | None = None) -> bytes | str:
         """
         Encode data to INI string.
         Uses configparser.ConfigParser.
@@ -131,7 +131,7 @@ class ConfigParserSerializer(ASerialization):
                 original_error=e
             )
 
-    def decode(self, repr: bytes | str, *, options: Optional[DecodeOptions] = None) -> Any:
+    def decode(self, repr: bytes | str, *, options: DecodeOptions | None = None) -> Any:
         """
         Decode INI string to data.
         Uses configparser.ConfigParser.

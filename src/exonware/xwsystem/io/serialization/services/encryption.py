@@ -7,7 +7,7 @@ Email: connect@exonware.com
 """
 
 from __future__ import annotations
-from typing import Any, Optional
+from typing import Any
 from exonware.xwsystem.security import get_at_rest_encryption, is_envelope
 from exonware.xwsystem.security.errors import CryptographicError
 
@@ -22,8 +22,8 @@ class EncryptionService:
         self,
         data: bytes,
         *,
-        key: Optional[bytes] = None,
-        password: Optional[str] = None,
+        key: bytes | None = None,
+        password: str | None = None,
         algorithm: str = "aes256-gcm",
         **kwargs: Any,
     ) -> bytes:
@@ -38,9 +38,9 @@ class EncryptionService:
         self,
         payload: bytes,
         *,
-        key: Optional[bytes] = None,
-        password: Optional[str] = None,
-        algorithm: Optional[str] = None,
+        key: bytes | None = None,
+        password: str | None = None,
+        algorithm: str | None = None,
         **kwargs: Any,
     ) -> bytes:
         """

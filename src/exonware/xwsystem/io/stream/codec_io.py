@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 30-Oct-2025
 Codec-integrated I/O - THE KILLER FEATURE!
 Seamless integration of codec + data source for automatic encoding/decoding.
@@ -16,7 +16,9 @@ Priority 5 (Extensibility): Works with ANY codec + ANY data source
 """
 
 from pathlib import Path
-from typing import Optional, Iterator, Any
+from typing import Any
+
+from collections.abc import Iterator
 from ..contracts import ICodecIO, IPagedCodecIO, IDataSource, IPagedDataSource
 
 
@@ -80,7 +82,7 @@ class CodecIO[T, R](ICodecIO[T, R]):
             # Write
             self._source.write(encoded, **source_opts)
         except Exception as e:
-            raise IOError(f"Failed to save via CodecIO: {e}")
+            raise OSError(f"Failed to save via CodecIO: {e}")
 
     def load(self, **opts) -> T:
         """
@@ -102,7 +104,7 @@ class CodecIO[T, R](ICodecIO[T, R]):
             # Decode
             return self._codec.decode(data, options=codec_opts if codec_opts else None)
         except Exception as e:
-            raise IOError(f"Failed to load via CodecIO: {e}")
+            raise OSError(f"Failed to load via CodecIO: {e}")
 
     def exists(self) -> bool:
         """Check if source exists."""
@@ -190,7 +192,7 @@ class CodecIO[T, R](ICodecIO[T, R]):
             )
     @staticmethod
 
-    def from_file(path: str | Path, mode: str = 'rb', encoding: Optional[str] = None):
+    def from_file(path: str | Path, mode: str = 'rb', encoding: str | None = None):
         """
         Create CodecIO with auto-detected codec from file extension.
         Args:
@@ -276,8 +278,7 @@ class PagedCodecIO[T, R](CodecIO[T, R], IPagedCodecIO[T, R]):
                 decoded = self._codec.decode(page_content, options=opts if opts else None)
                 # If decoded is iterable (e.g., list of records), yield each item
                 if hasattr(decoded, '__iter__') and not isinstance(decoded, (str, bytes)):
-                    for item in decoded:
-                        yield item
+                    yield from decoded
                 else:
                     yield decoded
             except Exception:
@@ -340,7 +341,7 @@ class PagedCodecIO[T, R](CodecIO[T, R], IPagedCodecIO[T, R]):
             self._source.write(combined, **opts)
     @staticmethod
 
-    def from_file(path: str | Path, mode: str = 'rb', encoding: Optional[str] = None):
+    def from_file(path: str | Path, mode: str = 'rb', encoding: str | None = None):
         """
         Create PagedCodecIO with auto-detected codec from file extension.
         Args:

@@ -13,7 +13,7 @@ import time
 import statistics
 import json
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any
 import sys
 # Import Python implementations
 try:
@@ -49,9 +49,9 @@ class BenchmarkRunner:
     def __init__(self, iterations: int = 1000, warmup: int = 100):
         self.iterations = iterations
         self.warmup = warmup
-        self.results: Dict[str, Any] = {}
+        self.results: dict[str, Any] = {}
 
-    def generate_test_data(self, count: int) -> List[tuple]:
+    def generate_test_data(self, count: int) -> list[tuple]:
         """Generate test key-value pairs."""
         return [(f"key_{i}", {"value": i, "data": f"data_{i}" * 10}) for i in range(count)]
 
@@ -82,7 +82,7 @@ class BenchmarkRunner:
             "total": sum(times),
         }
 
-    def benchmark_get(self, cache, test_data: List[tuple]):
+    def benchmark_get(self, cache, test_data: list[tuple]):
         """Benchmark get operations."""
         # Populate cache
         for key, value in test_data:
@@ -107,7 +107,7 @@ class BenchmarkRunner:
             "stdev": statistics.stdev(results) if len(results) > 1 else 0,
         }
 
-    def benchmark_put(self, cache, test_data: List[tuple]):
+    def benchmark_put(self, cache, test_data: list[tuple]):
         """Benchmark put operations."""
         results = []
         for key, value in test_data:

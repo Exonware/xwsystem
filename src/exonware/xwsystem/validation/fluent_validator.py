@@ -4,13 +4,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: October 26, 2025
 Fluent validator with chainable API for data validation.
 """
 
 from __future__ import annotations
-from typing import Any, Callable, Optional
+from typing import Any
+from collections.abc import Callable
 from .errors import ValidationError
 from ..config.logging_setup import get_logger
 logger = get_logger("xwsystem.validation.fluent_validator")
@@ -38,7 +39,7 @@ class FluentValidator:
         self.errors: list[str] = []
         self.rules: list[dict[str, Any]] = []
 
-    def require(self, field_name: str, message: Optional[str] = None) -> FluentValidator:
+    def require(self, field_name: str, message: str | None = None) -> FluentValidator:
         """
         Require a field to be present and not None.
         Args:
@@ -60,7 +61,7 @@ class FluentValidator:
             self.errors.append(error_msg)
         return self
 
-    def type_check(self, expected_type: type, message: Optional[str] = None) -> FluentValidator:
+    def type_check(self, expected_type: type, message: str | None = None) -> FluentValidator:
         """
         Check if data is of expected type.
         Args:
@@ -80,9 +81,9 @@ class FluentValidator:
 
     def range_check(
         self,
-        min_value: Optional[int | float] = None,
-        max_value: Optional[int | float] = None,
-        message: Optional[str] = None
+        min_value: int | float | None = None,
+        max_value: int | float | None = None,
+        message: str | None = None
     ) -> FluentValidator:
         """
         Check if numeric data is within range.
@@ -111,9 +112,9 @@ class FluentValidator:
 
     def length_check(
         self,
-        min_length: Optional[int] = None,
-        max_length: Optional[int] = None,
-        message: Optional[str] = None
+        min_length: int | None = None,
+        max_length: int | None = None,
+        message: str | None = None
     ) -> FluentValidator:
         """
         Check if data length is within range.
@@ -141,7 +142,7 @@ class FluentValidator:
             self.errors.append(error_msg)
         return self
 
-    def pattern_check(self, pattern: str, message: Optional[str] = None) -> FluentValidator:
+    def pattern_check(self, pattern: str, message: str | None = None) -> FluentValidator:
         """
         Check if string data matches pattern (regex).
         Args:
@@ -164,7 +165,7 @@ class FluentValidator:
             self.errors.append(error_msg)
         return self
 
-    def add_rule(self, validator_func: Callable[[Any], bool], message: Optional[str] = None) -> FluentValidator:
+    def add_rule(self, validator_func: Callable[[Any], bool], message: str | None = None) -> FluentValidator:
         """
         Add custom validation rule.
         Args:
@@ -314,12 +315,12 @@ def is_type(expected_type: type) -> Callable[[FluentValidator], FluentValidator]
     return lambda v: v.type_check(expected_type)
 
 
-def is_in_range(min_val: Optional[int | float] = None, max_val: Optional[int | float] = None) -> Callable[[FluentValidator], FluentValidator]:
+def is_in_range(min_val: int | float | None = None, max_val: int | float | None = None) -> Callable[[FluentValidator], FluentValidator]:
     """Create a range check rule."""
     return lambda v: v.range_check(min_val, max_val)
 
 
-def has_length(min_len: Optional[int] = None, max_len: Optional[int] = None) -> Callable[[FluentValidator], FluentValidator]:
+def has_length(min_len: int | None = None, max_len: int | None = None) -> Callable[[FluentValidator], FluentValidator]:
     """Create a length check rule."""
     return lambda v: v.length_check(min_len, max_len)
 

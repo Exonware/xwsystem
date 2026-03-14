@@ -5,14 +5,14 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: 2025-01-27
 Console Event Logger implementation for structured logging.
 """
 
 import time
 import threading
-from typing import Optional, Any
+from typing import Any
 from .base import AEventLogger
 from .defs import LogLevel, ConsoleEventType, ConsoleEvent
 
@@ -78,7 +78,7 @@ class ConsoleEventLogger(AEventLogger):
         self,
         max_entries: int = 1000,
         use_milliseconds: bool = True,
-        default_source: Optional[str] = None
+        default_source: str | None = None
     ):
         """
         Initialize console event logger.
@@ -110,12 +110,12 @@ class ConsoleEventLogger(AEventLogger):
         self,
         event_type: ConsoleEventType,
         msg: str,
-        source: Optional[str] = None,
-        level: Optional[LogLevel] = None,
-        color: Optional[str] = None,
-        label: Optional[str] = None,
-        timestamp: Optional[float | int | str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        level: LogLevel | None = None,
+        color: str | None = None,
+        label: str | None = None,
+        timestamp: float | int | str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """
         Add an event to the log (internal method).
@@ -159,10 +159,10 @@ class ConsoleEventLogger(AEventLogger):
     def log(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None,
-        color: Optional[str] = None,
-        label: Optional[str] = None
+        source: str | None = None,
+        data: Any | None = None,
+        color: str | None = None,
+        label: str | None = None
     ) -> ConsoleEvent:
         """Log a general message."""
         return self._add_event('log', msg, source=source, data=data, color=color, label=label)
@@ -170,8 +170,8 @@ class ConsoleEventLogger(AEventLogger):
     def info(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log an info message."""
         return self._add_event('info', msg, source=source, data=data)
@@ -179,8 +179,8 @@ class ConsoleEventLogger(AEventLogger):
     def warn(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a warning message."""
         return self._add_event('warn', msg, source=source, data=data)
@@ -188,9 +188,9 @@ class ConsoleEventLogger(AEventLogger):
     def error(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None,
-        stack: Optional[str] = None
+        source: str | None = None,
+        data: Any | None = None,
+        stack: str | None = None
     ) -> ConsoleEvent:
         """Log an error message."""
         error_data = data
@@ -203,8 +203,8 @@ class ConsoleEventLogger(AEventLogger):
     def debug(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a debug message."""
         return self._add_event('debug', msg, source=source, data=data)
@@ -212,8 +212,8 @@ class ConsoleEventLogger(AEventLogger):
     def trace(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a trace message."""
         return self._add_event('trace', msg, source=source, data=data)
@@ -221,8 +221,8 @@ class ConsoleEventLogger(AEventLogger):
     def success(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a success message."""
         return self._add_event('success', msg, source=source, data=data)
@@ -230,8 +230,8 @@ class ConsoleEventLogger(AEventLogger):
     def system(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a system message."""
         return self._add_event('system', msg, source=source, data=data)
@@ -239,8 +239,8 @@ class ConsoleEventLogger(AEventLogger):
     def group(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Start a log group."""
         return self._add_event('group', msg, source=source, data=data)
@@ -248,8 +248,8 @@ class ConsoleEventLogger(AEventLogger):
     def group_collapsed(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Start a collapsed log group."""
         return self._add_event('groupCollapsed', msg, source=source, data=data)
@@ -257,7 +257,7 @@ class ConsoleEventLogger(AEventLogger):
     def group_end(
         self,
         msg: str = "",
-        source: Optional[str] = None
+        source: str | None = None
     ) -> ConsoleEvent:
         """End a log group."""
         return self._add_event('groupEnd', msg, source=source)
@@ -265,8 +265,8 @@ class ConsoleEventLogger(AEventLogger):
     def table(
         self,
         msg: str,
-        source: Optional[str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """Log a table message."""
         return self._add_event('table', msg, source=source, data=data)
@@ -275,12 +275,12 @@ class ConsoleEventLogger(AEventLogger):
         self,
         event_type: ConsoleEventType,
         msg: str,
-        source: Optional[str] = None,
-        level: Optional[LogLevel] = None,
-        color: Optional[str] = None,
-        label: Optional[str] = None,
-        timestamp: Optional[float | int | str] = None,
-        data: Optional[Any] = None
+        source: str | None = None,
+        level: LogLevel | None = None,
+        color: str | None = None,
+        label: str | None = None,
+        timestamp: float | int | str | None = None,
+        data: Any | None = None
     ) -> ConsoleEvent:
         """
         Add a custom event with full control over all fields.
@@ -308,10 +308,10 @@ class ConsoleEventLogger(AEventLogger):
 
     def get_events(
         self,
-        event_type: Optional[ConsoleEventType] = None,
-        level: Optional[LogLevel] = None,
-        source: Optional[str] = None,
-        limit: Optional[int] = None
+        event_type: ConsoleEventType | None = None,
+        level: LogLevel | None = None,
+        source: str | None = None,
+        limit: int | None = None
     ) -> list[dict]:
         """
         Get logged events as dictionaries.

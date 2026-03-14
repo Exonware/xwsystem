@@ -100,7 +100,7 @@ class TestAtomicFileWriter:
             # Use context manager - exception triggers rollback in __exit__
             try:
                 with AtomicFileWriter(target_path=str(target_file), mode="wb") as f:
-                    f.write("New content".encode('utf-8'))
+                    f.write(b"New content")
                     raise RuntimeError("Simulated failure")
             except RuntimeError:
                 pass

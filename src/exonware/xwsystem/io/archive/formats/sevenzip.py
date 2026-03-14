@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.6
+Version: 0.9.0.7
 Generation Date: November 1, 2025
 7z archive format implementation - High compression ratio.
 **Best overall ratio + AES-256 encryption + solid archiving**
@@ -16,7 +16,6 @@ Priority 5 (Extensibility): Lazy installation of py7zr
 """
 
 from pathlib import Path
-from typing import Optional
 from ...contracts import IArchiveFormat
 from ...errors import ArchiveError
 # Optional dependency: py7zr
@@ -90,7 +89,7 @@ class SevenZipArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to create 7z archive: {e}")
 
-    def extract(self, archive: Path, output_dir: Path, members: Optional[list[str]] = None, **opts) -> list[Path]:
+    def extract(self, archive: Path, output_dir: Path, members: list[str] | None = None, **opts) -> list[Path]:
         """
         Extract 7z archive.
         Options:
@@ -117,7 +116,7 @@ class SevenZipArchiver(IArchiveFormat):
         except Exception as e:
             raise ArchiveError(f"Failed to list 7z contents: {e}")
 
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """Add file to 7z archive (append mode)."""
         arcname = arcname or file.name
         try:

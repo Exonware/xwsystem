@@ -23,7 +23,7 @@ import sys
 import subprocess
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator
+from collections.abc import Iterator
 from unittest.mock import patch, MagicMock
 import pytest
 # Skip all tests in this file - xwlazy has been removed
