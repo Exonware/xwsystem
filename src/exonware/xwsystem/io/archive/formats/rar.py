@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.8
+Version: 0.9.0.9
 Generation Date: November 1, 2025
 RAR5 archive format implementation - RANK #3 PROPRIETARY COMPRESSION.
 **Strong compression + recovery record + multi-volume**

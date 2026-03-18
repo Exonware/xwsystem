@@ -82,7 +82,7 @@ Subtree = "https://github.com/exonware/xwsystem.git"
 [tool.black]
 line-length = 88
 target-version = [
-    "py38",
+    "py312",
 ]
 
 [tool.isort]
@@ -90,7 +90,7 @@ profile = "black"
 line_length = 88
 
 [tool.mypy]
-python_version = "0.9.0.7"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.8
+Version: 0.9.0.9
 Generation Date: September 05, 2025
 Distributed Tracing Integration for Enterprise Observability
 Provides integration with distributed tracing systems:
