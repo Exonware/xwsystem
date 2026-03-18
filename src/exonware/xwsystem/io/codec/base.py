@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.11
+Version: 0.9.0.12
 Generation Date: October 30, 2025
 Base classes, registry, adapters, and helper functions for codec system.
 """

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.11
+Version: 0.9.0.12
 Generation Date: September 04, 2025
 CLI module contracts - interfaces and enums for command-line interface functionality.
 """

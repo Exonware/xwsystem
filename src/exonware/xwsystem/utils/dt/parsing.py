@@ -6,7 +6,7 @@ Production-grade datetime parsing for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.11
+Version: 0.9.0.12
 Generated: 2025-01-27
 """
 
