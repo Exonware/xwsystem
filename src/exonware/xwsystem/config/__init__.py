@@ -5,7 +5,7 @@ This module provides configuration management for various xwsystem features.
 Author: eXonware Backend Team
 Company: eXonware.com
 Email: connect@exonware.com
-Version: 0.9.0.7
+Version: 0.9.0.8
 Generated: 2025-01-27
 """
 # Import all default constants

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.7
+Version: 0.9.0.8
 Generation Date: November 04, 2025
 Universal Codec Registry - High-performance registry for all codec types.
 """
@@ -575,6 +575,20 @@ class UniversalCodecRegistry:
                 return list(self._by_type.get(codec_type.lower(), set()))
             else:
                 return list(self._by_id.keys())
+
+    # --------------------------------------------------------------------
+    # Backwards-compatible convenience API
+    # --------------------------------------------------------------------
+
+    def get_codec(self, codec_id: str) -> ICodec | None:
+        """
+        Backwards-compatible helper to retrieve a codec instance by ID.
+
+        Older xwformats tests and integrations expect a `get_codec` method
+        on the registry. This delegates to the optimized `get_by_id` method
+        without changing existing semantics.
+        """
+        return self.get_by_id(codec_id)
 
     def list_extensions(self) -> list[str]:
         """List all registered file extensions."""

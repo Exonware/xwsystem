@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.7
+Version: 0.9.0.8
 Generation Date: September 04, 2025
 Advanced HTTP client with HTTP/2, streaming, pluggable transports, and modern features.
 """
@@ -311,7 +311,12 @@ class AdvancedHttpClient:
         # Handle custom transport
         if self.transport:
             request = httpx.Request(**request_kwargs)
-            return await self.transport.handle_async_request(request)
+            # Use custom transport but keep unified error semantics
+            response = await self.transport.handle_async_request(request)
+            # Ensure HTTP error statuses surface as HttpError even when using mocks
+            if hasattr(response, "raise_for_status"):
+                response.raise_for_status()
+            return response
         @retry_with_backoff(
             max_retries=self.config.retry.max_retries,
             base_delay=self.config.retry.base_delay,
