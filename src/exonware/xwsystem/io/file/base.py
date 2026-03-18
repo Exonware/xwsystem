@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.10
+Version: 0.9.0.11
 Generation Date: 30-Oct-2025
 Base classes for file operations.
 Like codec/base.py: contains abstract bases + utilities.

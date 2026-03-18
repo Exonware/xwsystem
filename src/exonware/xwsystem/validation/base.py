@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.10
+Version: 0.9.0.11
 Generation Date: September 04, 2025
 Validation module base classes - abstract classes for validation functionality.
 """

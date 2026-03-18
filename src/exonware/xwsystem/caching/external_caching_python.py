@@ -4,7 +4,7 @@ External Python caching library implementations.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.10
+Version: 0.9.0.11
 Generation Date: 01-Nov-2025
 Wrappers for external caching libraries:
 - cachebox: Rust-based Python cache (fastest)

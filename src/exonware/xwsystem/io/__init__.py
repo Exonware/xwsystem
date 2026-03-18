@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.10
+Version: 0.9.0.11
 Generation Date: 30-Oct-2025
 I/O utilities for safe file operations, path management, and codec integration.
 FINAL CLEAN STRUCTURE:
