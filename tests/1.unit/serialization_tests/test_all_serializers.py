@@ -5,7 +5,7 @@ Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.0.1
 Generation Date: January 31, 2025
-Comprehensive tests for all 12 xSystem serialization formats.
+Comprehensive tests for all 12 xwsystem serialization formats.
 Tests the production library principle: each serializer should use
 established, well-tested libraries rather than custom implementations.
 """

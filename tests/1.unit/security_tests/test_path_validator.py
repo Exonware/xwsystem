@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/security_tests/test_path_validator.py
 """
-Test suite for xSystem PathValidator security functionality.
+Test suite for xwsystem PathValidator security functionality.
 Tests path validation, security checks, and injection detection.
 Following Python/pytest best practices.
 """

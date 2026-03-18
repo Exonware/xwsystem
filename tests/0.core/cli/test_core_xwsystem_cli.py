@@ -1,8 +1,8 @@
-#exonware/xwsystem/tests/0.core/cli/test_core_xsystem_cli.py
+#exonware/xwsystem/tests/0.core/cli/test_core_xwsystem_cli.py
 #exonware/xwsystem/tests/core/cli/test_core_xwsystem_cli.py
 """
-XSystem CLI Core Tests
-Comprehensive tests for XSystem CLI functionality including console operations,
+xwsystem CLI Core Tests
+Comprehensive tests for xwsystem CLI functionality including console operations,
 progress tracking, prompts, table formatting, and argument parsing.
 """
 
@@ -241,9 +241,9 @@ def test_cli_error_handling():
 def main():
     """Run all CLI core tests."""
     print("=" * 50)
-    print("🧪 XSystem CLI Core Tests")
+    print("🧪 xwsystem CLI Core Tests")
     print("=" * 50)
-    print("Testing XSystem CLI functionality including console operations,")
+    print("Testing xwsystem CLI functionality including console operations,")
     print("progress tracking, prompts, table formatting, and argument parsing")
     print("=" * 50)
     tests = [
@@ -266,14 +266,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM CLI TEST SUMMARY")
+    print("📊 xwsystem CLI TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem CLI tests passed!")
+        print("🎉 All xwsystem CLI tests passed!")
         return 0
     else:
-        print("💥 Some XSystem CLI tests failed!")
+        print("💥 Some xwsystem CLI tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

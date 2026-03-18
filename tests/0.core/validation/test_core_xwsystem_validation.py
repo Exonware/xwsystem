@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/validation/test_core_xsystem_validation.py
+#exonware/xwsystem/tests/0.core/validation/test_core_xwsystem_validation.py
 """
-XSystem Validation Core Tests
-Tests the actual XSystem validation features including data validation,
+xwsystem Validation Core Tests
+Tests the actual xwsystem validation features including data validation,
 declarative models, field validation, and advanced validation rules.
 """
 
@@ -436,10 +436,10 @@ def test_complex_validation():
 
 
 def main():
-    """Run all XSystem validation tests."""
-    print("[VALIDATION] XSystem Validation Core Tests")
+    """Run all xwsystem validation tests."""
+    print("[VALIDATION] xwsystem Validation Core Tests")
     print("=" * 50)
-    print("Testing XSystem validation features including data validation, declarative models, and custom rules")
+    print("Testing xwsystem validation features including data validation, declarative models, and custom rules")
     print("=" * 50)
     tests = [
         ("Data Validator", test_data_validator),
@@ -461,14 +461,14 @@ def main():
         except Exception as e:
             print(f"[FAIL] Test {test_name} crashed: {e}")
     print(f"\n{'='*50}")
-    print("[MONITOR] XSYSTEM VALIDATION TEST SUMMARY")
+    print("[MONITOR] xwsystem VALIDATION TEST SUMMARY")
     print(f"{'='*50}")
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("[SUCCESS] All XSystem validation tests passed!")
+        print("[SUCCESS] All xwsystem validation tests passed!")
         return 0
     else:
-        print("[ERROR] Some XSystem validation tests failed!")
+        print("[ERROR] Some xwsystem validation tests failed!")
         return 1
 if __name__ == "__main__":
     exit(main())

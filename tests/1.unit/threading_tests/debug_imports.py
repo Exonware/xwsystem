@@ -5,7 +5,7 @@ Debug script to test imports for xwsystem threading utilities.
 
 import sys
 from pathlib import Path
-print("DEBUG: xSystem Threading Utilities Import Test")
+print("DEBUG: xwsystem Threading Utilities Import Test")
 print("=" * 50)
 # Show current paths
 print(f"Current working directory: {Path.cwd()}")
@@ -17,9 +17,9 @@ print()
 project_root = Path(__file__).parent.parent.parent.parent.parent.parent
 xwsystem_path = project_root / "src" / "exonware" / "xwsystem"
 print(f"Project root: {project_root}")
-print(f"xSystem path: {xwsystem_path}")
-print(f"xSystem path exists: {xwsystem_path.exists()}")
-print(f"xSystem path resolved: {xwsystem_path.resolve()}")
+print(f"xwsystem path: {xwsystem_path}")
+print(f"xwsystem path exists: {xwsystem_path.exists()}")
+print(f"xwsystem path resolved: {xwsystem_path.resolve()}")
 print()
 # Check threading directory
 threading_path = xwsystem_path / "threading"

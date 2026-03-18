@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generation Date: 30-Oct-2025
 Paged file source with MODULAR paging system.
 Uses pluggable paging strategies via registry!

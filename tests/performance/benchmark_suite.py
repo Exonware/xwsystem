@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #exonware/xwsystem/tests/performance/benchmark_suite.py
 """
-xSystem Performance Benchmark Suite
+xwsystem Performance Benchmark Suite
 ===================================
-Comprehensive benchmarks for all xSystem components to ensure production-grade performance.
+Comprehensive benchmarks for all xwsystem components to ensure production-grade performance.
 Author: eXonware Backend Team
 Email: connect@exonware.com
 Company: eXonware.com
@@ -59,7 +59,7 @@ class BenchmarkResult:
 
 class PerformanceBenchmark:
     """
-    Comprehensive performance benchmark suite for xSystem.
+    Comprehensive performance benchmark suite for xwsystem.
     Features:
     - Multi-threaded and async benchmarks
     - Memory usage monitoring
@@ -405,7 +405,7 @@ def generate_report(all_results: list[BenchmarkResult]) -> str:
     """Generate comprehensive benchmark report."""
     report = []
     report.append("=" * 80)
-    report.append("🚀 xSystem Performance Benchmark Report")
+    report.append("🚀 xwsystem Performance Benchmark Report")
     report.append("=" * 80)
     report.append(f"Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     report.append(f"System: {sys.platform} | Python: {sys.version.split()[0]}")
@@ -461,7 +461,7 @@ def generate_report(all_results: list[BenchmarkResult]) -> str:
     return "\n".join(report)
 async def main():
     """Run comprehensive benchmark suite."""
-    print("🚀 Starting xSystem Performance Benchmark Suite")
+    print("🚀 Starting xwsystem Performance Benchmark Suite")
     print("=" * 60)
     all_results = []
     try:

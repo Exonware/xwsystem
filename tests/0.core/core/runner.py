@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/core/runner.py
 """
 Core Core Test Runner
-Runs comprehensive core core tests for XSystem core functionality.
+Runs comprehensive core core tests for xwsystem core functionality.
 """
 
 import sys

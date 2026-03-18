@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/security_tests/test_security_edge_cases.py
 """
-Security edge case tests for xSystem.
+Security edge case tests for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com

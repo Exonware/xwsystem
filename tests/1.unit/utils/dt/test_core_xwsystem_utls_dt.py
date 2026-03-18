@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/utils/dt/test_core_xwsystem_utls_dt.py
 """
-XSystem DateTime Unit Tests
+xwsystem DateTime Unit Tests
 Validates the public datetime utility APIs including formatting, parsing,
 humanization, timezone helpers, and the legacy base datetime facade.
 """

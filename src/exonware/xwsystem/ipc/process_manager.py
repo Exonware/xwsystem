@@ -2,7 +2,7 @@
 """
 Process Management Utilities
 ============================
-Production-grade process management for XSystem.
+Production-grade process management for xwsystem.
 Author: eXonware Backend Team
 Email: connect@exonware.com
 Company: eXonware.com

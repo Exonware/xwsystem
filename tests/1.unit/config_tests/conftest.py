@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/config_tests/conftest.py
 """
-Pytest configuration for xSystem config tests.
+Pytest configuration for xwsystem config tests.
 """
 
 import pytest
@@ -33,7 +33,7 @@ def clean_env():
     # Store original environment
     original_env = os.environ.copy()
     # Clean xwsystem-related env vars
-    xwsystem_vars = [k for k in os.environ.keys() if k.startswith('XSYSTEM_')]
+    xwsystem_vars = [k for k in os.environ.keys() if k.startswith('xwsystem_')]
     for var in xwsystem_vars:
         del os.environ[var]
     yield

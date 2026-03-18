@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/performance_tests/conftest.py
 """
-Pytest configuration for xSystem performance tests.
+Pytest configuration for xwsystem performance tests.
 """
 
 import pytest

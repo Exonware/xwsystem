@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #exonware/xwsystem/tests/1.unit/serialization_tests/test_new_serializers.py
 """
-Test script for new schema-based serialization formats in xSystem.
+Test script for new schema-based serialization formats in xwsystem.
 """
 
 import sys
@@ -240,7 +240,7 @@ def test_import_all():
 
 def main():
     """Run all tests."""
-    print("🚀 Testing xSystem Schema-Based Serialization Formats")
+    print("🚀 Testing xwsystem Schema-Based Serialization Formats")
     print("=" * 60)
     tests = [
         test_import_all,

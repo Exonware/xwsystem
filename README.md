@@ -13,6 +13,8 @@
 
 ## Install
 
+**Requires Python 3.12+.** (See [pyproject.toml](pyproject.toml) `requires-python`.)
+
 | Install | What you get | When to use |
 |---------|--------------|-------------|
 | `pip install exonware-xwsystem` | **Lite** — core only, zero optional deps | Minimal footprint, or you install what you need. |

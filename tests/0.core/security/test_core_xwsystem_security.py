@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/security/test_core_xsystem_security.py
+#exonware/xwsystem/tests/0.core/security/test_core_xwsystem_security.py
 """
-XSystem Security Core Tests
-Tests the actual XSystem security features including secure hashing,
+xwsystem Security Core Tests
+Tests the actual xwsystem security features including secure hashing,
 encryption, password hashing, and security validation.
 """
 
@@ -245,10 +245,10 @@ def test_security_headers():
 
 
 def main():
-    """Run all XSystem security tests."""
-    print("[SECURITY] XSystem Security Core Tests")
+    """Run all xwsystem security tests."""
+    print("[SECURITY] xwsystem Security Core Tests")
     print("=" * 50)
-    print("Testing XSystem security features including hashing, encryption, and validation")
+    print("Testing xwsystem security features including hashing, encryption, and validation")
     print("=" * 50)
     tests = [
         ("Secure Hashing", test_secure_hashing),
@@ -270,14 +270,14 @@ def main():
         except Exception as e:
             print(f"[FAIL] Test {test_name} crashed: {e}")
     print(f"\n{'='*50}")
-    print("[MONITOR] XSYSTEM SECURITY TEST SUMMARY")
+    print("[MONITOR] xwsystem SECURITY TEST SUMMARY")
     print(f"{'='*50}")
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("[SUCCESS] All XSystem security tests passed!")
+        print("[SUCCESS] All xwsystem security tests passed!")
         return 0
     else:
-        print("[ERROR] Some XSystem security tests failed!")
+        print("[ERROR] Some xwsystem security tests failed!")
         return 1
 if __name__ == "__main__":
     exit(main())

@@ -21,7 +21,7 @@ exonware/
 ### Prerequisites
 
 1. **Rust toolchain** - Install from https://rustup.rs/
-2. **Python 3.8+** - Make sure Python is in your PATH
+2. **Python 3.12+** - Make sure Python is in your PATH
 3. **maturin** - Python package builder for Rust extensions
 
 ### Quick Build

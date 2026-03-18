@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/threading_tests/conftest.py
 """
-Pytest configuration for xSystem threading tests.
+Pytest configuration for xwsystem threading tests.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com

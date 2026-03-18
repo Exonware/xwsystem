@@ -3,9 +3,9 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generation Date: September 05, 2025
-Logging configuration setup for XSystem.
+Logging configuration setup for xwsystem.
 Provides centralized logging setup functions and logger factory.
 This module handles the implementation details of logging configuration.
 """
@@ -30,13 +30,13 @@ def setup_logging(
     - Easy integration for all entry points
     """
     # Check if logging is disabled via environment variable - do this FIRST
-    if os.getenv("XSYSTEM_LOGGING_DISABLE", "false").lower() == "true":
+    if os.getenv("xwsystem_LOGGING_DISABLE", "false").lower() == "true":
         logging.disable(logging.CRITICAL)
         return
     # Also check if logging is already disabled
     if logging.getLogger().disabled:
         return
-    # Try to check XSystem config if available
+    # Try to check xwsystem config if available
     # Import is explicit - internal package import
     from .logging import logging_config
     if not logging_config.enabled:
@@ -74,7 +74,7 @@ def get_logger(name=None) -> logging.Logger:
         logging.Logger: Configured logger instance
     """
     # Check if logging is disabled
-    if os.getenv("XSYSTEM_LOGGING_DISABLE", "false").lower() == "true":
+    if os.getenv("xwsystem_LOGGING_DISABLE", "false").lower() == "true":
         # Return a disabled logger
         logger = logging.getLogger(name)
         logger.disabled = True
@@ -83,7 +83,7 @@ def get_logger(name=None) -> logging.Logger:
 
 
 class LoggingSetup:
-    """Logging setup manager for XSystem framework."""
+    """Logging setup manager for xwsystem framework."""
 
     def __init__(self):
         """Initialize logging setup."""

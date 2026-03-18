@@ -1,8 +1,8 @@
-#exonware/xwsystem/tests/0.core/performance/test_core_xsystem_performance.py
+#exonware/xwsystem/tests/0.core/performance/test_core_xwsystem_performance.py
 #exonware/xwsystem/tests/core/performance/test_core_xwsystem_performance.py
 """
-XSystem Performance Core Tests
-Comprehensive tests for XSystem performance management including performance
+xwsystem Performance Core Tests
+Comprehensive tests for xwsystem performance management including performance
 monitoring, optimization, and resource management.
 """
 
@@ -239,9 +239,9 @@ def test_performance_integration():
 def main():
     """Run all performance core tests."""
     print("=" * 50)
-    print("🧪 XSystem Performance Core Tests")
+    print("🧪 xwsystem Performance Core Tests")
     print("=" * 50)
-    print("Testing XSystem performance management including performance")
+    print("Testing xwsystem performance management including performance")
     print("monitoring, optimization, and resource management")
     print("=" * 50)
     tests = [
@@ -263,14 +263,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM PERFORMANCE TEST SUMMARY")
+    print("📊 xwsystem PERFORMANCE TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem performance tests passed!")
+        print("🎉 All xwsystem performance tests passed!")
         return 0
     else:
-        print("💥 Some XSystem performance tests failed!")
+        print("💥 Some xwsystem performance tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,4 +1,4 @@
-﻿# eXonware Development Guidelines
+# eXonware Development Guidelines
 
 **Company:** eXonware.com  
 **Author:** eXonware Backend Team  
@@ -357,7 +357,7 @@ The eXonware ecosystem follows a structured 5-phase development approach with st
 
 ### Git Configuration
 - **Main branch** - Always use 'main' as the default main branch in Git
-- **Consistent Python versions** - Use the same Python version everywhere (avoid mixing versions like 3.8 and 3.9)
+- **Consistent Python versions** - Use Python 3.12+ everywhere (xwsystem requires 3.12+)
 
 ### Development Phase Guidelines
 - **Version 0.x development**: Focus on completing all libraries and applications

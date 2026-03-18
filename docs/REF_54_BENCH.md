@@ -402,7 +402,7 @@ def test_nfr_007_concurrent_performance(benchmark):
 **All benchmarks should use consistent environment:**
 
 ```yaml
-Python: 3.9.7
+Python: 3.12+
 CPU: Intel i7-9700K @ 3.6GHz (or equivalent)
 RAM: 16GB DDR4
 OS: Windows 10 / Ubuntu 22.04 / macOS 13

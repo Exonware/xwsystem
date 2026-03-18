@@ -2,14 +2,14 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/performance_manager_generic.py
 #exonware/xwsystem/monitoring/performance_manager_generic.py
 """
-Generic Performance Management for XSystem (Moved from performance/ module)
+Generic Performance Management for xwsystem (Moved from performance/ module)
 This module provides a generic performance management framework that can be used
 by any library in the eXonware ecosystem. It handles performance mode management,
 health monitoring, and recommendations without being tied to specific implementations.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generation Date: November 04, 2025
 """
 

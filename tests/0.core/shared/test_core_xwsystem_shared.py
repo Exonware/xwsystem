@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/shared/test_core_xsystem_shared.py
+#exonware/xwsystem/tests/0.core/shared/test_core_xwsystem_shared.py
 # -*- coding: utf-8 -*-
 """
 Core tests for shared module.

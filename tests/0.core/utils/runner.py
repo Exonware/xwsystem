@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/utils/runner.py
 """
 Utils Core Test Runner
-Runs comprehensive utils core tests for XSystem utility functions.
+Runs comprehensive utils core tests for xwsystem utility functions.
 """
 
 import sys

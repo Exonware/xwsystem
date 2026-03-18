@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/io/test_core_xsystem_io.py
+#exonware/xwsystem/tests/0.core/io/test_core_xwsystem_io.py
 # -*- coding: utf-8 -*-
 """
-XSystem I/O Core Tests
-Tests the actual XSystem I/O features including atomic file operations,
+xwsystem I/O Core Tests
+Tests the actual xwsystem I/O features including atomic file operations,
 safe file handling, async I/O, and advanced file management.
 Following GUIDE_TEST.md standards.
 """

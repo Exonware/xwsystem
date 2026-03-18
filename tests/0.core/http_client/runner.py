@@ -181,7 +181,7 @@ class HttpCoreTester:
 
     def test_all_http_tests(self) -> int:
         """Run all HTTP core tests."""
-        print("[HTTP] XSystem Core HTTP Tests")
+        print("[HTTP] xwsystem Core HTTP Tests")
         print("=" * 50)
         print("Testing all main HTTP features with comprehensive validation")
         print("=" * 50)

@@ -83,7 +83,7 @@ def _time_loop(iterations: int, fn: Callable[[], Any]) -> tuple[float, bool, str
 
 
 def _build_json_payloads() -> list[dict[str, Any]]:
-    """Representative JSON payloads for XSystem scenarios."""
+    """Representative JSON payloads for xwsystem scenarios."""
     small = {
         "name": "small",
         "id": 1,
@@ -105,7 +105,7 @@ def _build_json_payloads() -> list[dict[str, Any]]:
         "id": 3,
         "matrix": [[float(i * j) for j in range(32)] for i in range(32)],
         "metadata": {
-            "project": "XSystem",
+            "project": "xwsystem",
             "author": "eXonware",
             "version": "1.0.0",
             "features": ["serialization", "caching", "monitoring", "security"],

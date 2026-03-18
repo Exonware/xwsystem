@@ -2,7 +2,7 @@
 """
 Shared Memory Utilities
 =======================
-Production-grade shared memory management for XSystem.
+Production-grade shared memory management for xwsystem.
 Author: eXonware Backend Team
 Email: connect@exonware.com
 Company: eXonware.com

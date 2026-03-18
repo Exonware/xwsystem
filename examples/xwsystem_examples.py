@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/examples/xsystem_examples.py
+#exonware/xwsystem/examples/xwsystem_examples.py
 """
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.0.1.3
 Generation Date: August 31, 2025
-xSystem Utilities - Practical Usage Examples
+xwsystem Utilities - Practical Usage Examples
 This file demonstrates real-world usage patterns for the xwsystem utilities.
 These examples show how to integrate multiple utilities for safe, robust operations.
 """
@@ -27,7 +27,7 @@ from exonware.xwsystem import (
 
 def basic_usage_examples():
     """Basic usage examples for each utility."""
-    print("=== xSystem Basic Usage Examples ===\n")
+    print("=== xwsystem Basic Usage Examples ===\n")
     # 1. ThreadSafeFactory Example
     print("1. ThreadSafeFactory - Thread-safe handler registration")
     factory = ThreadSafeFactory()
@@ -54,7 +54,7 @@ def basic_usage_examples():
     print("3. AtomicFileWriter - Safe file operations")
     test_file = Path("./temp_test.json")
     # Write data atomically
-    test_data = {"message": "Hello from xSystem!", "timestamp": time.time()}
+    test_data = {"message": "Hello from xwsystem!", "timestamp": time.time()}
     with AtomicFileWriter(str(test_file)) as f:
         json.dump(test_data, f, indent=2)
     print(f"File written atomically: {test_file.exists()}")

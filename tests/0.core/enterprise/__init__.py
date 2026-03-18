@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/enterprise/__init__.py
 """
 Enterprise Features Core Tests Package
-Tests for XSystem enterprise features now distributed across:
+Tests for xwsystem enterprise features now distributed across:
 - security/ (Authentication: OAuth2, JWT, SAML)
 - monitoring/ (Distributed Tracing: OpenTelemetry, Jaeger)
 - io/serialization/ (Schema Registry: Confluent, AWS Glue)

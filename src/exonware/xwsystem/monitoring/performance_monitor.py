@@ -1,6 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/performance_monitor.py
 """
-Performance Monitoring Utilities for XSystem
+Performance Monitoring Utilities for xwsystem
 These utilities provide performance monitoring, metrics collection, and analysis
 capabilities. They were previously embedded in xData and have been extracted for
 framework-wide reusability.

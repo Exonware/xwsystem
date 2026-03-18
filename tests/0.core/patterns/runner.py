@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/patterns/runner.py
 """
 Patterns Core Test Runner
-Runs comprehensive patterns core tests for XSystem design patterns.
+Runs comprehensive patterns core tests for xwsystem design patterns.
 """
 
 import sys

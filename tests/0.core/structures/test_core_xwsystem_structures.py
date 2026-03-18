@@ -1,8 +1,8 @@
-#exonware/xwsystem/tests/0.core/structures/test_core_xsystem_structures.py
+#exonware/xwsystem/tests/0.core/structures/test_core_xwsystem_structures.py
 #exonware/xwsystem/tests/core/structures/test_core_xwsystem_structures.py
 """
-XSystem Structures Core Tests
-Comprehensive tests for XSystem data structures including circular detection,
+xwsystem Structures Core Tests
+Comprehensive tests for xwsystem data structures including circular detection,
 tree walking, and structure management.
 """
 
@@ -300,9 +300,9 @@ def test_structures_integration():
 def main():
     """Run all structures core tests."""
     print("=" * 50)
-    print("🧪 XSystem Structures Core Tests")
+    print("🧪 xwsystem Structures Core Tests")
     print("=" * 50)
-    print("Testing XSystem data structures including circular detection,")
+    print("Testing xwsystem data structures including circular detection,")
     print("tree walking, and structure management")
     print("=" * 50)
     tests = [
@@ -324,14 +324,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM STRUCTURES TEST SUMMARY")
+    print("📊 xwsystem STRUCTURES TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem structures tests passed!")
+        print("🎉 All xwsystem structures tests passed!")
         return 0
     else:
-        print("💥 Some XSystem structures tests failed!")
+        print("💥 Some xwsystem structures tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

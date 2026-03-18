@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/io/test_core_xsystem_io_archive.py
+#exonware/xwsystem/tests/0.core/io/test_core_xwsystem_io_archive.py
 # -*- coding: utf-8 -*-
 """
 Core tests for archive operations.

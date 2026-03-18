@@ -1,7 +1,7 @@
 #exonware/xwsystem/tests/__init__.py
 """
-xSystem Unit Tests Package
-Unit tests for xSystem components.
+xwsystem Unit Tests Package
+Unit tests for xwsystem components.
 Organized by component functionality following pytest best practices.
 """
 # Note: Do not import from exonware.xwsystem here to avoid 

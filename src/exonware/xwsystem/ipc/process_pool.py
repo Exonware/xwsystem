@@ -2,7 +2,7 @@
 """
 Process Pool Utilities
 ======================
-Production-grade process pools for XSystem.
+Production-grade process pools for xwsystem.
 Author: eXonware Backend Team
 Email: connect@exonware.com
 Company: eXonware.com

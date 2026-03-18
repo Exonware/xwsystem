@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #exonware/xwsystem/examples/ipc_demo.py
 """
-🚀 xSystem IPC (Inter-Process Communication) Demo
+🚀 xwsystem IPC (Inter-Process Communication) Demo
 Showcasing all IPC features for production-grade multiprocessing.
 """
 
@@ -9,7 +9,7 @@ import asyncio
 import time
 import multiprocessing as mp
 from datetime import datetime
-print("🚀 xSystem IPC Demo")
+print("🚀 xwsystem IPC Demo")
 print("=" * 50)
 # 1. ✅ PROCESS MANAGEMENT
 print("\n1. ✅ PROCESS MANAGEMENT")
@@ -82,7 +82,7 @@ def demo_shared_memory():
         seg3 = manager.create_segment("logs", 2048)
         # Store different types of data
         from exonware.xwsystem.version import __version__
-        seg1.set({"app": "xSystem", "version": __version__})
+        seg1.set({"app": "xwsystem", "version": __version__})
         seg2.set({"cached_results": ["result1", "result2", "result3"]})
         seg3.set({"log_entries": [f"Entry {i}" for i in range(10)]})
         segments = manager.list_segments()
@@ -312,7 +312,7 @@ ipc_features = [
 ]
 for feature in ipc_features:
     print(feature)
-print("\n🚀 xSystem IPC provides enterprise-grade:")
+print("\n🚀 xwsystem IPC provides enterprise-grade:")
 print("   • Multi-processing coordination")
 print("   • High-performance data sharing") 
 print("   • Fault-tolerant communication")

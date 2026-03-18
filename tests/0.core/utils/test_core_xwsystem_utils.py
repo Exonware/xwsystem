@@ -1,8 +1,8 @@
 #exonware/xwsystem/tests/0.core/utils/test_core_xwsystem_utils.py
 #exonware/xwsystem/tests/core/utils/test_core_xwsystem_utils.py
 """
-XSystem Utils Core Tests
-Comprehensive tests for XSystem utility functions including lazy loading,
+xwsystem Utils Core Tests
+Comprehensive tests for xwsystem utility functions including lazy loading, including lazy loading,
 path utilities, and common utilities.
 """
 

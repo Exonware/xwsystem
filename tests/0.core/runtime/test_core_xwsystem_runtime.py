@@ -1,8 +1,8 @@
-#exonware/xwsystem/tests/0.core/runtime/test_core_xsystem_runtime.py
+#exonware/xwsystem/tests/0.core/runtime/test_core_xwsystem_runtime.py
 #exonware/xwsystem/tests/core/runtime/test_core_xwsystem_runtime.py
 """
-XSystem Runtime Core Tests
-Comprehensive tests for XSystem runtime utilities including environment management,
+xwsystem Runtime Core Tests
+Comprehensive tests for xwsystem runtime utilities including environment management,
 reflection, and runtime operations.
 """
 
@@ -51,7 +51,7 @@ def test_environment_manager():
     try:
         env_mgr = EnvironmentManager()
         # Test environment operations
-        test_key = "XSYSTEM_TEST_KEY"
+        test_key = "xwsystem_TEST_KEY"
         test_value = "test_value"
         # Set environment variable
         env_mgr.set_env(test_key, test_value)
@@ -264,9 +264,9 @@ def test_runtime_integration():
 def main():
     """Run all runtime core tests."""
     print("=" * 50)
-    print("🧪 XSystem Runtime Core Tests")
+    print("🧪 xwsystem Runtime Core Tests")
     print("=" * 50)
-    print("Testing XSystem runtime utilities including environment management,")
+    print("Testing xwsystem runtime utilities including environment management,")
     print("reflection, and runtime operations")
     print("=" * 50)
     tests = [
@@ -288,14 +288,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM RUNTIME TEST SUMMARY")
+    print("📊 xwsystem RUNTIME TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem runtime tests passed!")
+        print("🎉 All xwsystem runtime tests passed!")
         return 0
     else:
-        print("💥 Some XSystem runtime tests failed!")
+        print("💥 Some xwsystem runtime tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

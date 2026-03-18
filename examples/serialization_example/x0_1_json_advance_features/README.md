@@ -136,7 +136,7 @@ The demo measures and displays:
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.12+
 - psutil (for memory monitoring)
 - jsonpointer (for path operations)
 - jsonpath-ng (for JSONPath queries)

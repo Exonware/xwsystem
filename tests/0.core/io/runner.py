@@ -218,11 +218,11 @@ class IoCoreTester:
 
     def test_all_serialization_tests(self) -> int:
         """Run all serialization core tests."""
-        print("[SERIALIZATION] XSystem Core Serialization Tests")
+        print("[SERIALIZATION] xwsystem Core Serialization Tests")
         print("=" * 50)
         print("Testing all main serialization features with comprehensive roundtrip testing")
         print("=" * 50)
-        # Run the actual XSystem serialization tests
+        # Run the actual xwsystem serialization tests
         try:
             import sys
             from pathlib import Path
@@ -231,12 +231,12 @@ class IoCoreTester:
             import test_core_xwsystem_serialization
             return test_core_xwsystem_serialization.main()
         except Exception as e:
-            print(f"[FAIL] Failed to run XSystem serialization tests: {e}")
+            print(f"[FAIL] Failed to run xwsystem serialization tests: {e}")
             return 1
 
     def test_all_io_tests(self) -> int:
         """Run all I/O core tests."""
-        print("[IO] XSystem Core I/O Tests")
+        print("[IO] xwsystem Core I/O Tests")
         print("=" * 50)
         print("Testing all main I/O features with comprehensive validation")
         print("=" * 50)

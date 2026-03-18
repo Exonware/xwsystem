@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/plugins/runner.py
 """
 Plugins Core Test Runner
-Runs comprehensive plugins core tests for XSystem plugin system.
+Runs comprehensive plugins core tests for xwsystem plugin system.
 """
 
 import sys

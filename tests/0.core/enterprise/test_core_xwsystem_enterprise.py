@@ -1,7 +1,7 @@
-#exonware/xwsystem/tests/0.core/enterprise/test_core_xsystem_enterprise.py
+#exonware/xwsystem/tests/0.core/enterprise/test_core_xwsystem_enterprise.py
 #exonware/xwsystem/tests/core/enterprise/test_core_xwsystem_enterprise.py
 """
-XSystem Enterprise Features Core Tests
+xwsystem Enterprise Features Core Tests
 Comprehensive tests for enterprise functionality now distributed across:
 - Security module: Authentication (OAuth2, JWT, SAML)
 - Monitoring module: Distributed Tracing (OpenTelemetry, Jaeger)
@@ -207,7 +207,7 @@ def test_enterprise_integration():
 def main():
     """Run all enterprise core tests."""
     print("=" * 50)
-    print("🧪 XSystem Enterprise Features Core Tests")
+    print("🧪 xwsystem Enterprise Features Core Tests")
     print("=" * 50)
     print("Testing enterprise features distributed across:")
     print("  - security/ (auth)")
@@ -231,14 +231,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM ENTERPRISE FEATURES TEST SUMMARY")
+    print("📊 xwsystem ENTERPRISE FEATURES TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem enterprise feature tests passed!")
+        print("🎉 All xwsystem enterprise feature tests passed!")
         return 0
     else:
-        print("💥 Some XSystem enterprise feature tests failed!")
+        print("💥 Some xwsystem enterprise feature tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

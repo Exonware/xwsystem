@@ -54,7 +54,7 @@ def example_atomic_file_writer():
     with tempfile.TemporaryDirectory() as temp_dir:
         test_file = Path(temp_dir) / "test.json"
         from exonware.xwsystem.version import __version__
-        test_data = {"message": "Hello from xSystem!", "version": __version__}
+        test_data = {"message": "Hello from xwsystem!", "version": __version__}
         # Write data atomically
         with AtomicFileWriter(str(test_file)) as f:
             json.dump(test_data, f, indent=2)
@@ -95,7 +95,7 @@ def example_generic_handler_factory():
     print()
 if __name__ == "__main__":
     """Run all basic examples."""
-    print("🚀 xSystem Basic Examples\n")
+    print("🚀 xwsystem Basic Examples\n")
     example_thread_safe_factory()
     example_path_validator()
     example_atomic_file_writer()

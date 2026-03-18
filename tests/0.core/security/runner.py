@@ -200,7 +200,7 @@ class SecurityCoreTester:
 
     def test_all_security_tests(self) -> int:
         """Run all security core tests."""
-        print("[SECURITY] XSystem Core Security Tests")
+        print("[SECURITY] xwsystem Core Security Tests")
         print("=" * 50)
         print("Testing all main security features with comprehensive validation")
         print("=" * 50)

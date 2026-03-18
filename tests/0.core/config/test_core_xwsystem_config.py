@@ -1,8 +1,8 @@
-#exonware/xwsystem/tests/0.core/config/test_core_xsystem_config.py
+#exonware/xwsystem/tests/0.core/config/test_core_xwsystem_config.py
 #exonware/xwsystem/tests/core/config/test_core_xwsystem_config.py
 """
-XSystem Config Core Tests
-Comprehensive tests for XSystem configuration management including defaults,
+xwsystem Config Core Tests
+Comprehensive tests for xwsystem configuration management including defaults,
 performance modes, logging setup, and configuration validation.
 """
 
@@ -243,9 +243,9 @@ def test_config_file_operations():
 def main():
     """Run all config core tests."""
     print("=" * 50)
-    print("🧪 XSystem Config Core Tests")
+    print("🧪 xwsystem Config Core Tests")
     print("=" * 50)
-    print("Testing XSystem configuration management including defaults,")
+    print("Testing xwsystem configuration management including defaults,")
     print("performance modes, logging setup, and configuration validation")
     print("=" * 50)
     tests = [
@@ -268,14 +268,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM CONFIG TEST SUMMARY")
+    print("📊 xwsystem CONFIG TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem config tests passed!")
+        print("🎉 All xwsystem config tests passed!")
         return 0
     else:
-        print("💥 Some XSystem config tests failed!")
+        print("💥 Some xwsystem config tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

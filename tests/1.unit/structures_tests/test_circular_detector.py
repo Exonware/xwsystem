@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/structures_tests/test_circular_detector.py
 """
-Test suite for xSystem CircularDetector functionality.
+Test suite for xwsystem CircularDetector functionality.
 Tests circular reference detection, depth limits, and complex data structures.
 """
 

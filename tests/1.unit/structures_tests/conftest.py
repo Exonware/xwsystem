@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/structures_tests/conftest.py
 """
-Pytest configuration for xSystem structures tests.
+Pytest configuration for xwsystem structures tests.
 """
 
 import pytest

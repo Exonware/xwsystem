@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/monitoring/test_core_xsystem_monitoring.py
+#exonware/xwsystem/tests/0.core/monitoring/test_core_xwsystem_monitoring.py
 """
-XSystem Monitoring Core Tests
-Tests the actual XSystem monitoring features including performance monitoring,
+xwsystem Monitoring Core Tests
+Tests the actual xwsystem monitoring features including performance monitoring,
 memory monitoring, circuit breaker patterns, and system resource monitoring.
 """
 
@@ -364,10 +364,10 @@ def test_metrics_aggregation():
 
 
 def main():
-    """Run all XSystem monitoring tests."""
-    print("[MONITOR] XSystem Monitoring Core Tests")
+    """Run all xwsystem monitoring tests."""
+    print("[MONITOR] xwsystem Monitoring Core Tests")
     print("=" * 50)
-    print("Testing XSystem monitoring features including performance, memory, circuit breaker, and system monitoring")
+    print("Testing xwsystem monitoring features including performance, memory, circuit breaker, and system monitoring")
     print("=" * 50)
     tests = [
         ("Performance Monitor", test_performance_monitor),
@@ -388,14 +388,14 @@ def main():
         except Exception as e:
             print(f"[FAIL] Test {test_name} crashed: {e}")
     print(f"\n{'='*50}")
-    print("[MONITOR] XSYSTEM MONITORING TEST SUMMARY")
+    print("[MONITOR] xwsystem MONITORING TEST SUMMARY")
     print(f"{'='*50}")
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("[SUCCESS] All XSystem monitoring tests passed!")
+        print("[SUCCESS] All xwsystem monitoring tests passed!")
         return 0
     else:
-        print("[ERROR] Some XSystem monitoring tests failed!")
+        print("[ERROR] Some xwsystem monitoring tests failed!")
         return 1
 if __name__ == "__main__":
     exit(main())

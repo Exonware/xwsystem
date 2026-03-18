@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/cli/runner.py
 """
 CLI Core Test Runner
-Runs comprehensive CLI core tests for XSystem CLI functionality.
+Runs comprehensive CLI core tests for xwsystem CLI functionality.
 """
 
 import sys

@@ -3,9 +3,9 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generation Date: September 04, 2025
-XSystem HTTP Package
+xwsystem HTTP Package
 Provides high-performance HTTP client with retry mechanisms, 
 connection pooling, and comprehensive error handling.
 """

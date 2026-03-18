@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #exonware/xwsystem/src/exonware/xwsystem/utils/paths.py
 """
-Path utilities for XSystem.
+Path utilities for xwsystem.
 Provides common path operations and project root detection.
 """
 

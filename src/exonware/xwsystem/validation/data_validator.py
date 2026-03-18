@@ -1,6 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/validation/data_validator.py
 """
-Data Validation Utilities for XSystem
+Data Validation Utilities for xwsystem
 These utilities provide data structure validation, path validation, and memory estimation
 capabilities. They were previously embedded in xData and have been extracted for
 framework-wide reusability.

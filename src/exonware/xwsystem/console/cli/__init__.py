@@ -2,11 +2,11 @@
 """
 Command Line Interface (CLI) Utilities
 ======================================
-Production-grade CLI utilities for XSystem.
+Production-grade CLI utilities for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generated: 2025-01-27
 """
 # Import general console enums from console level (priority)

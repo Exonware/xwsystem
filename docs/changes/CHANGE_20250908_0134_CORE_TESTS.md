@@ -1,4 +1,4 @@
-﻿# xSystem Core Tests
+# xSystem Core Tests
 
 This directory contains unit tests for core xSystem functionality, including comprehensive testing of all 24 serialization formats.
 
@@ -75,7 +75,7 @@ The core tests cover:
 
 ## Requirements
 
-- Python 3.8+ (lowered for better compatibility with enterprise schema formats)
+- Python 3.12+ (required for type hints and modern features)
 - pytest
 - exonware.xwsystem components
 - **?? All serialization dependencies**: fastavro, protobuf, thrift, pyarrow, pandas, pyorc, pycapnp (optional), flatbuffers

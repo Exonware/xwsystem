@@ -1,7 +1,7 @@
 #exonware/xwsystem/tests/0.core/config/runner.py
 """
 Config Core Test Runner
-Runs comprehensive config core tests for XSystem configuration management.
+Runs comprehensive config core tests for xwsystem configuration management.
 """
 
 import sys

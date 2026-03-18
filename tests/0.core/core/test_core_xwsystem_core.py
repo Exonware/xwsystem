@@ -1,8 +1,8 @@
-#exonware/xwsystem/tests/0.core/core/test_core_xsystem_core.py
+#exonware/xwsystem/tests/0.core/core/test_core_xwsystem_core.py
 #exonware/xwsystem/tests/core/core/test_core_xwsystem_core.py
 """
-XSystem Core Core Tests
-Comprehensive tests for XSystem core functionality including base classes,
+xwsystem Core Core Tests
+Comprehensive tests for xwsystem core functionality including base classes,
 contracts, and core system operations.
 """
 
@@ -97,9 +97,9 @@ def test_core_lifecycle():
 def main():
     """Run all core core tests."""
     print("=" * 50)
-    print("🧪 XSystem Core Core Tests")
+    print("🧪 xwsystem Core Core Tests")
     print("=" * 50)
-    print("Testing XSystem core functionality including base classes,")
+    print("Testing xwsystem core functionality including base classes,")
     print("contracts, and core system operations")
     print("=" * 50)
     tests = [
@@ -117,14 +117,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM CORE TEST SUMMARY")
+    print("📊 xwsystem CORE TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem core tests passed!")
+        print("🎉 All xwsystem core tests passed!")
         return 0
     else:
-        print("💥 Some XSystem core tests failed!")
+        print("💥 Some xwsystem core tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

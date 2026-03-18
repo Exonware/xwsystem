@@ -243,7 +243,7 @@ class ThreadingCoreTester:
 
     def test_all_threading_tests(self) -> int:
         """Run all threading core tests."""
-        print("[THREAD] XSystem Core Threading Tests")
+        print("[THREAD] xwsystem Core Threading Tests")
         print("=" * 50)
         print("Testing all main threading features with comprehensive validation")
         print("=" * 50)

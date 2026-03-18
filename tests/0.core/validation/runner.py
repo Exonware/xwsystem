@@ -228,7 +228,7 @@ class ValidationCoreTester:
 
     def test_all_validation_tests(self) -> int:
         """Run all validation core tests."""
-        print("[PASS] XSystem Core Validation Tests")
+        print("[PASS] xwsystem Core Validation Tests")
         print("=" * 50)
         print("Testing all main validation features with comprehensive validation")
         print("=" * 50)

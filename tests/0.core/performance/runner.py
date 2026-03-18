@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/performance/runner.py
 """
 Performance Core Test Runner
-Runs comprehensive performance core tests for XSystem performance management.
+Runs comprehensive performance core tests for xwsystem performance management.
 """
 
 import sys

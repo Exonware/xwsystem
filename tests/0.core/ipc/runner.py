@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/ipc/runner.py
 """
 IPC Core Test Runner
-Runs comprehensive IPC core tests for XSystem inter-process communication.
+Runs comprehensive IPC core tests for xwsystem inter-process communication.
 """
 
 import sys

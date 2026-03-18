@@ -196,7 +196,7 @@ class MonitoringCoreTester:
 
     def test_all_monitoring_tests(self) -> int:
         """Run all monitoring core tests."""
-        print("[MONITOR] XSystem Core Monitoring Tests")
+        print("[MONITOR] xwsystem Core Monitoring Tests")
         print("=" * 50)
         print("Testing all main monitoring features with comprehensive validation")
         print("=" * 50)

@@ -3,9 +3,9 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generation Date: September 04, 2025
-Logging configuration for XSystem.
+Logging configuration for xwsystem.
 Provides simple logging control functions and configuration management.
 """
 
@@ -24,14 +24,14 @@ class LoggingConfig:
     def disable(self) -> None:
         """Disable all logging."""
         # Disable logging BEFORE any other imports
-        os.environ["XSYSTEM_LOGGING_DISABLE"] = "true"
+        os.environ["xwsystem_LOGGING_DISABLE"] = "true"
         logging.disable(logging.CRITICAL)
         self._enabled = False
 
     def enable(self) -> None:
         """Enable logging."""
         self._enabled = True
-        os.environ["XSYSTEM_LOGGING_DISABLE"] = "false"
+        os.environ["xwsystem_LOGGING_DISABLE"] = "false"
         logging.disable(logging.NOTSET)
 
     def set_level(self, level: str) -> None:
@@ -74,7 +74,7 @@ logging_config = LoggingConfig()
 
 def logging_disable() -> None:
     """Disable all logging."""
-    os.environ["XSYSTEM_LOGGING_DISABLE"] = "true"
+    os.environ["xwsystem_LOGGING_DISABLE"] = "true"
     logging.disable(logging.CRITICAL)
 
 

@@ -1,8 +1,8 @@
 #exonware/xwsystem/tests/0.core/ipc/test_core_xwsystem_ipc.py
 #exonware/xwsystem/tests/core/ipc/test_core_xwsystem_ipc.py
 """
-XSystem IPC Core Tests
-Comprehensive tests for XSystem inter-process communication including message queues,
+xwsystem IPC Core Tests
+Comprehensive tests for xwsystem inter-process communication including message queues,
 pipes, process management, process pools, and shared memory.
 """
 
@@ -270,9 +270,9 @@ def test_ipc_integration():
 def main():
     """Run all IPC core tests."""
     print("=" * 50)
-    print("🧪 XSystem IPC Core Tests")
+    print("🧪 xwsystem IPC Core Tests")
     print("=" * 50)
-    print("Testing XSystem inter-process communication including message queues,")
+    print("Testing xwsystem inter-process communication including message queues,")
     print("pipes, process management, process pools, and shared memory")
     print("=" * 50)
     tests = [
@@ -295,14 +295,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM IPC TEST SUMMARY")
+    print("📊 xwsystem IPC TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem IPC tests passed!")
+        print("🎉 All xwsystem IPC tests passed!")
         return 0
     else:
-        print("💥 Some XSystem IPC tests failed!")
+        print("💥 Some xwsystem IPC tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

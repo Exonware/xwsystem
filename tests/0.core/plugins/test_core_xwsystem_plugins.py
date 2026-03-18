@@ -1,8 +1,8 @@
-#exonware/xwsystem/tests/0.core/plugins/test_core_xsystem_plugins.py
+#exonware/xwsystem/tests/0.core/plugins/test_core_xwsystem_plugins.py
 #exonware/xwsystem/tests/core/plugins/test_core_xwsystem_plugins.py
 """
-XSystem Plugins Core Tests
-Comprehensive tests for XSystem plugin system including plugin management,
+xwsystem Plugins Core Tests
+Comprehensive tests for xwsystem plugin system including plugin management,
 loading, and lifecycle management.
 """
 
@@ -208,9 +208,9 @@ def test_plugin_integration():
 def main():
     """Run all plugins core tests."""
     print("=" * 50)
-    print("🧪 XSystem Plugins Core Tests")
+    print("🧪 xwsystem Plugins Core Tests")
     print("=" * 50)
-    print("Testing XSystem plugin system including plugin management,")
+    print("Testing xwsystem plugin system including plugin management,")
     print("loading, and lifecycle management")
     print("=" * 50)
     tests = [
@@ -232,14 +232,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM PLUGINS TEST SUMMARY")
+    print("📊 xwsystem PLUGINS TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem plugins tests passed!")
+        print("🎉 All xwsystem plugins tests passed!")
         return 0
     else:
-        print("💥 Some XSystem plugins tests failed!")
+        print("💥 Some xwsystem plugins tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

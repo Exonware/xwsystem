@@ -1,8 +1,8 @@
 #exonware/xwsystem/tests/1.unit/performance_tests/test_threading_performance.py
 """
-Performance tests for xSystem threading utilities.
+Performance tests for xwsystem threading utilities.
 Tests thread safety, lock contention, and factory performance under load.
-Following xSystem test quality standards.
+Following xwsystem test quality standards.
 """
 
 import pytest

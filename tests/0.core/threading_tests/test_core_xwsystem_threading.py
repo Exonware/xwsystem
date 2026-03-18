@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/threading_tests/test_core_xsystem_threading.py
+#exonware/xwsystem/tests/0.core/threading_tests/test_core_xwsystem_threading.py
 """
-XSystem Threading Core Tests
-Tests the actual XSystem threading features including thread-safe operations,
+xwsystem Threading Core Tests
+Tests the actual xwsystem threading features including thread-safe operations,
 enhanced locks, async primitives, and concurrent resource management.
 """
 
@@ -449,10 +449,10 @@ def test_async_resource_pool():
 
 
 def main():
-    """Run all XSystem threading tests."""
-    print("[THREAD] XSystem Threading Core Tests")
+    """Run all xwsystem threading tests."""
+    print("[THREAD] xwsystem Threading Core Tests")
     print("=" * 50)
-    print("Testing XSystem threading features including thread-safe operations, async primitives, and resource management")
+    print("Testing xwsystem threading features including thread-safe operations, async primitives, and resource management")
     print("=" * 50)
     tests = [
         ("Thread-Safe Factory", test_thread_safe_factory),
@@ -475,14 +475,14 @@ def main():
         except Exception as e:
             print(f"[FAIL] Test {test_name} crashed: {e}")
     print(f"\n{'='*50}")
-    print("[MONITOR] XSYSTEM THREADING TEST SUMMARY")
+    print("[MONITOR] xwsystem THREADING TEST SUMMARY")
     print(f"{'='*50}")
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("[SUCCESS] All XSystem threading tests passed!")
+        print("[SUCCESS] All xwsystem threading tests passed!")
         return 0
     else:
-        print("[ERROR] Some XSystem threading tests failed!")
+        print("[ERROR] Some xwsystem threading tests failed!")
         return 1
 if __name__ == "__main__":
     exit(main())

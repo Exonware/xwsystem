@@ -1,8 +1,8 @@
 #exonware/xwsystem/tests/1.unit/config_tests/test_logging_config.py
 """
-Test suite for xSystem logging configuration functionality.
+Test suite for xwsystem logging configuration functionality.
 Tests logging control, environment handling, and configuration management.
-Following xSystem test quality standards.
+Following xwsystem test quality standards.
 """
 
 import pytest
@@ -51,11 +51,11 @@ class TestLoggingConfigBasic:
         # Test disable
         config.disable()
         assert config.enabled is False
-        assert os.environ.get('XSYSTEM_LOGGING_DISABLE') == 'true'
+        assert os.environ.get('xwsystem_LOGGING_DISABLE') == 'true'
         # Test enable
         config.enable()
         assert config.enabled is True
-        assert os.environ.get('XSYSTEM_LOGGING_DISABLE') == 'false'
+        assert os.environ.get('xwsystem_LOGGING_DISABLE') == 'false'
 
     def test_level_setting(self, clean_env, logging_test_levels):
         """Test setting different logging levels."""
@@ -86,24 +86,24 @@ class TestLoggingConfigEnvironment:
     def test_environment_variable_respect(self, clean_env):
         """Test that configuration respects environment variables."""
         # Set environment variable before creating config
-        os.environ['XSYSTEM_LOGGING_DISABLE'] = 'true'
+        os.environ['xwsystem_LOGGING_DISABLE'] = 'true'
         config = LoggingConfig()
         config.enable()  # Try to enable
         # Environment variable should be updated
-        assert os.environ.get('XSYSTEM_LOGGING_DISABLE') == 'false'
+        assert os.environ.get('xwsystem_LOGGING_DISABLE') == 'false'
 
     def test_disable_sets_env_var(self, clean_env):
         """Test that disable() sets environment variable."""
         config = LoggingConfig()
         config.disable()
-        assert os.environ.get('XSYSTEM_LOGGING_DISABLE') == 'true'
+        assert os.environ.get('xwsystem_LOGGING_DISABLE') == 'true'
 
     def test_enable_sets_env_var(self, clean_env):
         """Test that enable() sets environment variable."""
         config = LoggingConfig()
         config.disable()  # First disable
         config.enable()   # Then enable
-        assert os.environ.get('XSYSTEM_LOGGING_DISABLE') == 'false'
+        assert os.environ.get('xwsystem_LOGGING_DISABLE') == 'false'
 @pytest.mark.xwsystem_unit
 
 
@@ -153,7 +153,7 @@ class TestConvenienceFunctions:
     def test_logging_disable_function(self, clean_env):
         """Test logging_disable() convenience function."""
         logging_disable()
-        assert os.environ.get('XSYSTEM_LOGGING_DISABLE') == 'true'
+        assert os.environ.get('xwsystem_LOGGING_DISABLE') == 'true'
 
     def test_logging_enable_function(self, clean_env):
         """Test logging_enable() convenience function."""
@@ -196,7 +196,7 @@ class TestLoggingSetup:
         logger = get_logger()
         assert logger is not None
         assert isinstance(logger, logging.Logger)
-    @patch.dict(os.environ, {'XSYSTEM_LOGGING_DISABLE': 'true'})
+    @patch.dict(os.environ, {'xwsystem_LOGGING_DISABLE': 'true'})
 
     def test_get_logger_when_disabled(self, clean_env):
         """Test get_logger when logging is disabled via environment."""
@@ -221,7 +221,7 @@ class TestLoggingSetup:
                 handler.close()
                 root_logger.removeHandler(handler)
         assert success, f"setup_logging failed: {error if not success else 'Unknown error'}"
-    @patch.dict(os.environ, {'XSYSTEM_LOGGING_DISABLE': 'true'})
+    @patch.dict(os.environ, {'xwsystem_LOGGING_DISABLE': 'true'})
 
     def test_setup_logging_respects_disable_env(self, clean_env):
         """Test that setup_logging respects disable environment variable."""

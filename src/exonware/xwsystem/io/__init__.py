@@ -1,9 +1,9 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/__init__.py
 """
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generation Date: 30-Oct-2025
 I/O utilities for safe file operations, path management, and codec integration.
 FINAL CLEAN STRUCTURE:

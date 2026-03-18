@@ -1,6 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/patterns/__init__.py
 """
-XSystem Patterns Package
+xwsystem Patterns Package
 Provides design patterns and utilities for common programming patterns.
 """
 

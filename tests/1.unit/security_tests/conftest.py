@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/1.unit/security_tests/conftest.py
 """
-Pytest configuration for xSystem security tests.
+Pytest configuration for xwsystem security tests.
 """
 
 import pytest

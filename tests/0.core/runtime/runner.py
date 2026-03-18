@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/runtime/runner.py
 """
 Runtime Core Test Runner
-Runs comprehensive runtime core tests for XSystem runtime utilities.
+Runs comprehensive runtime core tests for xwsystem runtime utilities.
 """
 
 import sys

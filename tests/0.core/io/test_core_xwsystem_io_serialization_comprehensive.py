@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/io/test_core_xsystem_io_serialization_comprehensive.py
+#exonware/xwsystem/tests/0.core/io/test_core_xwsystem_io_serialization_comprehensive.py
 # -*- coding: utf-8 -*-
 """
 Core tests for comprehensive serialization operations.

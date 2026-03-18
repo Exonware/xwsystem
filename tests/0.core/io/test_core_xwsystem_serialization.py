@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/io/test_core_xsystem_serialization.py
+#exonware/xwsystem/tests/0.core/io/test_core_xwsystem_serialization.py
 """
-XSystem Serialization Core Tests
-Tests the actual XSystem serialization features including save/load operations
+xwsystem Serialization Core Tests
+Tests the actual xwsystem serialization features including save/load operations
 and using the data folder for file operations.
 """
 
@@ -23,7 +23,7 @@ def test_json_serialization():
     try:
         # Test data
         test_data = {
-            "name": "XSystem Test",
+            "name": "xwsystem Test",
             "version": "1.0.0",
             "features": ["serialization", "security", "monitoring"],
             "config": {
@@ -35,7 +35,7 @@ def test_json_serialization():
         # Test text serialization
         json_text = json.dumps(test_data, indent=2)
         assert isinstance(json_text, str)
-        assert "XSystem Test" in json_text
+        assert "xwsystem Test" in json_text
         # Test text deserialization
         deserialized_text = json.loads(json_text)
         assert deserialized_text == test_data
@@ -57,7 +57,7 @@ def test_json_file_operations():
     try:
         # Test data
         test_data = {
-            "project": "XSystem",
+            "project": "xwsystem",
             "author": "eXonware",
             "email": "connect@exonware.com",
             "features": {
@@ -151,7 +151,7 @@ def test_yaml_file_operations():
         # Test data
         test_data = {
             "application": {
-                "name": "XSystem",
+                "name": "xwsystem",
                 "version": "1.0.0",
                 "environment": "production"
             },
@@ -255,7 +255,7 @@ def test_convenience_functions():
     try:
         # Test data
         test_data = {
-            "message": "Hello from XSystem!",
+            "message": "Hello from xwsystem!",
             "timestamp": "2024-01-01T00:00:00Z",
             "data": [1, 2, 3, 4, 5]
         }
@@ -298,10 +298,10 @@ def test_data_folder_structure():
 
 
 def main():
-    """Run all XSystem serialization tests."""
-    print("[SERIALIZATION] XSystem Serialization Core Tests")
+    """Run all xwsystem serialization tests."""
+    print("[SERIALIZATION] xwsystem Serialization Core Tests")
     print("=" * 50)
-    print("Testing actual XSystem serialization features with data folder")
+    print("Testing actual xwsystem serialization features with data folder")
     print("=" * 50)
     tests = [
         ("JSON Serialization", test_json_serialization),
@@ -324,14 +324,14 @@ def main():
         except Exception as e:
             print(f"[FAIL] Test {test_name} crashed: {e}")
     print(f"\n{'='*50}")
-    print("[MONITOR] XSYSTEM SERIALIZATION TEST SUMMARY")
+    print("[MONITOR] xwsystem SERIALIZATION TEST SUMMARY")
     print(f"{'='*50}")
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("[SUCCESS] All XSystem serialization tests passed!")
+        print("[SUCCESS] All xwsystem serialization tests passed!")
         return 0
     else:
-        print("[ERROR] Some XSystem serialization tests failed!")
+        print("[ERROR] Some xwsystem serialization tests failed!")
         return 1
 if __name__ == "__main__":
     exit(main())

@@ -1,6 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/__init__.py
 """
-XSystem Monitoring Package
+xwsystem Monitoring Package
 Provides performance monitoring, metrics collection, system observation utilities,
 memory monitoring, error recovery, resilience mechanisms, and distributed tracing.
 """

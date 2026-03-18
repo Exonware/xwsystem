@@ -1,8 +1,8 @@
-#exonware/xwsystem/tests/0.core/patterns/test_core_xsystem_patterns.py
+#exonware/xwsystem/tests/0.core/patterns/test_core_xwsystem_patterns.py
 #exonware/xwsystem/tests/core/patterns/test_core_xwsystem_patterns.py
 """
-XSystem Patterns Core Tests
-Comprehensive tests for XSystem design patterns including context managers,
+xwsystem Patterns Core Tests
+Comprehensive tests for xwsystem design patterns including context managers,
 dynamic facades, handler factories, import registries, and object pools.
 """
 
@@ -263,9 +263,9 @@ def test_patterns_integration():
 def main():
     """Run all patterns core tests."""
     print("=" * 50)
-    print("🧪 XSystem Patterns Core Tests")
+    print("🧪 xwsystem Patterns Core Tests")
     print("=" * 50)
-    print("Testing XSystem design patterns including context managers,")
+    print("Testing xwsystem design patterns including context managers,")
     print("dynamic facades, handler factories, import registries, and object pools")
     print("=" * 50)
     tests = [
@@ -288,14 +288,14 @@ def main():
         except Exception as e:
             print(f"❌ Test {test.__name__} failed with exception: {e}")
     print("\n" + "=" * 50)
-    print("📊 XSYSTEM PATTERNS TEST SUMMARY")
+    print("📊 xwsystem PATTERNS TEST SUMMARY")
     print("=" * 50)
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("🎉 All XSystem patterns tests passed!")
+        print("🎉 All xwsystem patterns tests passed!")
         return 0
     else:
-        print("💥 Some XSystem patterns tests failed!")
+        print("💥 Some xwsystem patterns tests failed!")
         return 1
 if __name__ == "__main__":
     sys.exit(main())

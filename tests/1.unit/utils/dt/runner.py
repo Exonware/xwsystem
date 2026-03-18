@@ -1,7 +1,7 @@
 #exonware/xwsystem/tests/1.unit/utils/dt/runner.py
 """
 DateTime Unit Test Runner
-Runs datetime unit tests for XSystem datetime utilities.
+Runs datetime unit tests for xwsystem datetime utilities.
 """
 
 import sys

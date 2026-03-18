@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/operations/test_core_xsystem_operations.py
+#exonware/xwsystem/tests/0.core/operations/test_core_xwsystem_operations.py
 # -*- coding: utf-8 -*-
 """
 Core tests for operations module.

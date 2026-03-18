@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/caching/test_core_xsystem_caching.py
+#exonware/xwsystem/tests/0.core/caching/test_core_xwsystem_caching.py
 """
-XSystem Caching Core Tests
-Tests the actual XSystem caching features including LRU, LFU, TTL caches
+xwsystem Caching Core Tests
+Tests the actual xwsystem caching features including LRU, LFU, TTL caches
 and cache management functionality.
 """
 
@@ -247,10 +247,10 @@ def test_cache_eviction_policies():
 
 
 def main():
-    """Run all XSystem caching tests."""
-    print("[CACHE] XSystem Caching Core Tests")
+    """Run all xwsystem caching tests."""
+    print("[CACHE] xwsystem Caching Core Tests")
     print("=" * 50)
-    print("Testing XSystem caching features including LRU, LFU, TTL, and thread safety")
+    print("Testing xwsystem caching features including LRU, LFU, TTL, and thread safety")
     print("=" * 50)
     tests = [
         ("LRU Cache", test_lru_cache),
@@ -271,14 +271,14 @@ def main():
         except Exception as e:
             print(f"[FAIL] Test {test_name} crashed: {e}")
     print(f"\n{'='*50}")
-    print("[MONITOR] XSYSTEM CACHING TEST SUMMARY")
+    print("[MONITOR] xwsystem CACHING TEST SUMMARY")
     print(f"{'='*50}")
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("[SUCCESS] All XSystem caching tests passed!")
+        print("[SUCCESS] All xwsystem caching tests passed!")
         return 0
     else:
-        print("[ERROR] Some XSystem caching tests failed!")
+        print("[ERROR] Some xwsystem caching tests failed!")
         return 1
 if __name__ == "__main__":
     exit(main())

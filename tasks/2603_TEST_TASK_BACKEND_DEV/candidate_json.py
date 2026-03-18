@@ -25,7 +25,7 @@ STRICT RULES FOR FREELANCER IMPLEMENTATION:
 You MAY:
 - Use alternative high‑performance JSON libraries (pysimdjson, rapidjson, etc.)
 - Implement your own highly optimized encoding/decoding pipeline
-- Special‑case hot paths for typical XSystem payloads used in the benchmark
+- Special‑case hot paths for typical xwsystem payloads used in the benchmark
 The benchmark will:
 - Compare this `CandidateJsonSerializer` against the existing `JsonSerializer`
 - Measure operations/second for repeated encode+decode cycles

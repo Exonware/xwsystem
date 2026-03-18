@@ -1,6 +1,6 @@
 #exonware/xwsystem/tests/2.integration/test_module_interactions.py
 """
-Integration tests for xSystem module interactions.
+Integration tests for xwsystem module interactions.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
@@ -22,7 +22,7 @@ from exonware.xwsystem import (
 
 
 class TestModuleInteractions:
-    """Test interactions between different xSystem modules."""
+    """Test interactions between different xwsystem modules."""
 
     def test_logging_with_threading_factory(self):
         """Test logging integration with threading factory."""

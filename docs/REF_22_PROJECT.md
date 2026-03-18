@@ -72,7 +72,7 @@ What does success look like for this project?
 | NFR-001 | Serialization performance | High | < 50ms for 1MB | ✅ Met (45ms) |
 | NFR-002 | Deserialization performance | High | < 50ms for 1MB | ⚠️ Close (52ms) |
 | NFR-003 | Memory efficiency | Medium | < 3MB for 1MB data | ✅ Met (2.1MB) |
-| NFR-004 | Python 3.8+ compatibility | High | All versions | ✅ Met |
+| NFR-004 | Python 3.12+ compatibility | High | All versions | ✅ Met |
 | NFR-005 | Zero dependencies (lite mode) | High | Core only | ✅ Met |
 | NFR-006 | Security audit compliance | High | OWASP Top 10 | 🚧 In Progress |
 | NFR-007 | Test coverage | High | ≥ 90% | ⚠️ Close (83%) |
@@ -95,7 +95,7 @@ What does success look like for this project?
 ## 🎨 Design Constraints
 
 ### Technical Constraints
-- Python 3.8+ compatibility required (for Raspberry Pi support)
+- Python 3.12+ compatibility required
 - No external dependencies for lite version (core functionality only)
 - Must integrate seamlessly with other eXonware libraries
 - Must support Windows, Linux, macOS

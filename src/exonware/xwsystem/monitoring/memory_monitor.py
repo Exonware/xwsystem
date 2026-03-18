@@ -1,6 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/memory_monitor.py
 """
-Memory Monitoring and Leak Detection for XSystem Library.
+Memory Monitoring and Leak Detection for xwsystem Library.
 This module provides comprehensive memory monitoring, leak detection,
 and automatic cleanup mechanisms for production deployment.
 """

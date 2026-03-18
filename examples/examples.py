@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #exonware/xwsystem/examples/examples.py
 """
-xSystem Utilities - Practical Usage Examples
+xwsystem Utilities - Practical Usage Examples
 This file demonstrates real-world usage patterns for the xwsystem utilities.
 These examples show how to integrate multiple utilities for safe, robust operations.
 """
@@ -235,7 +235,7 @@ def demonstrate_xwsystem_utilities():
     """
     Demonstrate real-world usage of xwsystem utilities.
     """
-    logger.info("=== xSystem Utilities Demonstration ===")
+    logger.info("=== xwsystem Utilities Demonstration ===")
     # 1. Secure Configuration Management
     logger.info("\n1. Secure Configuration Management:")
     config_manager = SecureConfigManager()

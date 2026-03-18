@@ -2,7 +2,7 @@
 """
 Pipe Communication Utilities
 ============================
-Production-grade pipes for XSystem.
+Production-grade pipes for xwsystem.
 Author: eXonware Backend Team
 Email: connect@exonware.com
 Company: eXonware.com

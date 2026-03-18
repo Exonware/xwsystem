@@ -4,9 +4,9 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generation Date: September 04, 2025
-Abstract base classes for XSystem patterns.
+Abstract base classes for xwsystem patterns.
 """
 
 from abc import ABC, abstractmethod

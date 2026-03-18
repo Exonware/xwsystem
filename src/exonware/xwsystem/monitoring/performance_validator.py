@@ -1,6 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/monitoring/performance_validator.py
 """
-Performance Validation and Monitoring for XSystem Library.
+Performance Validation and Monitoring for xwsystem Library.
 This module provides comprehensive performance validation, statistical analysis,
 and regression detection for production deployment.
 """

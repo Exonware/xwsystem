@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #exonware/xwsystem/examples/quick_start.py
 """
-xSystem Quick Start Examples
-This file demonstrates the most common xSystem usage patterns.
+xwsystem Quick Start Examples
+This file demonstrates the most common xwsystem usage patterns.
 Perfect for new users to get started quickly.
 """
 
@@ -23,11 +23,11 @@ from exonware.xwsystem import (
 
 
 def demo_convenience_functions():
-    """Demonstrate the new convenience functions - easiest way to use xSystem."""
+    """Demonstrate the new convenience functions - easiest way to use xwsystem."""
     print("🚀 CONVENIENCE FUNCTIONS DEMO")
     print("=" * 50)
     # Quick serialization - auto-detects format
-    data = {"name": "xSystem", "version": "0.0.1.3", "features": ["fast", "secure"]}
+    data = {"name": "xwsystem", "version": "0.0.1.3", "features": ["fast", "secure"]}
     # JSON
     json_str = quick_serialize(data, "json")
     print(f"JSON: {json_str}")
@@ -132,7 +132,7 @@ def demo_http_client():
     client = HttpClient(
         timeout=10.0,
         retry_config=retry_config,
-        default_headers={"User-Agent": f"xSystem/0.0.1.3"}
+        default_headers={"User-Agent": f"xwsystem/0.0.1.3"}
     )
     try:
         # Example API call (this will work if you have internet)
@@ -215,7 +215,7 @@ def demo_threading():
     for result in results:
         print(f"  {result}")
 if __name__ == "__main__":
-    print("🚀 xSystem Quick Start Examples")
+    print("🚀 xwsystem Quick Start Examples")
     print("=" * 60)
     # Run all demos
     demo_convenience_functions()

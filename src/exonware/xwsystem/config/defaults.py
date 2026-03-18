@@ -3,9 +3,9 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.9
+Version: 0.9.0.10
 Generation Date: September 04, 2025
-Default configuration constants for XSystem framework.
+Default configuration constants for xwsystem framework.
 These constants provide default values and limits for system operations.
 All modules should import from this central location to ensure consistency.
 """
@@ -71,7 +71,7 @@ LOGGING_LEVEL: Final[str] = "INFO"
 
 class DefaultConfig(AConfigBase):
     """
-    Default configuration manager for XSystem framework.
+    Default configuration manager for xwsystem framework.
     Provides default configuration values and management functionality.
     """
 

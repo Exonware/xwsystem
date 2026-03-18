@@ -1,6 +1,6 @@
 #exonware/xwsystem/src/exonware/xwsystem/security/__init__.py
 """
-XSystem Security Package
+xwsystem Security Package
 Provides security utilities including:
 - Path validation and resource limits
 - Security contracts and interfaces (IAuthenticatable, IAuthorization, ISecurityToken)

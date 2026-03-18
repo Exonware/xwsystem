@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/0.core/http_client/test_core_xsystem_http.py
+#exonware/xwsystem/tests/0.core/http_client/test_core_xwsystem_http.py
 """
-XSystem HTTP Core Tests
-Tests the actual XSystem HTTP features including client operations,
+xwsystem HTTP Core Tests
+Tests the actual xwsystem HTTP features including client operations,
 retry logic, error handling, and advanced HTTP functionality.
 """
 
@@ -85,7 +85,7 @@ def test_http_headers():
         # Test header parsing
         headers = {
             "Content-Type": "application/json",
-            "User-Agent": "XSystem-Test/1.0",
+            "User-Agent": "xwsystem-Test/1.0",
             "Accept": "application/json",
             "Authorization": "Bearer token123",
             "X-API-Key": "api_key_456"
@@ -285,10 +285,10 @@ def test_http_connection_pooling():
 
 
 def main():
-    """Run all XSystem HTTP tests."""
-    print("[HTTP] XSystem HTTP Core Tests")
+    """Run all xwsystem HTTP tests."""
+    print("[HTTP] xwsystem HTTP Core Tests")
     print("=" * 50)
-    print("Testing XSystem HTTP features including client operations, retry logic, and error handling")
+    print("Testing xwsystem HTTP features including client operations, retry logic, and error handling")
     print("=" * 50)
     tests = [
         ("HTTP Client Basic", test_http_client_basic),
@@ -310,14 +310,14 @@ def main():
         except Exception as e:
             print(f"[FAIL] Test {test_name} crashed: {e}")
     print(f"\n{'='*50}")
-    print("[MONITOR] XSYSTEM HTTP TEST SUMMARY")
+    print("[MONITOR] xwsystem HTTP TEST SUMMARY")
     print(f"{'='*50}")
     print(f"Results: {passed}/{total} tests passed")
     if passed == total:
-        print("[SUCCESS] All XSystem HTTP tests passed!")
+        print("[SUCCESS] All xwsystem HTTP tests passed!")
         return 0
     else:
-        print("[ERROR] Some XSystem HTTP tests failed!")
+        print("[ERROR] Some xwsystem HTTP tests failed!")
         return 1
 if __name__ == "__main__":
     exit(main())

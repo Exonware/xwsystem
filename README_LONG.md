@@ -33,6 +33,8 @@ The short [README.md](README.md) summarizes this in a **Depth (no feature left b
 
 ## 📦 **Three Installation Types**
 
+**Requires Python 3.12+.** (See [pyproject.toml](pyproject.toml) `requires-python`.)
+
 Choose your preferred installation method:
 
 ### **1. Default (Lite) — Core Only**

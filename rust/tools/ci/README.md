@@ -95,7 +95,7 @@ print(result.output2)
 ## Requirements
 
 - **Rust toolchain** - Install from https://rustup.rs/
-- **Python 3.8+** - Make sure Python is in PATH
+- **Python 3.12+** - Make sure Python is in PATH
 - **maturin** - Automatically installed by build_python.bat if needed
 
 ## Error Handling

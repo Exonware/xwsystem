@@ -2,7 +2,7 @@
 #exonware/xwsystem/tests/core/structures/runner.py
 """
 Structures Core Test Runner
-Runs comprehensive structures core tests for XSystem data structures.
+Runs comprehensive structures core tests for xwsystem data structures.
 """
 
 import sys
