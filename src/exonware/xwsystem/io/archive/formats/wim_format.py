@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.13
+Version: 0.9.0.14
 Generation Date: November 1, 2025
 WIM (Windows Imaging) format - RANK #9 SYSTEM IMAGES.
 **Used by Microsoft for system images**

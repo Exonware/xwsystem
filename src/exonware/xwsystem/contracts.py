@@ -4,7 +4,7 @@ High-level, cross-cutting interfaces for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.13
+Version: 0.9.0.14
 Last Updated: 29-Jan-2026
 MANDATORY (GUIDE_31_DEV.md): interfaces in `contracts.py` MUST use `Protocol`.
 """

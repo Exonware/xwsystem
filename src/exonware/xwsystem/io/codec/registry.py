@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.13
+Version: 0.9.0.14
 Generation Date: November 04, 2025
 Universal Codec Registry - High-performance registry for all codec types.
 """
