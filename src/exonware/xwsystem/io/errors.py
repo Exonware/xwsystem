@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team  
 Email: connect@exonware.com
-Version: 0.9.0.12
+Version: 0.9.0.13
 Generation Date: 30-Oct-2025
 IO module errors - ALL exceptions in ONE place.
 Consolidated from all submodules for maintainability.

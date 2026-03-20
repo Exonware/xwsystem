@@ -10,7 +10,7 @@ Provides generic file security operations that can be used by any library:
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.12
+Version: 0.9.0.13
 Generation Date: 26-Jan-2025
 """
 
@@ -93,16 +93,10 @@ class FileSecurity:
             FileIOError: If file doesn't exist (when check_exists=True)
         """
         path_obj = Path(path)
-        # Check for absolute paths
-        if path_obj.is_absolute() and not self._allow_absolute_paths:
-            raise PathSecurityError(
-                "Absolute paths are not allowed",
-                path=str(path),
-                context={'operation': operation}
-            )
         # REUSE xwsystem PathValidator
         try:
-            validated_path = self._path_validator.validate_path(str(path), for_writing=(operation == "write"))
+            for_writing = (operation == "write") or (operation == "convert_file" and not check_exists)
+            validated_path = self._path_validator.validate_path(str(path), for_writing=for_writing)
         except PathSecurityError as e:
             raise PathSecurityError(
                 f"Path validation failed: {e}",
@@ -140,7 +134,8 @@ class FileSecurity:
             )
         # REUSE xwsystem resource limits for consistency
         resource_limits = get_resource_limits()
-        max_file_size = min(self._max_file_size, resource_limits.max_file_size)
+        limits_file_size = getattr(resource_limits, 'max_file_size', self._max_file_size)
+        max_file_size = min(self._max_file_size, limits_file_size)
         if size > max_file_size:
             raise FileSizeLimitError(
                 f"File size {size} exceeds limit {max_file_size}",

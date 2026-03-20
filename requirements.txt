@@ -7,7 +7,7 @@
 #
 # This file contains dependencies for xSystem's 17 core lightweight serialization formats (~10 MB)
 # Enterprise formats (~87 MB) moved to exonware-xwformats for modular installation
-# Compatible with Python 3.8+
+# Requires Python 3.12+
 #
 # Usage:
 #   pip install -r requirements.txt

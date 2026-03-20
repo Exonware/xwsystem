@@ -15,7 +15,10 @@ logger = logging.getLogger(__name__)
 
 class PathSecurityError(Exception):
     """Raised when a path fails security validation."""
-    pass
+    def __init__(self, message: str, path: str | None = None, context: dict | None = None):
+        super().__init__(message)
+        self.path = path
+        self.context = context or {}
 
 
 class PathValidator:

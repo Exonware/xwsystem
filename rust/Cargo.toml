@@ -28,7 +28,7 @@ quick_cache = { version = "0.4", optional = true }  # Fast probabilistic cache
 dashmap = { version = "5.5", optional = true }  # Fast concurrent HashMap
 
 # Python bindings
-pyo3 = { version = "0.21", optional = true, features = ["extension-module", "abi3-py38"] }
+pyo3 = { version = "0.21", optional = true, features = ["extension-module", "abi3-py312"] }
 pythonize = { version = "0.21", optional = true }
 
 # Optional high-performance JSON parsing libraries

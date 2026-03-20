@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.12
+Version: 0.9.0.13
 Generation Date: September 04, 2025
 Security module errors - exception classes for security functionality.
 """
