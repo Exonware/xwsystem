@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.15
+Version: 0.9.0.16
 Generation Date: January 2026
 XWConcurrency - Unified Concurrency Facade
 Simplified API for threading and concurrency:
@@ -19,6 +19,7 @@ from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from .safe_factory import ThreadSafeFactory, MethodGenerator
 from .async_primitives import (
+    AsyncRWLock,
     AsyncLock,
     AsyncSemaphore,
     AsyncEvent,
@@ -68,6 +69,11 @@ class XWConcurrency:
     def Lock() -> AsyncLock:
         """Create async lock."""
         return AsyncLock()
+    @staticmethod
+
+    def RWLock() -> AsyncRWLock:
+        """Create async read-write lock."""
+        return AsyncRWLock()
     @staticmethod
 
     def Semaphore(value: int = 1) -> AsyncSemaphore:

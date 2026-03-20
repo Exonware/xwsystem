@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.15
+Version: 0.9.0.16
 Generation Date: October 26, 2025
 Universal operations library for data manipulation.
 """

@@ -1,6 +1,6 @@
 application:
   environment: production
-  name: XSystem
+  name: xwsystem
   version: 1.0.0
 security:
   encryption: AES-256

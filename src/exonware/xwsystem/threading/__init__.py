@@ -8,6 +8,7 @@ track_stats=True). threading.RLock remains ~7.1M ops/s when you need no extras.
 
 from .locks import EnhancedRLock
 from .safe_factory import MethodGenerator, ThreadSafeFactory
+from .async_primitives import AsyncRWLock
 # Unified Facade
 from .facade import XWConcurrency
 
@@ -41,6 +42,7 @@ __all__ = [
     "ThreadSafeFactory",
     "MethodGenerator",
     "EnhancedRLock",
+    "AsyncRWLock",
     "fast_lock",
     "create_thread_safe_cache",
 ]

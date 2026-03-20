@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.15
+Version: 0.9.0.16
 Generation Date: October 10, 2025
 XWSystem - Enterprise-grade Python framework with AI-powered performance optimization.
 🚀 QUICK START:
@@ -168,7 +168,7 @@ from .threading import fast_lock, create_thread_safe_cache
 from .threading.safe_factory import MethodGenerator, ThreadSafeFactory
 from .threading.async_primitives import (
     AsyncLock, AsyncSemaphore, AsyncEvent, AsyncQueue, 
-    AsyncCondition, AsyncResourcePool
+    AsyncCondition, AsyncResourcePool, AsyncRWLock
 )
 # Performance management (now in monitoring module)
 from .monitoring import GenericPerformanceManager, PerformanceRecommendation, HealthStatus
@@ -573,6 +573,7 @@ __all__ = [
     "AsyncQueue",
     "AsyncCondition",
     "AsyncResourcePool",
+    "AsyncRWLock",
     # Security
     "PathValidator",
     "PathSecurityError",

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.15
+Version: 0.9.0.16
 Generation Date: September 04, 2025
 Async-aware concurrency primitives and synchronization utilities.
 """
@@ -23,6 +23,96 @@ def _debug_log(message: str) -> None:
     """Log debug message only if debug logging is enabled."""
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(message)
+
+
+class AsyncRWLock:
+    """
+    Async read-write lock for concurrent read-heavy workloads.
+
+    Allows multiple concurrent readers and exclusive writers.
+    """
+
+    def __init__(self):
+        self._readers = 0
+        self._writers_waiting = 0
+        self._writer_active = False
+        self._lock = asyncio.Lock()
+        self._read_ready = asyncio.Condition(self._lock)
+        self._write_ready = asyncio.Condition(self._lock)
+
+    @asynccontextmanager
+    async def read_lock(self):
+        """Acquire read lock (concurrent reads allowed)."""
+        async with self._read_ready:
+            while self._writer_active or self._writers_waiting > 0:
+                await self._read_ready.wait()
+            self._readers += 1
+        try:
+            yield
+        finally:
+            async with self._read_ready:
+                self._readers -= 1
+                if self._readers == 0 and self._writers_waiting > 0:
+                    self._write_ready.notify()
+
+    @asynccontextmanager
+    async def write_lock(self):
+        """Acquire write lock (exclusive access)."""
+        async with self._write_ready:
+            self._writers_waiting += 1
+            while self._readers > 0 or self._writer_active:
+                await self._write_ready.wait()
+            self._writer_active = True
+            self._writers_waiting -= 1
+        try:
+            yield
+        finally:
+            async with self._write_ready:
+                self._writer_active = False
+                if self._writers_waiting > 0:
+                    self._write_ready.notify()
+                else:
+                    self._read_ready.notify_all()
+
+    async def acquire_read(self) -> None:
+        """Acquire read lock manually (requires release_read())."""
+        async with self._read_ready:
+            while self._writer_active or self._writers_waiting > 0:
+                await self._read_ready.wait()
+            self._readers += 1
+
+    async def release_read(self) -> None:
+        """Release read lock acquired by acquire_read()."""
+        async with self._read_ready:
+            self._readers -= 1
+            if self._readers == 0 and self._writers_waiting > 0:
+                self._write_ready.notify()
+
+    async def acquire_write(self) -> None:
+        """Acquire write lock manually (requires release_write())."""
+        async with self._write_ready:
+            self._writers_waiting += 1
+            while self._readers > 0 or self._writer_active:
+                await self._write_ready.wait()
+            self._writer_active = True
+            self._writers_waiting -= 1
+
+    async def release_write(self) -> None:
+        """Release write lock acquired by acquire_write()."""
+        async with self._write_ready:
+            self._writer_active = False
+            if self._writers_waiting > 0:
+                self._write_ready.notify()
+            else:
+                self._read_ready.notify_all()
+
+    def get_stats(self) -> dict[str, bool | int]:
+        """Return current lock state for observability/debugging."""
+        return {
+            "readers": self._readers,
+            "writers_waiting": self._writers_waiting,
+            "writer_active": self._writer_active,
+        }
 
 
 class AsyncLock:

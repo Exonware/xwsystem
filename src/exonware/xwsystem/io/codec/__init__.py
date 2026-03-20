@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.15
+Version: 0.9.0.16
 Generation Date: October 30, 2025
 Universal Codec Abstraction for eXonware.
 Provides unified interface for all encoding/decoding operations
@@ -71,6 +71,7 @@ from .base import (
     FormatterToSerializer,
     SerializerToFormatter,
 )
+from .registration import register_adapter_instance, auto_register_from_factories
 # Convenience functions using global registry
 
 def get_codec(key: MediaKey):
@@ -161,6 +162,8 @@ __all__ = [
     # Adapters
     'FormatterToSerializer',
     'SerializerToFormatter',
+    'register_adapter_instance',
+    'auto_register_from_factories',
     # Errors
     'CodecError',
     'EncodeError',
