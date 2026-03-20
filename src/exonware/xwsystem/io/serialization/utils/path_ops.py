@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.14
+Version: 0.9.0.15
 Generation Date: November 9, 2025
 Path operations utilities for serialization formats.
 Provides JSONPointer path parsing and manipulation utilities that serializers

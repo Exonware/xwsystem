@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.14
+Version: 0.9.0.15
 Generation Date: 30-Oct-2025
 Line-based paging strategy.
 Priority 1 (Security): Safe line-level operations
