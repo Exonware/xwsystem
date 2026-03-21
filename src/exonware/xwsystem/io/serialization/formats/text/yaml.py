@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.16
+Version: 0.9.0.17
 Generation Date: November 2, 2025
 YAML serialization - Human-readable data serialization format.
 Following I→A pattern:
@@ -195,7 +195,21 @@ class YamlSerializer(ASerialization):
             opts = options or {}
             # Decode from YAML string (using safe_load for security)
             loader = opts.get('Loader', yaml.SafeLoader)
-            data = yaml.load(repr, Loader=loader)
+            # Multi-document YAML support:
+            # return a list for multi-doc streams, single object otherwise.
+            text = repr
+            stripped = text.lstrip()
+            has_doc_markers = stripped.startswith('---') or '\n---' in text
+            if has_doc_markers:
+                documents = [doc for doc in yaml.load_all(text, Loader=loader) if doc is not None]
+                if len(documents) == 1:
+                    data = documents[0]
+                elif len(documents) > 1:
+                    data = documents
+                else:
+                    data = None
+            else:
+                data = yaml.load(text, Loader=loader)
             # Reject YAML bombs: alias expansion can produce huge structures (GUIDE_53_FIX security).
             if data is not None:
                 _yaml_decoded_size_estimate(data)

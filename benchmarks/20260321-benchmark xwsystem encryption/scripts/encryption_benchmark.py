@@ -5,7 +5,7 @@ Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
 Run after all at-rest strategies are implemented. Outputs fastest→slowest and safety tier table.
-Usage: python -m benchmarks.encryption_benchmark [--output docs/encryption_benchmark_results.md]
+Usage: PYTHONPATH=src python "benchmarks/20260321-benchmark xwsystem encryption/scripts/encryption_benchmark.py" [--output docs/encryption_benchmark_results.md]
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ import sys
 import time
 from pathlib import Path
 # Ensure src is on path when run from repo root
-_repo_root = Path(__file__).resolve().parent.parent
+_repo_root = Path(__file__).resolve().parents[3]
 if str(_repo_root / "src") not in sys.path:
     sys.path.insert(0, str(_repo_root / "src"))
 from exonware.xwsystem.security.at_rest import (

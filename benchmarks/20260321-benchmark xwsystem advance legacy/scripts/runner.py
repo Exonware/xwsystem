@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-#exonware/xwsystem/tests/3.advance/benchmarks/runner.py
+#exonware/xwsystem/benchmarks/20260321-benchmark xwsystem advance legacy/scripts/runner.py
 Benchmark runner for xwsystem (pytest-benchmark).
 Outputs:
-- docs/logs/benchmarks/BENCH_YYYYMMDD_HHMM_DESCRIPTION.md
+- benchmarks/<campaign>/benchmarks/BENCH_YYYYMMDD_HHMM_DESCRIPTION.md (GUIDE_54_BENCH)
 This is the canonical benchmark entry point used before release.
 """
 
@@ -43,9 +43,10 @@ def main() -> int:
     ensure_utf8_console()
     repo_root = Path(__file__).resolve().parents[3]
     bench_dir = Path(__file__).parent
-    logs_dir = repo_root / "docs" / "logs" / "benchmarks"
+    campaign_root = bench_dir.parent
+    logs_dir = campaign_root / "benchmarks"
     logs_dir.mkdir(parents=True, exist_ok=True)
-    storage_dir = logs_dir / "baseline"
+    storage_dir = campaign_root / "data" / "baseline"
     storage_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     output_file = logs_dir / f"BENCH_{timestamp}_ADVANCE_BENCHMARKS.md"

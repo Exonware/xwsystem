@@ -19,5 +19,8 @@ Benchmark campaigns live in date-title folders. Each folder has:
 | [20260210-benchmark xwsystem validation](20260210-benchmark%20xwsystem%20validation/) | check_data_depth and validate_path_input throughput |
 | [20260210-benchmark xwsystem threading locks](20260210-benchmark%20xwsystem%20threading%20locks/) | EnhancedRLock vs threading.RLock |
 | [20260210-benchmark xwsystem async fabric](20260210-benchmark%20xwsystem%20async%20fabric/) | Async Process Fabric: task submission, queue, shared memory (REF_54_BENCH scaffold) |
+| [20260321-benchmark xwsystem advance legacy](20260321-benchmark%20xwsystem%20advance%20legacy/) | Pytest serialization bench + legacy caching/codec scripts (migrated from `tests/3.advance/benchmarks/`) |
+| [20260321-benchmark xwsystem encryption](20260321-benchmark%20xwsystem%20encryption/) | At-rest encryption throughput/latency (`encryption_benchmark.py`) |
+| [20260321-benchmark xwsystem performance suite](20260321-benchmark%20xwsystem%20performance%20suite/) | Comprehensive component suite (`benchmark_suite.py`) |
 
 *Per GUIDE_54_BENCH: benchmarks at project root; date at start (YYYYMMDD), then title.*

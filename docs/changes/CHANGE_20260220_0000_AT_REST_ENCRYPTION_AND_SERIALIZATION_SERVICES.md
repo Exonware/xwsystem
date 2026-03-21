@@ -48,7 +48,7 @@ Added unified at-rest encryption (IAtRestEncryption) with multiple implementatio
 - `src/exonware/xwsystem/io/serialization/services/archive.py` — ArchiveService (gzip/zst/lz4).
 - `src/exonware/xwsystem/io/serialization/services/binary.py` — BinaryService (length-prefix framing).
 - `src/exonware/xwsystem/io/serialization/services/pipeline.py` — apply_pipeline_save, apply_pipeline_load.
-- `benchmarks/encryption_benchmark.py` — throughput and latency benchmark for at-rest implementations.
+- `benchmarks/20260321-benchmark xwsystem encryption/scripts/encryption_benchmark.py` — throughput and latency benchmark for at-rest implementations.
 - `tests/1.unit/security_tests/test_at_rest.py` — unit tests for at-rest encryption.
 
 **Files Modified:**

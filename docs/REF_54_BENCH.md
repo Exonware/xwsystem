@@ -172,7 +172,7 @@ The following guidance is derived from benchmark campaigns (see `benchmarks/INDE
 
 ### At-Rest Encryption
 
-Benchmark script: `benchmarks/encryption_benchmark.py`. Run from xwsystem root with `PYTHONPATH=src python benchmarks/encryption_benchmark.py [-o docs/encryption_benchmark_results.md]`.
+Benchmark script: `benchmarks/20260321-benchmark xwsystem encryption/scripts/encryption_benchmark.py`. Run from xwsystem root with `PYTHONPATH=src python "benchmarks/20260321-benchmark xwsystem encryption/scripts/encryption_benchmark.py" [-o docs/encryption_benchmark_results.md]`.
 
 **Throughput (MB/s) and latency (ms)** — see [encryption_benchmark_results.md](encryption_benchmark_results.md) for full tables. Summary: AES-256-GCM is fastest (e.g. ~1.5–4k MB/s at 100 KiB–10 MiB), XChaCha20-Poly1305 next, Fernet slowest; latency for 64 B–1 KiB is sub-millisecond for all.
 
@@ -337,7 +337,7 @@ def test_nfr_004_cache_constant_time(benchmark, size):
 
 **Verification:**
 ```bash
-pytest tests/3.advance/benchmarks/ \
+pytest "benchmarks/20260321-benchmark xwsystem advance legacy/scripts/bench_serialization.py" \
   --benchmark-only \
   --benchmark-compare=baseline \
   --benchmark-compare-fail=mean:10%
@@ -539,19 +539,19 @@ Format: `vX.Y.Z_baseline.md` or `vX.Y.Z.BUILD_baseline.md`
 **Save a Baseline:**
 ```bash
 # Run benchmarks and save
-pytest tests/3.advance/benchmarks/ --benchmark-only --benchmark-save=baseline_v0.0.1
+pytest "benchmarks/20260321-benchmark xwsystem advance legacy/scripts/bench_serialization.py" --benchmark-only --benchmark-save=baseline_v0.0.1
 
-# Move to baseline directory
-mv .benchmarks/baseline_v0.0.1.json docs/logs/benchmarks/baseline/
+# Move to baseline directory (campaign data/)
+mv .benchmarks/baseline_v0.0.1.json "benchmarks/20260321-benchmark xwsystem advance legacy/data/baseline/"
 ```
 
 **Compare to Baseline:**
 ```bash
 # Compare current performance to baseline
-pytest tests/3.advance/benchmarks/ --benchmark-only --benchmark-compare=baseline_v0.0.1
+pytest "benchmarks/20260321-benchmark xwsystem advance legacy/scripts/bench_serialization.py" --benchmark-only --benchmark-compare=baseline_v0.0.1
 
 # Fail if > 10% slower
-pytest tests/3.advance/benchmarks/ --benchmark-only \
+pytest "benchmarks/20260321-benchmark xwsystem advance legacy/scripts/bench_serialization.py" --benchmark-only \
   --benchmark-compare=baseline_v0.0.1 \
   --benchmark-compare-fail=mean:10%
 ```

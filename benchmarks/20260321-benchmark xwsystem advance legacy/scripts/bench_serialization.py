@@ -1,5 +1,5 @@
 """
-#exonware/xwsystem/tests/3.advance/benchmarks/bench_serialization.py
+#exonware/xwsystem/benchmarks/20260321-benchmark xwsystem advance legacy/scripts/bench_serialization.py
 Benchmarks for xwsystem serialization.
 WHY: Verify serialization performance meets SLAs defined in docs/REF_BENCH.md.
 """
@@ -11,7 +11,7 @@ from exonware.xwsystem import JsonSerializer
 def test_benchmark_json_roundtrip_small(benchmark):
     """
     SLA (placeholder): keep mean under agreed baseline for small payloads.
-    Evidence: docs/logs/benchmarks/
+    Evidence: benchmarks/<campaign>/benchmarks/
     """
     s = JsonSerializer()
     payload = {"ok": True, "v": [1, 2, 3], "name": "alice"}

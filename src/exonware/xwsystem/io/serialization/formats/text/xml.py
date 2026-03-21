@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.16
+Version: 0.9.0.17
 Generation Date: November 2, 2025
 XML serialization - Extensible Markup Language.
 Following I→A pattern:
@@ -385,6 +385,7 @@ class XmlSerializer(ASerialization):
         opts = options or {}
         root_name = opts.get('root', 'root')
         preserve_types = opts.get('preserve_types', False)
+        infer_types = opts.get('infer_types', True)
         # Decode from XML string with security features enabled
         # Root cause fixed: Use available security features based on xmltodict version.
         # Priority #1: Security - Use all available security features.
@@ -430,7 +431,7 @@ class XmlSerializer(ASerialization):
         # Root cause fixed: Dictionary keys were sanitized during encoding.
         # Solution: Restore original keys from @_original_key attributes.
         # Priority #2: Usability - Round-trip serialization preserves key names.
-        data = self._restore_original_keys(data)
+        data = self._restore_original_keys(data, infer_types=infer_types)
         # Restore types if they were preserved
         if preserve_types:
             data = self._restore_types(data)
@@ -471,7 +472,7 @@ class XmlSerializer(ASerialization):
         # Return original string if no type matches
         return value
 
-    def _restore_original_keys(self, data: Any) -> Any:
+    def _restore_original_keys(self, data: Any, infer_types: bool = True) -> Any:
         """
         Restore original dictionary keys from @_original_key attributes.
         Root cause fixed: Keys were sanitized during encoding (e.g., UUIDs starting with digits).
@@ -496,24 +497,25 @@ class XmlSerializer(ASerialization):
                     # If clean_value has only #text, unwrap it
                     if len(clean_value) == 1 and '#text' in clean_value:
                         clean_value = clean_value['#text']
-                        # Infer type for unwrapped text value
-                        clean_value = self._infer_type(clean_value)
+                        # Infer type for unwrapped text value (optional)
+                        if infer_types:
+                            clean_value = self._infer_type(clean_value)
                     # Recursively restore keys in the value
-                    clean_value = self._restore_original_keys(clean_value)
+                    clean_value = self._restore_original_keys(clean_value, infer_types=infer_types)
                     result[original_key] = clean_value
                 else:
                     # Recursively restore keys in the value
-                    restored_value = self._restore_original_keys(value)
-                    # Infer type for leaf string values
-                    if isinstance(restored_value, str):
+                    restored_value = self._restore_original_keys(value, infer_types=infer_types)
+                    # Infer type for leaf string values (optional)
+                    if infer_types and isinstance(restored_value, str):
                         restored_value = self._infer_type(restored_value)
                     result[key] = restored_value
             return result
         elif isinstance(data, list):
-            return [self._restore_original_keys(item) for item in data]
+            return [self._restore_original_keys(item, infer_types=infer_types) for item in data]
         else:
             # Infer type for leaf string values
-            if isinstance(data, str):
+            if infer_types and isinstance(data, str):
                 return self._infer_type(data)
             return data
     # Note: File operations (save_file, load_file) are inherited from ASerialization base class

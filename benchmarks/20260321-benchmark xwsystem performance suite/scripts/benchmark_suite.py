@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/tests/performance/benchmark_suite.py
+#exonware/xwsystem/benchmarks/20260321-benchmark xwsystem performance suite/scripts/benchmark_suite.py
 """
 xwsystem Performance Benchmark Suite
 ===================================
@@ -22,7 +22,7 @@ import json
 import sys
 import os
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src'))
 from exonware.xwsystem import (
     # Async I/O
     async_safe_write_text, async_safe_read_text,

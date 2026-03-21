@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.16
+Version: 0.9.0.17
 Generation Date: September 04, 2025
 xwsystem Runtime Package
 Provides runtime utilities for environment detection, path management,

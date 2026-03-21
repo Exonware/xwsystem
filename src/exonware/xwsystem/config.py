@@ -4,7 +4,7 @@ Package-level configuration entry points for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.16
+Version: 0.9.0.17
 Last Updated: 29-Jan-2026
 This module exists to satisfy the canonical structure in GUIDE_31_DEV.md:
 - `config.py` at package root for configuration surfaces.
