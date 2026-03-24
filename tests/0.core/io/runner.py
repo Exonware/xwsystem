@@ -43,12 +43,12 @@ class IoCoreTester:
                     content = f.read()
                     assert content == test_content
                 print("[PASS] Atomic file writer tests passed")
-                return True
+                return
             finally:
                 temp_file.unlink(missing_ok=True)
         except Exception as e:
             print(f"[FAIL] Atomic file writer tests failed: {e}")
-            return False
+            return
 
     def test_safe_file_operations(self) -> bool:
         """Test safe file operations."""
@@ -76,12 +76,12 @@ class IoCoreTester:
                 read_bytes = safe_read_bytes(temp_file)
                 assert read_bytes == test_bytes
                 print("[PASS] Safe file operations tests passed")
-                return True
+                return
             finally:
                 temp_file.unlink(missing_ok=True)
         except Exception as e:
             print(f"[FAIL] Safe file operations tests failed: {e}")
-            return False
+            return
 
     def test_async_file_operations(self) -> bool:
         """Test async file operations."""
@@ -107,19 +107,19 @@ class IoCoreTester:
                     # Test async read bytes
                     read_bytes = await async_safe_read_bytes(temp_file)
                     assert read_bytes == test_bytes
-                    return True
+                    return
                 finally:
                     temp_file.unlink(missing_ok=True)
             # Run async test
             result = asyncio.run(test_async_operations())
             if result:
                 print("[PASS] Async file operations tests passed")
-                return True
+                return
             else:
-                return False
+                return
         except Exception as e:
             print(f"[FAIL] Async file operations tests failed: {e}")
-            return False
+            return
 
     def test_file_operation_errors(self) -> bool:
         """Test file operation error handling."""
@@ -132,7 +132,7 @@ class IoCoreTester:
             try:
                 safe_write_text(invalid_path, "test content")
                 print("[WARNING]  Expected error for invalid path")
-                return False
+                return
             except (FileOperationError, OSError, PermissionError):
                 pass  # Expected behavior
             # Test reading from non-existent file
@@ -140,14 +140,14 @@ class IoCoreTester:
             try:
                 content = safe_read_text(non_existent_file)
                 print("[WARNING]  Expected error for non-existent file")
-                return False
+                return
             except (FileOperationError, FileNotFoundError):
                 pass  # Expected behavior
             print("[PASS] File operation error handling tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] File operation error handling tests failed: {e}")
-            return False
+            return
 
     def test_path_manager(self) -> bool:
         """Test path manager functionality."""
@@ -173,10 +173,10 @@ class IoCoreTester:
                 is_valid = path_manager.validate_path(path)
                 assert isinstance(is_valid, bool)
             print("[PASS] Path manager tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Path manager tests failed: {e}")
-            return False
+            return
 
     def test_concurrent_file_operations(self) -> bool:
         """Test concurrent file operations."""
@@ -209,12 +209,12 @@ class IoCoreTester:
                 content = safe_read_text(temp_file)
                 assert len(content) > 0
                 print("[PASS] Concurrent file operations tests passed")
-                return True
+                return
             finally:
                 temp_file.unlink(missing_ok=True)
         except Exception as e:
             print(f"[FAIL] Concurrent file operations tests failed: {e}")
-            return False
+            return
 
     def test_all_serialization_tests(self) -> int:
         """Run all serialization core tests."""

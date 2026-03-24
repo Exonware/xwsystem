@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: January 2026
 XWArchive - Unified Archiving Facade
 Simplified API for all archive formats:

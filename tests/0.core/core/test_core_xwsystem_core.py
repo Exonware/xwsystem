@@ -40,10 +40,9 @@ def test_base_core():
         assert isinstance(is_init, bool)
         core.shutdown()
         print("✅ Base core tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Base core tests failed: {e}")
-        return False
+        raise AssertionError(f"Base core tests failed: {e}") from e
 
 
 def test_core_interfaces():
@@ -56,10 +55,9 @@ def test_core_interfaces():
         # Verify object can be instantiated
         assert core is not None
         print("✅ Core interfaces tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Core interfaces tests failed: {e}")
-        return False
+        raise AssertionError(f"Core interfaces tests failed: {e}") from e
 
 
 def test_core_error_handling():
@@ -71,10 +69,9 @@ def test_core_error_handling():
         core_error = CoreError("Test core error")
         assert str(core_error) == "Test core error"
         print("✅ Core error handling tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Core error handling tests failed: {e}")
-        return False
+        raise AssertionError(f"Core error handling tests failed: {e}") from e
 
 
 def test_core_lifecycle():
@@ -88,10 +85,9 @@ def test_core_lifecycle():
         assert core.is_initialized()
         core.shutdown()
         print("✅ Core lifecycle tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Core lifecycle tests failed: {e}")
-        return False
+        raise AssertionError(f"Core lifecycle tests failed: {e}") from e
 
 
 def main():

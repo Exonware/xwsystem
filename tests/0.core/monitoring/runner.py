@@ -40,10 +40,10 @@ class MonitoringCoreTester:
             summary = monitor.get_performance_summary()
             assert isinstance(summary, dict)
             print("[PASS] Performance monitor tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Performance monitor tests failed: {e}")
-            return False
+            return
 
     def test_memory_monitor(self) -> bool:
         """Test memory monitoring functionality."""
@@ -64,10 +64,10 @@ class MonitoringCoreTester:
             time.sleep(0.1)
             monitor.stop_monitoring()
             print("[PASS] Memory monitor tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Memory monitor tests failed: {e}")
-            return False
+            return
 
     def test_circuit_breaker(self) -> bool:
         """Test circuit breaker functionality."""
@@ -97,10 +97,10 @@ class MonitoringCoreTester:
             except Exception as e:
                 _ = e  # Expected: circuit breaker propagates failure
             print("[PASS] Circuit breaker tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Circuit breaker tests failed: {e}")
-            return False
+            return
 
     def test_error_recovery(self) -> bool:
         """Test error recovery functionality."""
@@ -130,10 +130,10 @@ class MonitoringCoreTester:
             result = graceful_degradation(primary_operation, fallback_operation)
             assert result == "fallback_result"
             print("[PASS] Error recovery tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Error recovery tests failed: {e}")
-            return False
+            return
 
     def test_performance_validator(self) -> bool:
         """Test performance validation functionality."""
@@ -165,10 +165,10 @@ class MonitoringCoreTester:
             is_valid = validator.validate_metric(metric)
             assert isinstance(is_valid, bool)
             print("[PASS] Performance validator tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Performance validator tests failed: {e}")
-            return False
+            return
 
     def test_system_monitor(self) -> bool:
         """Test system monitoring functionality."""
@@ -189,10 +189,10 @@ class MonitoringCoreTester:
             processes = monitor.list_processes()
             assert isinstance(processes, list)
             print("[PASS] System monitor tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] System monitor tests failed: {e}")
-            return False
+            return
 
     def test_all_monitoring_tests(self) -> int:
         """Run all monitoring core tests."""

@@ -50,10 +50,10 @@ class SecurityCoreTester:
             different_hash = SecureHash.sha256(different_data)
             assert hash1 != different_hash
             print("[PASS] Secure hash core tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Secure hash core tests failed: {e}")
-            return False
+            return
 
     def test_symmetric_encryption(self) -> bool:
         """Test symmetric encryption functionality."""
@@ -77,10 +77,10 @@ class SecurityCoreTester:
             decrypted_with_password = decryption_with_password.decrypt(encrypted_with_password)
             assert decrypted_with_password == test_data
             print("[PASS] Symmetric encryption core tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Symmetric encryption core tests failed: {e}")
-            return False
+            return
 
     def test_path_validation(self) -> bool:
         """Test path validation functionality."""
@@ -100,7 +100,7 @@ class SecurityCoreTester:
                     # Should not raise exception for valid paths
                 except Exception as e:
                     print(f"[FAIL] Valid path {path} failed validation: {e}")
-                    return False
+                    return
             # Test invalid paths (path traversal attempts)
             invalid_paths = [
                 "../../../etc/passwd",
@@ -112,14 +112,14 @@ class SecurityCoreTester:
                 try:
                     validator.validate_path(path)
                     print(f"[FAIL] Invalid path {path} should have failed validation")
-                    return False
+                    return
                 except Exception:
                     continue  # Expected: invalid path raises
             print("[PASS] Path validation core tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Path validation core tests failed: {e}")
-            return False
+            return
 
     def test_password_hashing(self) -> bool:
         """Test password hashing functionality."""
@@ -142,10 +142,10 @@ class SecurityCoreTester:
             different_hash = hash_password(different_password)
             assert hashed_password != different_hash
             print("[PASS] Password hashing core tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Password hashing core tests failed: {e}")
-            return False
+            return
 
     def test_secure_random(self) -> bool:
         """Test secure random generation."""
@@ -167,10 +167,10 @@ class SecurityCoreTester:
             random_bytes2 = SecureRandom.random_bytes(32)
             assert random_bytes != random_bytes2
             print("[PASS] Secure random core tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Secure random core tests failed: {e}")
-            return False
+            return
 
     def test_convenience_functions(self) -> bool:
         """Test security convenience functions."""
@@ -193,10 +193,10 @@ class SecurityCoreTester:
             decrypted_with_password = quick_decrypt(encrypted_with_password, password)
             assert decrypted_with_password == test_data
             print("[PASS] Security convenience functions core tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Security convenience functions core tests failed: {e}")
-            return False
+            return
 
     def test_all_security_tests(self) -> int:
         """Run all security core tests."""

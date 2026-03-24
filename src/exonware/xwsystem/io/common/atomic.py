@@ -131,11 +131,11 @@ class AtomicFileWriter:
             if temp_stat.st_size == 0:
                 logger.warning(f"Temporary file is empty: {self.temp_path}")
             # Atomic move to target location
-            # On Windows, need to remove target first if it exists (Windows filesystem limitation)
-            if platform.system() == 'Windows' and self.target_path.exists():
-                self.target_path.unlink()
-            # Perform the atomic move
-            shutil.move(str(self.temp_path), str(self.target_path))
+            # Use retries on Windows to handle transient file-lock races.
+            if platform.system() == "Windows":
+                self._replace_with_retry(self.temp_path, self.target_path)
+            else:
+                shutil.move(str(self.temp_path), str(self.target_path))
             self._committed = True
             # Set file permissions to match original if backup exists
             if self.backup_path and self.backup_path.exists():
@@ -149,6 +149,32 @@ class AtomicFileWriter:
             # Try to rollback on commit failure
             self.rollback()
             raise FileOperationError(f"Failed to commit atomic write: {e}") from e
+
+    @staticmethod
+    def _replace_with_retry(temp_path: Path, target_path: Path, retries: int = 40, delay_s: float = 0.02) -> None:
+        """
+        Replace target with temp atomically on Windows, retrying transient lock errors.
+        """
+        last_error: Exception | None = None
+        for attempt in range(retries):
+            try:
+                os.replace(str(temp_path), str(target_path))
+                return
+            except PermissionError as e:
+                last_error = e
+                # WinError 32: file in use by another process. Retry with backoff.
+                if attempt == retries - 1:
+                    break
+                time.sleep(delay_s * (attempt + 1))
+        # Final non-atomic fallback for stubborn Windows lock cases.
+        # This preserves write availability under transient AV/indexer/file-lock races.
+        try:
+            shutil.copy2(str(temp_path), str(target_path))
+            temp_path.unlink(missing_ok=True)
+            return
+        except Exception:
+            if last_error is not None:
+                raise last_error
 
     def rollback(self) -> None:
         """

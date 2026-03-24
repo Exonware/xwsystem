@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: September 05, 2025
 Flyweight Pattern Implementation for Serializers
 Optimizes memory usage by sharing serializer instances with identical configurations.

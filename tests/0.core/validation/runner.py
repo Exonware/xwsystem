@@ -46,10 +46,10 @@ class ValidationCoreTester:
             errors = validator.get_errors()
             assert isinstance(errors, list)
             print("[PASS] Data validator tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Data validator tests failed: {e}")
-            return False
+            return
 
     def test_declarative_models(self) -> bool:
         """Test declarative model functionality."""
@@ -71,7 +71,7 @@ class ValidationCoreTester:
                 invalid_data = {"name": "", "age": -5, "email": "invalid-email"}
                 user = UserModel(**invalid_data)
                 print("[WARNING]  Expected validation error for invalid data")
-                return False
+                return
             except ValidationError:
                 pass  # Expected behavior
             # Test model validation
@@ -79,10 +79,10 @@ class ValidationCoreTester:
             is_valid = user.validate()
             assert is_valid is True
             print("[PASS] Declarative models tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Declarative models tests failed: {e}")
-            return False
+            return
 
     def test_field_validation(self) -> bool:
         """Test field validation functionality."""
@@ -113,10 +113,10 @@ class ValidationCoreTester:
             is_valid = email_field.validate("invalid-email")
             assert is_valid is False
             print("[PASS] Field validation tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Field validation tests failed: {e}")
-            return False
+            return
 
     def test_validation_errors(self) -> bool:
         """Test validation error handling."""
@@ -130,7 +130,7 @@ class ValidationCoreTester:
             try:
                 field.validate(None)
                 print("[WARNING]  Expected validation error for None value")
-                return False
+                return
             except ValidationError as e:
                 assert "required" in str(e).lower() or "none" in str(e).lower()
             # Test multiple validation errors
@@ -141,14 +141,14 @@ class ValidationCoreTester:
                 model = TestModel(name="", age=-5)
                 model.validate()
                 print("[WARNING]  Expected validation error for invalid model")
-                return False
+                return
             except ValidationError as e:
                 assert isinstance(e, ValidationError)
             print("[PASS] Validation error handling tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Validation error handling tests failed: {e}")
-            return False
+            return
 
     def test_type_safety(self) -> bool:
         """Test type safety validation."""
@@ -169,10 +169,10 @@ class ValidationCoreTester:
             assert validator.validate_type({"key": "value"}, dict) is True
             assert validator.validate_type((1, 2, 3), tuple) is True
             print("[PASS] Type safety tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Type safety tests failed: {e}")
-            return False
+            return
 
     def test_validation_rules(self) -> bool:
         """Test validation rules functionality."""
@@ -221,10 +221,10 @@ class ValidationCoreTester:
             errors = validator.get_errors()
             assert len(errors) > 0
             print("[PASS] Validation rules tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Validation rules tests failed: {e}")
-            return False
+            return
 
     def test_all_validation_tests(self) -> int:
         """Run all validation core tests."""

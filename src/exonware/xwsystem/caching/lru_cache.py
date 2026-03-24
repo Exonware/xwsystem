@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: September 04, 2025
 LRU (Least Recently Used) Cache implementation with thread-safety and async support.
 """
@@ -58,11 +58,11 @@ class LRUCache(ACache):
         """
         if capacity <= 0:
             raise ValueError(
-                f"Cache capacity must be positive, got {capacity}. "
+                f"capacity must be positive (Capacity must be positive), got {capacity}. "
                 f"Example: LRUCache(capacity=128)"
             )
         # Call parent constructor
-        super().__init__(capacity=capacity, ttl=int(ttl) if ttl else None)
+        super().__init__(capacity=capacity, ttl=float(ttl) if ttl is not None else None)
         self.name = name or f"LRUCache-{id(self)}"
         # Cache storage
         self._cache: dict[Hashable, CacheNode] = {}
@@ -90,7 +90,6 @@ class LRUCache(ACache):
         with self._lock:
             if key not in self._cache:
                 self._misses += 1
-                logger.debug(f"Cache {self.name} miss for key: {key}")
                 return default
             node = self._cache[key]
             # Check TTL if enabled
@@ -98,13 +97,11 @@ class LRUCache(ACache):
                 self._remove_node(node)
                 del self._cache[key]
                 self._misses += 1
-                logger.debug(f"Cache {self.name} TTL expired for key: {key}")
                 return default
             # Move to head (most recently used)
             self._move_to_head(node)
             node.access_time = time.time()
             self._hits += 1
-            logger.debug(f"Cache {self.name} hit for key: {key}")
             # Handle None values: if value is None, treat as "not found" and return default
             # This allows None to be a sentinel for "not cached" while still allowing
             # explicit None storage via put() (design decision for cache semantics)
@@ -126,7 +123,6 @@ class LRUCache(ACache):
                 node.value = value
                 node.access_time = time.time()
                 self._move_to_head(node)
-                logger.debug(f"Cache {self.name} updated key: {key}")
             else:
                 # Add new key
                 node = CacheNode(key, value)
@@ -136,10 +132,8 @@ class LRUCache(ACache):
                     self._remove_node(lru_node)
                     del self._cache[lru_node.key]
                     self._evictions += 1
-                    logger.debug(f"Cache {self.name} evicted LRU key: {lru_node.key}")
                 self._cache[key] = node
                 self._add_to_head(node)
-                logger.debug(f"Cache {self.name} added key: {key}")
 
     def set(self, key: str, value: Any, ttl: int | None = None) -> None:
         """
@@ -151,6 +145,30 @@ class LRUCache(ACache):
             ttl: Optional time-to-live (not used in LRU, available for subclasses)
         """
         self.put(key, value)
+
+    def put_many(self, items: dict[Hashable, Any]) -> int:
+        """
+        Optimized batch put with a single lock acquisition.
+        """
+        count = 0
+        with self._lock:
+            for key, value in items.items():
+                if key in self._cache:
+                    node = self._cache[key]
+                    node.value = value
+                    node.access_time = time.time()
+                    self._move_to_head(node)
+                else:
+                    node = CacheNode(key, value)
+                    if len(self._cache) >= self.capacity:
+                        lru_node = self._tail.prev
+                        self._remove_node(lru_node)
+                        del self._cache[lru_node.key]
+                        self._evictions += 1
+                    self._cache[key] = node
+                    self._add_to_head(node)
+                count += 1
+        return count
 
     def delete(self, key: Hashable) -> bool:
         """
@@ -166,7 +184,6 @@ class LRUCache(ACache):
             node = self._cache[key]
             self._remove_node(node)
             del self._cache[key]
-            logger.debug(f"Cache {self.name} deleted key: {key}")
             return True
 
     def clear(self) -> None:
@@ -329,7 +346,7 @@ class AsyncLRUCache:
             name: Optional name for debugging
         """
         if capacity <= 0:
-            raise ValueError("Capacity must be positive")
+            raise ValueError("capacity must be positive (Capacity must be positive)")
         self.capacity = capacity
         self.ttl = ttl
         self.name = name or f"AsyncLRUCache-{id(self)}"

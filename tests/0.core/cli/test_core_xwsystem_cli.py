@@ -77,10 +77,9 @@ def test_console_operations():
         assert isinstance(size, tuple)
         assert len(size) == 2
         print("✅ Console operations tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Console operations tests failed: {e}")
-        return False
+        raise AssertionError(f"Console operations tests failed: {e}") from e
 
 
 def test_progress_bar():
@@ -95,10 +94,9 @@ def test_progress_bar():
             time.sleep(0.01)  # Small delay to see progress
         progress.finish()
         print("✅ Progress bar tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Progress bar tests failed: {e}")
-        return False
+        raise AssertionError(f"Progress bar tests failed: {e}") from e
 
 
 def test_prompts():
@@ -115,10 +113,9 @@ def test_prompts():
         result = prompts.select(["option1", "option2", "option3"])
         assert result in ["option1", "option2", "option3"]
         print("✅ Prompts tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Prompts tests failed: {e}")
-        return False
+        raise AssertionError(f"Prompts tests failed: {e}") from e
 
 
 def test_table_formatter():
@@ -137,10 +134,9 @@ def test_table_formatter():
         assert isinstance(result, str)
         assert len(result) > 0
         print("✅ Table formatter tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Table formatter tests failed: {e}")
-        return False
+        raise AssertionError(f"Table formatter tests failed: {e}") from e
 
 
 def test_argument_parser():
@@ -154,10 +150,9 @@ def test_argument_parser():
         result = parser.parse_args(test_args)
         assert result is not None
         print("✅ Argument parser tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Argument parser tests failed: {e}")
-        return False
+        raise AssertionError(f"Argument parser tests failed: {e}") from e
 
 
 def test_colors():
@@ -175,10 +170,9 @@ def test_colors():
         assert Colors.RED in red_text
         assert Colors.RESET in red_text
         print("✅ Colors tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Colors tests failed: {e}")
-        return False
+        raise AssertionError(f"Colors tests failed: {e}") from e
 
 
 def test_base_cli():
@@ -191,10 +185,9 @@ def test_base_cli():
         result = cli.run()
         assert isinstance(result, int)
         print("✅ Base CLI tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Base CLI tests failed: {e}")
-        return False
+        raise AssertionError(f"Base CLI tests failed: {e}") from e
 
 
 def test_cli_interfaces():
@@ -213,10 +206,9 @@ def test_cli_interfaces():
         assert prompts is not None
         assert formatter is not None
         print("✅ CLI interfaces tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ CLI interfaces tests failed: {e}")
-        return False
+        raise AssertionError(f"CLI interfaces tests failed: {e}") from e
 
 
 def test_cli_error_handling():
@@ -232,10 +224,9 @@ def test_cli_error_handling():
         assert str(console_error) == "Test console error"
         assert str(progress_error) == "Test progress error"
         print("✅ CLI error handling tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ CLI error handling tests failed: {e}")
-        return False
+        raise AssertionError(f"CLI error handling tests failed: {e}") from e
 
 
 def main():

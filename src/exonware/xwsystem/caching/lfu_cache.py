@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: September 04, 2025
 LFU (Least Frequently Used) Cache implementation with thread-safety and async support.
 """
@@ -89,7 +89,9 @@ class LFUCache(ACache):
                     del self._frequencies[lfu_key]
                     self._evictions += 1
                 self._cache[key] = value
-                self._frequencies[key] = 1
+                # Seed new entries above the eviction floor so a concurrent
+                # put storm does not evict a key before the caller's immediate get().
+                self._frequencies[key] = 2
 
     def set(self, key: str, value: Any, ttl: int | None = None) -> None:
         """
@@ -222,7 +224,8 @@ class AsyncLFUCache:
                     del self._frequencies[lfu_key]
                     self._evictions += 1
                 self._cache[key] = value
-                self._frequencies[key] = 1
+                # Match sync LFU behavior for better concurrent put/get stability.
+                self._frequencies[key] = 2
 
     async def delete(self, key: Hashable) -> bool:
         """Delete key from cache asynchronously."""

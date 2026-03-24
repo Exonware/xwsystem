@@ -58,30 +58,9 @@ class Pipe:
 
     def _create_windows_pipe(self):
         """Create Windows named pipe."""
-        # Use conditional import - pywin32 is optional for Windows optimizations
-        # If not available, fallback to multiprocessing pipe
-        if platform.system() == 'Windows':
-            import importlib.util
-            # Check if pywin32 is available without try/except
-            spec = importlib.util.find_spec('win32pipe')
-            if spec is not None:
-                win32pipe = importlib.import_module('win32pipe')
-                win32file = importlib.import_module('win32file')
-                # Create named pipe
-                self._pipe_handle = win32pipe.CreateNamedPipe(
-                    self.pipe_name,
-                    win32pipe.PIPE_ACCESS_DUPLEX if self.duplex else win32pipe.PIPE_ACCESS_OUTBOUND,
-                    win32pipe.PIPE_TYPE_BYTE | win32pipe.PIPE_READMODE_BYTE | win32pipe.PIPE_WAIT,
-                    1,  # max instances
-                    self.buffer_size,  # out buffer size
-                    self.buffer_size,  # in buffer size
-                    0,  # default timeout
-                    None  # security attributes
-                )
-                self._read_handle = self._pipe_handle
-                self._write_handle = self._pipe_handle
-                return
-        # Fallback to multiprocessing pipe (if not Windows or pywin32 not available)
+        # Use multiprocessing pipe on Windows for predictable behavior in
+        # single-process and test scenarios. Named-pipe handles require a
+        # connected client and are not directly file-like for send/recv.
         self._read_conn, self._write_conn = mp.Pipe(self.duplex)
         self._read_handle = self._read_conn
         self._write_handle = self._write_conn

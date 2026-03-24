@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: September 04, 2025
 Asynchronous I/O operations for non-blocking file handling.
 """
@@ -192,6 +192,8 @@ class AsyncAtomicFileWriter:
                     os.chmod(self.target_path, backup_stat.st_mode)
                 except OSError:
                     pass  # Ignore permission errors
+            # Successful commits should clean up backup/temp tracking state.
+            await self._cleanup()
             logger.debug(f"Committed async atomic write: {self.target_path}")
         except Exception as e:
             # Try to rollback on commit failure

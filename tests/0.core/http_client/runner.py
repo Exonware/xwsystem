@@ -38,13 +38,13 @@ class HttpCoreTester:
                 json_data = response.json()
                 assert isinstance(json_data, dict)
                 print("[PASS] HTTP client basic tests passed")
-                return True
+                return
             except Exception as e:
                 print(f"[WARNING]  HTTP client basic tests skipped (network issue): {e}")
-                return True  # Skip network-dependent tests
+                return  # Skip network-dependent tests
         except Exception as e:
             print(f"[FAIL] HTTP client basic tests failed: {e}")
-            return False
+            return
 
     def test_http_client_post(self) -> bool:
         """Test HTTP POST functionality."""
@@ -62,13 +62,13 @@ class HttpCoreTester:
                 assert 'json' in json_data
                 assert json_data['json'] == test_data
                 print("[PASS] HTTP client POST tests passed")
-                return True
+                return
             except Exception as e:
                 print(f"[WARNING]  HTTP client POST tests skipped (network issue): {e}")
-                return True  # Skip network-dependent tests
+                return  # Skip network-dependent tests
         except Exception as e:
             print(f"[FAIL] HTTP client POST tests failed: {e}")
-            return False
+            return
 
     def test_retry_config(self) -> bool:
         """Test retry configuration functionality."""
@@ -89,10 +89,10 @@ class HttpCoreTester:
             assert custom_config.backoff_factor == 2.0
             assert custom_config.status_forcelist == [500, 502, 504]
             print("[PASS] Retry config tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Retry config tests failed: {e}")
-            return False
+            return
 
     def test_async_http_client(self) -> bool:
         """Test async HTTP client functionality."""
@@ -110,20 +110,20 @@ class HttpCoreTester:
                     # Test async response methods
                     json_data = await response.json()
                     assert isinstance(json_data, dict)
-                    return True
+                    return
                 except Exception as e:
                     print(f"[WARNING]  Async HTTP client tests skipped (network issue): {e}")
-                    return True  # Skip network-dependent tests
+                    return  # Skip network-dependent tests
             # Run async test
             result = asyncio.run(test_async_client())
             if result:
                 print("[PASS] Async HTTP client tests passed")
-                return True
+                return
             else:
-                return False
+                return
         except Exception as e:
             print(f"[FAIL] Async HTTP client tests failed: {e}")
-            return False
+            return
 
     def test_advanced_http_client(self) -> bool:
         """Test advanced HTTP client functionality."""
@@ -146,10 +146,10 @@ class HttpCoreTester:
             assert hasattr(client, 'put')
             assert hasattr(client, 'delete')
             print("[PASS] Advanced HTTP client tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Advanced HTTP client tests failed: {e}")
-            return False
+            return
 
     def test_http_error_handling(self) -> bool:
         """Test HTTP error handling."""
@@ -174,10 +174,10 @@ class HttpCoreTester:
             except Exception as e:
                 _ = e  # Expected: 404 or network error
             print("[PASS] HTTP error handling tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] HTTP error handling tests failed: {e}")
-            return False
+            return
 
     def test_all_http_tests(self) -> int:
         """Run all HTTP core tests."""

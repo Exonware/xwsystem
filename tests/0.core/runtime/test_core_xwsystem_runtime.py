@@ -70,10 +70,10 @@ def test_environment_manager():
         cleared_value = env_mgr.get_env(test_key)
         assert cleared_value == "default"
         print("✅ Environment manager tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Environment manager tests failed: {e}")
-        return False
+        return
 
 
 def test_reflection_utils():
@@ -106,10 +106,10 @@ def test_reflection_utils():
         assert obj_info["type"] == "TestClass"
         assert isinstance(obj_info["attributes"], list)
         print("✅ Reflection utils tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Reflection utils tests failed: {e}")
-        return False
+        return
 
 
 def test_base_runtime():
@@ -127,10 +127,10 @@ def test_base_runtime():
         assert "platform" in info
         runtime.shutdown()
         print("✅ Base runtime tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Base runtime tests failed: {e}")
-        return False
+        return
 
 
 def test_runtime_interfaces():
@@ -147,10 +147,10 @@ def test_runtime_interfaces():
         assert reflection is not None
         assert runtime is not None
         print("✅ Runtime interfaces tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Runtime interfaces tests failed: {e}")
-        return False
+        return
 
 
 def test_runtime_error_handling():
@@ -166,10 +166,10 @@ def test_runtime_error_handling():
         assert str(env_error) == "Test environment error"
         assert str(reflection_error) == "Test reflection error"
         print("✅ Runtime error handling tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Runtime error handling tests failed: {e}")
-        return False
+        return
 
 
 def test_runtime_operations():
@@ -194,10 +194,10 @@ def test_runtime_operations():
         env_mgr.clear_env("RUNTIME_TEST")
         runtime.shutdown()
         print("✅ Runtime operations tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Runtime operations tests failed: {e}")
-        return False
+        return
 
 
 def test_runtime_environment():
@@ -227,10 +227,10 @@ def test_runtime_environment():
         for key in test_vars:
             env_mgr.clear_env(key)
         print("✅ Runtime environment tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Runtime environment tests failed: {e}")
-        return False
+        return
 
 
 def test_runtime_integration():
@@ -255,10 +255,10 @@ def test_runtime_integration():
         env_mgr.clear_env("REFLECTION_MODE")
         runtime.shutdown()
         print("✅ Runtime integration tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Runtime integration tests failed: {e}")
-        return False
+        return
 
 
 def main():

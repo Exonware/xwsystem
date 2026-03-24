@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: 07-Jan-2025
 Security validator implementation for XWSystem.
 Implements ISecurityValidator protocol for comprehensive security validation.
@@ -171,18 +171,17 @@ class SecurityValidator(ASecurityValidatorBase, ISecurityValidator):
         """
         if not isinstance(input_data, str):
             return str(input_data)
-        # HTML escape
-        sanitized = html.escape(input_data)
+        sanitized = input_data
         # Remove null bytes
         sanitized = sanitized.replace("\x00", "")
         # Remove control characters except newlines and tabs
         sanitized = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]", "", sanitized)
-        # URL decode to prevent double encoding attacks
+        # Decode once, then escape once to avoid double-escaped output.
         try:
             sanitized = urllib.parse.unquote(sanitized)
-            sanitized = html.escape(sanitized)  # Re-escape after decode
         except Exception:
             pass
+        sanitized = html.escape(sanitized)
         return sanitized
 
     def detect_sql_injection(self, input_data: str) -> bool:

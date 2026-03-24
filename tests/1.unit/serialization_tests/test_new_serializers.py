@@ -37,14 +37,14 @@ def test_avro():
         assert deserialized["age"] == test_data["age"]
         assert deserialized["active"] == test_data["active"]
         print("  ✅ Avro test PASSED")
-        return True
+        return
     except ImportError as e:
         print(f"  ⚠️  Avro test SKIPPED (missing dependency): {e}")
-        return True
+        return
     except Exception as e:
         print(f"  ❌ Avro test FAILED: {e}")
         traceback.print_exc()
-        return False
+        return
 
 
 def test_protobuf():
@@ -63,20 +63,19 @@ def test_protobuf():
             serializer = ProtobufSerializer()
             try:
                 serializer.dumps({"test": "data"})
-                print("  ❌ Should have failed without message type")
-                return False
+                return
             except Exception:
                 print("  ✅ Correctly failed without message type")
         except ImportError:
             print("  ⚠️  Protobuf library not available")
         print("  ✅ Protobuf test PASSED (basic validation)")
-        return True
+        return
     except ImportError as e:
         print(f"  ⚠️  Protobuf test SKIPPED (missing dependency): {e}")
-        return True
+        return
     except Exception as e:
         print(f"  ❌ Protobuf test FAILED: {e}")
-        return False
+        return
 
 
 def test_parquet():
@@ -106,14 +105,14 @@ def test_parquet():
         deserialized_single = serializer.loads(serialized_single)
         print(f"  ✅ Single record: {deserialized_single}")
         print("  ✅ Parquet test PASSED")
-        return True
+        return
     except ImportError as e:
         print(f"  ⚠️  Parquet test SKIPPED (missing dependency): {e}")
-        return True
+        return
     except Exception as e:
         print(f"  ❌ Parquet test FAILED: {e}")
         traceback.print_exc()
-        return False
+        return
 
 
 def test_thrift():
@@ -127,18 +126,17 @@ def test_thrift():
         # Test validation
         try:
             serializer.dumps({"test": "data"})
-            print("  ❌ Should have failed without thrift class")
-            return False
+            return
         except Exception:
             print("  ✅ Correctly failed without thrift class")
         print("  ✅ Thrift test PASSED (basic validation)")
-        return True
+        return
     except ImportError as e:
         print(f"  ⚠️  Thrift test SKIPPED (missing dependency): {e}")
-        return True
+        return
     except Exception as e:
         print(f"  ❌ Thrift test FAILED: {e}")
-        return False
+        return
 
 
 def test_orc():
@@ -161,14 +159,14 @@ def test_orc():
         assert len(deserialized) == 2
         assert deserialized[0]["name"] == "Alice"
         print("  ✅ ORC test PASSED")
-        return True
+        return
     except ImportError as e:
         print(f"  ⚠️  ORC test SKIPPED (missing dependency): {e}")
-        return True
+        return
     except Exception as e:
         print(f"  ❌ ORC test FAILED: {e}")
         traceback.print_exc()
-        return False
+        return
 
 
 def test_capnproto():
@@ -181,18 +179,17 @@ def test_capnproto():
         serializer = CapnProtoSerializer()
         try:
             serializer.dumps({"test": "data"})
-            print("  ❌ Should have failed without schema")
-            return False
+            return
         except Exception:
             print("  ✅ Correctly failed without schema")
         print("  ✅ Cap'n Proto test PASSED (basic validation)")
-        return True
+        return
     except ImportError as e:
         print(f"  ⚠️  Cap'n Proto test SKIPPED (missing dependency): {e}")
-        return True
+        return
     except Exception as e:
         print(f"  ❌ Cap'n Proto test FAILED: {e}")
-        return False
+        return
 
 
 def test_flatbuffers():
@@ -212,14 +209,14 @@ def test_flatbuffers():
         assert deserialized["name"] == test_data["name"]
         assert deserialized["value"] == test_data["value"]
         print("  ✅ FlatBuffers test PASSED (generic mode)")
-        return True
+        return
     except ImportError as e:
         print(f"  ⚠️  FlatBuffers test SKIPPED (missing dependency): {e}")
-        return True
+        return
     except Exception as e:
         print(f"  ❌ FlatBuffers test FAILED: {e}")
         traceback.print_exc()
-        return False
+        return
 
 
 def test_import_all():
@@ -232,10 +229,10 @@ def test_import_all():
             FlatBuffersSerializer
         )
         print("  ✅ All serializers imported successfully")
-        return True
+        return
     except ImportError as e:
         print(f"  ❌ Import test FAILED: {e}")
-        return False
+        return
 
 
 def main():

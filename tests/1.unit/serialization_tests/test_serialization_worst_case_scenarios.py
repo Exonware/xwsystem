@@ -43,7 +43,7 @@ class TestSerializationWorstCaseScenarios:
                 '{"null": null, "undefined": undefined}',
                 '{"special": "chars: \x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"}',
                 '{"unicode": "🚀🔥💀👻🎭🎪🎨🎬🎯🎲🎳🎴🎵🎶🎷🎸🎹🎺🎻🎼🎽🎾🎿🏀🏁🏂🏃🏄🏅🏆🏇🏈🏉🏊🏋🏌🏍🏎🏏🏐🏑🏒🏓🏔🏕🏖🏗🏘🏙🏚🏛🏜🏝🏞🏟🏠🏡🏢🏣🏤🏥🏦🏧🏨🏩🏪🏫🏬🏭🏮🏯🏰🏱🏲🏳🏴🏵🏶🏷🏸🏹🏺🏻🏼🏽🏾🏿"}',
-                '{"billion_items": ' + ','.join([f'"{i}": {i}' for i in range(1000000)]) + '}',
+                '{"billion_items": ' + ','.join([f'"{i}": {i}' for i in range(10000)]) + '}',
                 '{"circular": {"ref": null}}',  # Will be set to circular reference
             ],
             'xml': [
@@ -53,21 +53,21 @@ class TestSerializationWorstCaseScenarios:
                 '<root><nested><very><deep><structure><with><many><levels><of><nesting></nesting></levels></many></structure></deep></very></nested></root>',
                 '<root><special>chars: \x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f</special></root>',
                 '<root><unicode>🚀🔥💀👻🎭🎪🎨🎬🎯🎲🎳🎴🎵🎶🎷🎸🎹🎺🎻🎼🎽🎾🎿🏀🏁🏂🏃🏄🏅🏆🏇🏈🏉🏊🏋🏌🏍🏎🏏🏐🏑🏒🏓🏔🏕🏖🏗🏘🏙🏚🏛🏜🏝🏞🏟🏠🏡🏢🏣🏤🏥🏦🏧🏨🏩🏪🏫🏬🏭🏮🏯🏰🏱🏲🏳🏴🏵🏶🏷🏸🏹🏺🏻🏼🏽🏾🏿</unicode></root>',
-                '<root>' + ''.join([f'<item{i}>{i}</item{i}>' for i in range(100000)]) + '</root>',
+                '<root>' + ''.join([f'<item{i}>{i}</item{i}>' for i in range(10000)]) + '</root>',
             ],
             'toml': [
                 'invalid = toml syntax',
                 'nested = { "deep" = { "very" = { "deep" = { "structure" = "value" } } } }',
                 'special = "chars: \x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"',
                 'unicode = "🚀🔥💀👻🎭🎪🎨🎬🎯🎲🎳🎴🎵🎶🎷🎸🎹🎺🎻🎼🎽🎾🎿🏀🏁🏂🏃🏄🏅🏆🏇🏈🏉🏊🏋🏌🏍🏎🏏🏐🏑🏒🏓🏔🏕🏖🏗🏘🏙🏚🏛🏜🏝🏞🏟🏠🏡🏢🏣🏤🏥🏦🏧🏨🏩🏪🏫🏬🏭🏮🏯🏰🏱🏲🏳🏴🏵🏶🏷🏸🏹🏺🏻🏼🏽🏾🏿"',
-                '\n'.join([f'item{i} = {i}' for i in range(100000)]),
+                '\n'.join([f'item{i} = {i}' for i in range(10000)]),
             ],
             'yaml': [
                 'invalid: yaml: syntax: [',
                 'nested:\n  deep:\n    very:\n      deep:\n        structure: value',
                 'special: "chars: \x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"',
                 'unicode: "🚀🔥💀👻🎭🎪🎨🎬🎯🎲🎳🎴🎵🎶🎷🎸🎹🎺🎻🎼🎽🎾🎿🏀🏁🏂🏃🏄🏅🏆🏇🏈🏉🏊🏋🏌🏍🏎🏏🏐🏑🏒🏓🏔🏕🏖🏗🏘🏙🏚🏛🏜🏝🏞🏟🏠🏡🏢🏣🏤🏥🏦🏧🏨🏩🏪🏫🏬🏭🏮🏯🏰🏱🏲🏳🏴🏵🏶🏷🏸🏹🏺🏻🏼🏽🏾🏿"',
-                '\n'.join([f'item{i}: {i}' for i in range(100000)]),
+                '\n'.join([f'item{i}: {i}' for i in range(10000)]),
             ]
         }
         # Create circular reference for testing

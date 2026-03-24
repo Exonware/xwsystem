@@ -69,10 +69,10 @@ def test_performance_manager():
         assert isinstance(benchmark_result, dict)
         assert "execution_time" in benchmark_result or "memory_usage" in benchmark_result
         print("✅ Performance manager tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Performance manager tests failed: {e}")
-        return False
+        return
 
 
 def test_base_performance():
@@ -92,10 +92,10 @@ def test_base_performance():
         assert "time" in measurement or "memory" in measurement
         perf.cleanup()
         print("✅ Base performance tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Base performance tests failed: {e}")
-        return False
+        return
 
 
 def test_performance_interfaces():
@@ -110,10 +110,10 @@ def test_performance_interfaces():
         assert manager is not None
         assert perf is not None
         print("✅ Performance interfaces tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Performance interfaces tests failed: {e}")
-        return False
+        return
 
 
 def test_performance_error_handling():
@@ -125,10 +125,10 @@ def test_performance_error_handling():
         perf_error = PerformanceError("Test performance error")
         assert str(perf_error) == "Test performance error"
         print("✅ Performance error handling tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Performance error handling tests failed: {e}")
-        return False
+        return
 
 
 def test_performance_measurement():
@@ -150,10 +150,10 @@ def test_performance_measurement():
         slow_result = manager.benchmark(slow_operation)
         assert isinstance(slow_result, dict)
         print("✅ Performance measurement tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Performance measurement tests failed: {e}")
-        return False
+        return
 
 
 def test_performance_optimization():
@@ -170,10 +170,10 @@ def test_performance_optimization():
             result = manager.optimize()
             assert isinstance(result, bool)
         print("✅ Performance optimization tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Performance optimization tests failed: {e}")
-        return False
+        return
 
 
 def test_performance_monitoring():
@@ -194,10 +194,10 @@ def test_performance_monitoring():
         final_metrics = manager.get_metrics()
         assert isinstance(final_metrics, dict)
         print("✅ Performance monitoring tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Performance monitoring tests failed: {e}")
-        return False
+        return
 
 
 def test_performance_integration():
@@ -230,10 +230,10 @@ def test_performance_integration():
         manager.stop_monitoring()
         perf.cleanup()
         print("✅ Performance integration tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Performance integration tests failed: {e}")
-        return False
+        return
 
 
 def main():

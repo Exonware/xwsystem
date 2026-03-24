@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: November 1, 2025
 File Format Conversion - Convert between compatible formats.
 Enables:
@@ -20,7 +20,7 @@ Priority 5 (Extensibility): Works with any registered codec
 
 from pathlib import Path
 from typing import Any
-from ..codec.base import get_global_registry
+from ..codec.registry import get_registry
 from ..contracts import ICodec
 from ..defs import CodecCategory
 from ..errors import CodecError, CodecNotFoundError
@@ -61,15 +61,18 @@ class FormatConverter:
 
     def __init__(self):
         """Initialize converter with codec registry."""
-        self._registry = get_global_registry()
+        # Ensure archive codecs are registered into the universal codec registry.
+        from ..archive import codec_integration  # noqa: F401
+        self._registry = get_registry()
 
     def get_codec(self, format_id: str) -> ICodec:
         """Get codec by format ID."""
         codec = self._registry.get_by_id(format_id)
         if codec is None:
+            available = self._registry.list_codecs()
             raise CodecNotFoundError(
                 f"Format '{format_id}' not found in registry. "
-                f"Available formats: {', '.join(self._registry.list_codec_ids())}"
+                f"Available formats: {', '.join(available)}"
             )
         return codec
 

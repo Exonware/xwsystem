@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: September 04, 2025
 Automatic serializer that detects format and delegates to appropriate serializer.
 """
@@ -94,8 +94,11 @@ class AutoSerializer:
             'Multipart': ('io.serialization.formats.text.multipart', 'MultipartSerializer'),
             # Binary / database formats
             'BSON': ('io.serialization.formats.binary.bson', 'BsonSerializer'),
+            'MSGPACK': ('io.serialization.formats.binary.msgpack', 'MsgPackSerializer'),
+            'MESSAGEPACK': ('io.serialization.formats.binary.msgpack', 'MsgPackSerializer'),
             'MessagePack': ('io.serialization.formats.binary.msgpack', 'MsgPackSerializer'),
             'CBOR': ('io.serialization.formats.binary.cbor', 'CborSerializer'),
+            'PICKLE': ('io.serialization.formats.binary.pickle', 'PickleSerializer'),
             'Pickle': ('io.serialization.formats.binary.pickle', 'PickleSerializer'),
             'Marshal': ('io.serialization.formats.binary.marshal', 'MarshalSerializer'),
             'SQLite3': ('io.serialization.formats.database.sqlite3', 'Sqlite3Serializer'),

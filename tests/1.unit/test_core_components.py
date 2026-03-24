@@ -70,8 +70,8 @@ class TestPathValidator:
             # Valid path within base
             result = validator.validate_path("subdir/file.txt")
             assert str(result).startswith(temp_dir)
-            # Invalid path outside base - should raise PathSecurityError due to dangerous pattern
-            with pytest.raises(PathSecurityError, match="Dangerous pattern"):
+            # Invalid path outside base should be rejected without leaking details.
+            with pytest.raises(PathSecurityError, match="Unsafe path input rejected"):
                 validator.validate_path("../../../etc/passwd")
 @pytest.mark.xwsystem_unit
 

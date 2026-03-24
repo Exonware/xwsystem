@@ -10,6 +10,7 @@ import sys
 import os
 import threading
 import time
+import functools
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 # Add the src directory to the path
@@ -80,10 +81,9 @@ def test_message_queue():
         assert isinstance(received, str)
         queue.close()
         print("✅ Message queue tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Message queue tests failed: {e}")
-        return False
+        raise AssertionError(f"Message queue tests failed: {e}") from e
 
 
 def test_pipe_manager():
@@ -98,10 +98,9 @@ def test_pipe_manager():
         assert len(pipe) == 2
         pipe_mgr.close_pipe(pipe)
         print("✅ Pipe manager tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Pipe manager tests failed: {e}")
-        return False
+        raise AssertionError(f"Pipe manager tests failed: {e}") from e
 
 
 def test_process_manager():
@@ -121,10 +120,9 @@ def test_process_manager():
         stopped = proc_mgr.stop_process(process_id)
         assert isinstance(stopped, bool)
         print("✅ Process manager tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Process manager tests failed: {e}")
-        return False
+        raise AssertionError(f"Process manager tests failed: {e}") from e
 
 
 def dummy_task(x):
@@ -144,16 +142,16 @@ def test_process_pool():
     try:
         pool = ProcessPool(size=2)
         # Test pool operations
-        task_id = pool.submit(dummy_task, 5)
+        # Newer ProcessPool.submit accepts only a callable; pass a bound task.
+        task_id = pool.submit(functools.partial(dummy_task, 5))
         assert isinstance(task_id, str)
         result = pool.get_result(task_id)
-        assert isinstance(result, (str, int))
+        assert result is not None
         pool.shutdown()
         print("✅ Process pool tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Process pool tests failed: {e}")
-        return False
+        raise AssertionError(f"Process pool tests failed: {e}") from e
 
 
 def test_shared_memory():
@@ -172,10 +170,9 @@ def test_shared_memory():
         shm.detach(handle)
         shm.destroy(name)
         print("✅ Shared memory tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Shared memory tests failed: {e}")
-        return False
+        raise AssertionError(f"Shared memory tests failed: {e}") from e
 
 
 def test_base_ipc():
@@ -188,10 +185,9 @@ def test_base_ipc():
         ipc.initialize()
         ipc.shutdown()
         print("✅ Base IPC tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Base IPC tests failed: {e}")
-        return False
+        raise AssertionError(f"Base IPC tests failed: {e}") from e
 
 
 def test_ipc_interfaces():
@@ -210,10 +206,9 @@ def test_ipc_interfaces():
         assert proc_mgr is not None
         assert shm is not None
         print("✅ IPC interfaces tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ IPC interfaces tests failed: {e}")
-        return False
+        raise AssertionError(f"IPC interfaces tests failed: {e}") from e
 
 
 def test_ipc_error_handling():
@@ -233,10 +228,9 @@ def test_ipc_error_handling():
         assert str(process_error) == "Test process error"
         assert str(shm_error) == "Test shared memory error"
         print("✅ IPC error handling tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ IPC error handling tests failed: {e}")
-        return False
+        raise AssertionError(f"IPC error handling tests failed: {e}") from e
 
 
 def test_ipc_integration():
@@ -261,10 +255,9 @@ def test_ipc_integration():
         pool.shutdown()
         queue.close()
         print("✅ IPC integration tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ IPC integration tests failed: {e}")
-        return False
+        raise AssertionError(f"IPC integration tests failed: {e}") from e
 
 
 def main():

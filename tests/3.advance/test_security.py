@@ -24,6 +24,15 @@ from exonware.xwsystem.security.policy import SecurityPolicy
 from exonware.xwsystem.security.defs import SecurityLevel
 from exonware.xwsystem.io.file import XWFile
 from exonware.xwsystem.io.serialization.serializer import XWSerializer
+
+
+def _path_validates(validator: PathValidator, path: str) -> bool:
+    """Compatibility helper for PathValidator APIs that raise on failure."""
+    try:
+        validator.validate_path(path)
+        return True
+    except Exception:
+        return False
 @pytest.mark.xwsystem_advance
 @pytest.mark.xwsystem_security
 
@@ -32,9 +41,12 @@ class TestOWASP01BrokenAccessControl:
 
     def test_path_traversal_protection(self):
         """Test protection against path traversal attacks."""
-        validator = PathValidator()
-        # Normal paths should work
-        assert validator.validate_path("/safe/path/file.txt") is True
+        with tempfile.TemporaryDirectory() as tmpdir:
+            validator = PathValidator(base_path=tmpdir, allow_absolute=True, check_existence=False)
+            # Normal paths should work
+            safe_file = Path(tmpdir) / "file.txt"
+            safe_file.write_text("ok")
+            assert _path_validates(validator, str(safe_file)) is True
         # Path traversal attempts should be blocked
         malicious_paths = [
             "../../../etc/passwd",
@@ -44,22 +56,21 @@ class TestOWASP01BrokenAccessControl:
             "....//....//etc/passwd",
         ]
         for path in malicious_paths:
-            assert validator.validate_path(path) is False, f"Path traversal not blocked: {path}"
+            assert _path_validates(validator, path) is False, f"Path traversal not blocked: {path}"
 
     def test_file_access_restrictions(self):
         """Test that file operations respect access restrictions."""
-        validator = PathValidator()
-        file_ops = XWFile()
         with tempfile.TemporaryDirectory() as tmpdir:
             safe_dir = Path(tmpdir) / "safe"
             safe_dir.mkdir()
+            validator = PathValidator(base_path=safe_dir, allow_absolute=True, check_existence=False)
             # Should allow access to safe directory
             safe_file = safe_dir / "test.txt"
             safe_file.write_text("test")
-            assert validator.validate_path(str(safe_file)) is True
+            assert _path_validates(validator, str(safe_file)) is True
             # Should block access outside safe directory
             restricted_path = Path(tmpdir).parent / "restricted.txt"
-            assert validator.validate_path(str(restricted_path)) is False
+            assert _path_validates(validator, str(restricted_path)) is False
 @pytest.mark.xwsystem_advance
 @pytest.mark.xwsystem_security
 
@@ -125,7 +136,7 @@ class TestOWASP03Injection:
         ]
         for path in malicious_paths:
             # Should reject paths with command separators
-            assert validator.validate_path(path) is False
+            assert _path_validates(validator, path) is False
 @pytest.mark.xwsystem_advance
 @pytest.mark.xwsystem_security
 
@@ -134,12 +145,13 @@ class TestOWASP04InsecureDesign:
 
     def test_defense_in_depth(self):
         """Test that multiple security layers are in place."""
-        validator = PathValidator()
         limits = ResourceLimits()
-        # Multiple validations should work together
-        path = "/safe/path/file.txt"
-        assert validator.validate_path(path) is True
-        assert limits.check_file_size(path, max_size_mb=10) is True
+        with tempfile.TemporaryDirectory() as tmpdir:
+            validator = PathValidator(base_path=tmpdir, allow_absolute=True, check_existence=False)
+            # Multiple validations should work together
+            path = str(Path(tmpdir) / "file.txt")
+            assert _path_validates(validator, path) is True
+            assert limits.check_file_size(path, max_size_mb=10) is True
 
     def test_secure_defaults(self):
         """Test that defaults are secure."""
@@ -248,7 +260,7 @@ class TestOWASP09LoggingFailures:
         validator = PathValidator()
         # Security violations should be detectable
         malicious_path = "../../../etc/passwd"
-        result = validator.validate_path(malicious_path)
+        result = _path_validates(validator, malicious_path)
         # Should reject and potentially log
         assert result is False
 @pytest.mark.xwsystem_advance
@@ -271,7 +283,7 @@ class TestOWASP10SSRF:
         for url in internal_urls:
             if url.startswith("file://"):
                 path = url.replace("file://", "")
-                assert validator.validate_path(path) is False
+                assert _path_validates(validator, path) is False
 @pytest.mark.xwsystem_advance
 @pytest.mark.xwsystem_security
 

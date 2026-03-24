@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: 07-Jan-2025
 Security monitor implementation for XWSystem.
 Implements ISecurityMonitor protocol for security monitoring and threat detection.
@@ -78,7 +78,7 @@ class SecurityMonitor(ASecurityMonitorBase, ISecurityMonitor):
                 return True
         # Check for privilege escalation attempts
         if event_type == "privilege_escalation":
-            self._add_alert("intrusion", f"Privilege escalation attempt detected for user: {user}")
+            self._add_alert("privilege_escalation", f"Privilege escalation attempt detected for user: {user}")
             return True
         # Check for command injection patterns
         if "command" in event_data:
@@ -111,7 +111,7 @@ class SecurityMonitor(ASecurityMonitorBase, ISecurityMonitor):
         # Check attempts in last 15 minutes
         cutoff_time = now - 900  # 15 minutes
         recent_attempts = [t for t in user_logins if t > cutoff_time]
-        if len(recent_attempts) >= max_attempts:
+        if len(recent_attempts) > max_attempts:
             self._add_alert("failed_login", f"User {user} exceeded {max_attempts} failed login attempts")
             return True
         return False

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: 30-Oct-2025
 Archive and compression with REGISTRY PATTERN!
 Like codec system - auto-detection and extensibility!

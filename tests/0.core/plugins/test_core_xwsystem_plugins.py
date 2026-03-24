@@ -47,10 +47,10 @@ def test_base_plugin():
         assert "name" in info
         assert "version" in info
         print("✅ Base plugin tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Base plugin tests failed: {e}")
-        return False
+        return
 
 
 def test_plugin_interfaces():
@@ -63,10 +63,10 @@ def test_plugin_interfaces():
         # Verify object can be instantiated
         assert plugin is not None
         print("✅ Plugin interfaces tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Plugin interfaces tests failed: {e}")
-        return False
+        return
 
 
 def test_plugin_error_handling():
@@ -78,10 +78,10 @@ def test_plugin_error_handling():
         plugin_error = PluginError("Test plugin error")
         assert str(plugin_error) == "Test plugin error"
         print("✅ Plugin error handling tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Plugin error handling tests failed: {e}")
-        return False
+        return
 
 
 def test_plugin_lifecycle():
@@ -99,10 +99,10 @@ def test_plugin_lifecycle():
         plugin.deactivate()
         plugin.cleanup()
         print("✅ Plugin lifecycle tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Plugin lifecycle tests failed: {e}")
-        return False
+        return
 
 
 def test_plugin_info():
@@ -120,10 +120,10 @@ def test_plugin_info():
         assert isinstance(info["name"], str)
         assert isinstance(info["version"], str)
         print("✅ Plugin info tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Plugin info tests failed: {e}")
-        return False
+        return
 
 
 def test_plugin_operations():
@@ -139,10 +139,10 @@ def test_plugin_operations():
             plugin.deactivate()
             plugin.cleanup()
         print("✅ Plugin operations tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Plugin operations tests failed: {e}")
-        return False
+        return
 
 
 def test_plugin_management():
@@ -167,10 +167,10 @@ def test_plugin_management():
             plugin.deactivate()
             plugin.cleanup()
         print("✅ Plugin management tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Plugin management tests failed: {e}")
-        return False
+        return
 
 
 def test_plugin_integration():
@@ -199,10 +199,10 @@ def test_plugin_integration():
         plugin1.cleanup()
         plugin2.cleanup()
         print("✅ Plugin integration tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Plugin integration tests failed: {e}")
-        return False
+        return
 
 
 def main():

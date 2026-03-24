@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: September 04, 2025
 Advanced HTTP client with HTTP/2, streaming, pluggable transports, and modern features.
 """
@@ -114,6 +114,16 @@ class MockResponse:
         """Raise exception for HTTP error status."""
         if 400 <= self.status_code < 600:
             raise HttpError(f"HTTP {self.status_code}", self.status_code, self.text)
+
+    async def aiter_bytes(self, chunk_size: int = 8192):
+        """Async byte iterator compatible with httpx.Response."""
+        for i in range(0, len(self.content), chunk_size):
+            yield self.content[i:i + chunk_size]
+
+    async def aiter_lines(self):
+        """Async line iterator compatible with httpx.Response."""
+        for line in self.text.splitlines():
+            yield line
 
 
 class AdvancedHttpClient:
@@ -310,18 +320,37 @@ class AdvancedHttpClient:
             request_kwargs['data'] = data
         # Handle custom transport
         if self.transport:
-            request = httpx.Request(**request_kwargs)
-            # Use custom transport but keep unified error semantics
-            response = await self.transport.handle_async_request(request)
-            # Ensure HTTP error statuses surface as HttpError even when using mocks
-            if hasattr(response, "raise_for_status"):
-                response.raise_for_status()
-            return response
+            @retry_with_backoff(
+                max_retries=self.config.retry.max_retries,
+                base_delay=self.config.retry.base_delay,
+                max_delay=self.config.retry.max_delay,
+                backoff_factor=self.config.retry.exponential_base,
+                exceptions=tuple([*self.config.retry.retry_on_exceptions, HttpError]),
+            )
+            async def _transport_request():
+                request_url = url
+                if self.base_url and isinstance(url, str) and url.startswith("/"):
+                    request_url = urljoin(self.base_url, url)
+                request_kwargs_for_transport = dict(request_kwargs)
+                request_kwargs_for_transport["url"] = request_url
+                request = httpx.Request(**request_kwargs_for_transport)
+                response = await self.transport.handle_async_request(request)
+                if self._should_retry(response, None):
+                    raise HttpError(
+                        f"HTTP {response.status_code}",
+                        status_code=response.status_code,
+                        response_data=getattr(response, "text", "")
+                    )
+                if hasattr(response, "raise_for_status"):
+                    response.raise_for_status()
+                return response
+            return await _transport_request()
         @retry_with_backoff(
             max_retries=self.config.retry.max_retries,
             base_delay=self.config.retry.base_delay,
             max_delay=self.config.retry.max_delay,
-            exponential_base=self.config.retry.exponential_base
+            backoff_factor=self.config.retry.exponential_base,
+            exceptions=tuple([*self.config.retry.retry_on_exceptions, HttpError]),
         )
         async def _request() -> httpx.Response:
             try:
@@ -457,6 +486,8 @@ class AdvancedHttpClient:
             **kwargs: Additional request arguments
         """
         from ..io.stream.async_operations import async_safe_write_bytes
+        import platform
+        import aiofiles
         chunk_size = chunk_size or self.config.streaming.chunk_size
         async with self.stream("GET", url, **kwargs) as response:
             response.raise_for_status()
@@ -468,7 +499,13 @@ class AdvancedHttpClient:
                 downloaded += len(chunk)
                 if progress_callback:
                     progress_callback(downloaded, total_size)
-            await async_safe_write_bytes(file_path, content)
+            # Windows keeps NamedTemporaryFile handles locked; direct write avoids
+            # atomic rename/remove failures when caller holds an open handle.
+            if platform.system() == "Windows":
+                async with aiofiles.open(file_path, "wb") as f:
+                    await f.write(content)
+            else:
+                await async_safe_write_bytes(file_path, content)
 
     def _should_retry(self, response: httpx.Response | None, exception: Exception | None) -> bool:
         """Determine if a request should be retried."""
@@ -479,26 +516,51 @@ class AdvancedHttpClient:
         return False
     # Sync wrappers (delegate to async)
 
+    def _run_sync(self, coro):
+        """Run coroutine safely from sync context (even inside an active loop)."""
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            return asyncio.run(coro)
+
+        # Already inside an event loop: run in a dedicated thread.
+        import threading
+        result: dict[str, Any] = {}
+        error: dict[str, BaseException] = {}
+
+        def _runner():
+            try:
+                result["value"] = asyncio.run(coro)
+            except BaseException as exc:  # pragma: no cover
+                error["exc"] = exc
+
+        thread = threading.Thread(target=_runner, daemon=True)
+        thread.start()
+        thread.join()
+        if "exc" in error:
+            raise error["exc"]
+        return result.get("value")
+
     def sync_get(self, url: str, **kwargs) -> httpx.Response:
         """Sync GET request."""
-        return asyncio.run(self.get(url, **kwargs))
+        return self._run_sync(self.get(url, **kwargs))
 
     def sync_post(self, url: str, **kwargs) -> httpx.Response:
         """Sync POST request."""
-        return asyncio.run(self.post(url, **kwargs))
+        return self._run_sync(self.post(url, **kwargs))
 
     def sync_put(self, url: str, **kwargs) -> httpx.Response:
         """Sync PUT request."""
-        return asyncio.run(self.put(url, **kwargs))
+        return self._run_sync(self.put(url, **kwargs))
 
     def sync_patch(self, url: str, **kwargs) -> httpx.Response:
         """Sync PATCH request."""
-        return asyncio.run(self.patch(url, **kwargs))
+        return self._run_sync(self.patch(url, **kwargs))
 
     def sync_delete(self, url: str, **kwargs) -> httpx.Response:
         """Sync DELETE request."""
-        return asyncio.run(self.delete(url, **kwargs))
+        return self._run_sync(self.delete(url, **kwargs))
 
     def sync_request(self, method: str, url: str, **kwargs) -> httpx.Response:
         """Sync HTTP request."""
-        return asyncio.run(self.request(method, url, **kwargs))
+        return self._run_sync(self.request(method, url, **kwargs))

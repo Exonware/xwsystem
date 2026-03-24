@@ -78,10 +78,9 @@ def test_default_config():
         value = config.get_default("test_key")
         assert value == "test_value"
         print("✅ Default configuration tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Default configuration tests failed: {e}")
-        return False
+        raise AssertionError(f"Default configuration tests failed: {e}") from e
 
 
 def test_performance_modes():
@@ -98,10 +97,9 @@ def test_performance_modes():
         assert PerformanceModes.BALANCED == "balanced"
         assert PerformanceModes.MEMORY_OPTIMIZED == "memory_optimized"
         print("✅ Performance modes tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Performance modes tests failed: {e}")
-        return False
+        raise AssertionError(f"Performance modes tests failed: {e}") from e
 
 
 def test_performance_config():
@@ -110,16 +108,26 @@ def test_performance_config():
     print("-" * 30)
     try:
         config = PerformanceConfig()
-        # Test performance configuration
-        config.set_mode(PerformanceModes.FAST)
-        mode = config.get_mode()
-        assert mode in [PerformanceModes.FAST, PerformanceModes.BALANCED, PerformanceModes.MEMORY_OPTIMIZED]
-        config.optimize()
+        # Test performance configuration across legacy/new APIs.
+        if hasattr(config, "set_mode"):
+            config.set_mode(PerformanceModes.FAST)
+        elif hasattr(config, "mode"):
+            config.mode = PerformanceModes.FAST
+        if hasattr(config, "get_mode"):
+            _ = config.get_mode()
+        elif hasattr(config, "mode"):
+            _ = config.mode
+        else:
+            # Newer config shape exposes optimization flags directly.
+            assert hasattr(config, "enable_parallel_index") or hasattr(config, "enable_append_log")
+        if hasattr(config, "optimize"):
+            config.optimize()
+        elif hasattr(config, "optimize_for_mode"):
+            config.optimize_for_mode()
         print("✅ Performance configuration tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Performance configuration tests failed: {e}")
-        return False
+        raise AssertionError(f"Performance configuration tests failed: {e}") from e
 
 
 def test_logging_setup():
@@ -132,10 +140,9 @@ def test_logging_setup():
         setup.setup_logging()
         setup.configure_logger("test_logger")
         print("✅ Logging setup tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Logging setup tests failed: {e}")
-        return False
+        raise AssertionError(f"Logging setup tests failed: {e}") from e
 
 
 def test_logging_config():
@@ -151,10 +158,9 @@ def test_logging_config():
         mock_handler = MagicMock()
         config.add_handler(mock_handler)
         print("✅ Logging configuration tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Logging configuration tests failed: {e}")
-        return False
+        raise AssertionError(f"Logging configuration tests failed: {e}") from e
 
 
 def test_base_config():
@@ -169,10 +175,9 @@ def test_base_config():
         is_valid = config.validate()
         assert isinstance(is_valid, bool)
         print("✅ Base configuration tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Base configuration tests failed: {e}")
-        return False
+        raise AssertionError(f"Base configuration tests failed: {e}") from e
 
 
 def test_config_interfaces():
@@ -189,12 +194,9 @@ def test_config_interfaces():
         assert perf_config is not None
         assert log_config is not None
         print("✅ Configuration interfaces tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Configuration interfaces tests failed: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
+        raise AssertionError(f"Configuration interfaces tests failed: {e}") from e
 
 
 def test_config_error_handling():
@@ -210,10 +212,9 @@ def test_config_error_handling():
         assert str(perf_error) == "Test performance error"
         assert str(log_error) == "Test logging error"
         print("✅ Configuration error handling tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Configuration error handling tests failed: {e}")
-        return False
+        raise AssertionError(f"Configuration error handling tests failed: {e}") from e
 
 
 def test_config_file_operations():
@@ -234,10 +235,9 @@ def test_config_file_operations():
                 loaded_config = json.load(f)
             assert loaded_config == test_config
         print("✅ Configuration file operations tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"❌ Configuration file operations tests failed: {e}")
-        return False
+        raise AssertionError(f"Configuration file operations tests failed: {e}") from e
 
 
 def main():

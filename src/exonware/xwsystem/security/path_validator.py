@@ -188,9 +188,8 @@ class PathValidator:
         path_lower = path.lower()
         for pattern in self.DANGEROUS_PATTERNS:
             if pattern in path_lower:
-                raise PathSecurityError(
-                    f"Dangerous pattern '{pattern}' found in path: {path}"
-                )
+                # Avoid leaking attacker-provided path details in errors.
+                raise PathSecurityError("Unsafe path input rejected")
         # Check for null bytes
         if "\x00" in path:
             raise PathSecurityError("Null byte found in path")

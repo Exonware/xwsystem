@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: 01-Nov-2025
 Optimized O(1) LFU Cache implementation.
 Performance Priority #4 - Replaces O(n) eviction with O(1) frequency buckets.
@@ -69,7 +69,8 @@ class OptimizedLFUCache(ACache):
         self._hits = 0
         self._misses = 0
         self._evictions = 0
-        logger.debug(f"Optimized LFU cache {self.name} initialized with capacity {capacity}")
+        if logger.isEnabledFor(10):
+            logger.debug(f"Optimized LFU cache {self.name} initialized with capacity {capacity}")
 
     def get(self, key: Hashable, default: Any = None) -> Any:
         """
@@ -83,12 +84,10 @@ class OptimizedLFUCache(ACache):
         with self._lock:
             if key not in self._cache:
                 self._misses += 1
-                logger.debug(f"Cache {self.name} miss for key: {key}")
                 return default
             # Update frequency (O(1))
             self._update_frequency(key)
             self._hits += 1
-            logger.debug(f"Cache {self.name} hit for key: {key}")
             return self._cache[key]
 
     def put(self, key: Hashable, value: Any) -> None:
@@ -103,7 +102,6 @@ class OptimizedLFUCache(ACache):
                 # Update existing key
                 self._cache[key] = value
                 self._update_frequency(key)
-                logger.debug(f"Cache {self.name} updated key: {key}")
             else:
                 # Add new key
                 if len(self._cache) >= self.capacity:
@@ -114,7 +112,6 @@ class OptimizedLFUCache(ACache):
                 self._key_to_freq[key] = 1
                 self._freq_to_keys[1][key] = None
                 self._min_freq = 1
-                logger.debug(f"Cache {self.name} added key: {key}")
 
     def delete(self, key: Hashable) -> bool:
         """
@@ -135,7 +132,6 @@ class OptimizedLFUCache(ACache):
             # Clean up empty frequency bucket
             if not self._freq_to_keys[freq]:
                 del self._freq_to_keys[freq]
-            logger.debug(f"Cache {self.name} deleted key: {key}")
             return True
 
     def clear(self) -> None:
@@ -241,7 +237,6 @@ class OptimizedLFUCache(ACache):
         if not self._freq_to_keys[self._min_freq]:
             del self._freq_to_keys[self._min_freq]
         self._evictions += 1
-        logger.debug(f"Cache {self.name} evicted LFU key: {lfu_key} (freq: {self._min_freq})")
 
     def get_many(self, keys: list[Hashable]) -> dict[Hashable, Any]:
         """

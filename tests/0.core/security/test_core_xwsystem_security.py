@@ -41,10 +41,10 @@ def test_secure_hashing():
         different_hash = hashlib.sha256(different_data.encode()).hexdigest()
         assert hash1 != different_hash
         print("[PASS] Secure hashing tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Secure hashing tests failed: {e}")
-        return False
+        return
 
 
 def test_password_hashing():
@@ -68,10 +68,10 @@ def test_password_hashing():
         password_hash2 = hashlib.pbkdf2_hmac('sha256', password.encode(), salt2.encode(), 100000)
         assert password_hash_hex != password_hash2.hex()
         print("[PASS] Password hashing tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Password hashing tests failed: {e}")
-        return False
+        return
 
 
 def test_secure_random():
@@ -94,10 +94,10 @@ def test_secure_random():
         random2 = secrets.token_hex(16)
         assert random1 != random2
         print("[PASS] Secure random tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Secure random tests failed: {e}")
-        return False
+        return
 
 
 def test_symmetric_encryption():
@@ -121,10 +121,10 @@ def test_symmetric_encryption():
         decrypted2 = xor_decrypt(encrypted2, key)
         assert decrypted2 == test_data2
         print("[PASS] Symmetric encryption tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Symmetric encryption tests failed: {e}")
-        return False
+        return
 
 
 def test_path_security():
@@ -164,10 +164,10 @@ def test_path_security():
             path_obj = Path(path)
             assert isinstance(path_obj, Path)
         print("[PASS] Path security tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Path security tests failed: {e}")
-        return False
+        return
 
 
 def test_data_validation():
@@ -207,10 +207,10 @@ def test_data_validation():
         assert validate_length("x" * 50) is True
         assert validate_length("x" * 150) is False
         print("[PASS] Data validation tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Data validation tests failed: {e}")
-        return False
+        return
 
 
 def test_security_headers():
@@ -238,10 +238,10 @@ def test_security_headers():
         assert "default-src" in csp_policy
         assert "'self'" in csp_policy
         print("[PASS] Security headers tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Security headers tests failed: {e}")
-        return False
+        return
 
 
 def main():

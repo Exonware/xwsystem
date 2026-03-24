@@ -122,12 +122,12 @@ def test_multilingual_emojis():
         return all_perfect
     except ImportError as e:
         print(f"❌ BSON not available: {e}")
-        return False
+        return
     except Exception as e:
         print(f"❌ Error during test: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        return
 if __name__ == "__main__":
     print("🚀 Starting Multilingual + Emoji Test...\n")
     success = test_multilingual_emojis()

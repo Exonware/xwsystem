@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: November 2, 2025
 JSON serialization - Universal, human-readable data interchange format.
 Following I→A pattern:
@@ -219,6 +219,61 @@ class JsonSerializer(ASerialization):
     # ADVANCED FEATURES (Path-based operations)
     # ========================================================================
 
+    @staticmethod
+    def _parse_json_pointer(path: str) -> list[str]:
+        """Parse RFC6901 JSON Pointer into unescaped tokens."""
+        if path == "":
+            return []
+        if not path.startswith("/"):
+            raise ValueError(f"Invalid JSON Pointer path: {path}")
+        tokens = path.split("/")[1:]
+        return [token.replace("~1", "/").replace("~0", "~") for token in tokens]
+
+    def _resolve_pointer_fallback(self, data: Any, path: str) -> Any:
+        """Resolve JSON Pointer without external jsonpointer dependency."""
+        current = data
+        for token in self._parse_json_pointer(path):
+            if isinstance(current, list):
+                try:
+                    index = int(token)
+                except ValueError as e:
+                    raise KeyError(f"Invalid list index in path: {token}") from e
+                if index < 0 or index >= len(current):
+                    raise KeyError(f"List index out of range in path: {token}")
+                current = current[index]
+            elif isinstance(current, dict):
+                if token not in current:
+                    raise KeyError(f"Path segment not found: {token}")
+                current = current[token]
+            else:
+                raise KeyError(f"Cannot traverse path segment '{token}' on non-container")
+        return current
+
+    def _set_pointer_fallback(self, data: Any, path: str, value: Any) -> None:
+        """Set JSON Pointer value without external jsonpointer dependency."""
+        tokens = self._parse_json_pointer(path)
+        if not tokens:
+            raise ValueError("Cannot replace document root via atomic_update_path")
+        parent = self._resolve_pointer_fallback(data, "/" + "/".join(
+            token.replace("~", "~0").replace("/", "~1") for token in tokens[:-1]
+        )) if len(tokens) > 1 else data
+        key = tokens[-1]
+        if isinstance(parent, list):
+            try:
+                index = int(key)
+            except ValueError as e:
+                raise KeyError(f"Invalid list index in path: {key}") from e
+            if index < 0 or index >= len(parent):
+                raise KeyError(f"List index out of range in path: {key}")
+            parent[index] = value
+            return
+        if isinstance(parent, dict):
+            if key not in parent:
+                raise KeyError(f"Path segment not found: {key}")
+            parent[key] = value
+            return
+        raise KeyError(f"Cannot set path segment '{key}' on non-container")
+
     def atomic_update_path(
         self, 
         file_path: str | Path, 
@@ -244,8 +299,13 @@ class JsonSerializer(ASerialization):
             >>> serializer = JsonSerializer()
             >>> serializer.atomic_update_path("config.json", "/database/host", "localhost")
         """
-        # Import jsonpointer (lazy loaded via lazy_package system)
-        import jsonpointer
+        jsonpointer = None
+        try:
+            # Optional dependency; fallback logic is used when unavailable.
+            import jsonpointer as _jsonpointer
+            jsonpointer = _jsonpointer
+        except ImportError:
+            pass
         try:
             path_obj = Path(file_path)
             if not path_obj.exists():
@@ -259,8 +319,10 @@ class JsonSerializer(ASerialization):
             # Solution: Skip size check for atomic operations (depth check still performed)
             large_file_options = {**options, 'skip_size_check': True}
             data = self.load_file(file_path, **large_file_options)
-            # Use jsonpointer to set value
-            jsonpointer.set_pointer(data, path, value)
+            if jsonpointer is not None:
+                jsonpointer.set_pointer(data, path, value)
+            else:
+                self._set_pointer_fallback(data, path, value)
             # Save atomically using AtomicFileWriter
             from ....common.atomic import AtomicFileWriter
             repr_data = self.encode(data, options=options or None)
@@ -274,9 +336,11 @@ class JsonSerializer(ASerialization):
                     writer.write(repr_data.decode(encoding))
                 else:
                     writer.write(repr_data)
-        except (FileNotFoundError, ValueError, KeyError, jsonpointer.JsonPointerException) as e:
+        except (FileNotFoundError, ValueError, KeyError):
             raise
         except Exception as e:
+            if jsonpointer is not None and isinstance(e, jsonpointer.JsonPointerException):
+                raise KeyError(f"Path not found: {path}") from e
             raise SerializationError(
                 f"Failed to atomically update path '{path}' in JSON file: {e}",
                 format_name=self.format_name,
@@ -307,8 +371,13 @@ class JsonSerializer(ASerialization):
             >>> serializer = JsonSerializer()
             >>> host = serializer.atomic_read_path("config.json", "/database/host")
         """
-        # Import jsonpointer (lazy loaded via lazy_package system)
-        import jsonpointer
+        jsonpointer = None
+        try:
+            # Optional dependency; fallback logic is used when unavailable.
+            import jsonpointer as _jsonpointer
+            jsonpointer = _jsonpointer
+        except ImportError:
+            pass
         try:
             path_obj = Path(file_path)
             if not path_obj.exists():
@@ -322,13 +391,14 @@ class JsonSerializer(ASerialization):
             # Solution: Skip size check for atomic operations (depth check still performed)
             large_file_options = {**options, 'skip_size_check': True}
             data = self.load_file(file_path, **large_file_options)
-            # Use jsonpointer to get value
-            return jsonpointer.resolve_pointer(data, path)
-        except (FileNotFoundError, jsonpointer.JsonPointerException) as e:
-            if isinstance(e, jsonpointer.JsonPointerException):
-                raise KeyError(f"Path not found: {path}") from e
+            if jsonpointer is not None:
+                return jsonpointer.resolve_pointer(data, path)
+            return self._resolve_pointer_fallback(data, path)
+        except (FileNotFoundError, KeyError, ValueError):
             raise
         except Exception as e:
+            if jsonpointer is not None and isinstance(e, jsonpointer.JsonPointerException):
+                raise KeyError(f"Path not found: {path}") from e
             raise SerializationError(
                 f"Failed to read path '{path}' from JSON file: {e}",
                 format_name=self.format_name,

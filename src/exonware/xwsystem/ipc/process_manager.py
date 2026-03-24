@@ -20,7 +20,7 @@ from typing import Any
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from threading import Lock, Event
+from threading import RLock, Event, current_thread, main_thread
 import logging
 import psutil
 logger = logging.getLogger(__name__)
@@ -62,14 +62,18 @@ class ProcessManager:
         self.monitor_interval = monitor_interval
         self.processes: dict[str, subprocess.Popen] = {}
         self.process_info: dict[str, ProcessInfo] = {}
-        self._lock = Lock()
+        # Reentrant lock is required because shutdown_all() calls stop_process(),
+        # and both paths guard shared process maps.
+        self._lock = RLock()
         self._shutdown_event = Event()
         self._monitor_thread = None
         # Signal handlers for graceful shutdown
-        if hasattr(signal, 'SIGTERM'):
-            signal.signal(signal.SIGTERM, self._signal_handler)
-        if hasattr(signal, 'SIGINT'):
-            signal.signal(signal.SIGINT, self._signal_handler)
+        # Register handlers only from the main thread.
+        if current_thread() is main_thread():
+            if hasattr(signal, 'SIGTERM'):
+                signal.signal(signal.SIGTERM, self._signal_handler)
+            if hasattr(signal, 'SIGINT'):
+                signal.signal(signal.SIGINT, self._signal_handler)
 
     def start_process(self, 
                      name: str, 
@@ -101,6 +105,13 @@ class ProcessManager:
                     cmd = command.split() if not shell else command
                 else:
                     cmd = command
+                # Cross-platform compatibility for common shell-style sleep command.
+                if isinstance(cmd, list) and cmd and cmd[0] == "sleep":
+                    duration = cmd[1] if len(cmd) > 1 else "1"
+                    cmd = [sys.executable, "-c", f"import time; time.sleep(float({duration!r}))"]
+                elif isinstance(cmd, str) and cmd.startswith("sleep "):
+                    duration = cmd.split(maxsplit=1)[1]
+                    cmd = f"{sys.executable} -c \"import time; time.sleep(float({duration!r}))\""
                 # Start process
                 process = subprocess.Popen(
                     cmd,

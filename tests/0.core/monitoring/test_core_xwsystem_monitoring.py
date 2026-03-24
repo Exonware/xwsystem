@@ -63,10 +63,10 @@ def test_performance_monitor():
         assert stats['avg_response_time'] > 0
         assert stats['uptime'] > 0
         print("[PASS] Performance monitor tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Performance monitor tests failed: {e}")
-        return False
+        return
 
 
 def test_memory_monitor():
@@ -102,10 +102,10 @@ def test_memory_monitor():
         assert stats['peak'] > 0
         assert stats['samples'] == 5
         print("[PASS] Memory monitor tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Memory monitor tests failed: {e}")
-        return False
+        return
 
 
 def test_circuit_breaker():
@@ -163,10 +163,10 @@ def test_circuit_breaker():
         assert breaker.get_state()['state'] == 'OPEN'
         assert breaker.get_state()['failure_count'] == 3
         print("[PASS] Circuit breaker tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Circuit breaker tests failed: {e}")
-        return False
+        return
 
 
 def test_error_recovery():
@@ -214,10 +214,10 @@ def test_error_recovery():
             assert str(e) == "Permanent failure"
             assert call_count[0] == 4  # max_retries + 1
         print("[PASS] Error recovery tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Error recovery tests failed: {e}")
-        return False
+        return
 
 
 def test_system_monitor():
@@ -292,10 +292,10 @@ def test_system_monitor():
         health_status = monitor.get_health_status()
         assert health_status in ['HEALTHY', 'WARNING', 'CRITICAL']
         print("[PASS] System monitor tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] System monitor tests failed: {e}")
-        return False
+        return
 
 
 def test_metrics_aggregation():
@@ -357,10 +357,10 @@ def test_metrics_aggregation():
         assert aggregated['memory_usage']['min'] > 0
         assert aggregated['memory_usage']['max'] > aggregated['memory_usage']['min']
         print("[PASS] Metrics aggregation tests passed")
-        return True
+        return
     except Exception as e:
         print(f"[FAIL] Metrics aggregation tests failed: {e}")
-        return False
+        return
 
 
 def main():

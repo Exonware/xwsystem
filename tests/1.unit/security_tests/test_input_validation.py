@@ -343,7 +343,8 @@ class TestValidationErrorHandling:
         try:
             validator.validate_path("../etc/passwd")
         except PathSecurityError as e:
-            assert "traversal" in str(e).lower() or "dangerous" in str(e).lower()
+            msg = str(e).lower()
+            assert "traversal" in msg or "dangerous" in msg or "unsafe path input rejected" in msg
 
     def test_type_error_messages(self):
         """Test type error messages."""

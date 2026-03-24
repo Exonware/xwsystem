@@ -38,10 +38,9 @@ def test_http_client_basic():
         assert "page=1" in full_url
         assert "limit=10" in full_url
         print("[PASS] HTTP client basic tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] HTTP client basic tests failed: {e}")
-        return False
+        raise AssertionError(f"HTTP client basic tests failed: {e}") from e
 
 
 def test_http_client_post():
@@ -73,10 +72,9 @@ john@example.com\r
         assert isinstance(multipart_data, bytes)
         assert b"John Doe" in multipart_data
         print("[PASS] HTTP client POST tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] HTTP client POST tests failed: {e}")
-        return False
+        raise AssertionError(f"HTTP client POST tests failed: {e}") from e
 
 
 def test_http_headers():
@@ -108,10 +106,9 @@ def test_http_headers():
             assert header.startswith("X-")
             assert isinstance(value, str)
         print("[PASS] HTTP headers tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] HTTP headers tests failed: {e}")
-        return False
+        raise AssertionError(f"HTTP headers tests failed: {e}") from e
 
 
 def test_http_retry_logic():
@@ -150,10 +147,9 @@ def test_http_retry_logic():
             return False
         assert simulate_retry() is True
         print("[PASS] HTTP retry logic tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] HTTP retry logic tests failed: {e}")
-        return False
+        raise AssertionError(f"HTTP retry logic tests failed: {e}") from e
 
 
 def test_http_error_handling():
@@ -198,10 +194,9 @@ def test_http_error_handling():
         assert "code" in error_response
         assert "message" in error_response
         print("[PASS] HTTP error handling tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] HTTP error handling tests failed: {e}")
-        return False
+        raise AssertionError(f"HTTP error handling tests failed: {e}") from e
 
 
 def test_http_async_operations():
@@ -232,10 +227,9 @@ def test_http_async_operations():
         assert len(results) == 5
         assert all(result.startswith("processed_") for result in results)
         print("[PASS] HTTP async operations tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] HTTP async operations tests failed: {e}")
-        return False
+        raise AssertionError(f"HTTP async operations tests failed: {e}") from e
 
 
 def test_http_connection_pooling():
@@ -278,10 +272,9 @@ def test_http_connection_pooling():
         conn5 = pool.get_connection()
         assert conn5 is not None
         print("[PASS] HTTP connection pooling tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] HTTP connection pooling tests failed: {e}")
-        return False
+        raise AssertionError(f"HTTP connection pooling tests failed: {e}") from e
 
 
 def main():

@@ -25,13 +25,13 @@ def test_auto_install():
         print(f"   ✅ SUCCESS: fastavro imported successfully!")
         print(f"   Module type: {type(fastavro)}")
         print(f"   Module location: {fastavro.__file__ if hasattr(fastavro, '__file__') else 'built-in'}")
-        return True
+        return
     except ImportError as e:
         print(f"   ❌ FAILED: Could not import fastavro: {e}")
-        return False
+        return
     except Exception as e:
         print(f"   ❌ ERROR: Unexpected error: {e}")
-        return False
+        return
 
 def test_avro_serializer():
     """Test if AvroSerializer automatically installs fastavro."""

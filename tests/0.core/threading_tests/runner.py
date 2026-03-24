@@ -65,10 +65,10 @@ class ThreadingCoreTester:
             assert len(results) == 50  # 5 threads * 10 increments each
             assert max(results) == 50  # Final value should be 50
             print("[PASS] Thread-safe factory tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Thread-safe factory tests failed: {e}")
-            return False
+            return
 
     def test_enhanced_rlock(self) -> bool:
         """Test enhanced reentrant lock functionality."""
@@ -86,10 +86,10 @@ class ThreadingCoreTester:
             stats = lock.get_stats()
             assert isinstance(stats, dict)
             print("[PASS] Enhanced RLock tests passed")
-            return True
+            return
         except Exception as e:
             print(f"[FAIL] Enhanced RLock tests failed: {e}")
-            return False
+            return
 
     def test_async_lock(self) -> bool:
         """Test async lock functionality."""
@@ -103,17 +103,17 @@ class ThreadingCoreTester:
                 # Test lock statistics
                 stats = lock.get_stats()
                 assert isinstance(stats, dict)
-                return True
+                return
             # Run async test
             result = asyncio.run(test_async_lock())
             if result:
                 print("[PASS] Async lock tests passed")
-                return True
+                return
             else:
-                return False
+                return
         except Exception as e:
             print(f"[FAIL] Async lock tests failed: {e}")
-            return False
+            return
 
     def test_async_semaphore(self) -> bool:
         """Test async semaphore functionality."""
@@ -127,17 +127,17 @@ class ThreadingCoreTester:
                 # Test semaphore statistics
                 stats = semaphore.get_stats()
                 assert isinstance(stats, dict)
-                return True
+                return
             # Run async test
             result = asyncio.run(test_async_semaphore())
             if result:
                 print("[PASS] Async semaphore tests passed")
-                return True
+                return
             else:
-                return False
+                return
         except Exception as e:
             print(f"[FAIL] Async semaphore tests failed: {e}")
-            return False
+            return
 
     def test_async_queue(self) -> bool:
         """Test async queue functionality."""
@@ -152,17 +152,17 @@ class ThreadingCoreTester:
                 # Test queue statistics
                 stats = queue.get_stats()
                 assert isinstance(stats, dict)
-                return True
+                return
             # Run async test
             result = asyncio.run(test_async_queue())
             if result:
                 print("[PASS] Async queue tests passed")
-                return True
+                return
             else:
-                return False
+                return
         except Exception as e:
             print(f"[FAIL] Async queue tests failed: {e}")
-            return False
+            return
 
     def test_async_event(self) -> bool:
         """Test async event functionality."""
@@ -179,17 +179,17 @@ class ThreadingCoreTester:
                 # Test event statistics
                 stats = event.get_stats()
                 assert isinstance(stats, dict)
-                return True
+                return
             # Run async test
             result = asyncio.run(test_async_event())
             if result:
                 print("[PASS] Async event tests passed")
-                return True
+                return
             else:
-                return False
+                return
         except Exception as e:
             print(f"[FAIL] Async event tests failed: {e}")
-            return False
+            return
 
     def test_async_condition(self) -> bool:
         """Test async condition functionality."""
@@ -203,17 +203,17 @@ class ThreadingCoreTester:
                 # Test condition statistics
                 stats = condition.get_stats()
                 assert isinstance(stats, dict)
-                return True
+                return
             # Run async test
             result = asyncio.run(test_async_condition())
             if result:
                 print("[PASS] Async condition tests passed")
-                return True
+                return
             else:
-                return False
+                return
         except Exception as e:
             print(f"[FAIL] Async condition tests failed: {e}")
-            return False
+            return
 
     def test_async_resource_pool(self) -> bool:
         """Test async resource pool functionality."""
@@ -229,17 +229,17 @@ class ThreadingCoreTester:
                 # Test pool statistics
                 stats = pool.get_stats()
                 assert isinstance(stats, dict)
-                return True
+                return
             # Run async test
             result = asyncio.run(test_async_resource_pool())
             if result:
                 print("[PASS] Async resource pool tests passed")
-                return True
+                return
             else:
-                return False
+                return
         except Exception as e:
             print(f"[FAIL] Async resource pool tests failed: {e}")
-            return False
+            return
 
     def test_all_threading_tests(self) -> int:
         """Run all threading core tests."""

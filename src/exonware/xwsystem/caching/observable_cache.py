@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.17
+Version: 0.9.0.18
 Generation Date: 01-Nov-2025
 Observable cache implementations with event emission.
 Extensibility Priority #5 - Event-driven caching for custom behaviors.

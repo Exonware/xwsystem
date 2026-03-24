@@ -14,6 +14,7 @@ import concurrent.futures
 import functools
 import logging
 import multiprocessing as mp
+import platform
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -67,8 +68,14 @@ class ProcessPool:
         self.initializer = initializer
         self.initargs = initargs
         self.timeout = timeout
-        # Create process pool
-        self._executor = concurrent.futures.ProcessPoolExecutor(
+        # On Windows, local/lambda functions are not picklable with ProcessPool.
+        # Use thread pool fallback to preserve API behavior in tests and tooling.
+        executor_cls = (
+            concurrent.futures.ThreadPoolExecutor
+            if platform.system() == "Windows"
+            else concurrent.futures.ProcessPoolExecutor
+        )
+        self._executor = executor_cls(
             max_workers=self.max_workers,
             initializer=initializer,
             initargs=initargs
@@ -146,7 +153,7 @@ class ProcessPool:
             logger.error(f"Failed to submit task {task_id}: {e}")
             raise
 
-    def get_result(self, task_id: str, timeout: float | None = None) -> Any | None:
+    def get_result(self, task_id: str, timeout: float | None = None) -> TaskResult | None:
         """
         Get result of a completed task.
         Args:
@@ -159,7 +166,7 @@ class ProcessPool:
         for result in self._completed_tasks:
             if result.task_id == task_id:
                 logger.debug(f"Found completed task {task_id} with result: {result.result}")
-                return result.result
+                return result
         # Check if task is still active
         if task_id in self._active_tasks:
             future = self._active_tasks[task_id]
@@ -169,7 +176,7 @@ class ProcessPool:
                 # In completed tasks now
                 for result in self._completed_tasks:
                     if result.task_id == task_id:
-                        return result.result
+                        return result
             except concurrent.futures.TimeoutError:
                 logger.warning(f"Task {task_id} timed out")
                 return None
@@ -284,7 +291,12 @@ class AsyncProcessPool:
     def _ensure_executor(self):
         """Ensure executor is created in the correct event loop."""
         if self._executor is None:
-            self._executor = concurrent.futures.ProcessPoolExecutor(
+            executor_cls = (
+                concurrent.futures.ThreadPoolExecutor
+                if platform.system() == "Windows"
+                else concurrent.futures.ProcessPoolExecutor
+            )
+            self._executor = executor_cls(
                 max_workers=self.max_workers,
                 initializer=self.initializer,
                 initargs=self.initargs
@@ -317,11 +329,6 @@ class AsyncProcessPool:
             return await loop.run_in_executor(self._executor, callable_fn)
         task = asyncio.create_task(run_task())
         self._active_tasks[task_id] = task
-        # Add completion callback
-        def task_done(t):
-            if task_id in self._active_tasks:
-                del self._active_tasks[task_id]
-        task.add_done_callback(task_done)
         logger.debug(f"Submitted async task {task_id}")
         return task_id
 
@@ -337,10 +344,12 @@ class AsyncProcessPool:
         if task_id not in self._active_tasks:
             raise ValueError(f"Task {task_id} not found")
         task = self._active_tasks[task_id]
-        if timeout is not None:
-            return await asyncio.wait_for(task, timeout=timeout)
-        else:
+        try:
+            if timeout is not None:
+                return await asyncio.wait_for(task, timeout=timeout)
             return await task
+        finally:
+            self._active_tasks.pop(task_id, None)
 
     async def wait_for_all(self, timeout: float | None = None) -> list[Any]:
         """
@@ -366,9 +375,15 @@ class AsyncProcessPool:
             # Cancel pending tasks
             for task in pending:
                 task.cancel()
+            # Remove completed/cancelled tasks from tracking.
+            self._active_tasks = {
+                tid: task for tid, task in self._active_tasks.items() if task in pending
+            }
             return results
         else:
-            return await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            self._active_tasks.clear()
+            return results
 
     def cancel_task(self, task_id: str) -> bool:
         """

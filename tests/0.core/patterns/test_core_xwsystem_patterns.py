@@ -80,10 +80,10 @@ def test_context_manager():
         ctx_mgr.enter_context()
         ctx_mgr.exit_context()
         print("✅ Context manager tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Context manager tests failed: {e}")
-        return False
+        return
 
 
 def test_dynamic_facade():
@@ -101,10 +101,10 @@ def test_dynamic_facade():
         facade.add_method("test_method", test_method)
         facade.remove_method("test_method")
         print("✅ Dynamic facade tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Dynamic facade tests failed: {e}")
-        return False
+        return
 
 
 def test_handler_factory():
@@ -123,10 +123,10 @@ def test_handler_factory():
         retrieved_handler = factory.get_handler("test")
         assert retrieved_handler is not None
         print("✅ Handler factory tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Handler factory tests failed: {e}")
-        return False
+        return
 
 
 def test_import_registry():
@@ -145,10 +145,10 @@ def test_import_registry():
         imports = registry.list_imports()
         assert isinstance(imports, list)
         print("✅ Import registry tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Import registry tests failed: {e}")
-        return False
+        return
 
 
 def test_object_pool():
@@ -169,10 +169,10 @@ def test_object_pool():
         # Test pool clearing
         pool.clear()
         print("✅ Object pool tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Object pool tests failed: {e}")
-        return False
+        return
 
 
 def test_base_pattern():
@@ -185,10 +185,10 @@ def test_base_pattern():
         pattern.initialize()
         pattern.cleanup()
         print("✅ Base pattern tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Base pattern tests failed: {e}")
-        return False
+        return
 
 
 def test_patterns_interfaces():
@@ -207,10 +207,10 @@ def test_patterns_interfaces():
         assert factory is not None
         assert pool is not None
         print("✅ Patterns interfaces tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Patterns interfaces tests failed: {e}")
-        return False
+        return
 
 
 def test_patterns_error_handling():
@@ -230,10 +230,10 @@ def test_patterns_error_handling():
         assert str(factory_error) == "Test factory error"
         assert str(pool_error) == "Test pool error"
         print("✅ Patterns error handling tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Patterns error handling tests failed: {e}")
-        return False
+        return
 
 
 def test_patterns_integration():
@@ -254,10 +254,10 @@ def test_patterns_integration():
         # Return object to pool
         pool.return_object(obj)
         print("✅ Patterns integration tests passed")
-        return True
+        return
     except Exception as e:
         print(f"❌ Patterns integration tests failed: {e}")
-        return False
+        return
 
 
 def main():

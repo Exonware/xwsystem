@@ -12,6 +12,7 @@ import json
 import pickle
 import tempfile
 from pathlib import Path
+import pytest
 # Create data directory if it doesn't exist
 current_dir = Path(__file__).parent
 data_dir = current_dir / "data"
@@ -46,10 +47,9 @@ def test_json_serialization():
         deserialized_binary = json.loads(json_binary.decode('utf-8'))
         assert deserialized_binary == test_data
         print("[PASS] JSON serialization tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] JSON serialization tests failed: {e}")
-        return False
+        raise AssertionError(f"JSON serialization tests failed: {e}") from e
 
 
 def test_json_file_operations():
@@ -91,10 +91,9 @@ def test_json_file_operations():
             loaded_data2 = json.load(f)
         assert loaded_data2 == test_data
         print("[PASS] JSON file operations tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] JSON file operations tests failed: {e}")
-        return False
+        raise AssertionError(f"JSON file operations tests failed: {e}") from e
 
 
 def test_yaml_serialization():
@@ -104,8 +103,7 @@ def test_yaml_serialization():
         try:
             import yaml
         except ImportError:
-            print("[SKIP] YAML serialization tests skipped (PyYAML not available)")
-            return True
+            pytest.skip("YAML serialization tests skipped (PyYAML not available)")
         # Test data
         test_data = {
             "database": {
@@ -133,10 +131,9 @@ def test_yaml_serialization():
         deserialized_text = yaml.safe_load(yaml_text)
         assert deserialized_text == test_data
         print("[PASS] YAML serialization tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] YAML serialization tests failed: {e}")
-        return False
+        raise AssertionError(f"YAML serialization tests failed: {e}") from e
 
 
 def test_yaml_file_operations():
@@ -146,8 +143,7 @@ def test_yaml_file_operations():
         try:
             import yaml
         except ImportError:
-            print("[SKIP] YAML file operations tests skipped (PyYAML not available)")
-            return True
+            pytest.skip("YAML file operations tests skipped (PyYAML not available)")
         # Test data
         test_data = {
             "application": {
@@ -178,10 +174,9 @@ def test_yaml_file_operations():
             loaded_data = yaml.safe_load(f)
         assert loaded_data == test_data
         print("[PASS] YAML file operations tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] YAML file operations tests failed: {e}")
-        return False
+        raise AssertionError(f"YAML file operations tests failed: {e}") from e
 
 
 def test_pickle_serialization():
@@ -207,10 +202,9 @@ def test_pickle_serialization():
         deserialized_binary = pickle.loads(pickle_binary)
         assert deserialized_binary == test_data
         print("[PASS] Pickle serialization tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] Pickle serialization tests failed: {e}")
-        return False
+        raise AssertionError(f"Pickle serialization tests failed: {e}") from e
 
 
 def test_pickle_file_operations():
@@ -244,10 +238,9 @@ def test_pickle_file_operations():
             loaded_data = pickle.load(f)
         assert loaded_data == test_data
         print("[PASS] Pickle file operations tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] Pickle file operations tests failed: {e}")
-        return False
+        raise AssertionError(f"Pickle file operations tests failed: {e}") from e
 
 
 def test_convenience_functions():
@@ -266,10 +259,9 @@ def test_convenience_functions():
         deserialized = json.loads(serialized)
         assert deserialized == test_data
         print("[PASS] Convenience functions tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] Convenience functions tests failed: {e}")
-        return False
+        raise AssertionError(f"Convenience functions tests failed: {e}") from e
 
 
 def test_data_folder_structure():
@@ -291,10 +283,9 @@ def test_data_folder_structure():
         assert len(yaml_files) > 0, "No YAML files found in data folder"
         assert len(pickle_files) > 0, "No Pickle files found in data folder"
         print("[PASS] Data folder structure tests passed")
-        return True
+        return
     except Exception as e:
-        print(f"[FAIL] Data folder structure tests failed: {e}")
-        return False
+        raise AssertionError(f"Data folder structure tests failed: {e}") from e
 
 
 def main():
