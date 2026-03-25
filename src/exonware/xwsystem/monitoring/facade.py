@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.21
+Version: 0.9.0.22
 Generation Date: January 2026
 XWMonitor - Unified Monitoring Facade
 Simplified API for monitoring operations:

@@ -87,6 +87,8 @@ setuptools>=65.0.0               # pkg_resources for lazy installer
 # OpenTelemetry - Observability Stack
 opentelemetry-api>=1.15.0        # OpenTelemetry API
 opentelemetry-sdk>=1.15.0        # OpenTelemetry SDK
+opentelemetry-exporter-otlp-proto-http>=1.15.0  # OTLP HTTP (tracing.py)
+opentelemetry-exporter-zipkin>=1.15.0           # Zipkin JSON exporter
 
 # =============================================================================
 # TESTING DEPENDENCIES (Development)

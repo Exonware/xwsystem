@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.21
+Version: 0.9.0.22
 Generation Date: 30-Oct-2025
 File watching implementation for change monitoring.
 Priority 1 (Security): Safe file monitoring without exposing system internals
