@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.18
+Version: 0.9.0.19
 Generation Date: September 05, 2025
 Distributed Tracing Integration for Enterprise Observability
 Provides integration with distributed tracing systems:
@@ -23,10 +23,20 @@ from .base import ATracingProvider
 from .errors import TracingError
 from .defs import SpanKind
 from ..version import __version__
-from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from ..config.logging_setup import get_logger
+
+_OPENTELEMETRY_IMPORT_ERROR: Exception | None = None
+try:
+    from opentelemetry import trace
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+except Exception as exc:  # pragma: no cover - depends on external environment/runtime
+    # Keep module importable even when OpenTelemetry runtime context is broken.
+    trace = None  # type: ignore[assignment]
+    TracerProvider = None  # type: ignore[assignment]
+    BatchSpanProcessor = None  # type: ignore[assignment]
+    _OPENTELEMETRY_IMPORT_ERROR = exc
+
 logger = get_logger("xwsystem.monitoring.tracing")
 @dataclass
 
@@ -66,6 +76,12 @@ class OpenTelemetryTracer(ATracingProvider):
             zipkin_endpoint: Optional Zipkin endpoint
         """
         # OpenTelemetry is now required
+        if trace is None or TracerProvider is None or BatchSpanProcessor is None:
+            raise TracingError(
+                "OpenTelemetry runtime is unavailable. "
+                "Install/repair OpenTelemetry dependencies and runtime context configuration."
+            ) from _OPENTELEMETRY_IMPORT_ERROR
+
         self.service_name = service_name
         self._spans: dict[str, Any] = {}
         # Set up tracer provider
