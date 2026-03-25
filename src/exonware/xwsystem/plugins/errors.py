@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.20
+Version: 0.9.0.21
 Generation Date: September 04, 2025
 Plugin-specific error classes for xwsystem plugin system.
 """

@@ -52,9 +52,9 @@ classifiers = [
 dependencies = [
     "exonware-xwsystem",
 ]
-"typing-extensions>" = "4.0.0\",  # file-size=341927 ; 0.33 MB"
-authors = []
-"{ name" = "eXonware Backend Team"
+authors = [
+    { name = "eXonware Backend Team" },
+]
 
 [project.license]
 text = "MIT"
@@ -63,173 +63,14 @@ text = "MIT"
 lazy = [
     "exonware-xwsystem[lazy]",
 ]
-exonware-xwlazy = [
-    "exonware-xwsystem[exonware-xwlazy]",
+full = [
+    "exonware-xwsystem[full]",
 ]
 dev = [
     "exonware-xwsystem[dev]",
 ]
-"black>" = [
-    "exonware-xwsystem[black>]",
-]
-"isort>" = [
-    "exonware-xwsystem[isort>]",
-]
-"mypy>" = [
-    "exonware-xwsystem[mypy>]",
-]
-"pytest>" = [
-    "exonware-xwsystem[pytest>]",
-]
-"pytest-asyncio>" = [
-    "exonware-xwsystem[pytest-asyncio>]",
-]
-"pytest-cov>" = [
-    "exonware-xwsystem[pytest-cov>]",
-]
-full = [
-    "exonware-xwsystem[full]",
-]
-"aiofiles>" = [
-    "exonware-xwsystem[aiofiles>]",
-]
-attrs = [
-    "exonware-xwsystem[attrs]",
-]
-"bcrypt>" = [
-    "exonware-xwsystem[bcrypt>]",
-]
-brotli = [
-    "exonware-xwsystem[brotli]",
-]
-cachebox = [
-    "exonware-xwsystem[cachebox]",
-]
-cacheout = [
-    "exonware-xwsystem[cacheout]",
-]
-cachetools = [
-    "exonware-xwsystem[cachetools]",
-]
-"cbor2>" = [
-    "exonware-xwsystem[cbor2>]",
-]
-"cryptography>" = [
-    "exonware-xwsystem[cryptography>]",
-]
-"defusedxml>" = [
-    "exonware-xwsystem[defusedxml>]",
-]
-"dicttoxml>" = [
-    "exonware-xwsystem[dicttoxml>]",
-]
-diskcache = [
-    "exonware-xwsystem[diskcache]",
-]
-django = [
-    "exonware-xwsystem[django]",
-]
-"httpx>" = [
-    "exonware-xwsystem[httpx>]",
-]
-hyperlight_hyperjson = [
-    "exonware-xwsystem[hyperlight_hyperjson]",
-]
-"ijson>" = [
-    "exonware-xwsystem[ijson>]",
-]
-"json5>" = [
-    "exonware-xwsystem[json5>]",
-]
-"jsonpatch>" = [
-    "exonware-xwsystem[jsonpatch>]",
-]
-"jsonpointer>" = [
-    "exonware-xwsystem[jsonpointer>]",
-]
-"jsonschema>" = [
-    "exonware-xwsystem[jsonschema>]",
-]
-"lxml>" = [
-    "exonware-xwsystem[lxml>]",
-]
-lz4 = [
-    "exonware-xwsystem[lz4]",
-]
-"msgpack>" = [
-    "exonware-xwsystem[msgpack>]",
-]
-msgspec = [
-    "exonware-xwsystem[msgspec]",
-]
-"opentelemetry-api>" = [
-    "exonware-xwsystem[opentelemetry-api>]",
-]
-"opentelemetry-sdk>" = [
-    "exonware-xwsystem[opentelemetry-sdk>]",
-]
-"orjson>" = [
-    "exonware-xwsystem[orjson>]",
-]
-"psutil>" = [
-    "exonware-xwsystem[psutil>]",
-]
-py7zr = [
-    "exonware-xwsystem[py7zr]",
-]
-pylru = [
-    "exonware-xwsystem[pylru]",
-]
-"pymongo>" = [
-    "exonware-xwsystem[pymongo>]",
-]
-pytz = [
-    "exonware-xwsystem[pytz]",
-]
-"PyYAML>" = [
-    "exonware-xwsystem[PyYAML>]",
-]
-"pyyaml-include>" = [
-    "exonware-xwsystem[pyyaml-include>]",
-]
-pyzpaq = [
-    "exonware-xwsystem[pyzpaq]",
-]
-rarfile = [
-    "exonware-xwsystem[rarfile]",
-]
-"requests>" = [
-    "exonware-xwsystem[requests>]",
-]
-rich = [
-    "exonware-xwsystem[rich]",
-]
-"rtoml>" = [
-    "exonware-xwsystem[rtoml>]",
-]
-"ruamel.yaml>" = [
-    "exonware-xwsystem[ruamel.yaml>]",
-]
-"tomli>" = [
-    "exonware-xwsystem[tomli>]",
-]
-"tomli-w>" = [
-    "exonware-xwsystem[tomli-w>]",
-]
-"xmlschema>" = [
-    "exonware-xwsystem[xmlschema>]",
-]
-"xmltodict>" = [
-    "exonware-xwsystem[xmltodict>]",
-]
-zstandard = [
-    "exonware-xwsystem[zstandard]",
-]
 windows = [
     "exonware-xwsystem[windows]",
-]
-"pywin32>" = [
-    "exonware-xwsystem[pywin32>]",
 ]
 
 [project.urls]

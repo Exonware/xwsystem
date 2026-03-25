@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.20
+Version: 0.9.0.21
 Generation Date: 01-Nov-2025
 Pluggable eviction strategies for caching module.
 Extensibility Priority #5 - Strategy pattern for custom eviction policies.
