@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.19
+Version: 0.9.0.20
 Generation Date: 07-Sep-2025
 CLI-specific types and enums for XWSystem.
 """

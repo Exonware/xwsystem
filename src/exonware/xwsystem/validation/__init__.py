@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.19
+Version: 0.9.0.20
 Generation Date: September 04, 2025
 xwsystem Validation Package
 Declarative validation with type hints, automatic coercion, and Pydantic-style models.
