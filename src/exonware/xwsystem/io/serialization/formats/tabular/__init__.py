@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.25
+Version: 0.9.0.26
 Generation Date: January 2025
 Tabular serialization formats - Excel, CSV, Google Sheets, DataFrame.
 All tabular formats extend ATabularSerialization which provides
