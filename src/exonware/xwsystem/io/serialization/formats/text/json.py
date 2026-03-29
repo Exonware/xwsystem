@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.22
+Version: 0.9.0.23
 Generation Date: November 2, 2025
 JSON serialization - Universal, human-readable data interchange format.
 Following I→A pattern:
@@ -13,7 +13,7 @@ Following I→A pattern:
 """
 
 import json
-from typing import Any
+from typing import IO, Any
 from pathlib import Path
 from ...base import ASerialization
 from ...parsers.registry import get_parser
@@ -156,15 +156,23 @@ class JsonSerializer(ASerialization):
                 indent = 2
             sort_keys = opts.get('sort_keys', False)
             ensure_ascii = opts.get('ensure_ascii', False)
-            # Use pluggable parser
-            result = self._parser.dumps(
-                value,
-                indent=indent,
-                sort_keys=sort_keys,
-                ensure_ascii=ensure_ascii,
-                default=opts.get('default', None),
-                cls=opts.get('cls', None)
-            )
+            dump_kw: dict[str, Any] = {
+                "indent": indent,
+                "sort_keys": sort_keys,
+                "ensure_ascii": ensure_ascii,
+                "default": opts.get("default", None),
+                "cls": opts.get("cls", None),
+            }
+            if opts.get("separators") is not None:
+                dump_kw["separators"] = opts["separators"]
+            _encode_option_keys = frozenset({
+                "indent", "pretty", "sort_keys", "ensure_ascii",
+                "default", "cls", "separators",
+            })
+            for k, v in opts.items():
+                if k not in _encode_option_keys:
+                    dump_kw[k] = v
+            result = self._parser.dumps(value, **dump_kw)
             # Convert bytes to str if needed (for compatibility)
             if isinstance(result, bytes):
                 # For orjson, decode to string for compatibility
@@ -448,3 +456,66 @@ class JsonSerializer(ASerialization):
                 format_name=self.format_name,
                 original_error=e
             ) from e
+
+
+# ---------------------------------------------------------------------------
+# Module-level API (stdlib-style), shared JsonSerializer via flyweight
+# ---------------------------------------------------------------------------
+
+from ...flyweight import get_serializer
+
+JSONDecodeError = json.JSONDecodeError
+
+
+def _default_json_serializer() -> JsonSerializer:
+    return get_serializer("json")
+
+
+def dumps(
+    obj: Any,
+    *,
+    ensure_ascii: bool = False,
+    sort_keys: bool = False,
+    indent: Any = None,
+    separators: tuple[str, str] | None = None,
+    default: Any = None,
+    cls: Any = None,
+    **kwargs: Any,
+) -> str:
+    opts: dict[str, Any] = {
+        "ensure_ascii": ensure_ascii,
+        "sort_keys": sort_keys,
+        "indent": indent,
+    }
+    if separators is not None:
+        opts["separators"] = separators
+    if default is not None:
+        opts["default"] = default
+    if cls is not None:
+        opts["cls"] = cls
+    if kwargs:
+        opts.update(kwargs)
+    out = _default_json_serializer().encode(obj, options=opts)
+    return out if isinstance(out, str) else out.decode("utf-8")
+
+
+def loads(s: str | bytes, **kwargs: Any) -> Any:
+    return _default_json_serializer().decode(s, options=kwargs or None)
+
+
+def dump(obj: Any, fp: IO[str], **kwargs: Any) -> None:
+    fp.write(dumps(obj, **kwargs))
+
+
+def load(fp: IO[str], **kwargs: Any) -> Any:
+    return loads(fp.read(), **kwargs)
+
+
+__all__ = [
+    "JSONDecodeError",
+    "JsonSerializer",
+    "dump",
+    "dumps",
+    "load",
+    "loads",
+]

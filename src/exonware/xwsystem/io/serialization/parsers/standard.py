@@ -32,11 +32,20 @@ class StandardJsonParser(AJsonParser):
         ensure_ascii = kwargs.get("ensure_ascii", False)
         indent = kwargs.get("indent", None)
         sort_keys = kwargs.get("sort_keys", False)
-        return json.dumps(
-            obj,
-            ensure_ascii=ensure_ascii,
-            indent=indent,
-            sort_keys=sort_keys,
-            default=kwargs.get("default", None),
-            cls=kwargs.get("cls", None),
+        dump_kw: dict[str, Any] = {
+            "ensure_ascii": ensure_ascii,
+            "indent": indent,
+            "sort_keys": sort_keys,
+            "default": kwargs.get("default", None),
+            "cls": kwargs.get("cls", None),
+        }
+        if "separators" in kwargs:
+            dump_kw["separators"] = kwargs["separators"]
+        used = frozenset(
+            {"ensure_ascii", "indent", "sort_keys", "default", "cls", "separators"}
         )
+        for k, v in kwargs.items():
+            if k in used:
+                continue
+            dump_kw.setdefault(k, v)
+        return json.dumps(obj, **dump_kw)

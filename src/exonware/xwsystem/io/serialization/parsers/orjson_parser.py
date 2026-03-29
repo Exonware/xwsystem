@@ -2,14 +2,7 @@
 """orjson parser - Tier 1 (3-4x faster than stdlib)."""
 
 from typing import Any
-import importlib.util
-_orjson_spec = importlib.util.find_spec('orjson')
-if _orjson_spec is not None:
-    import orjson
-    ORJSON_AVAILABLE = True
-else:
-    ORJSON_AVAILABLE = False
-    orjson = None
+import orjson
 from .base import AJsonParser
 
 
@@ -26,7 +19,7 @@ class OrjsonParser(AJsonParser):
     @property
 
     def is_available(self) -> bool:
-        return ORJSON_AVAILABLE
+        return True
 
     def loads(self, s: str | bytes) -> Any:
         """Parse JSON using orjson.loads()."""
@@ -49,6 +42,8 @@ class OrjsonParser(AJsonParser):
         # Sort keys
         if kwargs.get("sort_keys", False):
             option |= orjson.OPT_SORT_KEYS
+        # Compact output is default; stdlib "separators" has no orjson equivalent.
+        kwargs.pop("separators", None)
         result = orjson.dumps(obj, option=option)
         # Return as bytes (orjson returns bytes)
         # Caller can decode if string is needed

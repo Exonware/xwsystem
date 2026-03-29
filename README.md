@@ -3,7 +3,7 @@
 **One install instead of 50+.** Serialization (24+ formats), caching, security, validation, HTTP, IPC, monitoring—same APIs everywhere. The base every other eXonware package builds on.
 
 **Company:** eXonware.com · **Author:** eXonware Backend Team · **Email:** connect@exonware.com  
-**Version:** See [version.py](src/exonware/xwsystem/version.py) or PyPI. **Updated:** See version.py (`__date__`).
+**Version:** `0.9.0.23` | **Updated:** `29-Mar-2026`
 
 [![Status](https://img.shields.io/badge/status-beta-blue.svg)](https://exonware.com)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org)

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.22
+Version: 0.9.0.23
 Generation Date: January 2026
 XWValidator - Unified Validation Facade
 Simplified API for validation operations:

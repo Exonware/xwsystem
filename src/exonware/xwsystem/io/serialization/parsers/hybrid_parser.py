@@ -1,9 +1,10 @@
 #exonware/xwsystem/src/exonware/xwsystem/io/serialization/parsers/hybrid_parser.py
-"""Hybrid parser: msgspec for reading, orjson for writing (direct, no try/catch)."""
+"""Hybrid parser: msgspec for reading, orjson for writing."""
 
 from typing import Any
-import msgspec  # Direct import for reading
-import orjson  # Direct import for writing
+import msgspec
+import orjson
+
 from .base import AJsonParser
 
 
@@ -12,7 +13,7 @@ class HybridParser(AJsonParser):
     Hybrid parser - fastest combination:
     - msgspec for reading (1.36x faster than orjson)
     - orjson for writing (2.27x faster than msgspec)
-    Direct imports (no try/catch) - assumes both are available.
+    Uses msgspec + orjson when both are installed.
     """
     @property
 
@@ -25,7 +26,7 @@ class HybridParser(AJsonParser):
     @property
 
     def is_available(self) -> bool:
-        return True  # Assumes both msgspec and orjson are available
+        return True
 
     def loads(self, s: str | bytes) -> Any:
         """Parse JSON using msgspec.json.decode() - fastest for reading."""

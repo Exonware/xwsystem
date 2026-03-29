@@ -181,3 +181,4 @@ cacheout
 trio
 h2
 socksio
+fastavro

@@ -6,7 +6,7 @@ Production-grade CLI utilities for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.22
+Version: 0.9.0.23
 Generated: 2025-01-27
 """
 # Import general console enums from console level (priority)

@@ -1,8 +1,8 @@
 # QA Reference — xwsystem
 
 **Library:** exonware-xwsystem  
-**Version:** 0.0.1  
-**Last Updated:** 07-Feb-2026  
+**Version:** See [`src/exonware/xwsystem/version.py`](../src/exonware/xwsystem/version.py) (`__version__`; single source of truth).  
+**Last Updated:** Synchronized with `version.get_date()` from that module at doc review time.  
 **Requirements source:** [REF_01_REQ.md](REF_01_REQ.md) sec. 8 (Five Priorities)
 
 ---
@@ -21,7 +21,7 @@ This is the **single source of truth** for `xwsystem` quality gates and release 
 | Coverage | Overall ≥ 90% and core critical paths 100% | ⏳ | `REF_51_TEST.md` |
 | Lint/Types | Formatting + type checks pass | ⏳ | CI checks |
 | Security | Security suites pass; no known critical vulnerabilities | ⏳ | `docs/logs/tests/INDEX.md` + compliance evidence |
-| Performance | Benchmarks meet SLA; no regressions (>5% investigate; >10% block) | ⏳ | `docs/logs/benchmarks/INDEX.md` |
+| Performance | Benchmarks meet SLA; no regressions (>5% investigate; >10% block) | ⏳ | `benchmarks/` (project root per GUIDE_54_BENCH) + `REF_54_BENCH.md` |
 | Docs | Required docs exist and are current (REF_*, logs indices, usage) | ⏳ | `docs/INDEX.md` + compliance checks |
 
 **Decision:** ⏳ Pending (blocked until gates are green)
@@ -62,7 +62,7 @@ This is the **single source of truth** for `xwsystem` quality gates and release 
 ## Required evidence locations
 
 - Tests: `docs/logs/tests/TEST_*.md` + `docs/logs/tests/INDEX.md`
-- Benchmarks: `docs/logs/benchmarks/BENCH_*.md` + `docs/logs/benchmarks/INDEX.md` + `docs/logs/benchmarks/baseline/`
+- Benchmarks: `benchmarks/` at project root (campaign folders) + `REF_54_BENCH.md`; legacy index may exist under `docs/logs/benchmarks/`
 - Releases: `docs/logs/releases/` + index
 - Compliance: `docs/compliance/**` + traceability matrix
 

@@ -1,93 +1,126 @@
-"""
 #exonware/xwsystem/tests/1.unit/utils/test_lazy_mode_example.py
-Validate the lazy mode quick check example and configuration helpers.
+"""
+Validate lazy-install wiring: exonware.xwlazy.config_package_lazy_install_enabled
+(pip: exonware-xwlazy; alias: xwlazy).
 Company: eXonware.com
 Author: eXonware Backend Team
-Email: connect@exonware.com
-Version: 0.0.1.387
-Generation Date: 08-Nov-2025
 """
 
 from __future__ import annotations
-import runpy
-from contextlib import contextmanager
+
 from pathlib import Path
-from collections.abc import Iterator
+
 import pytest
-# Skip all tests in this file - xwlazy has been removed
-pytestmark = pytest.mark.skip(reason="xwlazy has been removed from the codebase")
-# from xwlazy.lazy import (
-#     LazyInstallConfig,
-#     config_package_lazy_install_enabled,
-#     is_import_hook_installed,
-# )
-PACKAGE_NAME = "xwsystem"
-EXAMPLE_MODULE = "lazy_mode_quick_check"
-@contextmanager
 
-def preserve_lazy_configuration(package_name: str = PACKAGE_NAME) -> Iterator[tuple[bool, str]]:
-    """
-    Preserve existing lazy install configuration for the duration of a test.
-    WHY:
-    - Prevents cross-test interference by always restoring original settings.
-    - Avoids toggling the import hook, which could affect global import behaviour.
-    """
-    original_enabled = LazyInstallConfig.is_enabled(package_name)
-    original_mode = LazyInstallConfig.get_mode(package_name)
-    try:
-        yield original_enabled, original_mode
-    finally:
-        config_package_lazy_install_enabled(
-            package_name,
-            original_enabled,
-            original_mode,
-            install_hook=False,
-        )
+pytest.importorskip("exonware.xwlazy")  # exonware-xwlazy installed ([lazy] / dev)
+
+from exonware.xwlazy import config_package_lazy_install_enabled
 
 
-def load_example_globals() -> dict:
-    """Load the example module using runpy to access helper functions."""
-    example_path = Path(__file__).resolve().parents[3] / "examples" / f"{EXAMPLE_MODULE}.py"
-    return runpy.run_path(str(example_path))
+def _reset_xwlazy_singleton() -> None:
+    from exonware.xwlazy import auto_enable_lazy, uninstall_global_import_hook
+
+    uninstall_global_import_hook()
+    globals_dict = auto_enable_lazy.__globals__
+    if "_instance" in globals_dict:
+        globals_dict["_instance"] = None
+
+
 @pytest.mark.xwsystem_unit
+def test_config_package_lazy_importable() -> None:
+    """Public lazy API must be importable from xwlazy.lazy (GUIDE_00_MASTER contract)."""
+    assert callable(config_package_lazy_install_enabled)
 
-def test_lazy_mode_demo_enables_and_restores_configuration() -> None:
-    """
-    Ensure the example toggles lazy install and restores previous state.
-    WHY:
-    - Confirms that lazy mode activation works without leaving residual changes.
-    - Validates that the example provides accurate status data for developers.
-    """
-    example_globals = load_example_globals()
-    run_lazy_mode_demo = example_globals["run_lazy_mode_demo"]
-    with preserve_lazy_configuration() as (original_enabled, original_mode):
-        result = run_lazy_mode_demo(PACKAGE_NAME)
-        assert result["demo_enabled"] is True
-        assert result["demo_mode"] == "interactive"
-        # Ensure the function restored original values.
-        assert LazyInstallConfig.is_enabled(PACKAGE_NAME) == original_enabled
-        assert LazyInstallConfig.get_mode(PACKAGE_NAME) == original_mode
-        # Stats should always provide a dictionary with baseline keys.
-        assert isinstance(result["stats"], dict)
-        assert "enabled" in result["stats"]
-        assert "total_installed" in result["stats"]
+
 @pytest.mark.xwsystem_unit
+def test_config_package_lazy_install_enabled_smoke() -> None:
+    """Calling the helper for exonware.xwsystem must not raise (matches __init__.py usage)."""
+    config_package_lazy_install_enabled(
+        "exonware.xwsystem",
+        enabled=True,
+        mode="smart",
+    )
 
-def test_config_package_lazy_install_enabled_respects_install_hook_flag() -> None:
-    """
-    Verify that the helper toggles lazy mode without mutating the import hook.
-    WHY:
-    - Guarantees that tests using lazy mode can run without side effects.
-    - Protects security by ensuring no unexpected hook stays installed.
-    """
-    hook_before = is_import_hook_installed(PACKAGE_NAME)
-    with preserve_lazy_configuration():
-        config_package_lazy_install_enabled(
-            PACKAGE_NAME,
-            True,
-            mode="interactive",
-            install_hook=False,
-        )
-        assert LazyInstallConfig.is_enabled(PACKAGE_NAME) is True
-        assert LazyInstallConfig.get_mode(PACKAGE_NAME) == "interactive"
-        assert is_import_hook_installed(PACKAGE_NAME) == hook_before
+
+@pytest.mark.xwsystem_unit
+def test_config_package_lazy_install_enabled_disabled_noop() -> None:
+    """When disabled, the wrapper should not call auto_enable (no exception)."""
+    config_package_lazy_install_enabled(
+        "exonware.xwsystem",
+        enabled=False,
+        mode="smart",
+    )
+
+
+@pytest.mark.xwsystem_unit
+def test_xwsystem_lazy_loading_policy_enabled_via_config(tmp_path: Path) -> None:
+    """With both flags enabled, xwsystem policy should be configured in lazy mode."""
+    _reset_xwlazy_singleton()
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        "\n".join(
+            [
+                "[project]",
+                "name = 'demo'",
+                "version = '0.0.0'",
+                "",
+                "[tool.xwlazy]",
+                "enable_lazy_install = true",
+                "enable_lazy_loading = true",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    config_package_lazy_install_enabled(
+        "exonware.xwsystem",
+        enabled=True,
+        mode="smart",
+        root=str(tmp_path),
+    )
+
+    # Access singleton via public function globals (read-only assertion in tests).
+    from exonware.xwlazy import auto_enable_lazy
+
+    instance = auto_enable_lazy.__globals__.get("_instance")
+    assert instance is not None
+    policy = instance.package_policies.get("exonware.xwsystem")
+    assert policy is not None
+    assert policy["enabled"] is True
+    assert policy["mode"] == "lazy"
+
+
+@pytest.mark.xwsystem_unit
+def test_xwsystem_lazy_install_disabled_via_config(tmp_path: Path) -> None:
+    """With lazy install disabled, wrapper should not configure xwsystem policy."""
+    _reset_xwlazy_singleton()
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        "\n".join(
+            [
+                "[project]",
+                "name = 'demo'",
+                "version = '0.0.0'",
+                "",
+                "[tool.xwlazy]",
+                "enable_lazy_install = false",
+                "enable_lazy_loading = true",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    config_package_lazy_install_enabled(
+        "exonware.xwsystem",
+        enabled=True,
+        mode="smart",
+        root=str(tmp_path),
+    )
+
+    from exonware.xwlazy import auto_enable_lazy
+
+    instance = auto_enable_lazy.__globals__.get("_instance")
+    if instance is not None:
+        assert "exonware.xwsystem" not in instance.package_policies

@@ -63,11 +63,11 @@ text = "MIT"
 lazy = [
     "exonware-xwsystem[lazy]",
 ]
-full = [
-    "exonware-xwsystem[full]",
-]
 dev = [
     "exonware-xwsystem[dev]",
+]
+full = [
+    "exonware-xwsystem[full]",
 ]
 windows = [
     "exonware-xwsystem[windows]",

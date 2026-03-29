@@ -5,11 +5,13 @@ from .base import AJsonParser
 from .standard import StandardJsonParser
 from .hybrid_parser import HybridParser
 from .hyperjson_parser import HyperjsonParser
+from .orjson_parser import OrjsonParser
 # Registry of available parsers (order of preference when auto-detecting)
 _PARSERS: dict[str, type[AJsonParser]] = {
-    "hyperjson": HyperjsonParser,  # Preferred when installed (fastest in benchmarks)
+    "hyperjson": HyperjsonParser,  # Fastest when installed
     "hybrid": HybridParser,  # msgspec read + orjson write
-    "standard": StandardJsonParser,  # Fallback only
+    "orjson": OrjsonParser,  # Fast, broadly available
+    "standard": StandardJsonParser,  # Baseline fallback
 }
 # Cache of parser instances
 _PARSER_INSTANCES: dict[str, AJsonParser] = {}
@@ -25,20 +27,8 @@ def get_best_available_parser() -> AJsonParser:
     Returns:
         Best available parser instance
     """
-    # Try hyperjson first (fastest when installed)
-    parser_class = _PARSERS.get("hyperjson")
-    if parser_class:
-        parser = parser_class()
-        if parser.is_available:
-            return parser
-    # Then hybrid (msgspec read + orjson write)
-    parser_class = _PARSERS.get("hybrid")
-    if parser_class:
-        parser = parser_class()
-        if parser.is_available:
-            return parser
-    # Fallback to standard (stdlib)
-    return StandardJsonParser()
+    # Full install guarantees fast parsers are available.
+    return HyperjsonParser()
 
 
 def get_parser(name: str | None = None) -> AJsonParser:

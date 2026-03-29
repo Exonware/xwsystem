@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.22
+Version: 0.9.0.23
 Generation Date: October 10, 2025
 XWSystem - Enterprise-grade Python framework with AI-powered performance optimization.
 🚀 QUICK START:
@@ -45,15 +45,20 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Any
 # =============================================================================
-# XWLAZY INTEGRATION - Auto-install missing dependencies silently (EARLY)
+# XWLAZY INTEGRATION — GUIDE_00_MASTER: config_package_lazy_install_enabled (EARLY)
 # =============================================================================
-# Activate xwlazy BEFORE other imports to enable auto-installation of missing dependencies
-# This enables silent auto-installation of missing libraries when they are imported
+# Dependency: exonware-xwlazy (PyPI). Import canonical namespace: exonware.xwlazy
+# (top-level alias package: xwlazy).
 try:
-    from exonware.xwlazy import auto_enable_lazy
-    auto_enable_lazy(__package__ or "exonware.xwsystem", mode="smart")
+    from exonware.xwlazy import config_package_lazy_install_enabled
+
+    config_package_lazy_install_enabled(
+        __package__ or "exonware.xwsystem",
+        enabled=True,
+        mode="smart",
+    )
 except ImportError:
-    # xwlazy not installed - lazy mode simply stays disabled (normal behavior)
+    # xwlazy not installed — omit [lazy] extra or install exonware-xwlazy for lazy mode.
     pass
 # Logging utilities
 from .config.logging_setup import get_logger, setup_logging
