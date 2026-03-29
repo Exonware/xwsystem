@@ -2,7 +2,7 @@
 
 **Purpose:** Maintain a harmonised risk management framework covering NASA NPR 8715.3, ECSS risk requirements, ISO/IEC 27001, and NIST RMF obligations.  
 **Applicability:** All eXonware products starting v2 (Mars Standard draft) with optional early adoption in v1.  
-**Last status review:** 08-Nov-2025 00:00 UTC — ✅ Framework documented, dependability checklist in place.
+**Last status review:** 08-Nov-2025 00:00 UTC - ✅ Framework documented, dependability checklist in place.
 
 ---
 
@@ -15,12 +15,12 @@ If richer exports are required, create CSV snapshots in `docs/compliance/evidenc
 
 ## Risk Management Lifecycle
 
-1. **Identify** – Workshops, checklists, historical data, and expert reviews.  
-2. **Analyse** – Score probability (1–5) and impact (1–5), derive risk score, assign owner.  
-3. **Plan** – Define avoidance, reduction, transfer, or acceptance strategies plus contingency plans.  
-4. **Mitigate** – Execute actions, allocate resources, integrate with delivery plans.  
-5. **Monitor** – Track indicators, trend risks, run weekly/monthly/quarterly reviews.  
-6. **Communicate** – Share status with stakeholders, log updates in CHANGE/PROJECT docs.
+1. **Identify** - Workshops, checklists, historical data, and expert reviews.  
+2. **Analyse** - Score probability (1-5) and impact (1-5), derive risk score, assign owner.  
+3. **Plan** - Define avoidance, reduction, transfer, or acceptance strategies plus contingency plans.  
+4. **Mitigate** - Execute actions, allocate resources, integrate with delivery plans.  
+5. **Monitor** - Track indicators, trend risks, run weekly/monthly/quarterly reviews.  
+6. **Communicate** - Share status with stakeholders, log updates in CHANGE/PROJECT docs.
 
 Risk levels follow a four-colour scale (Critical, High, Medium, Low). Accepted risks require explicit approval and review dates.
 
@@ -58,13 +58,13 @@ Use this checklist whenever a new PLAN document is written. Populate the “Stat
 
 | Impact \\ Probability | 1 | 2 | 3 | 4 | 5 |
 |-----------------------|---|---|---|---|---|
-| **5 – Critical**      | 5 | 10 | 15 | 20 | 25 |
-| **4 – Major**         | 4 | 8  | 12 | 16 | 20 |
-| **3 – Moderate**      | 3 | 6  | 9  | 12 | 15 |
-| **2 – Minor**         | 2 | 4  | 6  | 8  | 10 |
-| **1 – Negligible**    | 1 | 2  | 3  | 4  | 5 |
+| **5 - Critical**      | 5 | 10 | 15 | 20 | 25 |
+| **4 - Major**         | 4 | 8  | 12 | 16 | 20 |
+| **3 - Moderate**      | 3 | 6  | 9  | 12 | 15 |
+| **2 - Minor**         | 2 | 4  | 6  | 8  | 10 |
+| **1 - Negligible**    | 1 | 2  | 3  | 4  | 5 |
 
-Scores ≥15 are **Critical**, 10–14 **High**, 6–9 **Medium**, and ≤5 **Low**. Critical and High risks require dedicated tasks in the next PLAN document and explicit approval for any acceptance decisions.
+Scores ≥15 are **Critical**, 10-14 **High**, 6-9 **Medium**, and ≤5 **Low**. Critical and High risks require dedicated tasks in the next PLAN document and explicit approval for any acceptance decisions.
 
 ## Monitoring & Reporting
 

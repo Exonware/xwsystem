@@ -1,4 +1,4 @@
-# 20260210 — Benchmark: xwsystem Atomic File I/O vs Plain Write
+# 20260210 - Benchmark: xwsystem Atomic File I/O vs Plain Write
 
 **Campaign:** Atomic file write + commit vs plain open/write/close  
 **Date:** 10-Feb-2026  
@@ -31,9 +31,9 @@ Measure throughput and latency of **AtomicFileWriter** (write + commit) vs **pla
 
 ## Structure
 
-- **scripts/** — `run_benchmark_atomic_io.py`
-- **data/** — used for temp/target files during run
-- **benchmarks/** — BENCH_* reports, results_*.json, INDEX.md
+- **scripts/** - `run_benchmark_atomic_io.py`
+- **data/** - used for temp/target files during run
+- **benchmarks/** - BENCH_* reports, results_*.json, INDEX.md
 
 ---
 

@@ -1,4 +1,4 @@
-# 20260210 — Benchmark: xwsystem Async Process Fabric
+# 20260210 - Benchmark: xwsystem Async Process Fabric
 
 Scaffold harness for REF_54_BENCH Async Process Fabric SLAs (task submission, queue latency, shared memory).
 

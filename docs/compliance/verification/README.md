@@ -2,7 +2,7 @@
 
 **Purpose:** Provide documented evidence that requirements are verified and validated to NASA-STD-8739.8, ECSS-Q-ST-80C, DO-178C, and related standards.  
 **Applicability:** All core libraries and safety-critical services; mandatory from v2 onwards.  
-**Last status review:** 08-Nov-2025 00:00 UTC — ✅ Process documented, component scope defined.
+**Last status review:** 08-Nov-2025 00:00 UTC - ✅ Process documented, component scope defined.
 
 ---
 
@@ -24,9 +24,9 @@ Populate each file with current information; link to automated outputs (pytest r
 
 ## V&V Lifecycle
 
-1. **Planning** – Define scope, resources, schedule, risk considerations.  
-2. **Execution** – Run verification (requirements/design/code/integration/system) and validation (functional, performance, security, safety).  
-3. **Reporting** – Collect evidence, analyse results, produce sign-off packages, recommend improvements.
+1. **Planning** - Define scope, resources, schedule, risk considerations.  
+2. **Execution** - Run verification (requirements/design/code/integration/system) and validation (functional, performance, security, safety).  
+3. **Reporting** - Collect evidence, analyse results, produce sign-off packages, recommend improvements.
 
 Methods include static analysis, dynamic testing, formal verification, and compliance-specific evaluations.
 
@@ -69,11 +69,11 @@ Store raw artefacts beneath `docs/compliance/evidence/` and reference them from 
 
 ## Test Categories (derived from experiment playbooks)
 
-- **Property-Based** – Hypothesis suites for data structures and serialization (Level C).  
-- **Model Checking** – Scenario exploration using custom state machines (Level B).  
-- **Static Analysis** – Extended `mypy`/lint rules plus safety-specific Semgrep checks (Level B).  
-- **Theorem Proving** – Z3 scripts validating invariants for safety modules (Level A).  
-- **Dynamic & Benchmarks** – Reuse benchmarking and compliance suites to validate performance and safety assumptions.
+- **Property-Based** - Hypothesis suites for data structures and serialization (Level C).  
+- **Model Checking** - Scenario exploration using custom state machines (Level B).  
+- **Static Analysis** - Extended `mypy`/lint rules plus safety-specific Semgrep checks (Level B).  
+- **Theorem Proving** - Z3 scripts validating invariants for safety modules (Level A).  
+- **Dynamic & Benchmarks** - Reuse benchmarking and compliance suites to validate performance and safety assumptions.
 
 ## Verification Schedule
 

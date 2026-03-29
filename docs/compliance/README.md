@@ -1,6 +1,6 @@
 # Compliance Overview
 
-**Applies from:** Version 0.x (structure) � **Mandatory from:** Version 2.x (Mars Standard Draft)  
+**Applies from:** Version 0.x (structure) | **Mandatory from:** Version 2.x (Mars Standard Draft)  
 **Owner:** Architecture & Compliance Group
 
 ---

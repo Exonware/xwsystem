@@ -1,4 +1,4 @@
-# 20260209 — Benchmark: xwsystem Caching vs Others
+# 20260209 - Benchmark: xwsystem Caching vs Others
 
 **Campaign:** In-memory cache get/put/mixed throughput comparison  
 **Date:** 09-Feb-2026  
@@ -18,28 +18,28 @@ Demonstrate that **PylruCache** (pylru, from `xwsystem/src/exonware/xwsystem/cac
 This benchmark compares **PylruCache** (default; pylru wrapped in xwsystem) against:
 
 1. **All xwsystem caches** in `xwsystem/src/exonware/xwsystem/caching/`:
-   - **PylruCache** — default (pylru wrapper; highest throughput ~2.4M mixed/s; `external_caching_python.py`)
-   - **FunctoolsLRUCache** — OrderedDict-based LRU (`external_caching_python.py`)
-   - **CacheboxCache** — Rust-based (cachebox; `external_caching_python.py`)
-   - **CachetoolsLRUCache**, **CachetoolsLFUCache**, **CachetoolsTTLCache**, **CachetoolsRRCache** — cachetools wrappers (`external_caching_python.py`)
-   - **LRUCache**, **AsyncLRUCache** — core LRU (`lru_cache.py`)
-   - **LFUCache**, **AsyncLFUCache** — LFU (`lfu_cache.py`)
-   - **OptimizedLFUCache**, **AsyncOptimizedLFUCache** — O(1) LFU (`lfu_optimized.py`)
-   - **TTLCache**, **AsyncTTLCache** — TTL (`ttl_cache.py`)
-   - **MemoryBoundedLRUCache**, **MemoryBoundedLFUCache** — memory-bounded (`memory_bounded.py`)
-   - **TwoTierCache** — L1/L2 (`two_tier_cache.py`)
-   - **SecureLRUCache**, **SecureLFUCache**, **SecureTTLCache** — secure variants (`secure_cache.py`)
-   - **FluentLRUCache**, **FluentLFUCache**, **FluentTTLCache** — fluent API (`fluent.py`)
-   - **ObservableLRUCache**, **ObservableLFUCache** — event-emitting (`observable_cache.py`)
-   - **ReadThroughCache**, **WriteThroughCache**, **ReadWriteThroughCache** — load/store patterns (`read_through.py`)
-   - **SerializableCache** — save/load (`serializable.py`)
-   - **TaggedCache** — tag invalidation (`tagging.py`)
-   - **WriteBehindCache** — lazy write (`write_behind.py`)
-   - **ConditionalEvictionCache** — custom eviction (`conditional.py`)
-   - **BloomFilterCache** — bloom + LRU (`bloom_cache.py`)
-   - **DiskCache** — disk-backed (`disk_cache.py`)
-   - **PluggableCache** — pluggable backend (`pluggable_cache.py`)
-   - **DistributedCache**, **RedisCache** — distributed (`distributed.py`)
+   - **PylruCache** - default (pylru wrapper; highest throughput ~2.4M mixed/s; `external_caching_python.py`)
+   - **FunctoolsLRUCache** - OrderedDict-based LRU (`external_caching_python.py`)
+   - **CacheboxCache** - Rust-based (cachebox; `external_caching_python.py`)
+   - **CachetoolsLRUCache**, **CachetoolsLFUCache**, **CachetoolsTTLCache**, **CachetoolsRRCache** - cachetools wrappers (`external_caching_python.py`)
+   - **LRUCache**, **AsyncLRUCache** - core LRU (`lru_cache.py`)
+   - **LFUCache**, **AsyncLFUCache** - LFU (`lfu_cache.py`)
+   - **OptimizedLFUCache**, **AsyncOptimizedLFUCache** - O(1) LFU (`lfu_optimized.py`)
+   - **TTLCache**, **AsyncTTLCache** - TTL (`ttl_cache.py`)
+   - **MemoryBoundedLRUCache**, **MemoryBoundedLFUCache** - memory-bounded (`memory_bounded.py`)
+   - **TwoTierCache** - L1/L2 (`two_tier_cache.py`)
+   - **SecureLRUCache**, **SecureLFUCache**, **SecureTTLCache** - secure variants (`secure_cache.py`)
+   - **FluentLRUCache**, **FluentLFUCache**, **FluentTTLCache** - fluent API (`fluent.py`)
+   - **ObservableLRUCache**, **ObservableLFUCache** - event-emitting (`observable_cache.py`)
+   - **ReadThroughCache**, **WriteThroughCache**, **ReadWriteThroughCache** - load/store patterns (`read_through.py`)
+   - **SerializableCache** - save/load (`serializable.py`)
+   - **TaggedCache** - tag invalidation (`tagging.py`)
+   - **WriteBehindCache** - lazy write (`write_behind.py`)
+   - **ConditionalEvictionCache** - custom eviction (`conditional.py`)
+   - **BloomFilterCache** - bloom + LRU (`bloom_cache.py`)
+   - **DiskCache** - disk-backed (`disk_cache.py`)
+   - **PluggableCache** - pluggable backend (`pluggable_cache.py`)
+   - **DistributedCache**, **RedisCache** - distributed (`distributed.py`)
 
 2. **Top 10 Python-world caches** (where applicable):
    - **cachebox** (Rust)
@@ -53,7 +53,7 @@ This benchmark compares **PylruCache** (default; pylru wrapped in xwsystem) agai
    - **aiocache** (async; optional)
    - **joblib.Memory** (optional)
 
-3. **Rust attempt** (xwsystem): External Rust caches (e.g. Moka, QuickCache, DashMap via PyO3 in `rust/src/caching/external_caching_rust.rs`) — included for comparison even when they underperformed (e.g. after 2 days of tuning).
+3. **Rust attempt** (xwsystem): External Rust caches (e.g. Moka, QuickCache, DashMap via PyO3 in `rust/src/caching/external_caching_rust.rs`) - included for comparison even when they underperformed (e.g. after 2 days of tuning).
 
 Metrics: **get** throughput, **put** throughput, **mixed** (get+put) throughput, cold vs warm, and where relevant atomic/batch behavior.
 
@@ -70,9 +70,9 @@ Metrics: **get** throughput, **put** throughput, **mixed** (get+put) throughput,
 
 ## Structure
 
-- **scripts/** — Script(s) to run the benchmark (e.g. `run_benchmark_caching.py`).
-- **data/** — Configs, baseline JSON, optional datasets.
-- **benchmarks/** — BENCH_* reports and INDEX.md for this campaign.
+- **scripts/** - Script(s) to run the benchmark (e.g. `run_benchmark_caching.py`).
+- **data/** - Configs, baseline JSON, optional datasets.
+- **benchmarks/** - BENCH_* reports and INDEX.md for this campaign.
 
 ---
 
@@ -115,17 +115,17 @@ Results go to stdout and can be saved to `../data/` or `../benchmarks/` (BENCH_*
 | TwoTierCache          | 1.53M       | 1.3k        | 6.3k          |
 | diskcache             | 181k        | 9.4k        | 45k           |
 
-**PylruCache vs xwsystem others:** PylruCache (default) and FunctoolsLRUCache lead on mixed (~2.5–2.7M/s); CacheboxCache is highest on get (3.72M). TwoTierCache now runs (implements `put()`); get is competitive (1.53M/s) while put/mixed are slower due to disk tier.
+**PylruCache vs xwsystem others:** PylruCache (default) and FunctoolsLRUCache lead on mixed (~2.5-2.7M/s); CacheboxCache is highest on get (3.72M). TwoTierCache now runs (implements `put()`); get is competitive (1.53M/s) while put/mixed are slower due to disk tier.
 
 **PylruCache vs top 10 Python:** PylruCache is our wrapper around pylru; CacheboxCache (also wrapped) is comparable. cacheout is in the same range; diskcache is much slower (disk I/O).
 
-**Rust attempt (external_caching_rust):** Not run — Rust bindings not built (`maturin develop --features external-caches,python` required).
+**Rust attempt (external_caching_rust):** Not run - Rust bindings not built (`maturin develop --features external-caches,python` required).
 
 ---
 
 ## Related
 
-- [GUIDE_54_BENCH.md](../../../docs/guides/GUIDE_54_BENCH.md) — Benchmarking guide
-- [REF_54_BENCH.md](../../REF_54_BENCH.md) — Performance SLAs (if present)
-- [../INDEX.md](../INDEX.md) — Benchmarks index
-- [PylruCache](../../src/exonware/xwsystem/caching/external_caching_python.py) — default cache (pylru wrapper); [FunctoolsLRUCache](../../src/exonware/xwsystem/caching/external_caching_python.py) — fallback when pylru not installed
+- [GUIDE_54_BENCH.md](../../../docs/guides/GUIDE_54_BENCH.md) - Benchmarking guide
+- [REF_54_BENCH.md](../../REF_54_BENCH.md) - Performance SLAs (if present)
+- [../INDEX.md](../INDEX.md) - Benchmarks index
+- [PylruCache](../../src/exonware/xwsystem/caching/external_caching_python.py) - default cache (pylru wrapper); [FunctoolsLRUCache](../../src/exonware/xwsystem/caching/external_caching_python.py) - fallback when pylru not installed

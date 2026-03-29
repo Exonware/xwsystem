@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.23
+Version: 0.9.0.25
 Generation Date: November 1, 2025
 Archive-Codec Integration - Register archivers with CodecRegistry.
 This enables:

@@ -1,9 +1,9 @@
 # xwsystem
 
-**One install instead of 50+.** Serialization (24+ formats), caching, security, validation, HTTP, IPC, monitoring—same APIs everywhere. The base every other eXonware package builds on.
+**One install instead of 50+.** Serialization (24+ formats), caching, security, validation, HTTP, IPC, monitoring - same APIs everywhere. The base every other eXonware package builds on.
 
 **Company:** eXonware.com · **Author:** eXonware Backend Team · **Email:** connect@exonware.com  
-**Version:** `0.9.0.23` | **Updated:** `29-Mar-2026`
+**Version:** `0.9.0.24` | **Updated:** `29-Mar-2026`
 
 [![Status](https://img.shields.io/badge/status-beta-blue.svg)](https://exonware.com)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org)
@@ -17,9 +17,9 @@
 
 | Install | What you get | When to use |
 |---------|--------------|-------------|
-| `pip install exonware-xwsystem` | **Lite** — core only, zero optional deps | Minimal footprint, or you install what you need. |
-| `pip install exonware-xwsystem[lazy]` | **Lazy** — core + xwlazy; missing deps install on first import | Development; optional formats without pre-installing everything. |
-| `pip install exonware-xwsystem[full]` | **Full** — core + common optionals pre-installed | Production or CI when you want all formats and features up front. |
+| `pip install exonware-xwsystem` | **Lite** - core only, zero optional deps | Minimal footprint, or you install what you need. |
+| `pip install exonware-xwsystem[lazy]` | **Lazy** - core + xwlazy; missing deps install on first import | Development; optional formats without pre-installing everything. |
+| `pip install exonware-xwsystem[full]` | **Full** - core + common optionals pre-installed | Production or CI when you want all formats and features up front. |
 
 Same package; `[lazy]` and `[full]` are extras. You can also install as `xwsystem` (same thing).
 
@@ -69,7 +69,7 @@ Lite = zero optional deps. Lazy = xwlazy installs format backends on first use. 
 
 ## Why xwsystem? (Highlights)
 
-**Automatic format detection (no guessing)** — One API for any file. `AutoSerializer` and `detect_format` pick the right codec from **file extension**, **magic bytes**, or **content patterns** (confidence-scored). No need to know whether it’s JSON, YAML, or MessagePack; pass a path or bytes and get the right serializer.
+**Automatic format detection (no guessing)** - One API for any file. `AutoSerializer` and `detect_format` pick the right codec from **file extension**, **magic bytes**, or **content patterns** (confidence-scored). No need to know whether it’s JSON, YAML, or MessagePack; pass a path or bytes and get the right serializer.
 
 ```python
 from exonware.xwsystem import AutoSerializer, detect_format
@@ -84,11 +84,11 @@ data = auto.load_file(Path("config.yaml"))
 auto.save_file(data, Path("out.toml"))
 ```
 
-**JSON: 3x+ faster than stdlib** — Pluggable parsers: **orjson** (3–4x faster), optional **hybrid** (msgspec for read, orjson for write). Measured: 1MB serialize &lt;45ms, deserialize &lt;52ms (see [REF_54_BENCH](docs/REF_54_BENCH.md)).
+**JSON: 3x+ faster than stdlib** - Pluggable parsers: **orjson** (3-4x faster), optional **hybrid** (msgspec for read, orjson for write). Measured: 1MB serialize &lt;45ms, deserialize &lt;52ms (see [REF_54_BENCH](docs/REF_54_BENCH.md)).
 
-**Caching: O(1), benchmark-backed** — LRU/LFU/TTL with sub-microsecond get/set (10K items). Default uses the fastest Python cache baseline (~33k GET ops/sec, ~3.3k MIXED in our benchmarks). SLAs and NFRs in [REF_54_BENCH](docs/REF_54_BENCH.md).
+**Caching: O(1), benchmark-backed** - LRU/LFU/TTL with sub-microsecond get/set (10K items). Default uses the fastest Python cache baseline (~33k GET ops/sec, ~3.3k MIXED in our benchmarks). SLAs and NFRs in [REF_54_BENCH](docs/REF_54_BENCH.md).
 
-**Serialization benchmark (1MB data)** — From [REF_15_API](docs/REF_15_API.md) / [REF_54_BENCH](docs/REF_54_BENCH.md):
+**Serialization benchmark (1MB data)** - From [REF_15_API](docs/REF_15_API.md) / [REF_54_BENCH](docs/REF_54_BENCH.md):
 
 | Format     | Serialize | Deserialize |
 |-----------|-----------|-------------|
@@ -96,30 +96,30 @@ auto.save_file(data, Path("out.toml"))
 | JSON       | 45 ms   | 52 ms       |
 | YAML       | 123 ms  | 145 ms      |
 
-**Benchmarks** — Campaigns live in [benchmarks/](benchmarks/) (per [GUIDE_54_BENCH](../docs/guides/GUIDE_54_BENCH.md)). Run from project root; full index: [benchmarks/INDEX.md](benchmarks/INDEX.md).
+**Benchmarks** - Campaigns live in [benchmarks/](benchmarks/) (per [GUIDE_54_BENCH](../docs/guides/GUIDE_54_BENCH.md)). Run from project root; full index: [benchmarks/INDEX.md](benchmarks/INDEX.md).
 
-**Benchmarks summary (10-Feb-2026)** — Condensed from latest runs. All campaigns: JSON, caching, serialization, atomic I/O, operations, data structures, object pool, validation, threading locks, async fabric.
+**Benchmarks summary (10-Feb-2026)** - Condensed from latest runs. All campaigns: JSON, caching, serialization, atomic I/O, operations, data structures, object pool, validation, threading locks, async fabric.
 
 | Area | Best / representative result |
 |------|------------------------------|
 | **JSON** | JsonSerializer (hybrid/hyperjson): small ~798k decode / 506k encode ops/s; with hyperjson installed matches hyperjson. orjson/msgspec in same tier. |
 | **Caching** | PylruCache (default): get 2.99M/s, put 2.83M/s, mixed 2.49M/s. CacheboxCache get 3.72M/s. TwoTierCache now included (put/get contract). |
 | **Serialization** | MsgPackSerializer small: 862k decode / 301k encode. YamlSerializer medium: 15 decode / 39 encode. PickleSerializer small: 422k decode / 357k encode. Competitive with msgpack/PyYAML/stdlib pickle. |
-| **Atomic I/O** | AtomicFileWriter: 205–357 writes/s (1KB–100KB). Plain write: 504–743 writes/s. Atomic adds ~2–3× latency for crash-safe commit. |
-| **Operations** | diff (structural/content/full) small: 35k–48k ops/s. merge (deep/shallow/overwrite) small: 59k–70k ops/s. patch_apply small: 64k ops/s. |
+| **Atomic I/O** | AtomicFileWriter: 205-357 writes/s (1KB-100KB). Plain write: 504-743 writes/s. Atomic adds ~2-3x latency for crash-safe commit. |
+| **Operations** | diff (structural/content/full) small: 35k-48k ops/s. merge (deep/shallow/overwrite) small: 59k-70k ops/s. patch_apply small: 64k ops/s. |
 | **Data structures** | TrieNode lookup 899k ops/s; dict lookup 26M ops/s. UnionFind (make_set+union+find) 573 runs/s. trie insert batch 49k ops/s. |
-| **Object pool** | ObjectPool get+release (thread_safe=True) 350k ops/s; (thread_safe=False) 287k ops/s. direct SimpleObj() 2.93M ops/s. Pool overhead ~8× for reuse. |
+| **Object pool** | ObjectPool get+release (thread_safe=True) 350k ops/s; (thread_safe=False) 287k ops/s. direct SimpleObj() 2.93M ops/s. Pool overhead ~8x for reuse. |
 | **Validation** | check_data_depth shallow 1.11M ops/s, deep 229k ops/s. validate_path_input (safe) 2.58M ops/s. |
 | **Locks** | EnhancedRLock (track_stats=True) 1.53M ops/s; (track_stats=False) 3.37M ops/s. threading.RLock 7.14M ops/s. Use track_stats=False for fast path. |
 | **Async fabric** | Submit 1k tasks ~3.27k ops/s; queue latency ~0.02 ms; shared memory reuse read ~0.006 ms (see benchmarks/20260210-benchmark xwsystem async fabric). |
 
-**Using these results:** `create_cache()` already defaults to **PylruCache** when pylru is installed (~2.5–3M mixed ops/s). For hot-path locking without timeout or stats, use **`fast_lock()`** or **`EnhancedRLock(track_stats=False)`** (~3.4M ops/s). Use **TwoTierCache** when you need memory+disk; use **ObjectPool** when object creation cost outweighs pool overhead. See [REF_54_BENCH](docs/REF_54_BENCH.md) trade-offs table.
+**Using these results:** `create_cache()` already defaults to **PylruCache** when pylru is installed (~2.5-3M mixed ops/s). For hot-path locking without timeout or stats, use **`fast_lock()`** or **`EnhancedRLock(track_stats=False)`** (~3.4M ops/s). Use **TwoTierCache** when you need memory+disk; use **ObjectPool** when object creation cost outweighs pool overhead. See [REF_54_BENCH](docs/REF_54_BENCH.md) trade-offs table.
 
 ---
 
 ## Rust and the rest of the stack
 
-**Rust:** xwsystem is the reference implementation. Multi-language (TypeScript, Rust, Go) is planned via contracts/specs. Right now Python performance is comparable to what we’d expect from a Rust port on the hot paths—so no conversion yet. Getting here took several rewrites; the current design is the one we kept.
+**Rust:** xwsystem is the reference implementation. Multi-language (TypeScript, Rust, Go) is planned via contracts/specs. Right now Python performance is comparable to what we would expect from a Rust port on the hot paths, so no conversion yet. Getting here took several rewrites; the current design is the one we kept.
 
 **Ecosystem:** xwsystem is the foundation for 12+ eXonware projects (xwstorage, xwformats, xwjson, xwnode, xwdata, xwauth, xwquery, xwchat, xwui, *-server). They get one dependency instead of 50+, same APIs everywhere, and Lite/Lazy/Full so each package can ship lean or full. One place to fix bugs and add features for the whole stack.
 
@@ -127,7 +127,7 @@ auto.save_file(data, Path("out.toml"))
 
 ## Full feature list and examples
 
-For a complete feature tour, code samples, and platform notes → **[README_LONG.md](README_LONG.md)**.
+For a complete feature tour, code samples, and platform notes see **[README_LONG.md](README_LONG.md)**.
 
 ---
 
@@ -135,20 +135,20 @@ For a complete feature tour, code samples, and platform notes → **[README_LONG
 
 Content in this README is aligned with the project REFs and [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) (per [GUIDE_63_README](../../docs/guides/GUIDE_63_README.md)).
 
-- **Start:** [docs/INDEX.md](docs/INDEX.md) — doc index and quick links.
-- **Use it:** [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) — installation, codecs, caching, runtime, production.
+- **Start:** [docs/INDEX.md](docs/INDEX.md) - doc index and quick links.
+- **Use it:** [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) - installation, codecs, caching, runtime, production.
 - **Requirements and status:** [docs/REF_01_REQ.md](docs/REF_01_REQ.md), [docs/REF_22_PROJECT.md](docs/REF_22_PROJECT.md).
 - **API and design:** [docs/REF_15_API.md](docs/REF_15_API.md), [docs/REF_13_ARCH.md](docs/REF_13_ARCH.md).
 - **DX and quality:** [docs/REF_14_DX.md](docs/REF_14_DX.md), [docs/REF_50_QA.md](docs/REF_50_QA.md), [docs/REF_54_BENCH.md](docs/REF_54_BENCH.md), [docs/REF_51_TEST.md](docs/REF_51_TEST.md).
 - **Ideas and planning:** [docs/REF_12_IDEA.md](docs/REF_12_IDEA.md), [docs/REF_21_PLAN.md](docs/REF_21_PLAN.md).
 - **Compliance:** [docs/compliance/](docs/compliance/). **Evidence:** [docs/logs/](docs/logs/) (changes, tests, benchmarks, plans).
-- **Benchmarks:** [benchmarks/INDEX.md](benchmarks/INDEX.md) — run scripts in `benchmarks/<campaign>/scripts/` (JSON, caching, serialization, atomic I/O, operations, data structures, object pool, validation, locks). See [REF_54_BENCH](docs/REF_54_BENCH.md).
+- **Benchmarks:** [benchmarks/INDEX.md](benchmarks/INDEX.md) - run scripts in `benchmarks/<campaign>/scripts/` (JSON, caching, serialization, atomic I/O, operations, data structures, object pool, validation, locks). See [REF_54_BENCH](docs/REF_54_BENCH.md).
 
 **Tests:** 4-layer suite (0.core, 1.unit, 2.integration, 3.advance). Run via project test runner or pytest. See [docs/REF_51_TEST.md](docs/REF_51_TEST.md).
 
 ---
 
-## 🔬 Where xwsystem fits
+## Where xwsystem fits
 
 `xwsystem` provides the shared infrastructure layer for other eXonware packages (xwstorage, xwformats, xwjson, xwnode, xwdata, xwauth, xwquery, xwchat, xwui, *-server). They depend on its serializers, caches, security helpers, IPC layer, and runtime services instead of re-implementing them.
 
@@ -166,12 +166,13 @@ Downstream libraries consume these services via stable APIs exported from `exonw
 
 ## License and links
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
 
 - **Homepage:** https://exonware.com  
 - **Repository:** https://github.com/exonware/xwsystem  
 - **Version:** See [version.py](src/exonware/xwsystem/version.py) or PyPI.
 
-Part of the eXonware ecosystem — one foundation for all of it.
+Part of the eXonware ecosystem - one foundation for all of it.
 
-*Built with ❤️ by eXonware.com - Revolutionizing Python Development Since 2025*
+Version: 0.9.0.24 | Updated: 29-Mar-2026
+Version: 0.9.0.25 | Updated: 29-Mar-2026

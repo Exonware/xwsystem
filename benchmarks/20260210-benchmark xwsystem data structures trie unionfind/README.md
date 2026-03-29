@@ -1,4 +1,4 @@
-# 20260210 — Benchmark: xwsystem Data Structures (Trie, UnionFind)
+# 20260210 - Benchmark: xwsystem Data Structures (Trie, UnionFind)
 
 **Campaign:** TrieNode-based trie and UnionFind throughput  
 **Date:** 10-Feb-2026  
@@ -29,9 +29,9 @@ Measure **throughput (ops/s)** of xwsystem **TrieNode**-based trie (insert, look
 
 ## Structure
 
-- **scripts/** — `run_benchmark_data_structures.py`
-- **data/** — optional key lists
-- **benchmarks/** — BENCH_* reports, results_*.json, INDEX.md
+- **scripts/** - `run_benchmark_data_structures.py`
+- **data/** - optional key lists
+- **benchmarks/** - BENCH_* reports, results_*.json, INDEX.md
 
 ---
 

@@ -1,4 +1,4 @@
-# 20260210 — Benchmark: xwsystem Object Pool
+# 20260210 - Benchmark: xwsystem Object Pool
 
 **Campaign:** ObjectPool acquire/release vs direct instantiation  
 **Date:** 10-Feb-2026  
@@ -9,7 +9,7 @@
 
 ## Goal
 
-Measure **throughput (ops/s)** of **ObjectPool** get + release (thread-safe and non–thread-safe) vs **direct instantiation** of the same type.
+Measure **throughput (ops/s)** of **ObjectPool** get + release (thread-safe and non-thread-safe) vs **direct instantiation** of the same type.
 
 ---
 
@@ -29,9 +29,9 @@ Measure **throughput (ops/s)** of **ObjectPool** get + release (thread-safe and 
 
 ## Structure
 
-- **scripts/** — `run_benchmark_object_pool.py`
-- **data/** — not required
-- **benchmarks/** — BENCH_* reports, results_*.json, INDEX.md
+- **scripts/** - `run_benchmark_object_pool.py`
+- **data/** - not required
+- **benchmarks/** - BENCH_* reports, results_*.json, INDEX.md
 
 ---
 

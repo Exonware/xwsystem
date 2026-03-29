@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.23
+Version: 0.9.0.25
 Generation Date: November 2, 2025
 Shelve serialization - Persistent dictionary storage.
 Following I→A pattern:

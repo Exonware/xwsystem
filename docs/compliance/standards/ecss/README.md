@@ -3,7 +3,7 @@
 **Scope:** European Cooperation for Space Standardization (software engineering, product assurance, formal methods, dependability, data exchange).  
 **Applicability:** All core libraries and mission-critical services; mandatory from v2 onwards.  
 **Priority:** High.  
-**Last status review:** 08-Nov-2025 00:00 UTC — ✅ Fully documented (pending operational evidence tracked via PLAN metadata).  
+**Last status review:** 08-Nov-2025 00:00 UTC - ✅ Fully documented (pending operational evidence tracked via PLAN metadata).  
 > Compliance is satisfied with the current guides, references, and logs. Additional automation (expanded trace exports, tooling) will arrive during the v2 programme.
 
 ---

@@ -1,4 +1,4 @@
-# 20260210 — Benchmark: xwsystem Serialization (MsgPack, YAML, Pickle) vs Others
+# 20260210 - Benchmark: xwsystem Serialization (MsgPack, YAML, Pickle) vs Others
 
 **Campaign:** Serialization encode/decode comparison for MsgPack, YAML, Pickle  
 **Date:** 10-Feb-2026  
@@ -41,9 +41,9 @@ Libraries in scope:
 
 ## Structure
 
-- **scripts/** — `run_benchmark_serialization.py`
-- **data/** — Optional payload samples
-- **benchmarks/** — BENCH_* reports, results_*.json, INDEX.md
+- **scripts/** - `run_benchmark_serialization.py`
+- **data/** - Optional payload samples
+- **benchmarks/** - BENCH_* reports, results_*.json, INDEX.md
 
 ---
 
@@ -107,4 +107,4 @@ python run_benchmark_serialization.py
 ## Related
 
 - [GUIDE_54_BENCH.md](../../../docs/guides/GUIDE_54_BENCH.md)
-- [../INDEX.md](../INDEX.md) — Benchmarks index
+- [../INDEX.md](../INDEX.md) - Benchmarks index

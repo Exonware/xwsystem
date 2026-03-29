@@ -1,4 +1,4 @@
-# 20260210 — Benchmark: xwsystem Threading Locks
+# 20260210 - Benchmark: xwsystem Threading Locks
 
 **Campaign:** EnhancedRLock vs stdlib RLock throughput  
 **Date:** 10-Feb-2026  
@@ -28,9 +28,9 @@ Measure **throughput (acquire+release/s)** of **EnhancedRLock** vs **threading.R
 
 ## Structure
 
-- **scripts/** — `run_benchmark_locks.py`
-- **data/** — not required
-- **benchmarks/** — BENCH_* reports, results_*.json, INDEX.md
+- **scripts/** - `run_benchmark_locks.py`
+- **data/** - not required
+- **benchmarks/** - BENCH_* reports, results_*.json, INDEX.md
 
 ---
 

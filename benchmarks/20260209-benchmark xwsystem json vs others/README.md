@@ -1,4 +1,4 @@
-# 20260209 — Benchmark: xwsystem JSON vs Others
+# 20260209 - Benchmark: xwsystem JSON vs Others
 
 **Campaign:** JSON serialization and deserialization comparison  
 **Date:** 09-Feb-2026  
@@ -58,9 +58,9 @@ Additional aspects (when available):
 
 ## Structure
 
-- **scripts/** — `run_benchmark_json.py` (and helpers) to run the benchmark.
-- **data/** — Payloads (e.g. sample JSON, sizes) and optional baseline files.
-- **benchmarks/** — BENCH_* reports and INDEX.md for this campaign.
+- **scripts/** - `run_benchmark_json.py` (and helpers) to run the benchmark.
+- **data/** - Payloads (e.g. sample JSON, sizes) and optional baseline files.
+- **benchmarks/** - BENCH_* reports and INDEX.md for this campaign.
 
 ---
 
@@ -94,7 +94,7 @@ Results are printed to stdout and can be saved to `../data/` or `../benchmarks/`
 
 **Parser:** JsonSerializer **prefers hyperjson** when installed (`pip install hyperlight-hyperjson`), then falls back to hybrid (msgspec + orjson), then stdlib. So **yes, JSON is faster** when hyperjson is available: JsonSerializer uses the same parser for all encode/decode and atomic operations (atomic_update_path, atomic_read_path, load_file, save_file).
 
-**JsonSerializer measured speed** (warm decode / warm encode, 500 iter, 50 warmup; below from run 20260209_225411 — hybrid parser in that run; with hyperjson installed, expect ~hyperjson standalone rates):
+**JsonSerializer measured speed** (warm decode / warm encode, 500 iter, 50 warmup; below from run 20260209_225411 - hybrid parser in that run; with hyperjson installed, expect ~hyperjson standalone rates):
 
 | Payload | JsonSerializer (warm decode / warm encode) | orjson | msgspec | hyperjson |
 |---------|-------------------------------------------|--------|---------|-----------|
@@ -108,6 +108,6 @@ Results are printed to stdout and can be saved to `../data/` or `../benchmarks/`
 
 ## Related
 
-- [GUIDE_54_BENCH.md](../../../docs/guides/GUIDE_54_BENCH.md) — Benchmarking guide
-- [REF_54_BENCH.md](../../REF_54_BENCH.md) — Performance SLAs (if present)
-- [../INDEX.md](../INDEX.md) — Benchmarks index
+- [GUIDE_54_BENCH.md](../../../docs/guides/GUIDE_54_BENCH.md) - Benchmarking guide
+- [REF_54_BENCH.md](../../REF_54_BENCH.md) - Performance SLAs (if present)
+- [../INDEX.md](../INDEX.md) - Benchmarks index

@@ -1,4 +1,4 @@
-# 20260210 — Benchmark: xwsystem Validation
+# 20260210 - Benchmark: xwsystem Validation
 
 **Campaign:** check_data_depth and validate_path_input throughput  
 **Date:** 10-Feb-2026  
@@ -28,9 +28,9 @@ Measure **throughput (calls/s)** of xwsystem validation: **check_data_depth** (d
 
 ## Structure
 
-- **scripts/** — `run_benchmark_validation.py`
-- **data/** — optional
-- **benchmarks/** — BENCH_* reports, results_*.json, INDEX.md
+- **scripts/** - `run_benchmark_validation.py`
+- **data/** - optional
+- **benchmarks/** - BENCH_* reports, results_*.json, INDEX.md
 
 ---
 

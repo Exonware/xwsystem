@@ -12,12 +12,12 @@ can review historical records without rerunning the tooling.
   - `Components: xwsystem.xwdata`
   - `Verification: tests/2.integration/test_data_flow.py`
 - The traceability generator parses those lines and writes:
-  - `TRACE_MATRIX.md` – a human-readable Markdown table.
-  - `TRACE_MATRIX.json` – machine-readable JSON for integrations.
+  - `TRACE_MATRIX.md` - a human-readable Markdown table.
+  - `TRACE_MATRIX.json` - machine-readable JSON for integrations.
 - A GitHub Actions workflow (`.github/workflows/traceability.yml`) runs the generator on every
   push and pull request, publishing the Markdown and JSON as build artefacts.
 
-> **Note:** Traceability automation becomes mandatory in v2. Until then, it is acceptable to keep plans, guides, and logs linked manually—run the generator only when you have metadata available.
+> **Note:** Traceability automation becomes mandatory in v2. Until then, it is acceptable to keep plans, guides, and logs linked manually-run the generator only when you have metadata available.
 
 ## Updating the Matrix Locally
 

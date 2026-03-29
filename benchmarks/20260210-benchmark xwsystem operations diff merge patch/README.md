@@ -1,4 +1,4 @@
-# 20260210 — Benchmark: xwsystem Operations (Diff, Merge, Patch)
+# 20260210 - Benchmark: xwsystem Operations (Diff, Merge, Patch)
 
 **Campaign:** Throughput of DiffOperation, MergeOperation, PatchOperation  
 **Date:** 10-Feb-2026  
@@ -30,9 +30,9 @@ Measure **throughput (ops/s)** of xwsystem operations: **DiffOperation** (struct
 
 ## Structure
 
-- **scripts/** — `run_benchmark_operations.py`
-- **data/** — optional fixture JSON
-- **benchmarks/** — BENCH_* reports, results_*.json, INDEX.md
+- **scripts/** - `run_benchmark_operations.py`
+- **data/** - optional fixture JSON
+- **benchmarks/** - BENCH_* reports, results_*.json, INDEX.md
 
 ---
 
