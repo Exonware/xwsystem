@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.29
+Version: 0.9.0.30
 Generation Date: September 04, 2025
 IPC module errors - exception classes for inter-process communication functionality.
 """

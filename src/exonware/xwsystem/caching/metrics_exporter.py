@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.29
+Version: 0.9.0.30
 Generation Date: 01-Nov-2025
 Metrics exporters for cache monitoring.
 Performance Priority #4 - Observability and monitoring integration.

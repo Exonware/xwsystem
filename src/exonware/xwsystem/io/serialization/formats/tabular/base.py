@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.29
+Version: 0.9.0.30
 Generation Date: January 2025
 Tabular serialization base class - ATabularSerialization.
 Extends ASerialization to provide DataFrame conversion capabilities.
