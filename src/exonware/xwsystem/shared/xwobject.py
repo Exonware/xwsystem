@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.27
+Version: 0.9.0.28
 Generation Date: September 04, 2025
 XWObject - Concrete base class for all objects in the eXonware ecosystem.
 """

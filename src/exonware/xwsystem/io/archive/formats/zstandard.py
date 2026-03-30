@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.27
+Version: 0.9.0.28
 Generation Date: November 1, 2025
 Zstandard (.zst) compression format - RANK #2 MODERN STANDARD.
 **Fastest balanced modern compression - ideal for backups & databases**

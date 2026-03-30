@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.27
+Version: 0.9.0.28
 Generation Date: 01-Nov-2025
 Memory-bounded cache implementations.
 Performance Priority #4 - Memory budget enforcement for controlled memory usage.

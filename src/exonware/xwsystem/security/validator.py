@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.27
+Version: 0.9.0.28
 Generation Date: 07-Jan-2025
 Security validator implementation for XWSystem.
 Implements ISecurityValidator protocol for comprehensive security validation.

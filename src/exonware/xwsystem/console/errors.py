@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.27
+Version: 0.9.0.28
 Generation Date: 2025-01-27
 Console module errors - exception classes for console functionality.
 """
