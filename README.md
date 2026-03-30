@@ -171,6 +171,6 @@ MIT - see [LICENSE](LICENSE).
 - **Repository:** https://github.com/exonware/xwsystem  
 
 Part of the eXonware ecosystem - one foundation for all of it.
-Version: 0.9.0.26 | Updated: 29-Mar-2026
+Version: 0.9.0.27 | Updated: 30-Mar-2026
 
 *Built with ❤️ by eXonware.com - Revolutionizing Python Development Since 2025*

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.26
+Version: 0.9.0.27
 Generation Date: 30-Oct-2025
 Local filesystem implementation.
 Priority 1 (Security): Safe local file operations
