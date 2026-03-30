@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.28
+Version: 0.9.0.29
 Generation Date: September 04, 2025
 Asynchronous I/O operations for non-blocking file handling.
 """
@@ -19,7 +19,6 @@ from pathlib import Path
 from typing import Any, AsyncContextManager, BinaryIO, TextIO
 # Import aiofiles - lazy installation system will handle it if missing
 import aiofiles
-import aiofiles.os
 from ...config.logging_setup import get_logger
 from ..common.atomic import FileOperationError
 logger = get_logger("xwsystem.io.async_operations")
@@ -87,9 +86,9 @@ class AsyncAtomicFileWriter:
         self._started = True
         try:
             # Ensure temp directory exists
-            await aiofiles.os.makedirs(self.temp_dir, exist_ok=True)
+            await asyncio.to_thread(os.makedirs, self.temp_dir, exist_ok=True)
             # Create backup if requested and target exists
-            if self.backup and await aiofiles.os.path.exists(self.target_path):
+            if self.backup and await asyncio.to_thread(os.path.exists, self.target_path):
                 await self._create_backup()
             # Create temporary file in same directory as target
             # This ensures they're on the same filesystem for atomic move
@@ -167,27 +166,27 @@ class AsyncAtomicFileWriter:
             if self.file_handle:
                 await self.file_handle.close()
             # Verify temp file was written
-            if not self.temp_path or not await aiofiles.os.path.exists(self.temp_path):
+            if not self.temp_path or not await asyncio.to_thread(os.path.exists, self.temp_path):
                 raise FileOperationError(
                     "Temporary file was not created or was deleted"
                 )
             # Get file stats for verification
-            temp_stat = await aiofiles.os.stat(self.temp_path)
+            temp_stat = await asyncio.to_thread(os.stat, self.temp_path)
             if temp_stat.st_size == 0:
                 logger.warning(f"Temporary file is empty: {self.temp_path}")
             # Atomic move to target location
             # On Windows, need to remove target first if it exists (Windows filesystem limitation)
-            if platform.system() == 'Windows' and await aiofiles.os.path.exists(self.target_path):
-                await aiofiles.os.remove(self.target_path)
+            if platform.system() == 'Windows' and await asyncio.to_thread(os.path.exists, self.target_path):
+                await asyncio.to_thread(os.remove, self.target_path)
             # Perform the atomic move (using sync operation as aiofiles doesn't have move)
             await asyncio.get_event_loop().run_in_executor(
                 None, shutil.move, str(self.temp_path), str(self.target_path)
             )
             self._committed = True
             # Set file permissions to match original if backup exists
-            if self.backup_path and await aiofiles.os.path.exists(self.backup_path):
+            if self.backup_path and await asyncio.to_thread(os.path.exists, self.backup_path):
                 try:
-                    backup_stat = await aiofiles.os.stat(self.backup_path)
+                    backup_stat = await asyncio.to_thread(os.stat, self.backup_path)
                     # Use regular os.chmod since aiofiles doesn't have chmod
                     os.chmod(self.target_path, backup_stat.st_mode)
                 except OSError:
@@ -215,17 +214,17 @@ class AsyncAtomicFileWriter:
             except Exception:
                 pass  # Ignore close errors during rollback
         # Remove temporary file
-        if self.temp_path and await aiofiles.os.path.exists(self.temp_path):
+        if self.temp_path and await asyncio.to_thread(os.path.exists, self.temp_path):
             try:
-                await aiofiles.os.remove(self.temp_path)
+                await asyncio.to_thread(os.remove, self.temp_path)
                 logger.debug(f"Removed temporary file: {self.temp_path}")
             except Exception as e:
                 logger.warning(f"Could not remove temporary file {self.temp_path}: {e}")
         # Restore backup if needed and target was removed
         if (
             self.backup_path
-            and await aiofiles.os.path.exists(self.backup_path)
-            and not await aiofiles.os.path.exists(self.target_path)
+            and await asyncio.to_thread(os.path.exists, self.backup_path)
+            and not await asyncio.to_thread(os.path.exists, self.target_path)
         ):
             try:
                 await asyncio.get_event_loop().run_in_executor(
@@ -240,7 +239,7 @@ class AsyncAtomicFileWriter:
 
     async def _create_backup(self) -> None:
         """Create backup of existing target file."""
-        if not await aiofiles.os.path.exists(self.target_path):
+        if not await asyncio.to_thread(os.path.exists, self.target_path):
             return
         timestamp = int(time.time())
         backup_name = f"{self.target_path.name}.backup.{timestamp}"
@@ -257,9 +256,9 @@ class AsyncAtomicFileWriter:
     async def _cleanup(self) -> None:
         """Clean up temporary resources."""
         # Remove backup if commit was successful
-        if self._committed and self.backup_path and await aiofiles.os.path.exists(self.backup_path):
+        if self._committed and self.backup_path and await asyncio.to_thread(os.path.exists, self.backup_path):
             try:
-                await aiofiles.os.remove(self.backup_path)
+                await asyncio.to_thread(os.remove, self.backup_path)
                 logger.debug(f"Removed backup: {self.backup_path}")
             except Exception as e:
                 logger.warning(f"Could not remove backup {self.backup_path}: {e}")
@@ -342,11 +341,11 @@ async def async_safe_read_text(
     """
     file_path = Path(file_path)
     # Check if file exists
-    if not await aiofiles.os.path.exists(file_path):
+    if not await asyncio.to_thread(os.path.exists, file_path):
         raise FileOperationError(f"File does not exist: {file_path}")
     # Check file size
     try:
-        file_stat = await aiofiles.os.stat(file_path)
+        file_stat = await asyncio.to_thread(os.stat, file_path)
         file_size_bytes = file_stat.st_size
         file_size_mb = file_size_bytes / (1024 * 1024)
         if file_size_mb > max_size_mb:
@@ -382,11 +381,11 @@ async def async_safe_read_bytes(file_path: str | Path, max_size_mb: float = 100.
     """
     file_path = Path(file_path)
     # Check if file exists
-    if not await aiofiles.os.path.exists(file_path):
+    if not await asyncio.to_thread(os.path.exists, file_path):
         raise FileOperationError(f"File does not exist: {file_path}")
     # Check file size
     try:
-        file_stat = await aiofiles.os.stat(file_path)
+        file_stat = await asyncio.to_thread(os.stat, file_path)
         file_size_bytes = file_stat.st_size
         file_size_mb = file_size_bytes / (1024 * 1024)
         if file_size_mb > max_size_mb:

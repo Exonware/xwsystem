@@ -6,7 +6,7 @@ Provides thread-safe path parsing with caching that can be used by any library.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.28
+Version: 0.9.0.29
 Generation Date: 26-Jan-2025
 """
 

@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.28
+Version: 0.9.0.29
 Generation Date: January 2026
 Indexing module - Unified indexing facade for line-oriented files and
 pluggable general-purpose index backends (key-value, B-tree–like, full-text).

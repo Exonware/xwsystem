@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.28
+Version: 0.9.0.29
 Generation Date: October 26, 2025
 Fluent validator with chainable API for data validation.
 """

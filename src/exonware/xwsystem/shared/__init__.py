@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.28
+Version: 0.9.0.29
 Generation Date: 10-Sep-2025
 Shared types and utilities for XWSystem modules.
 """

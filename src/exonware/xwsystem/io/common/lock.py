@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.28
+Version: 0.9.0.29
 Generation Date: 30-Oct-2025
 File locking implementation for concurrent access control.
 Priority 1 (Security): Safe concurrent access, prevent race conditions

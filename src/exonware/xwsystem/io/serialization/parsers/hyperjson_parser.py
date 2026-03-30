@@ -2,8 +2,8 @@
 """hyperlight-hyperjson parser - Tier 1 (fastest in benchmarks)."""
 
 from typing import Any
-import hyperlight_hyperjson as hyperjson  # type: ignore[reportMissingImports]
 from .base import AJsonParser
+import hyperjson  # type: ignore[reportMissingImports]
 
 
 class HyperjsonParser(AJsonParser):
