@@ -6,7 +6,7 @@ Production-grade TTL caching for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.30
+Version: 0.9.0.31
 Generated: 2025-01-27
 """
 

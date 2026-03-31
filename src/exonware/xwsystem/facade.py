@@ -4,7 +4,7 @@ Package-level facade(s) for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.30
+Version: 0.9.0.31
 Last Updated: 29-Jan-2026
 This module provides a stable, high-level entry point for composing major
 subsystem facades (IO, caching, security, etc.).
