@@ -4,11 +4,12 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.31
+Version: 0.9.0.32
 Generation Date: September 04, 2025
 Security protocol interfaces for XWSystem.
 """
 
+from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
 from collections.abc import Iterator, Callable
@@ -22,6 +23,48 @@ from .defs import (
     AuthorizationLevel,
     AuditEvent
 )
+# ============================================================================
+# SHARED AUTH CONTEXT CONTRACTS (cross-library reusable)
+# ============================================================================
+@dataclass
+class AuthContext:
+    """
+    Normalized authentication context for cross-library usage.
+    Used by xwauth/xwapi/xwstorage contracts to avoid duplicated DTOs.
+    """
+
+    subject_id: str
+    tenant_id: str | None = None
+    org_id: str | None = None
+    project_id: str | None = None
+    scopes: list[str] = field(default_factory=list)
+    roles: list[str] = field(default_factory=list)
+    session_id: str | None = None
+    aal: str | None = None
+    claims: dict[str, Any] = field(default_factory=dict)
+    token_id: str | None = None
+    token_type: str | None = None
+
+
+@runtime_checkable
+class IAuthContextResolver(Protocol):
+    """Resolve a bearer token into normalized AuthContext."""
+
+    async def resolve_auth_context(self, token: str) -> AuthContext | None:
+        ...
+
+
+@dataclass
+class PolicyContext:
+    """
+    Minimal policy-evaluation context shared by storage/query layers.
+    """
+
+    tenant_id: str | None = None
+    org_id: str | None = None
+    project_id: str | None = None
+    user_id: str | None = None
+    roles: list[str] = field(default_factory=list)
 # ============================================================================
 # SECURITY INTERFACES
 # ============================================================================

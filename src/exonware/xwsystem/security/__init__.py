@@ -51,6 +51,9 @@ from .errors import (
 from .defs import OAuth2GrantType
 # Contracts/interfaces (kept in xwsystem - foundation layer)
 from .contracts import (
+    AuthContext,
+    IAuthContextResolver,
+    PolicyContext,
     IAuthenticatable,
     IAuthorization,
     ISecurityToken,
@@ -80,6 +83,45 @@ from .at_rest import (
     XWJE_MAGIC,
 )
 from .secret_key import SecretKeyStore, secret_key
+from .normalization import (
+    claims_from_principal,
+    subject_id_from_principal,
+    tenant_id_from_principal,
+    tenant_id_from_claims_mapping,
+    org_id_from_principal,
+    project_id_from_principal,
+    roles_from_principal,
+    policy_context_from_principal,
+    policy_context_to_dict,
+    infer_scope_set_from_roles,
+    scopes_from_policy_context,
+    default_tenant_row_visible,
+    default_owner_row_visible,
+    resolve_tenant_id_layered,
+    auth_context_compat_from_policy_context,
+)
+from .tenancy import (
+    TenancyContext,
+    build_tenancy_context,
+    effective_isolation_key,
+    extract_path_org_id,
+    introspection_claims_org_project,
+    is_instance_operator_introspection,
+    org_id_from_claims_mapping,
+    project_id_from_claims_mapping,
+    tenancy_violation_for_path_org,
+)
+from .auth_helpers import (
+    parse_authorization_bearer,
+    resolve_bearer_or_cookie_token,
+    resolve_principal_from_auth_provider,
+)
+from .oauth_errors import (
+    oauth_error_body,
+    oauth_error_status,
+    oauth_error_response,
+    oauth_error_to_http_parts,
+)
 __all__ = [
     # Unified Facades
     "XWSecurity",
@@ -124,6 +166,9 @@ __all__ = [
     "SecurityIssue",
     "audit_security",
     # Security Contracts/Interfaces (foundation - kept in xwsystem)
+    "AuthContext",
+    "IAuthContextResolver",
+    "PolicyContext",
     "IAuthenticatable",
     "IAuthorization",
     "ISecurityToken",
@@ -150,4 +195,37 @@ __all__ = [
     # Secret key helper
     "SecretKeyStore",
     "secret_key",
+    # Principal normalization helpers
+    "claims_from_principal",
+    "subject_id_from_principal",
+    "tenant_id_from_principal",
+    "tenant_id_from_claims_mapping",
+    "roles_from_principal",
+    "policy_context_from_principal",
+    "policy_context_to_dict",
+    "infer_scope_set_from_roles",
+    "scopes_from_policy_context",
+    "default_tenant_row_visible",
+    "default_owner_row_visible",
+    "resolve_tenant_id_layered",
+    "auth_context_compat_from_policy_context",
+    # B2B / multi-tenant tenancy
+    "TenancyContext",
+    "build_tenancy_context",
+    "effective_isolation_key",
+    "extract_path_org_id",
+    "introspection_claims_org_project",
+    "is_instance_operator_introspection",
+    "org_id_from_claims_mapping",
+    "project_id_from_claims_mapping",
+    "tenancy_violation_for_path_org",
+    # Shared auth helpers
+    "parse_authorization_bearer",
+    "resolve_bearer_or_cookie_token",
+    "resolve_principal_from_auth_provider",
+    # OAuth error helper primitives
+    "oauth_error_body",
+    "oauth_error_status",
+    "oauth_error_response",
+    "oauth_error_to_http_parts",
 ]

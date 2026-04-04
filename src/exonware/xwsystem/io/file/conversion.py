@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.31
+Version: 0.9.0.32
 Generation Date: November 1, 2025
 File Format Conversion - Convert between compatible formats.
 Enables:

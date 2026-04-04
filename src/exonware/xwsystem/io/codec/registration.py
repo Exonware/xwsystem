@@ -2,7 +2,9 @@
 Shared registration helpers for codec adapter auto-registration.
 """
 
-from typing import Any, Callable
+from typing import Any
+
+from collections.abc import Callable
 
 from .registry import get_registry
 

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.31
+Version: 0.9.0.32
 Generation Date: October 10, 2025
 XWSystem - Enterprise-grade Python framework with AI-powered performance optimization.
 🚀 QUICK START:
@@ -40,6 +40,7 @@ components including threading, security, I/O, data structures, and design patte
 """
 
 import logging
+import os
 from typing import TYPE_CHECKING
 # Performance optimization: lazy import expensive modules
 if TYPE_CHECKING:
@@ -49,17 +50,19 @@ if TYPE_CHECKING:
 # =============================================================================
 # Dependency: exonware-xwlazy (PyPI). Import canonical namespace: exonware.xwlazy
 # (top-level alias package: xwlazy).
-try:
-    from exonware.xwlazy import config_package_lazy_install_enabled
+# XWSTACK_SKIP_XWLAZY_INIT: pytest / SAML stacks — skip hook (see xwauth tests/conftest.py).
+if os.environ.get("XWSTACK_SKIP_XWLAZY_INIT", "").lower() not in ("1", "true", "yes"):
+    try:
+        from exonware.xwlazy import config_package_lazy_install_enabled
 
-    config_package_lazy_install_enabled(
-        __package__ or "exonware.xwsystem",
-        enabled=True,
-        mode="smart",
-    )
-except ImportError:
-    # xwlazy not installed — omit [lazy] extra or install exonware-xwlazy for lazy mode.
-    pass
+        config_package_lazy_install_enabled(
+            __package__ or "exonware.xwsystem",
+            enabled=True,
+            mode="smart",
+        )
+    except ImportError:
+        # xwlazy not installed — omit [lazy] extra or install exonware-xwlazy for lazy mode.
+        pass
 # Logging utilities
 from .config.logging_setup import get_logger, setup_logging
 # Serialization utilities (19 core formats + intelligent auto-detection)
