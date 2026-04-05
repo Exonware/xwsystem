@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.32
+Version: 0.9.0.33
 Generation Date: September 04, 2025
 DateTime formatting utilities for xwsystem.
 """
@@ -165,7 +165,7 @@ def get_date_from_to_month(year_month: str) -> tuple[str, str]:
     """
     Get start and end dates for a month.
     Args:
-        year_month: Format "YYYY-MM"
+        year_month: Format "YYYY-MM" (hyphens between year and month; underscores are normalized)
     Returns:
         Tuple of (start_date, end_date) in "YYYY-MM-DD" format
     Examples:
@@ -176,7 +176,8 @@ def get_date_from_to_month(year_month: str) -> tuple[str, str]:
         '2025-01-31'
     """
     import calendar
-    year, month = map(int, year_month.split('-'))
+    ym = (year_month or "").strip().replace("_", "-")
+    year, month = map(int, ym.split('-'))
     # Start of the month is day 1
     start_of_month = f"{year}-{month:02d}-01"
     # Get the last day of the month

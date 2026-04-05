@@ -1,6 +1,6 @@
-#exonware/xwsystem/tests/0.core/runner.py
 #!/usr/bin/env python3
 """
+#exonware/xwsystem/tests/0.core/runner.py
 Core Test Runner for xwsystem.
 Runs core tests (0.core) using shared TestRunner utilities.
 GUIDE_TEST: layer runners use TestRunner, stream only, no file writes.
@@ -13,20 +13,37 @@ Generation Date: 2026-01-24
 
 from __future__ import annotations
 import sys
+import os
 from pathlib import Path
 from exonware.xwsystem.console.cli import ensure_utf8_console
-from exonware.xwsystem.utils.test_runner import TestRunner
+
+def _package_root() -> Path:
+    """Folder with pyproject.toml + src/ (any tests/**/runner.py depth)."""
+    p = Path(__file__).resolve().parent
+    while p != p.parent:
+        if (p / "pyproject.toml").is_file() and (p / "src").is_dir():
+            return p
+        p = p.parent
+    raise RuntimeError("Could not locate package root from " + str(Path(__file__)))
+
+
+_PKG_ROOT = _package_root()
+
 ensure_utf8_console()
+
+from exonware.xwsystem.utils.test_runner import TestRunner
 
 
 def main() -> int:
     """Run core tests via TestRunner."""
+    os.chdir(_PKG_ROOT)
     test_dir = Path(__file__).parent
     runner = TestRunner(
         library_name="xwsystem",
         layer_name="0.core",
         description="Core Tests - Fast, High-Value Checks",
         test_dir=test_dir,
+        pytest_cwd=_PKG_ROOT,
         markers=["xwsystem_core"],
         output_file=None,
     )

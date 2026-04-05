@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.32
+Version: 0.9.0.33
 Generation Date: 02-Nov-2025
 JSON Lines (JSONL/NDJSON) Serialization - Newline-Delimited JSON
 JSON Lines format (also called NDJSON - Newline Delimited JSON):

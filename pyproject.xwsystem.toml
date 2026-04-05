@@ -69,9 +69,6 @@ dev = [
 full = [
     "exonware-xwsystem[full]",
 ]
-windows = [
-    "exonware-xwsystem[windows]",
-]
 
 [project.urls]
 Homepage = "https://exonware.com"

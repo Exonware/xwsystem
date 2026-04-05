@@ -8,7 +8,7 @@ Implements the hierarchical runner utilities described in:
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.32
+Version: 0.9.0.33
 Generation Date: 28-Dec-2025
 """
 
@@ -141,12 +141,15 @@ class TestRunner:
         test_dir: Path,
         markers: list[str] | None = None,
         output_file: Path | None = None,
+        pytest_cwd: Path | None = None,
     ):
         self.library_name = library_name
         self.layer_name = layer_name
         self.description = description
         self.test_dir = test_dir
         self.markers = markers or []
+        # When set, pytest subprocess uses this cwd (e.g. project root for pytest.ini / src layout).
+        self.pytest_cwd = pytest_cwd
         # Layer runners should pass output_file=None to not write files
         # Only main runner writes to docs/logs/tests/
         self.output_file = output_file
@@ -169,7 +172,8 @@ class TestRunner:
             f"**Directory:** `{format_path(self.test_dir)}`",
             emoji="📂",
         )
-        result = run_pytest(test_dir=self.test_dir, markers=self.markers)
+        cwd = self.pytest_cwd if self.pytest_cwd is not None else self.test_dir
+        result = run_pytest(test_dir=self.test_dir, markers=self.markers, cwd=cwd)
         ok = result.exit_code == 0
         print_status(ok, "PASSED" if ok else "FAILED", self.output)
         # Layer runners don't write files - only main runner writes to docs/logs/tests/

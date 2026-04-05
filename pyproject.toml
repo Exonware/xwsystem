@@ -28,11 +28,13 @@ lazy = [
 dev = [
   "black>=23.0.0",
   "isort>=5.12.0",
+  "lz4>=4.0.0",
   "mypy>=1.0.0",
   "pytest-asyncio>=0.21.0",
   "pytest-benchmark>=4.0.0",
   "pytest-cov>=4.0.0",
   "pytest>=7.0.0",
+  "exonware-xwsystem[full]",
 ]
 full = [
   "fastavro",
@@ -49,6 +51,7 @@ full = [
   "jsonpatch>=1.32",
   "jsonpointer>=2.3",
   "jsonschema>=4.17.0",
+  "lz4>=4.0.0",
   "lxml>=4.9.0",
   "msgpack>=1.0.0",
   "opentelemetry-api>=1.15.0",
@@ -71,9 +74,7 @@ full = [
   "tomli>=2.0.0",
   "xmlschema>=2.0.0",
   "xmltodict>=0.13.0",
-]
-windows = [
-  "pywin32>=300; platform_system == 'Windows'",
+  'pywin32>=300; platform_system == "Windows"',
 ]
 
 [project.urls]
@@ -112,7 +113,7 @@ path = "src/exonware/xwsystem/version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/exonware"]
-include = ["src/xwsystem.py"]
+py-modules = ["src/xwsystem"]
 
 [tool.hatch.build.targets.sdist]
 include = ["/src", "/tests", "/README.md", "/.github"]

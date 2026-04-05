@@ -9,7 +9,6 @@ Version: 0.0.1
 Generation Date: 07-Sep-2025
 """
 import pytest
-import sys
 import os
 import tempfile
 import json
@@ -19,11 +18,11 @@ from decimal import Decimal
 from datetime import datetime, date, time as dt_time
 from uuid import UUID
 import io
-# Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src'))
+
 from exonware.xwsystem.io.serialization import JsonSerializer, XmlSerializer, TomlSerializer, YamlSerializer
 from exonware.xwsystem.io.serialization.errors import SerializationError, FormatDetectionError, ValidationError, XmlError
 from exonware.xwsystem.io.errors import SerializationError as IOSerializationError
+from exonware.xwsystem.security.path_validator import PathSecurityError
 class TestSerializationWorstCaseScenarios:
     """Comprehensive worst-case scenario tests for all serialization formats."""
     @pytest.fixture(autouse=True)
@@ -459,7 +458,9 @@ class TestSerializationWorstCaseScenarios:
         # Use XWSerialization which has load_file implemented
         xw_serializer = XWSerialization()
         for malicious_path in malicious_paths:
-            with pytest.raises((SerializationError, ValueError, OSError, FileNotFoundError)):
+            with pytest.raises(
+                (SerializationError, ValueError, OSError, FileNotFoundError, PathSecurityError)
+            ):
                 xw_serializer.load_file(malicious_path)
     def test_xml_bomb_protection(self):
         """Test XML bomb protection."""

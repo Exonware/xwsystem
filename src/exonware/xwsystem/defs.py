@@ -4,7 +4,7 @@ Package-level definitions (constants, enums, TypedDicts) for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.32
+Version: 0.9.0.33
 Last Updated: 29-Jan-2026
 """
 

@@ -8,7 +8,7 @@ libraries (e.g., xwquery) can register into, while lower-level libraries
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.32
+Version: 0.9.0.33
 Generation Date: 28-Dec-2025
 """
 
