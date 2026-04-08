@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.33
+Version: 0.9.0.34
 Generation Date: October 27, 2025
 Patch operations implementation (RFC 6902 JSON Patch).
 """

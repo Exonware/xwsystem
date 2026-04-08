@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.33
+Version: 0.9.0.34
 Generation Date: November 1, 2025
 7z archive format implementation - High compression ratio.
 **Best overall ratio + AES-256 encryption + solid archiving**

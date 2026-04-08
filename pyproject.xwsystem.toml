@@ -38,7 +38,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
@@ -57,17 +57,21 @@ authors = [
 ]
 
 [project.license]
-text = "MIT"
+text = "Apache-2.0"
 
 [project.optional-dependencies]
+# First-party XW libs composed by this package (excludes exonware-xwsystem; see lazy/full).
+xw = [
+    "exonware-xwsystem[xw]",
+]
 lazy = [
     "exonware-xwsystem[lazy]",
 ]
-dev = [
-    "exonware-xwsystem[dev]",
-]
 full = [
     "exonware-xwsystem[full]",
+]
+dev = [
+    "exonware-xwsystem[dev]",
 ]
 
 [project.urls]

@@ -4,7 +4,7 @@ Cache Factory - Configurable cache creation utility.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.33
+Version: 0.9.0.34
 Generation Date: January 2025
 Provides configurable cache factory that allows choosing different caching engines
 via settings/environment variables. Defaults to PylruCache when pylru is installed (highest throughput);

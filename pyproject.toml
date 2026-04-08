@@ -10,7 +10,7 @@ description = "Enterprise-grade Python framework with AI-powered performance opt
 readme = "README.md"
 requires-python = ">=3.12"
 keywords = ["enterprise", "framework", "serialization", "security", "performance", "monitoring", "threading", "memory-management", "circuit-breaker", "object-pool", "crypto", "ai-optimization", "json", "yaml", "msgpack", "bson", "cbor", "exonware"]
-classifiers = ["Development Status :: 4 - Beta", "Intended Audience :: Developers", "Intended Audience :: Information Technology", "Intended Audience :: System Administrators", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3.12", "Topic :: Software Development :: Libraries :: Python Modules", "Topic :: System :: Systems Administration", "Topic :: Security :: Cryptography", "Topic :: Internet :: WWW/HTTP", "Topic :: Database", "Topic :: System :: Monitoring"]
+classifiers = ["Development Status :: 4 - Beta", "Intended Audience :: Developers", "Intended Audience :: Information Technology", "Intended Audience :: System Administrators", "License :: OSI Approved :: Apache Software License", "Operating System :: OS Independent", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3.12", "Topic :: Software Development :: Libraries :: Python Modules", "Topic :: System :: Systems Administration", "Topic :: Security :: Cryptography", "Topic :: Internet :: WWW/HTTP", "Topic :: Database", "Topic :: System :: Monitoring"]
 dependencies = [
   "typing-extensions>=4.0.0",
 ]
@@ -19,22 +19,13 @@ authors = [
 ]
 
 [project.license]
-text = "MIT"
+text = "Apache-2.0"
 
 [project.optional-dependencies]
+# First-party XW libs composed by this package (excludes exonware-xwsystem; see lazy/full).
+xw = []
 lazy = [
   "exonware-xwlazy",
-]
-dev = [
-  "black>=23.0.0",
-  "isort>=5.12.0",
-  "lz4>=4.0.0",
-  "mypy>=1.0.0",
-  "pytest-asyncio>=0.21.0",
-  "pytest-benchmark>=4.0.0",
-  "pytest-cov>=4.0.0",
-  "pytest>=7.0.0",
-  "exonware-xwsystem[full]",
 ]
 full = [
   "fastavro",
@@ -75,6 +66,17 @@ full = [
   "xmlschema>=2.0.0",
   "xmltodict>=0.13.0",
   'pywin32>=300; platform_system == "Windows"',
+]
+dev = [
+  "exonware-xwsystem[full]",
+  "black>=23.0.0",
+  "isort>=5.12.0",
+  "lz4>=4.0.0",
+  "mypy>=1.0.0",
+  "pytest-asyncio>=0.21.0",
+  "pytest-benchmark>=4.0.0",
+  "pytest-cov>=4.0.0",
+  "pytest>=7.0.0",
 ]
 
 [project.urls]

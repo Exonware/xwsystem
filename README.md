@@ -6,7 +6,7 @@
 
 [![Status](https://img.shields.io/badge/status-beta-blue.svg)](https://exonware.com)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
 ---
 
@@ -184,7 +184,7 @@ This is the strategic advantage: improvements in one foundational runtime surfac
 
 ## License and links
 
-MIT - see [LICENSE](LICENSE).
+Apache-2.0 - see [LICENSE](LICENSE).
 
 - **Homepage:** https://exonware.com  
 - **Repository:** https://github.com/exonware/xwsystem  
@@ -198,6 +198,6 @@ Part of the eXonware ecosystem - one foundation for all of it.
 - Source validation: 284 async def definitions and 210 await usages under src/.
 - Use async APIs for I/O-heavy or concurrent workloads to improve throughput and responsiveness.
 <!-- async-support:end -->
-Version: 0.9.0.33 | Updated: 06-Apr-2026
+Version: 0.9.0.34 | Updated: 08-Apr-2026
 
 *Built with ❤️ by eXonware.com - Revolutionizing Python Development Since 2025*

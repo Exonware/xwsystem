@@ -1,37 +1,89 @@
 # xwsystem (long README)
 
-Long-form companion to [README.md](README.md): same facts, more context and examples.
+Hey — if you want the short version first, head to [README.md](README.md). This page is the tour: where things live, how to install, and where to dig deeper when you are building something serious.
 
 **Company:** eXonware.com · **Author:** eXonware Backend Team · **Email:** connect@exonware.com  
-**Version:** See [version.py](src/exonware/xwsystem/version.py) or PyPI.
+**Version:** [version.py](src/exonware/xwsystem/version.py) or PyPI · **Last updated:** April 2026
 
 ---
 
-## Role in the stack
+## Why we’re glad this exists (and you might be too)
 
-xwsystem is the shared systems layer for eXonware packages. It concentrates serialization, IO, caching, security helpers, validation, configuration, console utilities, monitoring, IPC, HTTP client usage patterns, and related building blocks so downstream libraries do not each vendor their own copies.
+Shipping Python that touches files, networks, caches, and crypto means you usually glue together half a dozen libraries that all feel different. xwsystem is our answer: **one familiar surface** for the boring-but-critical stuff, so you spend brain budget on your product instead of reinventing safe IO for the ninth time.
 
----
+You still get **real choices** — go **lite** and stay tiny, turn on **lazy** so optional pieces appear when code first needs them, or go **full** and let CI breathe easy. Same package; you pick the footprint.
 
-## Installation (Python 3.12+)
-
-Same package, three extras (see [pyproject.toml](pyproject.toml) `requires-python`):
-
-| Command | Role |
-|---------|------|
-| `pip install exonware-xwsystem` or `pip install xwsystem` | **Lite** - core only, no optional format backends. |
-| `pip install exonware-xwsystem[lazy]` | **Lazy** - pulls in xwlazy so missing format libraries can be installed when first needed. |
-| `pip install exonware-xwsystem[full]` | **Full** - common optional dependencies pre-installed for CI or all-in-one environments. |
-
-### Lazy / on-demand backends
-
-With `[lazy]`, normal imports and serializer use stay the same; if a codec needs a package that is not installed, the lazy layer can install it and continue. Successful imports stay on the fast path. Details: [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) and lazy-system docs if present under `docs/`.
+We use this across eXonware. When we fix a serializer edge case or harden a path check, **every downstream library benefits**. That is the kind of leverage that actually feels good in production.
 
 ---
 
-## Quick starts (from README)
+## What this is
 
-**Serialization**
+The stack story in one breath: most eXonware Python packages import xwsystem instead of vendoring their own serializers, safe file helpers, caches, crypto wrappers, and HTTP glue. **One place to fix bugs, one set of patterns to learn.**
+
+**Canonical copy (GUIDE_66)** — reuse these on PyPI, GitHub, or docs:
+
+- **Tagline:** Shared systems layer for eXonware Python packages.
+- **About line:** xwsystem is a Python systems library for eXonware packages that unifies serialization, IO, caching, security, validation, HTTP, IPC, and monitoring behind one import surface.
+- **About paragraph:** xwsystem is a Python systems library that concentrates serialization, safe IO, caching, crypto, validation, console utilities, monitoring, IPC, and HTTP patterns in one package. Downstream eXonware libraries share the same APIs. Extras: `[lazy]` installs missing format backends on first use via xwlazy; `[full]` pre-installs common optional dependencies for CI.
+
+**Neighboring packages (on purpose):** schema registry implementations live in **exonware-xwschema**. Full auth providers (OAuth2, JWT, SAML, and the rest) live in **xwauth**, built on xwsystem’s security contracts — so security stays sharp without turning this repo into a kitchen sink.
+
+---
+
+## Where to look in the source
+
+All paths: `src/exonware/xwsystem/`. The package root pulls the common types up front; **reach into subpackages** when you want a slimmer import line or you are reading code and want to see who owns what.
+
+**IO (`io/`)** — This is the workhorse: atomic reads and writes, locks, watchers, paging (byte / line / record), folders, codec-aware streams, a practical local filesystem view, and `source_reader` for “give me text from disk or HTTPS.” Serialization lives in `io/serialization` — formats, registry, `AutoSerializer`, `detect_format`, pools. Indexing is `io/indexing`. Archives: ZIP and TAR are always there; 7z, zstd, RAR, brotli, LZ4, ZPAQ, WIM, SquashFS, and friends **wake up when you use them** (and may ask for extra Python or OS bits). When you want one front door: `XWIO`.
+
+**Indexing (`io/indexing/`)** — `XWIndex` loves JSONL/NDJSON: stream reads and updates, line offsets, the kind of workflows log and data pipelines need. Backends span in-memory, file-backed, an ordered B-tree-style store for range scans, and full-text variants — pick the tradeoff that matches your workload.
+
+**Caching (`caching/`)** — From “just make it fast” to “make it observable”: LRU, LFU, TTL (sync and async), two-tier and memory-bounded caches, read/write/read-write-through, write-behind, tags, Bloom-style shortcuts, secure and observable variants, Prometheus export, and decorators `xwcached` / `xw_async_cached`. `CacheFactory` when you want batteries. Redis and friends show up when optional deps do. Facade: `XWCache`.
+
+**Security (`security/`)** — Path validation, symmetric and asymmetric crypto (sync and async), password hashing, secure random and storage, `XWSecurity` / `XWCrypto`, and `hazmat` when `cryptography` is on the path. Contracts for tokens and auth live here; **implementations** ship in **xwauth** so this layer stays composable.
+
+**Validation (`validation/`)** — Declarative `XModel` / `Field`, `DataValidator`, guards on depth, paths, and memory, plus `SafeTypeValidator` when the internet sends you weird data. Facade: `XWValidator`.
+
+**HTTP (`http_client/`)** — `HttpClient`, `AsyncHttpClient`, `RetryConfig`, and `AdvancedHttpClient` (HTTP/2 options, streaming, mock transport). Enough rope to call real services without assembling a pile of one-off wrappers. Facade: `XWHTTP`.
+
+**Monitoring (`monitoring/`)** — Performance and memory tracking, circuit breaker, error recovery, performance budgets, tracing hooks (OpenTelemetry and friends when installed). `SystemMonitor` and OS-style probes want `psutil`. Facade: `XWMonitor`.
+
+**IPC (`ipc/`)** — Processes, shared memory, queues, pools, pipes — sync and async — for when your architecture steps beyond a single process.
+
+**Threading (`threading/`)** — `ThreadSafeFactory`, `EnhancedRLock`, fast lock helpers, async locks, semaphores, queues, RW locks, resource pools. Facade: `XWConcurrency`.
+
+**Console (`console/`)** — Colors, styles, argument parsing, progress, tables, `CliConsole`. On Windows, `console.cli.ensure_utf8_console` saves a lot of “why is this mojibake” afternoons.
+
+**Config (`config/`)** — Shared defaults (limits, encodings, delimiters), `setup_logging` / `get_logger`, `DefaultConfig`, `PerformanceConfig` with `get_performance_config` / `set_performance_config`. Pair with `xwconfig.toml` as [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) describes.
+
+**Smaller packages (still useful)** — `runtime/` (`EnvironmentManager`, `ReflectionUtils`). `patterns/` (context logging, singleton, handler factory, import registration, `ObjectPool`). `structures/` (circular reference detection, `TreeWalker`). `data_structures/` (`TrieNode`, `UnionFind`). `operations/` (merge, diff, `apply_patch`). `query/` (provider contract + registry so **xwquery** / **xwnode** integrate without import spaghetti). `observability/` (correlation headers, telemetry version, default HTTP timeouts). `plugins/` (manager + registry). `shared/` (enums, `XWObject`, `IStringable`, provider hooks). `utils/` (dates in `utils.dt`, strings, small web helpers).
+
+**Facades on the root import** — `XWCache`, `XWArchive`, `XWIndex`, `XWSecurity`, `XWCrypto`, `XWHTTP`, `XWValidator`, `XWMonitor`, `XWConcurrency`, plus `XWIO` and the serializers you already know by name. Nice when you want the “just give me the thing” API.
+
+**Extra codecs** — Install siblings like **xwformats**, **xwjson**, or **xwsyntax** and they can plug into the same serialization story. Lite stays whisper-quiet; `[lazy]` and `[full]` only change what is already sitting on disk.
+
+**Lazy installs** — With `exonware-xwlazy` installed, unless `XWSTACK_SKIP_XWLAZY_INIT` is set, import time enables lazy install for this package in `smart` mode — a missing optional backend can be pulled in the first time your code actually touches it. Handy when you are exploring formats without pre-building a giant venv.
+
+---
+
+## Install
+
+Python **3.12+**. One package, three moods:
+
+| Install | What you get |
+|--------|----------------|
+| `pip install exonware-xwsystem` or `pip install xwsystem` | **Lite** — only `typing-extensions` required at runtime. Start here if you like minimal. |
+| `pip install exonware-xwsystem[lazy]` | **Lazy** — adds xwlazy; missing format libraries can install when first used. Great for iterative work. |
+| `pip install exonware-xwsystem[full]` | **Full** — common optionals upfront (crypto, HTTP stack, YAML, msgpack, OpenTelemetry pieces, Windows helpers, …). CI and “I want it all” machines. |
+
+Full dependency list: [pyproject.toml](pyproject.toml).
+
+---
+
+## Copy-paste starters
+
+**JSON**
 
 ```python
 from exonware.xwsystem import JsonSerializer
@@ -48,66 +100,54 @@ from exonware.xwsystem.console.cli import ensure_utf8_console
 ensure_utf8_console()
 ```
 
-**Config**
+**Config** — Drop `xwconfig.toml` where your app expects it. From code, start with `exonware.xwsystem.config` (`DefaultConfig`, `get_performance_config`, `setup_logging`); [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) walks the happy path.
 
-Use `xwconfig.toml` at the project root, or `from exonware.xwsystem import settings` and `settings.current()` in code.
+**One-liners on the package root**
 
----
-
-## Surface area (summary)
-
-- **Serialization** - 24+ formats in this repo (text, binary, light DB bindings, tabular paths). Heavier enterprise/scientific codecs often route through xwformats while keeping the same usage style.
-- **Caching** - LRU/LFU/TTL, async variants, disk and two-tier combinations, secure and observable wrappers, optional metrics export.
-- **Security and validation** - Path checks, crypto helpers, audit-oriented utilities, XModel-style validation where exposed.
-- **IO** - Atomic writers, filesystem helpers, archives, streaming helpers, format autodetection (`AutoSerializer`, `detect_format`).
-- **Runtime** - Config, logging setup, console/CLI helpers, performance and memory monitors, tracing hooks.
-- **IPC and HTTP** - Process fabric, queues/shared memory facades, HTTP client with retries and modern options.
-- **Indexing** - Pluggable backends under `io/indexing` (in-memory, file-backed, B-tree ordered, full-text). See [docs/REF_15_API.md](docs/REF_15_API.md).
-
-For the full table and feature matrix, use [README.md](README.md) and the REFs below.
+```python
+from exonware.xwsystem import quick_serialize, quick_deserialize, list_available_formats
+```
 
 ---
 
 ## Benchmarks
 
-Campaigns live under [benchmarks/](benchmarks/) with an index in [benchmarks/INDEX.md](benchmarks/INDEX.md). Methodology and numbers: [docs/REF_54_BENCH.md](docs/REF_54_BENCH.md). Treat micro-benchmarks as guidance, not guarantees on your hardware.
+We keep campaigns under [benchmarks/](benchmarks/) with [benchmarks/INDEX.md](benchmarks/INDEX.md). How to read them: [docs/REF_54_BENCH.md](docs/REF_54_BENCH.md). Numbers are **directional** — your CPU, disk, and workload get the final vote.
 
 ---
 
-## Rust and other languages
+## Rust
 
-This tree is the **reference Python implementation**. Other language facades are planned around shared contracts; there is experimental Rust under [rust/](rust/). Today, hot paths are tuned in Python first; a wholesale Rust port is not required for the performance targets documented in REF_54.
-
----
-
-## Platform notes
-
-- **Windows, Linux, macOS** are supported; CI and primary dev include Windows 10/11 and common Linux/macOS releases.
-- **Windows:** optional `exonware-xwsystem[windows]` (see `pyproject.toml`) for native helpers where documented; reserved device names and worker limits are handled where the stdlib requires it.
-- **Async pipes on Windows:** some async pipe entry points are limited; prefer synchronous pipes or multiprocessing where noted in module docs.
-- **WIM archives:** non-Windows hosts may need `wimlib` installed separately.
-
-See [CROSS_PLATFORM_COMPATIBILITY_REPORT.md](CROSS_PLATFORM_COMPATIBILITY_REPORT.md) if present for extended notes.
+This tree is the **Python reference** you can ship today. Experimental Rust lives under [rust/](rust/). Performance targets and methodology are in REF_54; you are not waiting on a from-scratch rewrite to hit the goals documented there.
 
 ---
 
-## Documentation
+## Platforms
 
-- [docs/INDEX.md](docs/INDEX.md) - start here  
-- [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) - install, codecs, caching, production  
-- [docs/REF_01_REQ.md](docs/REF_01_REQ.md), [docs/REF_22_PROJECT.md](docs/REF_22_PROJECT.md) - requirements and status  
-- [docs/REF_15_API.md](docs/REF_15_API.md), [docs/REF_13_ARCH.md](docs/REF_13_ARCH.md) - API and architecture  
-- [docs/REF_14_DX.md](docs/REF_14_DX.md), [docs/REF_50_QA.md](docs/REF_50_QA.md), [docs/REF_54_BENCH.md](docs/REF_54_BENCH.md), [docs/REF_51_TEST.md](docs/REF_51_TEST.md) - DX, QA, benchmarks, tests  
-- [docs/compliance/](docs/compliance/) - compliance scaffolding  
-- [docs/logs/](docs/logs/) - change and test logs where used  
+We run this on **Windows, Linux, and macOS** day to day. `[full]` may bring in Windows-specific helpers (see `pyproject.toml`). A heads-up: some async pipe paths are weaker on Windows — follow module docs and reach for sync pipes or multiprocessing where they tell you to. WIM archives on non-Windows hosts often want **wimlib** installed by you. Extra notes: [CROSS_PLATFORM_COMPATIBILITY_REPORT.md](CROSS_PLATFORM_COMPATIBILITY_REPORT.md) when that file is in the repo.
 
-Optional or legacy guides may also exist under `docs/`; prefer INDEX.md for the canonical list.
+---
+
+## Docs
+
+| Doc | Use it for |
+|-----|------------|
+| [docs/INDEX.md](docs/INDEX.md) | The map — start here when you are lost |
+| [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) | Install, codecs, caching, production |
+| [docs/REF_15_API.md](docs/REF_15_API.md) | API tables, indexing detail |
+| [docs/REF_13_ARCH.md](docs/REF_13_ARCH.md) | Architecture |
+| [docs/REF_01_REQ.md](docs/REF_01_REQ.md), [docs/REF_22_PROJECT.md](docs/REF_22_PROJECT.md) | Scope and status |
+| [docs/REF_14_DX.md](docs/REF_14_DX.md) | DX notes |
+| [docs/REF_50_QA.md](docs/REF_50_QA.md), [docs/REF_51_TEST.md](docs/REF_51_TEST.md), [docs/REF_54_BENCH.md](docs/REF_54_BENCH.md) | QA, tests, benchmarks |
+| [docs/compliance/](docs/compliance/), [docs/logs/](docs/logs/) | Compliance and logs where used |
+
+If two pages disagree, **INDEX.md** wins.
 
 ---
 
 ## Tests
 
-Four layers (0.core, 1.unit, 2.integration, 3.advance) via the project runner or pytest. See [docs/REF_51_TEST.md](docs/REF_51_TEST.md).
+Layers **0.core → 3.advance**; project runner or plain `pytest`. Story of the suite: [docs/REF_51_TEST.md](docs/REF_51_TEST.md).
 
 ```bash
 pip install -e .
@@ -116,16 +156,18 @@ pytest
 
 ---
 
-## Downstream packages
+## Who depends on this
 
-xwstorage, xwformats, xwjson, xwnode, xwdata, xwauth, xwquery, xwchat, xwui, and related `*-server` packages depend on xwsystem for shared IO, security, caching, and configuration patterns so fixes land once.
+xwstorage, xwformats, xwjson, xwnode, xwdata, xwauth, xwquery, xwchat, xwui, and related `*-server` packages sit on xwsystem so IO, security, caching, and config behave the same everywhere — **fix once, benefit across the stack.**
 
 ---
 
 ## License and links
 
-MIT - see [LICENSE](LICENSE).
+Apache License 2.0 — [LICENSE](LICENSE).
 
-- **Homepage:** https://exonware.com  
-- **Repository:** https://github.com/exonware/xwsystem  
-- **Version:** `from exonware.xwsystem import __version__` or check `exonware.xwsystem.version`  
+- https://exonware.com  
+- https://github.com/exonware/xwsystem  
+- Version: `from exonware.xwsystem import __version__`
+
+If something here sparks an idea or a bug report, we are building in the open — docs and repo above. Happy shipping.
