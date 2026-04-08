@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.34
+Version: 0.9.0.35
 Generation Date: 01-Nov-2025
 Optimized O(1) LFU Cache implementation.
 Performance Priority #4 - Replaces O(n) eviction with O(1) frequency buckets.

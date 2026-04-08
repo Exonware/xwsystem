@@ -1,4 +1,4 @@
-# xwsystem
+# 🧰 xwsystem
 
 **One install instead of 50+.** Serialization (24+ formats), caching, security, validation, HTTP, IPC, monitoring - same APIs everywhere. The base every other eXonware package builds on.
 
@@ -10,7 +10,7 @@
 
 ---
 
-## Install
+## 📦 Install
 
 **Requires Python 3.12+.** (See [pyproject.toml](pyproject.toml) `requires-python`.)
 
@@ -24,7 +24,7 @@ Same package; `[lazy]` and `[full]` are extras. You can also install as `xwsyste
 
 ---
 
-## Quick start
+## 🚀 Quick start
 
 **Serialization (same API for every format):**
 
@@ -49,7 +49,7 @@ ensure_utf8_console()
 
 ---
 
-## What you get
+## ✨ What you get
 
 | Area | What’s in it |
 |------|----------------|
@@ -66,7 +66,7 @@ Lite = zero optional deps. Lazy = xwlazy installs format backends on first use. 
 
 ---
 
-## Why xwsystem? (Highlights)
+## 🎯 Why xwsystem? (Highlights)
 
 **Automatic format detection (no guessing)** - One API for any file. `AutoSerializer` and `detect_format` pick the right codec from **file extension**, **magic bytes**, or **content patterns** (confidence-scored). No need to know whether it’s JSON, YAML, or MessagePack; pass a path or bytes and get the right serializer.
 
@@ -116,7 +116,7 @@ auto.save_file(data, Path("out.toml"))
 
 ---
 
-## Rust and the rest of the stack
+## 🦀 Rust and the rest of the stack
 
 **Rust:** xwsystem is the reference implementation. Multi-language (TypeScript, Rust, Go) is planned via contracts/specs. Right now Python performance is comparable to what we would expect from a Rust port on the hot paths, so no conversion yet. Getting here took several rewrites; the current design is the one we kept.
 
@@ -124,13 +124,13 @@ auto.save_file(data, Path("out.toml"))
 
 ---
 
-## Full feature list and examples
+## 📚 Full feature list and examples
 
 For a complete feature tour, code samples, and platform notes see **[README_LONG.md](README_LONG.md)**.
 
 ---
 
-## Docs and tests
+## 📖 Docs and tests
 
 Content in this README is aligned with the project REFs and [docs/GUIDE_01_USAGE.md](docs/GUIDE_01_USAGE.md) (per [GUIDE_63_README](../../docs/guides/GUIDE_63_README.md)).
 
@@ -147,7 +147,7 @@ Content in this README is aligned with the project REFs and [docs/GUIDE_01_USAGE
 
 ---
 
-## Where xwsystem fits
+## 🧭 Where xwsystem fits
 
 `xwsystem` provides the shared infrastructure layer for other eXonware packages (xwstorage, xwformats, xwjson, xwnode, xwdata, xwauth, xwquery, xwchat, xwui, *-server). They depend on its serializers, caches, security helpers, IPC layer, and runtime services instead of re-implementing them.
 
@@ -163,7 +163,7 @@ Downstream libraries consume these services via stable APIs exported from `exonw
 
 ---
 
-## Ecosystem functional contributions
+## 🌐 Ecosystem functional contributions
 
 `xwsystem` is the provider layer for nearly every XW package; this table clarifies what downstream libs consume functionally.
 You can use `xwsystem` standalone as a general-purpose runtime foundation in non-XW projects.
@@ -182,7 +182,7 @@ This is the strategic advantage: improvements in one foundational runtime surfac
 
 ---
 
-## License and links
+## 📜 License and links
 
 Apache-2.0 - see [LICENSE](LICENSE).
 
@@ -191,13 +191,13 @@ Apache-2.0 - see [LICENSE](LICENSE).
 
 Part of the eXonware ecosystem - one foundation for all of it.
 
-## Async Support
+## ⏱️ Async Support
 
 <!-- async-support:start -->
 - xwsystem includes asynchronous execution paths in production code.
 - Source validation: 284 async def definitions and 210 await usages under src/.
 - Use async APIs for I/O-heavy or concurrent workloads to improve throughput and responsiveness.
 <!-- async-support:end -->
-Version: 0.9.0.34 | Updated: 08-Apr-2026
+Version: 0.9.0.35 | Updated: 08-Apr-2026
 
 *Built with ❤️ by eXonware.com - Revolutionizing Python Development Since 2025*

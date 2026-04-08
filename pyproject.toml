@@ -25,9 +25,11 @@ text = "Apache-2.0"
 # First-party XW libs composed by this package (excludes exonware-xwsystem; see lazy/full).
 xw = []
 lazy = [
+  "exonware-xwsystem[xw]",
   "exonware-xwlazy",
 ]
 full = [
+  "exonware-xwsystem[xw]",
   "fastavro",
   "aiofiles>=23.0.0",
   "aiohttp>=3.9.0",
