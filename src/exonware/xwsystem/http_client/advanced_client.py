@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.35
+Version: 0.9.0.36
 Generation Date: September 04, 2025
 Advanced HTTP client with HTTP/2, streaming, pluggable transports, and modern features.
 """

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.35
+Version: 0.9.0.36
 Generation Date: 30-Oct-2025
 Base classes and registries for archive system.
 Like codec/base.py: Contains abstracts + ArchiveFormatRegistry!

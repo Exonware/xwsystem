@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.35
+Version: 0.9.0.36
 Generation Date: September 04, 2025
 Pydantic-style declarative validation with type hints and automatic coercion.
 """

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.35
+Version: 0.9.0.36
 Generation Date: October 27, 2025
 Diff operations implementation.
 """

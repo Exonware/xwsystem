@@ -9,7 +9,7 @@ These interfaces live in xwsystem to avoid circular dependencies between:
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.35
+Version: 0.9.0.36
 Generation Date: 28-Dec-2025
 """
 

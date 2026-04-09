@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.35
+Version: 0.9.0.36
 Generation Date: 02-Nov-2025
 JSON5 Serialization - Extended JSON with Comments and Trailing Commas
 JSON5 is a superset of JSON that allows:
