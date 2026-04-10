@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.36
+Version: 0.9.0.37
 Generation Date: November 2, 2025
 CBOR serialization - Concise Binary Object Representation.
 Following I→A pattern:

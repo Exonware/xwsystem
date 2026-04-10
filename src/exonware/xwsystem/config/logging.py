@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.36
+Version: 0.9.0.37
 Generation Date: September 04, 2025
 Logging configuration for xwsystem.
 Provides simple logging control functions and configuration management.
