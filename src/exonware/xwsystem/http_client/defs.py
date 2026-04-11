@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.37
+Version: 0.9.0.38
 Generation Date: 07-Sep-2025
 HTTP types and enums for XWSystem.
 """

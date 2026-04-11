@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.37
+Version: 0.9.0.38
 Generation Date: 2025-01-27
 Console module base classes - abstract base classes for console functionality.
 """

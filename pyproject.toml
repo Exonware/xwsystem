@@ -22,14 +22,14 @@ authors = [
 text = "Apache-2.0"
 
 [project.optional-dependencies]
-# First-party XW libs composed by this package (excludes exonware-xwsystem; see lazy/full).
+# First-party XW libs composed by this package (excludes exonware-xwsystem==0.9.0.37; see lazy/full).
 xw = []
 lazy = [
-  "exonware-xwsystem[xw]",
-  "exonware-xwlazy",
+  "exonware-xwsystem[xw]==0.9.0.37",
+  "exonware-xwlazy==1.0.1.80",
 ]
 full = [
-  "exonware-xwsystem[xw]",
+  "exonware-xwsystem[xw]==0.9.0.37",
   "fastavro",
   "aiofiles>=23.0.0",
   "aiohttp>=3.9.0",
@@ -70,7 +70,7 @@ full = [
   'pywin32>=300; platform_system == "Windows"',
 ]
 dev = [
-  "exonware-xwsystem[full]",
+  "exonware-xwsystem[full]==0.9.0.37",
   "black>=23.0.0",
   "isort>=5.12.0",
   "lz4>=4.0.0",

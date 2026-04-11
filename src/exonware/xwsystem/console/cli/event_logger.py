@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.37
+Version: 0.9.0.38
 Generation Date: January 2025
 CLI Event Logger - Extends Python's logging.Logger with event logging capabilities.
 """

@@ -6,14 +6,14 @@
 # Generation Date: 02-Nov-2025
 #
 # This file contains dependencies for xSystem's 17 core lightweight serialization formats (~10 MB)
-# Enterprise formats (~87 MB) moved to exonware-xwformats for modular installation
+# Enterprise formats (~87 MB) moved to exonware-xwformats==0.9.0.31 for modular installation
 # Requires Python 3.12+
 #
 # Usage:
 #   pip install -r requirements.txt
 #
 # For enterprise formats:
-#   pip install exonware-xwformats  # Adds 16 formats: Schema, Scientific, Database (enterprise)
+#   pip install exonware-xwformats==0.9.0.31  # Adds 16 formats: Schema, Scientific, Database (enterprise)
 
 # =============================================================================
 # CORE DEPENDENCIES
@@ -120,7 +120,7 @@ mypy>=0.950                      # Static type checking
 # ├─ Binary formats: ~500 KB (msgpack, cbor2)
 # └─ Security & Infrastructure: ~1 MB (cryptography, bcrypt, httpx, etc.)
 #
-# Enterprise Formats (exonware-xwformats): ~87 MB
+# Enterprise Formats (exonware-xwformats==0.9.0.31): ~87 MB
 # ├─ Schema formats: ~45 MB (protobuf, avro, parquet, thrift, orc, capnproto, flatbuffers)
 # ├─ Scientific formats: ~35 MB (numpy, pandas, pyarrow, h5py, scipy, netCDF4, zarr)
 # ├─ Database formats: ~6 MB (lmdb, neo4j, pydgraph, plyvel)
@@ -133,11 +133,11 @@ mypy>=0.950                      # Static type checking
 # Total savings vs full monolith: 90% smaller, 20–30x faster startup!
 #
 # =============================================================================
-# ENTERPRISE FORMATS (Install exonware-xwformats)
+# ENTERPRISE FORMATS (Install exonware-xwformats==0.9.0.31)
 # =============================================================================
 #
 # For enterprise/specialized formats, install:
-#   pip install exonware-xwformats
+#   pip install exonware-xwformats==0.9.0.31
 #
 # This adds 16 formats:
 # - Schema (7): Protobuf, Avro, Parquet, Thrift, ORC, Cap'n Proto, FlatBuffers
@@ -146,15 +146,15 @@ mypy>=0.950                      # Static type checking
 # - Binary (1): UBJSON
 #
 # Or use lazy loading:
-#   pip install exonware-xwsystem[lazy]
+#   pip install exonware-xwsystem[lazy]==0.9.0.37
 #   # Auto-installs missing formats on first use!
 #
 # =============================================================================
-# SCHEMA REGISTRY (Install exonware-xwschema)
+# SCHEMA REGISTRY (Install exonware-xwschema==0.4.0.10)
 # =============================================================================
 #
 # For schema registry features (AWS Glue, Confluent):
-#   pip install exonware-xwschema
+#   pip install exonware-xwschema==0.4.0.10
 #
 # This adds:
 # - AWS Glue Schema Registry (boto3)
