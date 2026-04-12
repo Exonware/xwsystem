@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.38
+Version: 0.9.0.39
 Generation Date: January 2025
 CSV serialization - Comma-separated values format.
 Following I→A→ATabular pattern:

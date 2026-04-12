@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.38
+Version: 0.9.0.39
 Generation Date: September 05, 2025
 Colored terminal output utilities with cross-platform support.
 """

@@ -18,6 +18,8 @@ Notes:
     - Values are treated as opaque secrets (plain text), no parsing is done.
     - Assignments only affect the current process environment; they do not
       write back to disk.
+    - Use ``SecretKeyStore.persist()`` to write a secret to disk under the
+      configured secrets directory (UTF-8 text file named exactly ``<key>``).
 """
 
 from __future__ import annotations
@@ -179,6 +181,39 @@ class SecretKeyStore(MutableMapping[str, str]):
         env_name = self._env_key(key)
         os.environ[env_name] = value
         self._cache[key] = value
+
+    def persist(self, name: str, value: str) -> Path:
+        """
+        Write a secret to disk as a UTF-8 text file and mirror it into the
+        process environment + in-memory cache.
+
+        The file path is ``<secrets_dir>/<name>`` (no extension). This matches
+        the ``__getitem__`` lookup rule for an exact file named ``<name>``.
+
+        Args:
+            name: Secret key / file base name (e.g. ``"TELEGRAM_BOT_TOKEN"``).
+            value: Raw secret text (leading/trailing whitespace stripped).
+
+        Returns:
+            Path to the written file.
+
+        Raises:
+            ValueError: If ``value`` is empty after stripping.
+        """
+        cleaned = (value or "").strip()
+        if not cleaned:
+            raise ValueError("Refusing to persist an empty secret value")
+
+        secrets_dir = _get_secrets_dir()
+        secrets_dir.mkdir(parents=True, exist_ok=True)
+        path = secrets_dir / name
+        path.write_text(cleaned + "\n", encoding="utf-8")
+
+        env_name = self._env_key(name)
+        os.environ[env_name] = cleaned
+        self._cache[name] = cleaned
+        logger.info("Persisted secret to %s", path, extra={"secret_key": name})
+        return path
 
     def __delitem__(self, key: str) -> None:
         self._cache.pop(key, None)

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.38
+Version: 0.9.0.39
 Generation Date: October 26, 2025
 Two-tier cache implementation combining memory and disk caching.
 """
