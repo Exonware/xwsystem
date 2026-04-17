@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.39
+Version: 0.9.0.40
 Generation Date: 01-Nov-2025
 Input validation for caching module - Security Priority #1.
 Implements comprehensive validation to prevent security vulnerabilities.

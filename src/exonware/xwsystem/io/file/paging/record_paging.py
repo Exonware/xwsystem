@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.39
+Version: 0.9.0.40
 Generation Date: 30-Oct-2025
 Record-based paging strategy for structured formats.
 Priority 1 (Security): Safe record parsing

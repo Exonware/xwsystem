@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.39
+Version: 0.9.0.40
 Generation Date: November 2, 2025
 MessagePack serialization - Efficient binary serialization.
 Following I→A pattern:

@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.39
+Version: 0.9.0.40
 Generation Date: 01-Nov-2025
 Cache serialization utilities.
 Usability Priority #2 - Persist and restore cache state.
