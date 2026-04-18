@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.41
+Version: 0.9.0.42
 Generation Date: January 2026
 XWCache - Unified Caching Facade
 Simplified API for all caching strategies:

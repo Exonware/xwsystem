@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.41
+Version: 0.9.0.42
 Generation Date: 07-Sep-2025
 Threading types and enums for XWSystem.
 """
