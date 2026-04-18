@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.40
+Version: 0.9.0.41
 Generation Date: January 2025
 DataFrame serialization - Direct pandas DataFrame operations.
 Following I→A→ATabular pattern:

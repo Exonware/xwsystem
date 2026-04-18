@@ -4,7 +4,7 @@ High-level abstract base classes for xwsystem.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.40
+Version: 0.9.0.41
 Last Updated: 29-Jan-2026
 MANDATORY (GUIDE_31_DEV.md): abstract classes in `base.py` MUST start with `A`
 and MUST use `ABC`.

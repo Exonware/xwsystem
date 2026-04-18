@@ -3,7 +3,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.40
+Version: 0.9.0.41
 Generation Date: September 04, 2025
 Asynchronous I/O operations for non-blocking file handling.
 """

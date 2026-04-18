@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.40
+Version: 0.9.0.41
 Generation Date: 07-Sep-2025
 Pattern types and enums for XWSystem design patterns.
 """

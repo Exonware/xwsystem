@@ -6,7 +6,7 @@ Options like pretty, compact, sorted, canonical can be mapped to format-specific
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.40
+Version: 0.9.0.41
 """
 
 from typing import Any

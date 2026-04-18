@@ -1,37 +1,15 @@
 #!/usr/bin/env python3
-#exonware/xwsystem/src/exonware/xwsystem/utils/web.py
+# src/exonware/xwsystem/utils/web.py
 """
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.40
+Version: 0.9.0.41
 Generation Date: January 2025
 Web utility functions for xwsystem.
 """
 
 from urllib.parse import urlparse
-import sys
-
-
-def _maybe_stub_lxml_for_bs4() -> None:
-    """
-    If ``lxml`` is not installed, register minimal stubs so BeautifulSoup does not
-    attempt a failing import. If ``lxml`` is present but fails to initialize (e.g.
-    broken optional deps), stub as well so importing ``exonware.xwsystem`` never
-    crashes; SAML/XML callers import ``lxml`` directly in their own code paths.
-    """
-    if "lxml" in sys.modules:
-        return
-    try:
-        import lxml.etree  # noqa: F401
-    except (ImportError, SyntaxError, OSError, RuntimeError):
-        class _DummyModule:
-            pass
-
-        _d = _DummyModule()
-        sys.modules["lxml"] = _d
-        sys.modules["lxml.etree"] = _d
-        sys.modules["lxml.html"] = _d
 
 
 def validate_url_accessible(url: str, timeout: int = 10) -> bool:
@@ -83,7 +61,6 @@ def extract_webpage_text(url: str) -> str:
         >>> len(text) > 0
         True
     """
-    _maybe_stub_lxml_for_bs4()
     from urllib.request import urlopen
     from bs4 import BeautifulSoup
     html = urlopen(url).read()

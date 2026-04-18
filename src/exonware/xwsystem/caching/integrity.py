@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.40
+Version: 0.9.0.41
 Generation Date: 01-Nov-2025
 Cache integrity verification - Security Priority #1.
 Protects against cache poisoning and tampering.
