@@ -2,15 +2,32 @@
 """Text-based serialization formats."""
 
 from .json import JsonSerializer
-from .json5 import Json5Serializer
 from .jsonlines import JsonLinesSerializer
-from .yaml import YamlSerializer
-from .toml import TomlSerializer
-from .xml import XmlSerializer
 from .csv import CsvSerializer
 from .configparser import ConfigParserSerializer
 from .formdata import FormDataSerializer
 from .multipart import MultipartSerializer
+
+try:
+    from .json5 import Json5Serializer
+except (ImportError, ModuleNotFoundError):
+    Json5Serializer = None
+
+try:
+    from .yaml import YamlSerializer
+except (ImportError, ModuleNotFoundError):
+    YamlSerializer = None
+
+try:
+    from .toml import TomlSerializer
+except (ImportError, ModuleNotFoundError):
+    TomlSerializer = None
+
+try:
+    from .xml import XmlSerializer
+except (ImportError, ModuleNotFoundError):
+    XmlSerializer = None
+
 __all__ = [
     # Primary serializers
     "JsonSerializer",

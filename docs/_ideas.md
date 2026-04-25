@@ -63,7 +63,7 @@ entity = XWEntity[ClassExample]()
 
 #### Improved DX version (aligned with current libs)
 
-- **Single `xwbase` facade built from existing libs**: implement a thin `exonware.xwbase` package that re-exports high-level entry points from `xwauth`, `xwstorage`, `xwdata`, `xwentity`, and `xwui`.
+- **Single `xwbase` facade built from existing libs**: implement a thin `exonware.xwbase` package that re-exports high-level entry points from `xwauth`, `xwstorage.connect`, `xwdata`, `xwentity`, and `xwui`.
 - **Entity-first API surface**: standardize around `XWGroup` → `XWCollection` → `XWEntity` navigation, using `xwentity` and `xwdata` under the hood, reusing their schemas/actions instead of redefining them.
 - **Minimal generics by default**: keep `XWEntity[ClassExample]` as an *optional* helper, but prefer explicit `schema=...`, `actions=...`, `data=...` parameters in the official examples.
 
@@ -574,12 +574,12 @@ Right now, you can connect to specific backends that already have adapters; to r
 ```python
 xwstorage_agent = XWStorageAgent(provider="xwstorage", api_token=env.xwstorage_key)
 
-google_sheet_connection = exonware.xwstorage.connection({ "type": "google_sheets", ... })
-ms_excel_connection = exonware.xwstorage.connection({ "type": "excel", ... })
-xwjson_local_connection = exonware.xwstorage.connection({ "type": "xwjson_local", ... })
-csv_local_connection = exonware.xwstorage.connection({ "type": "csv_local", ... })
-ftp_folder_connection = exonware.xwstorage.connection({ "type": "ftp", ... })
-google_folder_connection = exonware.xwstorage.connection({ "type": "google_drive", ... })
+google_sheet_connection = exonware.xwstorage.connect.XWConnection({ "type": "google_sheets", ... })
+ms_excel_connection = exonware.xwstorage.connect.XWConnection({ "type": "excel", ... })
+xwjson_local_connection = exonware.xwstorage.connect.XWConnection({ "type": "xwjson_local", ... })
+csv_local_connection = exonware.xwstorage.connect.XWConnection({ "type": "csv_local", ... })
+ftp_folder_connection = exonware.xwstorage.connect.XWConnection({ "type": "ftp", ... })
+google_folder_connection = exonware.xwstorage.connect.XWConnection({ "type": "google_drive", ... })
 ```
 
 - **Config model**

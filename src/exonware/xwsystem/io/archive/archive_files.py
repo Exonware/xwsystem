@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.42
+Version: 0.9.0.43
 Generation Date: 30-Oct-2025
 Archive FILES - File persistence for archives.
 IArchiveFile extends IFile and USES IArchiver for compression.

@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.42
+Version: 0.9.0.43
 Generation Date: October 30, 2025
 Universal Codec Abstraction for eXonware.
 Provides unified interface for all encoding/decoding operations

@@ -2,10 +2,17 @@
 """Hybrid parser: msgspec for reading, orjson for writing."""
 
 from typing import Any
-import msgspec
-import orjson
-
 from .base import AJsonParser
+
+try:
+    import msgspec
+except ImportError:  # pragma: no cover - environment-dependent optional dep
+    msgspec = None
+
+try:
+    import orjson
+except ImportError:  # pragma: no cover - environment-dependent optional dep
+    orjson = None
 
 
 class HybridParser(AJsonParser):
@@ -26,10 +33,12 @@ class HybridParser(AJsonParser):
     @property
 
     def is_available(self) -> bool:
-        return True
+        return msgspec is not None and orjson is not None
 
     def loads(self, s: str | bytes) -> Any:
         """Parse JSON using msgspec.json.decode() - fastest for reading."""
+        if msgspec is None:
+            raise RuntimeError("hybrid parser requested but msgspec is not installed")
         if isinstance(s, str):
             s = s.encode("utf-8")
         # msgspec.json.decode accepts bytes directly
@@ -37,6 +46,8 @@ class HybridParser(AJsonParser):
 
     def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using orjson.dumps() - fastest for writing."""
+        if orjson is None:
+            raise RuntimeError("hybrid parser requested but orjson is not installed")
         option = 0
         # orjson options
         if not kwargs.get("ensure_ascii", True):

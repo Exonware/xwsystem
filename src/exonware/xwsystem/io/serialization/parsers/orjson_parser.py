@@ -2,8 +2,12 @@
 """orjson parser - Tier 1 (3-4x faster than stdlib)."""
 
 from typing import Any
-import orjson
 from .base import AJsonParser
+
+try:
+    import orjson
+except ImportError:  # pragma: no cover - environment-dependent optional dep
+    orjson = None
 
 
 class OrjsonParser(AJsonParser):
@@ -19,16 +23,20 @@ class OrjsonParser(AJsonParser):
     @property
 
     def is_available(self) -> bool:
-        return True
+        return orjson is not None
 
     def loads(self, s: str | bytes) -> Any:
         """Parse JSON using orjson.loads()."""
+        if orjson is None:
+            raise RuntimeError("orjson parser requested but dependency is not installed")
         if isinstance(s, str):
             s = s.encode("utf-8")
         return orjson.loads(s)
 
     def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using orjson.dumps()."""
+        if orjson is None:
+            raise RuntimeError("orjson parser requested but dependency is not installed")
         option = 0
         # orjson options
         if not kwargs.get("ensure_ascii", True):

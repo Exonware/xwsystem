@@ -5,7 +5,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.42
+Version: 0.9.0.43
 Generation Date: 2025-01-27
 Console module contracts - interfaces for console functionality.
 """

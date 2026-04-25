@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.42
+Version: 0.9.0.43
 Generation Date: 30-Oct-2025
 Codec-integrated I/O - THE KILLER FEATURE!
 Seamless integration of codec + data source for automatic encoding/decoding.

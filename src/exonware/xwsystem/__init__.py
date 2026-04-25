@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.42
+Version: 0.9.0.43
 Generation Date: October 10, 2025
 XWSystem - Enterprise-grade Python framework with AI-powered performance optimization.
 🚀 QUICK START:
@@ -106,11 +106,30 @@ from .io.serialization import (
     detect_format,
 )
 # HTTP utilities
-from .http_client import HttpClient, AsyncHttpClient, HttpError, RetryConfig
-from .http_client.advanced_client import (
-    AdvancedHttpClient, AdvancedHttpConfig, Http2Config, 
-    StreamingConfig, MockTransport, MockResponse
-)
+try:
+    from .http_client import (
+        HttpClient,
+        AsyncHttpClient,
+        HttpError,
+        RetryConfig,
+        AdvancedHttpClient,
+        AdvancedHttpConfig,
+        Http2Config,
+        StreamingConfig,
+        MockTransport,
+        MockResponse,
+    )
+except (ImportError, ModuleNotFoundError):
+    HttpClient = None
+    AsyncHttpClient = None
+    HttpError = None
+    RetryConfig = None
+    AdvancedHttpClient = None
+    AdvancedHttpConfig = None
+    Http2Config = None
+    StreamingConfig = None
+    MockTransport = None
+    MockResponse = None
 # Runtime utilities
 from .runtime import EnvironmentManager, ReflectionUtils
 # Plugin system
@@ -860,13 +879,38 @@ __all__ = [
 # UNIFIED FACADES - Simplified Developer Experience (DX)
 # =============================================================================
 # Import unified facades from their respective modules
-from .caching.facade import XWCache
-from .io.archive.facade import XWArchive
-from .io.indexing.facade import XWIndex
-from .security.facade import XWSecurity, XWCrypto
-from .http_client.facade import XWHTTP
-from .validation.facade import XWValidator
-from .monitoring.facade import XWMonitor
-from .threading.facade import XWConcurrency
+try:
+    from .caching.facade import XWCache
+except (ImportError, ModuleNotFoundError):
+    XWCache = None
+try:
+    from .io.archive.facade import XWArchive
+except (ImportError, ModuleNotFoundError):
+    XWArchive = None
+try:
+    from .io.indexing.facade import XWIndex
+except (ImportError, ModuleNotFoundError):
+    XWIndex = None
+try:
+    from .security.facade import XWSecurity, XWCrypto
+except (ImportError, ModuleNotFoundError):
+    XWSecurity = None
+    XWCrypto = None
+try:
+    from .http_client.facade import XWHTTP
+except (ImportError, ModuleNotFoundError):
+    XWHTTP = None
+try:
+    from .validation.facade import XWValidator
+except (ImportError, ModuleNotFoundError):
+    XWValidator = None
+try:
+    from .monitoring.facade import XWMonitor
+except (ImportError, ModuleNotFoundError):
+    XWMonitor = None
+try:
+    from .threading.facade import XWConcurrency
+except (ImportError, ModuleNotFoundError):
+    XWConcurrency = None
 # XWSerializer already exists in io.serialization.serializer
 # XWIO already exists in io.facade

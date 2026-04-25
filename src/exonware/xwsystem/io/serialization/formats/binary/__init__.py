@@ -3,12 +3,25 @@
 """Binary serialization formats (core lightweight formats)."""
 # Core binary formats
 
-from .msgpack import MsgPackSerializer
 from .pickle import PickleSerializer
-from .bson import BsonSerializer
 from .marshal import MarshalSerializer
-from .cbor import CborSerializer
 from .plistlib import PlistSerializer
+
+try:
+    from .msgpack import MsgPackSerializer
+except (ImportError, ModuleNotFoundError):
+    MsgPackSerializer = None
+
+try:
+    from .bson import BsonSerializer
+except (ImportError, ModuleNotFoundError):
+    BsonSerializer = None
+
+try:
+    from .cbor import CborSerializer
+except (ImportError, ModuleNotFoundError):
+    CborSerializer = None
+
 __all__ = [
     "MsgPackSerializer",
     "PickleSerializer",

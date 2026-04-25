@@ -4,7 +4,7 @@
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.9.0.42
+Version: 0.9.0.43
 Generation Date: 02-Nov-2025
 JSON5 Serialization - Extended JSON with Comments and Trailing Commas
 JSON5 is a superset of JSON that allows:
@@ -23,7 +23,10 @@ Priority 5 (Extensibility): Compatible with standard JSON
 from typing import Any
 from pathlib import Path
 # Lazy import for json5 - the lazy hook will automatically handle ImportError
-import json5
+try:
+    import json5
+except ImportError:  # pragma: no cover - environment-dependent optional dep
+    json5 = None
 from .json import JsonSerializer
 from ....errors import SerializationError
 

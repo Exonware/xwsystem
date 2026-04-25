@@ -3,7 +3,11 @@
 
 from typing import Any
 from .base import AJsonParser
-import hyperjson  # type: ignore[reportMissingImports]
+
+try:
+    import hyperjson  # type: ignore[reportMissingImports]
+except ImportError:  # pragma: no cover - environment-dependent optional dep
+    hyperjson = None
 
 
 class HyperjsonParser(AJsonParser):
@@ -25,16 +29,20 @@ class HyperjsonParser(AJsonParser):
     @property
 
     def is_available(self) -> bool:
-        return True
+        return hyperjson is not None
 
     def loads(self, s: str | bytes) -> Any:
         """Parse JSON using hyperlight_hyperjson.loads()."""
+        if hyperjson is None:
+            raise RuntimeError("hyperjson parser requested but dependency is not installed")
         if isinstance(s, str):
             s = s.encode("utf-8")
         return hyperjson.loads(s)
 
     def dumps(self, obj: Any, **kwargs) -> str | bytes:
         """Serialize JSON using hyperlight_hyperjson.dumps()."""
+        if hyperjson is None:
+            raise RuntimeError("hyperjson parser requested but dependency is not installed")
         # hyperjson/hyperlight-hyperjson are orjson forks; support option= when present
         option = 0
         if getattr(hyperjson, "OPT_INDENT_2", None) is not None and kwargs.get("indent"):
